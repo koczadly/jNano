@@ -1,6 +1,7 @@
 package in.bigdolph.jnano.rpc.query;
 
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
+import in.bigdolph.jnano.rpc.query.request.TestNode;
 import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 import junit.framework.TestCase;
 import org.junit.Before;
@@ -16,12 +17,17 @@ public abstract class QueryBaseTest {
     
     @Before
     public void setUp() throws MalformedURLException {
-        this.node = new RPCQueryNode();
+        this.node = new TestNode();
     }
     
     
     
-    protected <R extends RPCResponse> R query(RPCRequest<R> req) {
+    public RPCQueryNode getNode() {
+        return node;
+    }
+    
+    
+    public <R extends RPCResponse> R query(RPCRequest<R> req) {
         try {
             return this.node.processRequest(req);
         } catch (IOException e) {

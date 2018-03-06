@@ -1,6 +1,7 @@
 package in.bigdolph.jnano.rpc.query;
 
 import com.google.gson.*;
+import in.bigdolph.jnano.rpc.adapters.BlankArrayTypeAdapter;
 import in.bigdolph.jnano.rpc.exception.RPCQueryException;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
 import in.bigdolph.jnano.rpc.query.response.RPCResponse;
@@ -17,8 +18,8 @@ public class RPCQueryNode {
     
     protected static final JsonParser JSON_PARSER = new JsonParser();
     
-    private final URL address;
-    private final Gson gson;
+    protected final URL address;
+    protected final Gson gson;
     
     
     public RPCQueryNode() throws MalformedURLException {
@@ -35,7 +36,9 @@ public class RPCQueryNode {
     
     protected RPCQueryNode(URL address, GsonBuilder gson) {
         this.address = address;
-        this.gson = gson.excludeFieldsWithoutExposeAnnotation().create();
+        this.gson = gson.excludeFieldsWithoutExposeAnnotation()
+                .registerTypeAdapterFactory(BlankArrayTypeAdapter.FACTORY)
+                .create();
     }
     
     
@@ -53,7 +56,7 @@ public class RPCQueryNode {
      */
     public <Q extends RPCRequest<R>, R extends RPCResponse> R processRequest(Q request) throws IOException, RPCQueryException {
         //Serialise the request into JSON
-        String requestJsonStr = this.requestToJSON(request);
+        String requestJsonStr = this.serializeRequestToJSON(request);
         
         //Send the request to the node
         String responseJsonStr = this.processRawRequest(requestJsonStr);
@@ -113,7 +116,7 @@ public class RPCQueryNode {
     }
     
     
-    public String requestToJSON(RPCRequest<?> req) {
+    public String serializeRequestToJSON(RPCRequest<?> req) {
         if(req == null) throw new IllegalArgumentException("Request argument cannot be null");
         return this.gson.toJson(req);
     }
