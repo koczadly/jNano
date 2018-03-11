@@ -41,7 +41,7 @@ public class RPCQueryNode {
         this.gson = gson.excludeFieldsWithoutExposeAnnotation()
                 .registerTypeAdapterFactory(new ArrayTypeAdapterFactory())      //Empty array hotfix
                 .registerTypeAdapterFactory(new CollectionTypeAdapterFactory()) //Empty collection hotfix
-                .registerTypeAdapterFactory(new MapTypeAdapterFactory())        //Empty collection hotfix
+                .registerTypeAdapterFactory(new MapTypeAdapterFactory())        //Empty map hotfix
                 .create();
     }
     
