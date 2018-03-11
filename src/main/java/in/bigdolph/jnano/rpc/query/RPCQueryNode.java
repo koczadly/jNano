@@ -1,7 +1,9 @@
 package in.bigdolph.jnano.rpc.query;
 
 import com.google.gson.*;
-import in.bigdolph.jnano.rpc.adapters.BlankArrayTypeAdapter;
+import in.bigdolph.jnano.rpc.adapters.hotfix.ArrayTypeAdapterFactory;
+import in.bigdolph.jnano.rpc.adapters.hotfix.CollectionTypeAdapterFactory;
+import in.bigdolph.jnano.rpc.adapters.hotfix.MapTypeAdapterFactory;
 import in.bigdolph.jnano.rpc.exception.RPCQueryException;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
 import in.bigdolph.jnano.rpc.query.response.RPCResponse;
@@ -37,12 +39,14 @@ public class RPCQueryNode {
     protected RPCQueryNode(URL address, GsonBuilder gson) {
         this.address = address;
         this.gson = gson.excludeFieldsWithoutExposeAnnotation()
-                .registerTypeAdapterFactory(BlankArrayTypeAdapter.FACTORY)
+                .registerTypeAdapterFactory(new ArrayTypeAdapterFactory())      //Empty array hotfix
+                .registerTypeAdapterFactory(new CollectionTypeAdapterFactory()) //Empty collection hotfix
+                .registerTypeAdapterFactory(new MapTypeAdapterFactory())        //Empty collection hotfix
                 .create();
     }
     
     
-
+    
     public final URL getAddress() {
         return this.address;
     }
@@ -117,7 +121,7 @@ public class RPCQueryNode {
     
     
     public String serializeRequestToJSON(RPCRequest<?> req) {
-        if(req == null) throw new IllegalArgumentException("Request argument cannot be null");
+        if(req == null) throw new IllegalArgumentException("Query request argument cannot be null");
         return this.gson.toJson(req);
     }
 
