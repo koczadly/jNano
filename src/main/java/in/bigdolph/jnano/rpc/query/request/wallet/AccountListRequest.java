@@ -3,10 +3,9 @@ package in.bigdolph.jnano.rpc.query.request.wallet;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.specific.AccountListResponse;
-import in.bigdolph.jnano.rpc.query.response.specific.NodeVersionResponse;
+import in.bigdolph.jnano.rpc.query.response.generic.AccountsResponse;
 
-public class AccountListRequest extends RPCRequest<AccountListResponse> {
+public class AccountListRequest extends RPCRequest<AccountsResponse> {
     
     @Expose
     @SerializedName("wallet")
@@ -14,7 +13,7 @@ public class AccountListRequest extends RPCRequest<AccountListResponse> {
     
     
     public AccountListRequest(String walletId) {
-        super("account_list", AccountListResponse.class);
+        super("account_list", AccountsResponse.class);
         this.walletId = walletId;
     }
     
