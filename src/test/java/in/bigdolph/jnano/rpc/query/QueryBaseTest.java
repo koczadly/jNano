@@ -4,6 +4,7 @@ import in.bigdolph.jnano.rpc.query.request.RPCRequest;
 import in.bigdolph.jnano.rpc.query.request.TestNode;
 import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 import junit.framework.TestCase;
+import org.junit.Assert;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -32,7 +33,9 @@ public abstract class QueryBaseTest {
     
     public <R extends RPCResponse> R query(RPCRequest<R> req) {
         try {
-            return this.node.processRequest(req);
+            R response = this.node.processRequest(req);
+            Assert.assertNotNull(response);
+            return response;
         } catch (IOException e) {
             e.printStackTrace();
         }
