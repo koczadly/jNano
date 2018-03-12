@@ -12,6 +12,8 @@ import java.net.MalformedURLException;
 
 public abstract class QueryBaseTest {
     
+    public static final String TEST_ACCOUNT = "xrb_365md53cciaquuerrp97psfrsg1bd4rw5d8cyfpyefgofsopiuzozibdnbmx";
+    
     private RPCQueryNode node;
     
     

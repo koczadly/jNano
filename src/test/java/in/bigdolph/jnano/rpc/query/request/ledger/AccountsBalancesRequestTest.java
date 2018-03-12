@@ -12,17 +12,18 @@ public class AccountsBalancesRequestTest extends QueryBaseTest {
     public void test() {
         AccountsBalanceResponse response = query(
                 new AccountsBalancesRequest(
-                    "xrb_3jwrszth46rk1mu7rmb4rhm54us8yg1gw3ipodftqtikf5yqdyr7471nsg1k",
-                    "xrb_3jybgajxebuj9kby3xusmn4sqiomzu15trmkwb1xyrynnc7axss3qp1yn679"));
-    
-        System.out.println(response.getBalance("xrb_3jwrszth46rk1mu7rmb4rhm54us8yg1gw3ipodftqtikf5yqdyr7471nsg1k").getTotal());
-        System.out.println(response.getBalance("xrb_3jwrszth46rk1mu7rmb4rhm54us8yg1gw3ipodftqtikf5yqdyr7471nsg1k").getPocketed());
+                    TEST_ACCOUNT,
+                    "xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3"));
         
-        assertNotNull(response.getBalance("xrb_3jwrszth46rk1mu7rmb4rhm54us8yg1gw3ipodftqtikf5yqdyr7471nsg1k"));
-        assertNotNull(response.getBalance("xrb_3jybgajxebuj9kby3xusmn4sqiomzu15trmkwb1xyrynnc7axss3qp1yn679"));
-    
-        assertNotNull(response.getBalance("xrb_3jwrszth46rk1mu7rmb4rhm54us8yg1gw3ipodftqtikf5yqdyr7471nsg1k").getPocketed());
-        assertNotNull(response.getBalance("xrb_3jwrszth46rk1mu7rmb4rhm54us8yg1gw3ipodftqtikf5yqdyr7471nsg1k").getPending());
+        System.out.println(response.getBalance(TEST_ACCOUNT).getTotal());
+        System.out.println(response.getBalance(TEST_ACCOUNT).getPocketed());
+        
+        assertNotNull(response.getBalance(TEST_ACCOUNT));
+        assertNotNull(response.getBalance("xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3"));
+        
+        assertEquals("219000000000000000000000000", response.getBalance(TEST_ACCOUNT).getPocketed().toString());
+        assertEquals("97000000000000000000000000", response.getBalance(TEST_ACCOUNT).getPending().toString());
+        assertEquals("316000000000000000000000000", response.getBalance(TEST_ACCOUNT).getTotal().toString());
         
         //Test empty
         response = query(new AccountsBalancesRequest());
