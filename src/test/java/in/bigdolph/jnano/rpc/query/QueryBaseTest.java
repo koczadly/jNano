@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 public abstract class QueryBaseTest {
     
     public static final String TEST_ACCOUNT = "xrb_365md53cciaquuerrp97psfrsg1bd4rw5d8cyfpyefgofsopiuzozibdnbmx";
+    public static final String TEST_WALLET = "69F429CC16E115E0F6BE5698A3AAAA57318A967F45FC50A5E18E1304ED4D2D1C";
     
     private RPCQueryNode node;
     
