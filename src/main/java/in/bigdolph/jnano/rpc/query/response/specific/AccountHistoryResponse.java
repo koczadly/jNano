@@ -6,16 +6,16 @@ import in.bigdolph.jnano.model.block.BlockType;
 import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
 import java.math.BigInteger;
+import java.util.Set;
 
 public class AccountHistoryResponse extends RPCResponse {
 
     @Expose
     @SerializedName("history")
-    private AccountHistory[] history;
+    private Set<AccountHistory> history;
     
     
-    
-    public AccountHistory[] getHistory() {
+    public Set<AccountHistory> getHistory() {
         return history;
     }
     
