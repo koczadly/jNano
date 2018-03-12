@@ -13,7 +13,7 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AccountsBalanceResponse extends RPCResponse {
+public class AccountsBalancesResponse extends RPCResponse {
     
     @Expose
     @SerializedName("balances")
