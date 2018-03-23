@@ -47,7 +47,7 @@ public abstract class QueryBaseTest {
         return null;
     }
     
-    public <R extends RPCResponse> R query(String responseJson, Class<R> responseClass) {
+    public <R extends RPCResponse> R query(Class<R> responseClass, String responseJson) {
         return this.node.deserializeResponseFromJSON(responseJson, responseClass);
     }
     
