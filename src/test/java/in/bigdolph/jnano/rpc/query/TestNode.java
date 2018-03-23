@@ -1,8 +1,9 @@
-package in.bigdolph.jnano.rpc.query.request;
+package in.bigdolph.jnano.rpc.query;
 
 import com.google.gson.Gson;
 import in.bigdolph.jnano.rpc.exception.RPCQueryException;
 import in.bigdolph.jnano.rpc.query.RPCQueryNode;
+import in.bigdolph.jnano.rpc.query.request.RPCRequest;
 import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
 import java.io.IOException;

@@ -1,6 +1,8 @@
 package in.bigdolph.jnano.rpc.query;
 
 import com.google.gson.*;
+import in.bigdolph.jnano.model.block.Block;
+import in.bigdolph.jnano.rpc.adapters.BlockTypeDeserializer;
 import in.bigdolph.jnano.rpc.adapters.hotfix.ArrayTypeAdapterFactory;
 import in.bigdolph.jnano.rpc.adapters.hotfix.CollectionTypeAdapterFactory;
 import in.bigdolph.jnano.rpc.adapters.hotfix.MapTypeAdapterFactory;
@@ -39,9 +41,10 @@ public class RPCQueryNode {
     protected RPCQueryNode(URL address, GsonBuilder gson) {
         this.address = address;
         this.gson = gson.excludeFieldsWithoutExposeAnnotation()
-                .registerTypeAdapterFactory(new ArrayTypeAdapterFactory())      //Empty array hotfix
-                .registerTypeAdapterFactory(new CollectionTypeAdapterFactory()) //Empty collection hotfix
-                .registerTypeAdapterFactory(new MapTypeAdapterFactory())        //Empty map hotfix
+                .registerTypeAdapterFactory(new ArrayTypeAdapterFactory())          //Empty array hotfix
+                .registerTypeAdapterFactory(new CollectionTypeAdapterFactory())     //Empty collection hotfix
+                .registerTypeAdapterFactory(new MapTypeAdapterFactory())            //Empty map hotfix
+                .registerTypeAdapter(Block.class, new BlockTypeDeserializer())      //Block deserializer
                 .create();
     }
     
@@ -59,24 +62,11 @@ public class RPCQueryNode {
      * @throws RPCQueryException
      */
     public <Q extends RPCRequest<R>, R extends RPCResponse> R processRequest(Q request) throws IOException, RPCQueryException {
-        //Serialise the request into JSON
-        String requestJsonStr = this.serializeRequestToJSON(request);
+        String requestJsonStr = this.serializeRequestToJSON(request); //Serialise the request into JSON
+        String responseJson = this.processRawRequest(requestJsonStr); //Send the request to the node
         
-        //Send the request to the node
-        String responseJsonStr = this.processRawRequest(requestJsonStr);
-        
-        //Parse response
-        JsonObject responseJson = RPCQueryNode.JSON_PARSER.parse(responseJsonStr).getAsJsonObject();
-        
-        //Check for returned RPC error
-        JsonElement responseError = responseJson.get("error");
-        if(responseError != null) throw new RPCQueryException(responseError.getAsString());
-        
-        //Deserialize from JSON
-        R response = this.gson.fromJson(responseJson, request.getResponseClass());
-        
-        //Initialise raw parameters
-        response.init(responseJson);
+        R response = this.deserializeResponseFromJSON(responseJson, request.getResponseClass());
+        assert response != null : "Response JSON is null";
         
         return response;
     }
@@ -117,6 +107,20 @@ public class RPCQueryNode {
         inputReader.close();
     
         return response.toString();
+    }
+    
+    
+    protected <R extends RPCResponse> R deserializeResponseFromJSON(String responseJson, Class<R> responseClass) throws RPCQueryException {
+        JsonObject response = RPCQueryNode.JSON_PARSER.parse(responseJson).getAsJsonObject(); //Parse response
+        
+        //Check for returned RPC error
+        JsonElement responseError = response.get("error");
+        if(responseError != null) throw new RPCQueryException(responseError.getAsString());
+        
+        R responseObj = this.gson.fromJson(responseJson, responseClass); //Deserialize from JSON
+        responseObj.init(response); //Initialise raw parameters
+        
+        return responseObj;
     }
     
     

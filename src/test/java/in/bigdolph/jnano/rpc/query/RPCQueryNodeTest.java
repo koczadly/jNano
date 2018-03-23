@@ -2,7 +2,6 @@ package in.bigdolph.jnano.rpc.query;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.request.TestNode;
 import org.junit.Test;
 
 import java.util.List;
