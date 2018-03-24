@@ -2,11 +2,11 @@ package in.bigdolph.jnano.rpc.query.response;
 
 import com.google.gson.JsonObject;
 
-public abstract class RPCResponse {
+public class RPCResponse {
     
     private JsonObject rawJson;
     
-    public RPCResponse() {}
+    protected RPCResponse() {}
     
     
     public final JsonObject getRawJSON() {
