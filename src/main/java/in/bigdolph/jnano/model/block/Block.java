@@ -49,6 +49,7 @@ public abstract class Block {
         return jsonRepresentation;
     }
     
+    /** This method may only be called once after instantiation */
     public void setJsonRepresentation(String json) {
         if(this.jsonRepresentation != null) throw new IllegalStateException("JSON representation has already been set");
         this.jsonRepresentation = json;
