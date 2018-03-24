@@ -3,10 +3,9 @@ package in.bigdolph.jnano.rpc.query.request.ledger;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.specific.AccountsFrontiersResponse;
-import in.bigdolph.jnano.rpc.query.response.specific.NodeVersionResponse;
+import in.bigdolph.jnano.rpc.query.response.generic.AccountFrontiersResponse;
 
-public class AccountsFrontiersRequest extends RPCRequest<AccountsFrontiersResponse> {
+public class AccountsFrontiersRequest extends RPCRequest<AccountFrontiersResponse> {
     
     @Expose
     @SerializedName("accounts")
@@ -14,7 +13,7 @@ public class AccountsFrontiersRequest extends RPCRequest<AccountsFrontiersRespon
     
     
     public AccountsFrontiersRequest(String... accounts) {
-        super("accounts_frontiers", AccountsFrontiersResponse.class);
+        super("accounts_frontiers", AccountFrontiersResponse.class);
         this.accounts = accounts;
     }
     
