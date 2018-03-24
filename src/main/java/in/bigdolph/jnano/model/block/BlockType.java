@@ -5,20 +5,35 @@ import com.google.gson.annotations.SerializedName;
 public enum BlockType {
     
     @SerializedName("open")
-    OPEN,
+    OPEN(true),
     
     @SerializedName("change")
-    CHANGE,
+    CHANGE(false),
     
     @SerializedName("send")
-    SEND,
+    SEND(true),
     
     @SerializedName("receive")
-    RECEIVE;
+    RECEIVE(true);
+    
+    
+    private final String name = this.name().toLowerCase();
+    private final boolean isTransaction;
+    
+    BlockType(boolean isTransaction) {
+        this.isTransaction = isTransaction;
+    }
+    
+    
+    
+    public boolean isTransaction() {
+        return isTransaction;
+    }
+    
     
     @Override
     public String toString() {
-        return this.name().toLowerCase();
+        return this.name;
     }
     
 }
