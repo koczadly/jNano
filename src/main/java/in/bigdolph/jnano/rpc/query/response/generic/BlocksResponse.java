@@ -1,4 +1,4 @@
-package in.bigdolph.jnano.rpc.query.response.specific;
+package in.bigdolph.jnano.rpc.query.response.generic;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -7,7 +7,7 @@ import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
 import java.util.Map;
 
-public class BlocksRetrieveResponse extends RPCResponse {
+public class BlocksResponse extends RPCResponse {
     
     @Expose
     @SerializedName("blocks")

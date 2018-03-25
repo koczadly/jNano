@@ -3,10 +3,9 @@ package in.bigdolph.jnano.rpc.query.request.ledger;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.specific.BlocksRetrieveResponse;
-import in.bigdolph.jnano.rpc.query.response.specific.NodeVersionResponse;
+import in.bigdolph.jnano.rpc.query.response.generic.BlocksResponse;
 
-public class BlocksRetrieveRequest extends RPCRequest<BlocksRetrieveResponse> {
+public class BlocksRetrieveRequest extends RPCRequest<BlocksResponse> {
     
     @Expose
     @SerializedName("hashes")
@@ -14,7 +13,7 @@ public class BlocksRetrieveRequest extends RPCRequest<BlocksRetrieveResponse> {
     
     
     public BlocksRetrieveRequest(String... blockHashes) {
-        super("blocks", BlocksRetrieveResponse.class);
+        super("blocks", BlocksResponse.class);
         this.blockHashes = blockHashes;
     }
     
