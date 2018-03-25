@@ -1,10 +1,10 @@
-package in.bigdolph.jnano.rpc.query.response.specific;
+package in.bigdolph.jnano.rpc.query.response.generic;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
-public class BlockPendingExistsResponse extends RPCResponse {
+public class ExistsResponse extends RPCResponse {
 
     @Expose
     @SerializedName("exists")
