@@ -1,11 +1,10 @@
-package in.bigdolph.jnano.rpc.query.request.compute.blockcreate;
+package in.bigdolph.jnano.rpc.query.request.compute.sign;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.model.block.BlockType;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
 import in.bigdolph.jnano.rpc.query.response.specific.BlockCreateResponse;
-import in.bigdolph.jnano.rpc.query.response.specific.NodeVersionResponse;
 
 public abstract class BlockCreateRequest extends RPCRequest<BlockCreateResponse> {
     
