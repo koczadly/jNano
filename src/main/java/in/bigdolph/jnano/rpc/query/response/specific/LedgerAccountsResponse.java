@@ -6,16 +6,17 @@ import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class LedgerAccountsResponse extends RPCResponse {
     
     @Expose
     @SerializedName("accounts")
-    private Map<String, AccountInfo> accounts;
+    private LinkedHashMap<String, AccountInfo> accounts;
     
     
-    public Map<String, AccountInfo> getAccounts() {
+    public LinkedHashMap<String, AccountInfo> getAccounts() {
         return accounts;
     }
     
