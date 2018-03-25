@@ -1,5 +1,7 @@
 package in.bigdolph.jnano.model.block;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -18,6 +20,7 @@ public abstract class Block {
     private String workSolution;
     
     private String jsonRepresentation;
+    private boolean representationSet;
     
     
     public Block(BlockType type) {
@@ -46,10 +49,11 @@ public abstract class Block {
     
     
     public String getJsonRepresentation() {
+        if(jsonRepresentation == null) jsonRepresentation = new GsonBuilder().create().toJson(this);
         return jsonRepresentation;
     }
     
-    /** This method may only be called once after instantiation */
+    /** This method may only be called prior to any getJsonRepresentation requests */
     public void setJsonRepresentation(String json) {
         if(this.jsonRepresentation != null) throw new IllegalStateException("JSON representation has already been set");
         this.jsonRepresentation = json;
