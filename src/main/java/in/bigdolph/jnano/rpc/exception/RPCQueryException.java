@@ -1,6 +1,6 @@
 package in.bigdolph.jnano.rpc.exception;
 
-public class RPCQueryException extends RuntimeException {
+public class RPCQueryException extends Exception {
     
     public RPCQueryException() {
         super();
