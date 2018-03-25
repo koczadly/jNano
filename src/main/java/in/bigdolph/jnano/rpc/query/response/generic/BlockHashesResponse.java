@@ -9,7 +9,7 @@ import java.util.Set;
 public class BlockHashesResponse extends RPCResponse {
 
     @Expose
-    @SerializedName("blocks")
+    @SerializedName(value="blocks", alternate={"hashes"})
     private Set<String> blockHashes;
     
     
