@@ -3,10 +3,9 @@ package in.bigdolph.jnano.rpc.query.request.ledger;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.specific.AccountRepresentativeResponse;
-import in.bigdolph.jnano.rpc.query.response.specific.NodeVersionResponse;
+import in.bigdolph.jnano.rpc.query.response.generic.AccountResponse;
 
-public class AccountRepresentativeRequest extends RPCRequest<AccountRepresentativeResponse> {
+public class AccountRepresentativeRequest extends RPCRequest<AccountResponse> {
     
     @Expose
     @SerializedName("account")
@@ -14,7 +13,7 @@ public class AccountRepresentativeRequest extends RPCRequest<AccountRepresentati
     
     
     public AccountRepresentativeRequest(String account) {
-        super("account_representative", AccountRepresentativeResponse.class);
+        super("account_representative", AccountResponse.class);
         this.account = account;
     }
     
