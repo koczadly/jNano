@@ -7,7 +7,7 @@ import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 public class BlockHashResponse extends RPCResponse {
 
     @Expose
-    @SerializedName("block")
+    @SerializedName(value="block", alternate={"hash"})
     private String blockHash;
     
     
