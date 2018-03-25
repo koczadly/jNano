@@ -11,6 +11,6 @@ public enum SortingOrder {
     DESCENDING;
     
     
-    public static SortingOrder DEFAULT = ASCENDING;
+    public static final SortingOrder DEFAULT = ASCENDING;
     
 }
