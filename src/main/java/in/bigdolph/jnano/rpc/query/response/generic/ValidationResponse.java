@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
-public class ValidatedResponse extends RPCResponse {
+public class ValidationResponse extends RPCResponse {
 
     @Expose
     @SerializedName("valid")

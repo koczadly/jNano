@@ -3,9 +3,9 @@ package in.bigdolph.jnano.rpc.query.request.compute;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.generic.ValidatedResponse;
+import in.bigdolph.jnano.rpc.query.response.generic.ValidationResponse;
 
-public class AccountValidateRequest extends RPCRequest<ValidatedResponse> {
+public class AccountValidateRequest extends RPCRequest<ValidationResponse> {
     
     @Expose
     @SerializedName("account")
@@ -13,7 +13,7 @@ public class AccountValidateRequest extends RPCRequest<ValidatedResponse> {
     
     
     public AccountValidateRequest(String account) {
-        super("validate_account_number", ValidatedResponse.class);
+        super("validate_account_number", ValidationResponse.class);
         this.account = account;
     }
     

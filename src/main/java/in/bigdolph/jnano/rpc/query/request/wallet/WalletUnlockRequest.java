@@ -3,10 +3,9 @@ package in.bigdolph.jnano.rpc.query.request.wallet;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.generic.ValidatedResponse;
-import in.bigdolph.jnano.rpc.query.response.specific.NodeVersionResponse;
+import in.bigdolph.jnano.rpc.query.response.generic.ValidationResponse;
 
-public class WalletUnlockRequest extends RPCRequest<ValidatedResponse> {
+public class WalletUnlockRequest extends RPCRequest<ValidationResponse> {
     
     @Expose
     @SerializedName("wallet")
@@ -18,7 +17,7 @@ public class WalletUnlockRequest extends RPCRequest<ValidatedResponse> {
     
     
     public WalletUnlockRequest(String walletId, String password) {
-        super("password_enter", ValidatedResponse.class);
+        super("password_enter", ValidationResponse.class);
         this.walletId = walletId;
         this.password = password;
     }

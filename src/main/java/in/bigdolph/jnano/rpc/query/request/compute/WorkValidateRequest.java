@@ -3,10 +3,9 @@ package in.bigdolph.jnano.rpc.query.request.compute;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.generic.ValidatedResponse;
-import in.bigdolph.jnano.rpc.query.response.specific.NodeVersionResponse;
+import in.bigdolph.jnano.rpc.query.response.generic.ValidationResponse;
 
-public class WorkValidateRequest extends RPCRequest<ValidatedResponse> {
+public class WorkValidateRequest extends RPCRequest<ValidationResponse> {
     
     @Expose
     @SerializedName("work")
@@ -18,7 +17,7 @@ public class WorkValidateRequest extends RPCRequest<ValidatedResponse> {
     
     
     public WorkValidateRequest(String workSolution, String blockHash) {
-        super("work_validate", ValidatedResponse.class);
+        super("work_validate", ValidationResponse.class);
         this.workSolution = workSolution;
         this.blockHash = blockHash;
     }
