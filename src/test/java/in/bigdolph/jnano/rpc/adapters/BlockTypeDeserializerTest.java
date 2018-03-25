@@ -2,11 +2,7 @@ package in.bigdolph.jnano.rpc.adapters;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.model.block.*;
-import in.bigdolph.jnano.rpc.query.response.specific.BlockRetrieveResponse;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

@@ -5,7 +5,7 @@ import in.bigdolph.jnano.model.block.BlockOpen;
 import in.bigdolph.jnano.model.block.BlockReceive;
 import in.bigdolph.jnano.model.block.BlockSend;
 import in.bigdolph.jnano.rpc.query.QueryBaseTest;
-import in.bigdolph.jnano.rpc.query.response.specific.BlockRetrieveResponse;
+import in.bigdolph.jnano.rpc.query.response.generic.BlockResponse;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -14,7 +14,7 @@ public class BlockRetrieveRequestTest extends QueryBaseTest {
     
     @Test
     public void testSendBlock() {
-        BlockRetrieveResponse res = query(new BlockRetrieveRequest(TEST_BLOCK_SEND));
+        BlockResponse res = query(new BlockRetrieveRequest(TEST_BLOCK_SEND));
         
         assertTrue(res.getBlock() instanceof BlockSend);
         BlockSend block = (BlockSend)res.getBlock();
@@ -29,7 +29,7 @@ public class BlockRetrieveRequestTest extends QueryBaseTest {
     
     @Test
     public void testReceiveBlock() {
-        BlockRetrieveResponse res = query(new BlockRetrieveRequest(TEST_BLOCK_RECEIVE));
+        BlockResponse res = query(new BlockRetrieveRequest(TEST_BLOCK_RECEIVE));
         
         assertTrue(res.getBlock() instanceof BlockReceive);
         BlockReceive block = (BlockReceive)res.getBlock();
@@ -43,7 +43,7 @@ public class BlockRetrieveRequestTest extends QueryBaseTest {
     
     @Test
     public void testOpenBlock() {
-        BlockRetrieveResponse res = query(new BlockRetrieveRequest(TEST_BLOCK_OPEN));
+        BlockResponse res = query(new BlockRetrieveRequest(TEST_BLOCK_OPEN));
         
         assertTrue(res.getBlock() instanceof BlockOpen);
         BlockOpen block = (BlockOpen)res.getBlock();
@@ -58,7 +58,7 @@ public class BlockRetrieveRequestTest extends QueryBaseTest {
     
     @Test
     public void testChangeBlock() {
-        BlockRetrieveResponse res = query(new BlockRetrieveRequest(TEST_BLOCK_CHANGE));
+        BlockResponse res = query(new BlockRetrieveRequest(TEST_BLOCK_CHANGE));
         
         assertTrue(res.getBlock() instanceof BlockChange);
         BlockChange block = (BlockChange)res.getBlock();

@@ -1,4 +1,4 @@
-package in.bigdolph.jnano.rpc.query.response.specific;
+package in.bigdolph.jnano.rpc.query.response.generic;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -12,7 +12,7 @@ import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
 import java.lang.reflect.Type;
 
-public class BlockRetrieveResponse extends RPCResponse {
+public class BlockResponse extends RPCResponse {
     
     @Expose
     @SerializedName("contents")
