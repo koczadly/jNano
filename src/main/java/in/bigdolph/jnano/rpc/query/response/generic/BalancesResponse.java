@@ -1,4 +1,4 @@
-package in.bigdolph.jnano.rpc.query.response.specific;
+package in.bigdolph.jnano.rpc.query.response.generic;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.Expose;
@@ -13,7 +13,7 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AccountsBalancesResponse extends RPCResponse {
+public class BalancesResponse extends RPCResponse {
     
     @Expose
     @SerializedName("balances")

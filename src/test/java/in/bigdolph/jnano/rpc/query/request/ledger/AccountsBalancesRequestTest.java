@@ -1,7 +1,7 @@
 package in.bigdolph.jnano.rpc.query.request.ledger;
 
 import in.bigdolph.jnano.rpc.query.QueryBaseTest;
-import in.bigdolph.jnano.rpc.query.response.specific.AccountsBalancesResponse;
+import in.bigdolph.jnano.rpc.query.response.generic.BalancesResponse;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -10,7 +10,7 @@ public class AccountsBalancesRequestTest extends QueryBaseTest {
     
     @Test
     public void test() {
-        AccountsBalancesResponse response = query(
+        BalancesResponse response = query(
                 new AccountsBalancesRequest(
                     TEST_ACCOUNT,
                     "xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3"));
