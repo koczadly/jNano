@@ -3,6 +3,7 @@ package in.bigdolph.jnano.rpc.query;
 import com.google.gson.*;
 import in.bigdolph.jnano.model.block.Block;
 import in.bigdolph.jnano.rpc.adapters.BlockTypeDeserializer;
+import in.bigdolph.jnano.rpc.adapters.BooleanTypeDeserializer;
 import in.bigdolph.jnano.rpc.adapters.hotfix.ArrayTypeAdapterFactory;
 import in.bigdolph.jnano.rpc.adapters.hotfix.CollectionTypeAdapterFactory;
 import in.bigdolph.jnano.rpc.adapters.hotfix.MapTypeAdapterFactory;
@@ -44,6 +45,8 @@ public class RPCQueryNode {
                 .registerTypeAdapterFactory(new ArrayTypeAdapterFactory())          //Empty array hotfix
                 .registerTypeAdapterFactory(new CollectionTypeAdapterFactory())     //Empty collection hotfix
                 .registerTypeAdapterFactory(new MapTypeAdapterFactory())            //Empty map hotfix
+                .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer())  //Boolean deserializer
+                .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer())  //Boolean deserializer
                 .registerTypeAdapter(Block.class, new BlockTypeDeserializer())      //Block deserializer
                 .create();
     }
@@ -55,11 +58,12 @@ public class RPCQueryNode {
     }
     
     
-    /** Sends a query request to the node via RPC.
+    /**
+     * Sends a query request to the node via RPC.
      *
      * @param request The query request to compute
-     * @return The reponse from the node
-     * @throws RPCQueryException
+     * @return the reponse from the node
+     * @throws RPCQueryException if the node disapproves the request
      */
     public <Q extends RPCRequest<R>, R extends RPCResponse> R processRequest(Q request) throws IOException, RPCQueryException {
         String requestJsonStr = this.serializeRequestToJSON(request); //Serialise the request into JSON
