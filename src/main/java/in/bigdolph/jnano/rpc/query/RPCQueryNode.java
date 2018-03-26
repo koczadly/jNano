@@ -105,7 +105,16 @@ public class RPCQueryNode {
      * @param callback  the callback to execute after the request has completed
      */
     public <Q extends RPCRequest<R>, R extends RPCResponse> Future<R> processRequestAsync(Q request, QueryCallback<Q, R> callback) {
-        return RPCQueryNode.executorService.submit(new AsyncQueryTask<>(request, callback));
+        return RPCQueryNode.executorService.submit(() -> {
+            try {
+                R response = RPCQueryNode.this.processRequest(request);
+                if(callback != null) callback.onResponse(request, response);
+                return response;
+            } catch (Exception e) {
+                if(callback != null) callback.onFailure(request, e);
+                throw e;
+            }
+        });
     }
     
     
@@ -171,33 +180,6 @@ public class RPCQueryNode {
     public String serializeRequestToJSON(RPCRequest<?> req) {
         if(req == null) throw new IllegalArgumentException("Query request argument cannot be null");
         return this.gson.toJson(req);
-    }
-    
-    
-    
-    private class AsyncQueryTask<Q extends RPCRequest<R>, R extends RPCResponse> implements Callable<R> {
-        
-        private Q query;
-        private QueryCallback<Q, R> callback;
-        
-        public AsyncQueryTask(Q query, QueryCallback<Q, R> callback) {
-            this.query = query;
-            this.callback = callback;
-        }
-        
-        
-        @Override
-        public R call() throws Exception {
-            try {
-                R response = RPCQueryNode.this.processRequest(this.query);
-                if(this.callback != null) this.callback.onResponse(this.query, response);
-                return response;
-            } catch (Exception e) {
-                if(this.callback != null) this.callback.onFailure(this.query, e);
-                throw e;
-            }
-        }
-        
     }
 
 }
