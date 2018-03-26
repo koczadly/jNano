@@ -16,7 +16,7 @@ public class BlockReceive extends Block {
     private String sourceBlockHash;
     
     
-    public BlockReceive() {
+    BlockReceive() {
         super(BlockType.RECEIVE);
     }
     

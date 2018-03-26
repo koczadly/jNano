@@ -14,7 +14,7 @@ public class BlockChange extends Block {
     private String representativeAccount;
     
     
-    public BlockChange() {
+    BlockChange() {
         super(BlockType.CHANGE);
     }
     

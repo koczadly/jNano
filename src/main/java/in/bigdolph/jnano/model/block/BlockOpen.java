@@ -20,7 +20,7 @@ public class BlockOpen extends Block {
     private String representativeAccount;
     
     
-    public BlockOpen() {
+    BlockOpen() {
         super(BlockType.OPEN);
     }
     

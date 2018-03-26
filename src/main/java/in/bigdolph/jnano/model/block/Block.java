@@ -23,7 +23,7 @@ public abstract class Block {
     private boolean representationSet;
     
     
-    public Block(BlockType type) {
+    protected Block(BlockType type) {
         this.type = type;
     }
     

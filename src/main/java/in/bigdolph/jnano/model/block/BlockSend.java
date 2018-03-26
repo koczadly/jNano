@@ -20,7 +20,7 @@ public class BlockSend extends Block {
     private BigInteger newBalance;
     
     
-    public BlockSend() {
+    BlockSend() {
         super(BlockType.SEND);
     }
     
