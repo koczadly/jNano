@@ -20,7 +20,6 @@ public abstract class Block {
     private String workSolution;
     
     private String jsonRepresentation;
-    private boolean representationSet;
     
     
     protected Block(BlockType type) {
@@ -53,7 +52,10 @@ public abstract class Block {
         return jsonRepresentation;
     }
     
-    /** This method may only be called prior to any getJsonRepresentation requests */
+    /**
+     * This method may only be called once after construction.
+     * This method will be automatically called after deserialization from JSON.
+     */
     public void setJsonRepresentation(String json) {
         if(this.jsonRepresentation != null) throw new IllegalStateException("JSON representation has already been set");
         this.jsonRepresentation = json;
@@ -62,7 +64,6 @@ public abstract class Block {
     
     @Override
     public String toString() {
-        if(jsonRepresentation != null) return jsonRepresentation;
-        return "{\"type\":\"" + type.toString() + "\"}";
+        return this.getJsonRepresentation();
     }
 }
