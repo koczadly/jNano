@@ -35,6 +35,7 @@ public class RPCQueryNode {
     
     /**
      * Constructs a new query node with the address 127.0.0.1:7076
+     *
      * @throws MalformedURLException if the address cannot be parsed
      */
     public RPCQueryNode() throws MalformedURLException {
@@ -43,6 +44,7 @@ public class RPCQueryNode {
     
     /**
      * Constructs a new query node with the given address and port
+     *
      * @param address   the address of the node
      * @param port      the port which the node is listening on
      * @throws MalformedURLException if the address cannot be parsed
@@ -120,6 +122,7 @@ public class RPCQueryNode {
     
     /**
      * Sends a raw JSON query to the RPC server, and then returns the raw JSON response.
+     *
      * @param jsonRequest the JSON query to send to the node
      * @return the JSON response from the node
      * @throws IOException if an error occurs with the connection to the node
