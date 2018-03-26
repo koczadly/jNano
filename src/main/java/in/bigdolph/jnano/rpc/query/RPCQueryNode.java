@@ -69,7 +69,6 @@ public class RPCQueryNode {
                 .registerTypeAdapterFactory(new MapTypeAdapterFactory())            //Empty map hotfix
                 .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer())  //Boolean deserializer
                 .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer())  //Boolean deserializer
-                .registerTypeAdapter(Block.class, new BlockTypeDeserializer())      //Block deserializer
                 .create();
     }
     

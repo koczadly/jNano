@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 
 public class BlockTypeDeserializerTest {
     
-    private Gson gson = new GsonBuilder().registerTypeAdapter(Block.class, new BlockTypeDeserializer()).create();
+    private Gson gson = new GsonBuilder().create();
     
     public Block deserialize(String json) {
         Block block = gson.fromJson(json, Block.class);
