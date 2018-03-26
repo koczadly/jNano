@@ -10,6 +10,7 @@ import in.bigdolph.jnano.rpc.adapters.hotfix.MapTypeAdapterFactory;
 import in.bigdolph.jnano.rpc.exception.RPCQueryException;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
 import in.bigdolph.jnano.rpc.query.response.RPCResponse;
+import jdk.internal.jline.internal.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,14 +28,28 @@ public class RPCQueryNode {
     protected final Gson gson;
     
     
+    /**
+     * Constructs a new query node with the address 127.0.0.1:7076
+     * @throws MalformedURLException if the address cannot be parsed
+     */
     public RPCQueryNode() throws MalformedURLException {
         this("127.0.0.1", 7076); //Local address and default port
     }
     
+    /**
+     * Constructs a new query node with the given address and port
+     * @param address   the address of the node
+     * @param port      the port which the node is listening on
+     * @throws MalformedURLException if the address cannot be parsed
+     */
     public RPCQueryNode(String address, int port) throws MalformedURLException {
         this(new URL("HTTP", address, port, ""));
     }
-
+    
+    /**
+     * Constructs a new query node with the given address and port
+     * @param address   the HTTP URL (address and port) which the node is listening on
+     */
     public RPCQueryNode(URL address) {
         this(address, new GsonBuilder());
     }
@@ -52,7 +67,9 @@ public class RPCQueryNode {
     }
     
     
-    
+    /**
+     * @return the address of this node's RPC listener
+     */
     public final URL getAddress() {
         return this.address;
     }
@@ -61,9 +78,10 @@ public class RPCQueryNode {
     /**
      * Sends a query request to the node via RPC.
      *
-     * @param request The query request to compute
-     * @return the reponse from the node
-     * @throws RPCQueryException if the node disapproves the request
+     * @param   request the query request to send to the node
+     * @return  the successful reponse from the node
+     * @throws  IOException         if an error occurs with the connection to the node
+     * @throws  RPCQueryException   if the node returns a non-successful response
      */
     public <Q extends RPCRequest<R>, R extends RPCResponse> R processRequest(Q request) throws IOException, RPCQueryException {
         String requestJsonStr = this.serializeRequestToJSON(request); //Serialise the request into JSON
@@ -76,17 +94,23 @@ public class RPCQueryNode {
     }
     
     
-//    /** Sends a query request to the node via RPC.
-//     *
-//     * @param request The query request to compute
-//     * @param callback The response
-//     * @throws RPCQueryException
-//     */
-//    public <Q extends RPCRequest<R>, R extends RPCResponse> void processRequestAsync(Q request, QueryCallback<Q, R> callback) throws IOException, RPCQueryException {
-//        return; //TODO
-//    }
+    /**
+     * Sends a query request to the node via RPC.
+     *
+     * @param request   the query request to send to the node
+     * @param callback  the callback to execute after the request has completed
+     */
+    public <Q extends RPCRequest<R>, R extends RPCResponse> void processRequestAsync(Q request, QueryCallback<Q, R> callback) {
+        //TODO
+    }
     
     
+    /**
+     * Sends a raw JSON query to the RPC server, and then returns the raw JSON response.
+     * @param jsonRequest the JSON query to send to the node
+     * @return the JSON response from the node
+     * @throws IOException if an error occurs with the connection to the node
+     */
     protected String processRawRequest(String jsonRequest) throws IOException {
         if(jsonRequest == null) throw new IllegalArgumentException("JSON request string cannot be null");
         
@@ -114,6 +138,13 @@ public class RPCQueryNode {
     }
     
     
+    /**
+     * Converts a pure JSON string into a response instance.
+     *
+     * @param responseJson  the JSON to deserialize
+     * @param responseClass the response class to deserialize into
+     * @return the deserialized response instance
+     */
     protected <R extends RPCResponse> R deserializeResponseFromJSON(String responseJson, Class<R> responseClass) throws RPCQueryException {
         JsonObject response = RPCQueryNode.JSON_PARSER.parse(responseJson).getAsJsonObject(); //Parse response
         
@@ -128,6 +159,12 @@ public class RPCQueryNode {
     }
     
     
+    /**
+     * Converts a request instance into a pure JSON string.
+     *
+     * @param req the request to serialize
+     * @return the serialized JSON command
+     */
     public String serializeRequestToJSON(RPCRequest<?> req) {
         if(req == null) throw new IllegalArgumentException("Query request argument cannot be null");
         return this.gson.toJson(req);
