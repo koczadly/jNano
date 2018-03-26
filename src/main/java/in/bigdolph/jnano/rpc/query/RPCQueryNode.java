@@ -190,10 +190,10 @@ public class RPCQueryNode {
         public R call() throws Exception {
             try {
                 R response = RPCQueryNode.this.processRequest(this.query);
-                this.callback.onResponse(this.query, response);
+                if(this.callback != null) this.callback.onResponse(this.query, response);
                 return response;
             } catch (Exception e) {
-                this.callback.onFailure(this.query, e);
+                if(this.callback != null) this.callback.onFailure(this.query, e);
                 throw e;
             }
         }
