@@ -10,7 +10,6 @@ import in.bigdolph.jnano.rpc.adapters.hotfix.MapTypeAdapterFactory;
 import in.bigdolph.jnano.rpc.exception.RPCQueryException;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
 import in.bigdolph.jnano.rpc.query.response.RPCResponse;
-import jdk.internal.jline.internal.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,10 +18,16 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class RPCQueryNode {
     
     protected static final JsonParser JSON_PARSER = new JsonParser();
+    
+    protected static final ExecutorService executorService = Executors.newCachedThreadPool();
     
     protected final URL address;
     protected final Gson gson;
@@ -78,14 +83,14 @@ public class RPCQueryNode {
     /**
      * Sends a query request to the node via RPC.
      *
-     * @param   request the query request to send to the node
-     * @return  the successful reponse from the node
-     * @throws  IOException         if an error occurs with the connection to the node
-     * @throws  RPCQueryException   if the node returns a non-successful response
+     * @param request the query request to send to the node
+     * @return the successful reponse from the node
+     * @throws IOException         if an error occurs with the connection to the node
+     * @throws RPCQueryException   if the node returns a non-successful response
      */
     public <Q extends RPCRequest<R>, R extends RPCResponse> R processRequest(Q request) throws IOException, RPCQueryException {
         String requestJsonStr = this.serializeRequestToJSON(request); //Serialise the request into JSON
-        String responseJson = this.processRawRequest(requestJsonStr); //Send the request to the node
+        String responseJson = this.processRawRequest(requestJsonStr, (HttpURLConnection)this.address.openConnection()); //Send the request to the node
         
         R response = this.deserializeResponseFromJSON(responseJson, request.getResponseClass());
         assert response != null : "Response JSON is null";
@@ -93,15 +98,14 @@ public class RPCQueryNode {
         return response;
     }
     
-    
     /**
      * Sends a query request to the node via RPC.
      *
      * @param request   the query request to send to the node
      * @param callback  the callback to execute after the request has completed
      */
-    public <Q extends RPCRequest<R>, R extends RPCResponse> void processRequestAsync(Q request, QueryCallback<Q, R> callback) {
-        //TODO
+    public <Q extends RPCRequest<R>, R extends RPCResponse> Future<R> processRequestAsync(Q request, QueryCallback<Q, R> callback) {
+        return RPCQueryNode.executorService.submit(new AsyncQueryTask<>(request, callback));
     }
     
     
@@ -111,11 +115,10 @@ public class RPCQueryNode {
      * @return the JSON response from the node
      * @throws IOException if an error occurs with the connection to the node
      */
-    protected String processRawRequest(String jsonRequest) throws IOException {
+    protected String processRawRequest(String jsonRequest, HttpURLConnection con) throws IOException {
         if(jsonRequest == null) throw new IllegalArgumentException("JSON request string cannot be null");
         
-        //Open connection
-        HttpURLConnection con = (HttpURLConnection)this.address.openConnection();
+        //Configure connection
         con.setDoOutput(true);
         con.setDoInput(true);
         con.setRequestMethod("POST");
@@ -168,6 +171,33 @@ public class RPCQueryNode {
     public String serializeRequestToJSON(RPCRequest<?> req) {
         if(req == null) throw new IllegalArgumentException("Query request argument cannot be null");
         return this.gson.toJson(req);
+    }
+    
+    
+    
+    private class AsyncQueryTask<Q extends RPCRequest<R>, R extends RPCResponse> implements Callable<R> {
+        
+        private Q query;
+        private QueryCallback<Q, R> callback;
+        
+        public AsyncQueryTask(Q query, QueryCallback<Q, R> callback) {
+            this.query = query;
+            this.callback = callback;
+        }
+        
+        
+        @Override
+        public R call() throws Exception {
+            try {
+                R response = RPCQueryNode.this.processRequest(this.query);
+                this.callback.onResponse(this.query, response);
+                return response;
+            } catch (Exception e) {
+                this.callback.onFailure(this.query, e);
+                throw e;
+            }
+        }
+        
     }
 
 }
