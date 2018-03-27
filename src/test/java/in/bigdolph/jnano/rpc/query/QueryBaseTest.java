@@ -6,7 +6,6 @@ import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 import in.bigdolph.jnano.tests.Configuration;
 import org.junit.Assert;
 import org.junit.Before;
-import sun.security.krb5.Config;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
