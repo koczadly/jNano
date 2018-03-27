@@ -1,16 +1,17 @@
 package in.bigdolph.jnano.rpc.callback;
 
+import in.bigdolph.jnano.rpc.callback.server.BlockCallbackServer;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.InetAddress;
 
-public class CallbackServerTest {
+public class BlockCallbackServerTest {
 
-    private CallbackServer server;
+    private BlockCallbackServer server;
     
-    public CallbackServerTest() throws Exception {
-        this.server = new CallbackServer(8080);
+    public BlockCallbackServerTest() throws Exception {
+        this.server = new BlockCallbackServer(8080);
     }
     
     
@@ -24,10 +25,10 @@ public class CallbackServerTest {
     
     
     
-    public class TestListener implements CallbackBlockListener {
+    public class TestListener implements BlockCallbackListener {
         
         @Override
-        public void onNewBlock(InetAddress nodeAddress, String context, CallbackBlock block) {
+        public void onNewBlock(BlockInfo block, String target, InetAddress node) {
             System.out.println("New block received: " + block.getBlockHash()); //Outputs the block hash
             System.out.println("Type: " + block.getBlock().getType().toString()); //Outputs block type
             if(block.getTransactionalAmount() != null) {

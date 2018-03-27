@@ -7,13 +7,13 @@ import in.bigdolph.jnano.rpc.adapters.CallbackBlockTypeDeserializer;
 import java.math.BigInteger;
 
 @JsonAdapter(CallbackBlockTypeDeserializer.class)
-public class CallbackBlock {
+public class BlockInfo {
     
     private String rawJson, accountAddress, blockHash;
     private Block block;
     private BigInteger amount;
     
-    public CallbackBlock(String rawJson, String accountAddress, String blockHash, Block block, BigInteger amount) {
+    public BlockInfo(String rawJson, String accountAddress, String blockHash, Block block, BigInteger amount) {
         this.rawJson = rawJson;
         this.accountAddress = accountAddress;
         this.blockHash = blockHash;

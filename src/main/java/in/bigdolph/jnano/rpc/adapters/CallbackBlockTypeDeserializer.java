@@ -2,25 +2,24 @@ package in.bigdolph.jnano.rpc.adapters;
 
 import com.google.gson.*;
 import in.bigdolph.jnano.model.block.*;
-import in.bigdolph.jnano.rpc.callback.CallbackBlock;
+import in.bigdolph.jnano.rpc.callback.BlockInfo;
 
 import java.lang.reflect.Type;
-import java.math.BigInteger;
 
-public class CallbackBlockTypeDeserializer implements JsonDeserializer<CallbackBlock> {
+public class CallbackBlockTypeDeserializer implements JsonDeserializer<BlockInfo> {
     
     private JsonParser parser = new JsonParser();
     
     
     @Override
-    public CallbackBlock deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
+    public BlockInfo deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
         JsonObject json = element.getAsJsonObject();
         
         //Deserialize block
         Block block = context.deserialize(json.get("block"), Block.class);
         
         //Construct and return
-        return new CallbackBlock(
+        return new BlockInfo(
                 element.toString(),
                 json.get("account").getAsString(),
                 json.get("hash").getAsString(),
