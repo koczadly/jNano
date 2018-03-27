@@ -6,13 +6,16 @@ import in.bigdolph.jnano.model.block.BlockReceive;
 import in.bigdolph.jnano.model.block.BlockSend;
 import in.bigdolph.jnano.rpc.query.QueryBaseTest;
 import in.bigdolph.jnano.rpc.query.response.generic.BlockResponse;
+import in.bigdolph.jnano.tests.NodeTests;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
 public class BlockRetrieveRequestTest extends QueryBaseTest {
     
     @Test
+    @Category(NodeTests.class)
     public void testSendBlock() {
         BlockResponse res = query(new BlockRetrieveRequest(TEST_BLOCK_SEND));
         
@@ -28,6 +31,7 @@ public class BlockRetrieveRequestTest extends QueryBaseTest {
     }
     
     @Test
+    @Category(NodeTests.class)
     public void testReceiveBlock() {
         BlockResponse res = query(new BlockRetrieveRequest(TEST_BLOCK_RECEIVE));
         
@@ -42,6 +46,7 @@ public class BlockRetrieveRequestTest extends QueryBaseTest {
     }
     
     @Test
+    @Category(NodeTests.class)
     public void testOpenBlock() {
         BlockResponse res = query(new BlockRetrieveRequest(TEST_BLOCK_OPEN));
         
@@ -57,6 +62,7 @@ public class BlockRetrieveRequestTest extends QueryBaseTest {
     }
     
     @Test
+    @Category(NodeTests.class)
     public void testChangeBlock() {
         BlockResponse res = query(new BlockRetrieveRequest(TEST_BLOCK_CHANGE));
         

@@ -5,7 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.model.block.Block;
+import in.bigdolph.jnano.tests.FunctionalityTests;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
@@ -16,6 +18,7 @@ public class BooleanTypeDeserializerTest {
     
     
     @Test
+    @Category(FunctionalityTests.class)
     public void test() {
         runTests("true", "false");
         runTests("TRUE", "FALSE");

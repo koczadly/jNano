@@ -71,6 +71,7 @@ public class BlockCallbackServer {
     public void stop() {
         if(!this.isRunning()) throw new IllegalStateException("Server is not currently running");
         this.thread.interrupt();
+        this.thread = null;
     }
     
     

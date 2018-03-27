@@ -1,8 +1,11 @@
 package in.bigdolph.jnano.rpc.callback;
 
 import in.bigdolph.jnano.rpc.callback.server.BlockCallbackServer;
+import in.bigdolph.jnano.tests.FunctionalityTests;
+import in.bigdolph.jnano.tests.NodeTests;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.net.InetAddress;
 
@@ -14,6 +17,15 @@ public class BlockCallbackServerTest {
         this.server = new BlockCallbackServer(8080);
     }
     
+    
+    @Test
+    @Category(FunctionalityTests.class)
+    public void testStartStop() {
+        this.server.start();
+        this.server.stop();
+        this.server.start();
+        this.server.stop();
+    }
     
     
     @Test @Ignore
