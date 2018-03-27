@@ -16,7 +16,7 @@ Before using this library, you will need to configure the node correctly.
 ## Examples
 Examples on how to use this library can be found on the associated [wiki pages](https://github.com/koczadly/jNano/wiki/).
 - For examples on how to use the request/query functions, [click here](https://github.com/koczadly/jNano/wiki/Query-requests#examples).
-- For examples on how to use the real-time callback function, [click here](https://github.com/koczadly/jNano/wiki/Callback-listening#example).
+- For examples on how to use the real-time callback function, [click here](https://github.com/koczadly/jNano/wiki/Block-callback#example).
 - For other information on the utilities offered by this library, [click here](https://github.com/koczadly/jNano/wiki/Utilities).
 
 ## Dependencies
@@ -27,4 +27,4 @@ TODO
 
 ---
 
-<sub><sub><sub>If you found this library useful and would like to send me a donation, my Nano address is <b>xrb_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz</b></sub></sub></sub>
+<sub><sub><sub>If you found this library useful and wish to send me a donation, my Nano address is <b>xrb_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz</b> :)</sub></sub></sub>
