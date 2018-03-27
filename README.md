@@ -11,7 +11,7 @@ Expecting full completion of the project around the end of March.
 ## Configuring the node
 Before using this library, you will need to configure the node correctly.
 - If you wish to make RPC requests using this library, [view the queries wiki page](https://github.com/koczadly/jNano/wiki/Query-requests#node-configuration).
-- If you are wanting to listen for live blocks on the Nano network, [view the callback wiki page](https://github.com/koczadly/jNano/wiki/Callback-listening#node-configuration).
+- If you are wanting to listen for live blocks on the Nano network, [view the callback wiki page](https://github.com/koczadly/jNano/wiki/Block-callback#node-configuration).
 
 ## Examples
 Examples on how to use this library can be found on the associated [wiki pages](https://github.com/koczadly/jNano/wiki/).
