@@ -24,3 +24,7 @@ Examples on how to use this library can be found on the associated [wiki pages](
 
 ## Build
 TODO
+
+---
+
+<sub><sub><sub>If you found this library useful and would like to send me a donation, my Nano address is <b>xrb_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz</b></sub></sub></sub>
