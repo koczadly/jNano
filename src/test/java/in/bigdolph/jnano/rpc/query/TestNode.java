@@ -12,8 +12,8 @@ import java.net.MalformedURLException;
 
 public class TestNode extends RPCQueryNode {
     
-    public TestNode() throws MalformedURLException {
-        super();
+    public TestNode(String addr, int port) throws MalformedURLException {
+        super(addr, port);
     }
     
     @Override

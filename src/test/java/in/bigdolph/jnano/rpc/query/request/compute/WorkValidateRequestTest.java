@@ -2,13 +2,16 @@ package in.bigdolph.jnano.rpc.query.request.compute;
 
 import in.bigdolph.jnano.rpc.query.QueryBaseTest;
 import in.bigdolph.jnano.rpc.query.response.generic.ValidationResponse;
+import in.bigdolph.jnano.tests.NodeTests;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
 
 public class WorkValidateRequestTest extends QueryBaseTest {
     
     @Test
+    @Category(NodeTests.class)
     public void test() {
         ValidationResponse res = query(new WorkValidateRequest("2bf29ef00786a6bc", "718CC2121C3E641059BC1C2CFC45666C99E8AE922F7A807B7D07B62C995D79E2"));
         assertTrue(res.isValid());
