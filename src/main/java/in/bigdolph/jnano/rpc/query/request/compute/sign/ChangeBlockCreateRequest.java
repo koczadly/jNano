@@ -15,14 +15,14 @@ public class ChangeBlockCreateRequest extends BlockCreateRequest {
     private String previousBlockHash;
     
     
-    public ChangeBlockCreateRequest(String workSolution, String privateKey, String representativeAccount, String previousBlockHash) {
-        super(BlockType.CHANGE, workSolution, privateKey);
+    public ChangeBlockCreateRequest(String privateKey, String workSolution, String representativeAccount, String previousBlockHash) {
+        super(BlockType.CHANGE, privateKey, workSolution);
         this.representativeAccount = representativeAccount;
         this.previousBlockHash = previousBlockHash;
     }
     
-    public ChangeBlockCreateRequest(String workSolution, String walletId, String account, String representativeAccount, String previousBlockHash) {
-        super(BlockType.CHANGE, workSolution, walletId, account);
+    public ChangeBlockCreateRequest(String walletId, String account, String workSolution, String representativeAccount, String previousBlockHash) {
+        super(BlockType.CHANGE, walletId, account, workSolution);
         this.representativeAccount = representativeAccount;
         this.previousBlockHash = previousBlockHash;
     }

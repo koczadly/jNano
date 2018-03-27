@@ -15,14 +15,14 @@ public class ReceiveBlockCreateRequest extends BlockCreateRequest {
     private String previousBlockHash;
     
     
-    public ReceiveBlockCreateRequest(String workSolution, String privateKey, String sourceBlockHash, String previousBlockHash) {
-        super(BlockType.RECEIVE, workSolution, privateKey);
+    public ReceiveBlockCreateRequest(String privateKey, String workSolution, String sourceBlockHash, String previousBlockHash) {
+        super(BlockType.RECEIVE, privateKey, workSolution);
         this.sourceBlockHash = sourceBlockHash;
         this.previousBlockHash = previousBlockHash;
     }
     
-    public ReceiveBlockCreateRequest(String workSolution, String walletId, String account, String sourceBlockHash, String previousBlockHash) {
-        super(BlockType.RECEIVE, workSolution, walletId, account);
+    public ReceiveBlockCreateRequest(String walletId, String account, String workSolution, String sourceBlockHash, String previousBlockHash) {
+        super(BlockType.RECEIVE, walletId, account, workSolution);
         this.sourceBlockHash = sourceBlockHash;
         this.previousBlockHash = previousBlockHash;
     }

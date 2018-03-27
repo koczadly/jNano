@@ -15,14 +15,14 @@ public class OpenBlockCreateRequest extends BlockCreateRequest {
     private String representativeAccount;
     
     
-    public OpenBlockCreateRequest(String workSolution, String privateKey, String sourceBlockHash, String representativeAccount) {
-        super(BlockType.OPEN, workSolution, privateKey);
+    public OpenBlockCreateRequest(String privateKey, String workSolution, String sourceBlockHash, String representativeAccount) {
+        super(BlockType.OPEN, privateKey, workSolution);
         this.sourceBlockHash = sourceBlockHash;
         this.representativeAccount = representativeAccount;
     }
     
-    public OpenBlockCreateRequest(String workSolution, String walletId, String account, String sourceBlockHash, String representativeAccount) {
-        super(BlockType.OPEN, workSolution, walletId, account);
+    public OpenBlockCreateRequest(String walletId, String account, String workSolution, String sourceBlockHash, String representativeAccount) {
+        super(BlockType.OPEN, walletId, account, workSolution);
         this.sourceBlockHash = sourceBlockHash;
         this.representativeAccount = representativeAccount;
     }
