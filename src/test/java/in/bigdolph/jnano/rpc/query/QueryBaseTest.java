@@ -19,7 +19,7 @@ public abstract class QueryBaseTest implements Configuration {
     
     @Before
     public void setUp() throws MalformedURLException {
-        this.node = new TestNode(Configuration.NODE_IP, Configuration.NODE_PORT);
+        this.node = new TestNode();
     }
     
     

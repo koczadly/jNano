@@ -5,6 +5,7 @@ import in.bigdolph.jnano.rpc.exception.RPCQueryException;
 import in.bigdolph.jnano.rpc.query.RPCQueryNode;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
 import in.bigdolph.jnano.rpc.query.response.RPCResponse;
+import in.bigdolph.jnano.tests.Configuration;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -12,8 +13,8 @@ import java.net.MalformedURLException;
 
 public class TestNode extends RPCQueryNode {
     
-    public TestNode(String addr, int port) throws MalformedURLException {
-        super(addr, port);
+    public TestNode() throws MalformedURLException {
+        super(Configuration.NODE_IP, Configuration.NODE_PORT);
     }
     
     @Override
