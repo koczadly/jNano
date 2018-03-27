@@ -28,8 +28,11 @@ public class CallbackServerTest {
         
         @Override
         public void onNewBlock(InetAddress nodeAddress, String context, CallbackBlock block) {
-            System.out.println("NEW BLOCK FROM " + nodeAddress.getHostAddress() + " at " + context);
-            System.out.println(block.getBlock().getType() + " - " + block.getBlockHash() + ": " + (block.getTransactionalAmount() == null ? "N/A" : block.getTransactionalAmount().toString()));
+            System.out.println("New block received: " + block.getBlockHash()); //Outputs the block hash
+            System.out.println("Type: " + block.getBlock().getType().toString()); //Outputs block type
+            if(block.getTransactionalAmount() != null) {
+                System.out.println("Value: " + block.getTransactionalAmount().toString()); //Outputs associated value
+            }
         }
         
     }
