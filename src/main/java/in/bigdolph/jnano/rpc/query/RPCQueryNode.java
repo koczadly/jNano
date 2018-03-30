@@ -1,13 +1,11 @@
 package in.bigdolph.jnano.rpc.query;
 
 import com.google.gson.*;
-import in.bigdolph.jnano.model.block.Block;
-import in.bigdolph.jnano.rpc.adapters.BlockTypeDeserializer;
 import in.bigdolph.jnano.rpc.adapters.BooleanTypeDeserializer;
 import in.bigdolph.jnano.rpc.adapters.hotfix.ArrayTypeAdapterFactory;
 import in.bigdolph.jnano.rpc.adapters.hotfix.CollectionTypeAdapterFactory;
 import in.bigdolph.jnano.rpc.adapters.hotfix.MapTypeAdapterFactory;
-import in.bigdolph.jnano.rpc.exception.RPCQueryException;
+import in.bigdolph.jnano.rpc.query.exception.RPCQueryException;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
 import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
@@ -18,7 +16,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;

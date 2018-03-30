@@ -1,8 +1,7 @@
 package in.bigdolph.jnano.rpc.query.request.ledger;
 
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.specific.BlockCountResponse;
-import in.bigdolph.jnano.rpc.query.response.specific.NodeVersionResponse;
+import in.bigdolph.jnano.rpc.query.response.BlockCountResponse;
 
 public class BlockCountRequest extends RPCRequest<BlockCountResponse> {
     

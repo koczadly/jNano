@@ -1,7 +1,7 @@
 package in.bigdolph.jnano.rpc.query.request.node;
 
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.specific.NodeFetchOnlinePeersResponse;
+import in.bigdolph.jnano.rpc.query.response.NodeFetchOnlinePeersResponse;
 
 public class NodeFetchOnlinePeersRequest extends RPCRequest<NodeFetchOnlinePeersResponse> {
     

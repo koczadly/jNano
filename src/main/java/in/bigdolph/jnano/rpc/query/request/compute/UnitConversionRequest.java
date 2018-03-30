@@ -3,8 +3,7 @@ package in.bigdolph.jnano.rpc.query.request.compute;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.generic.AccountKeyPairResponse;
-import in.bigdolph.jnano.rpc.query.response.specific.UnitConversionResponse;
+import in.bigdolph.jnano.rpc.query.response.UnitConversionResponse;
 
 import java.math.BigInteger;
 

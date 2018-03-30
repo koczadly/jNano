@@ -4,9 +4,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
 import in.bigdolph.jnano.rpc.query.response.RPCResponse;
-import in.bigdolph.jnano.rpc.query.response.specific.NodeVersionResponse;
+import in.bigdolph.jnano.rpc.query.response.WalletChangeResponse;
 
-public class WalletChangePasswordRequest extends RPCRequest<RPCResponse> {
+public class WalletChangePasswordRequest extends RPCRequest<WalletChangeResponse> {
     
     @Expose
     @SerializedName("wallet")
@@ -18,7 +18,7 @@ public class WalletChangePasswordRequest extends RPCRequest<RPCResponse> {
     
     
     public WalletChangePasswordRequest(String walletId, String password) {
-        super("password_change", RPCResponse.class);
+        super("password_change", WalletChangeResponse.class);
         this.walletId = walletId;
         this.password = password;
     }

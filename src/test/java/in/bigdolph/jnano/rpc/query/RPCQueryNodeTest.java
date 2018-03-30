@@ -2,11 +2,15 @@ package in.bigdolph.jnano.rpc.query;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.exception.RPCQueryException;
+import in.bigdolph.jnano.rpc.query.exception.RPCQueryException;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
 import in.bigdolph.jnano.rpc.query.request.node.NodeVersionRequest;
+import in.bigdolph.jnano.rpc.query.request.wallet.AccountCreateRequest;
+import in.bigdolph.jnano.rpc.query.request.wallet.WalletChangePasswordRequest;
+import in.bigdolph.jnano.rpc.query.request.wallet.WalletLockRequest;
+import in.bigdolph.jnano.rpc.query.request.wallet.WalletUnlockRequest;
 import in.bigdolph.jnano.rpc.query.response.RPCResponse;
-import in.bigdolph.jnano.rpc.query.response.specific.NodeVersionResponse;
+import in.bigdolph.jnano.rpc.query.response.NodeVersionResponse;
 import in.bigdolph.jnano.tests.NodeTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -24,6 +28,13 @@ public class RPCQueryNodeTest {
     public RPCQueryNodeTest() throws Exception {
         this.node = new TestNode();
     }
+    
+    
+//    @Test //TODO
+//    public void ayy() throws Exception {
+//        this.node.processRequest(new WalletLockRequest("07E7898B0E4F63558039B6E54D073313263942B7D51A06443EFC54FB88B540C5"));
+//        this.node.processRequest(new AccountCreateRequest("07E7898B0E4F63558039B6E54D073313263942B7D51A06443EFC54FB88B540C5"));
+//    }
     
     
     @Test

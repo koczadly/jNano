@@ -1,7 +1,7 @@
 package in.bigdolph.jnano.rpc.query.request.compute;
 
 import in.bigdolph.jnano.rpc.query.QueryBaseTest;
-import in.bigdolph.jnano.rpc.query.response.generic.ValidationResponse;
+import in.bigdolph.jnano.rpc.query.response.ValidationResponse;
 import in.bigdolph.jnano.tests.NodeTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

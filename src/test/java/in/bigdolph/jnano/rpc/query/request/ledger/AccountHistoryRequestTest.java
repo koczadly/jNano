@@ -1,7 +1,7 @@
 package in.bigdolph.jnano.rpc.query.request.ledger;
 
 import in.bigdolph.jnano.rpc.query.QueryBaseTest;
-import in.bigdolph.jnano.rpc.query.response.specific.AccountHistoryResponse;
+import in.bigdolph.jnano.rpc.query.response.AccountHistoryResponse;
 import in.bigdolph.jnano.tests.NodeTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

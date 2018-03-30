@@ -3,8 +3,7 @@ package in.bigdolph.jnano.rpc.query.request.wallet;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.generic.WorkResponse;
-import in.bigdolph.jnano.rpc.query.response.specific.NodeVersionResponse;
+import in.bigdolph.jnano.rpc.query.response.WorkResponse;
 
 public class AccountWorkFetchRequest extends RPCRequest<WorkResponse> {
     

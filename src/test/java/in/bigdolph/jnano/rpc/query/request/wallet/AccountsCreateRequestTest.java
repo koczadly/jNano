@@ -1,11 +1,10 @@
 package in.bigdolph.jnano.rpc.query.request.wallet;
 
 import in.bigdolph.jnano.rpc.query.QueryBaseTest;
-import in.bigdolph.jnano.rpc.query.response.generic.AccountsResponse;
+import in.bigdolph.jnano.rpc.query.response.AccountsResponse;
 import in.bigdolph.jnano.tests.NodeTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.junit.runners.Suite;
 
 import static org.junit.Assert.*;
 

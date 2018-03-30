@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.rpc.query.request.RPCRequest;
 import in.bigdolph.jnano.rpc.query.response.RPCResponse;
-import in.bigdolph.jnano.rpc.query.response.specific.NodeVersionResponse;
 
 public class WalletChangeSeedRequest extends RPCRequest<RPCResponse> {
     

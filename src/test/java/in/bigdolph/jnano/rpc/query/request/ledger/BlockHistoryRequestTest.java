@@ -2,7 +2,7 @@ package in.bigdolph.jnano.rpc.query.request.ledger;
 
 import in.bigdolph.jnano.model.block.BlockType;
 import in.bigdolph.jnano.rpc.query.QueryBaseTest;
-import in.bigdolph.jnano.rpc.query.response.specific.BlockHistoryResponse;
+import in.bigdolph.jnano.rpc.query.response.BlockHistoryResponse;
 import in.bigdolph.jnano.tests.NodeTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

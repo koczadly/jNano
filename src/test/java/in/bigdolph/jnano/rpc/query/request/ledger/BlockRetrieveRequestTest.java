@@ -5,7 +5,7 @@ import in.bigdolph.jnano.model.block.BlockOpen;
 import in.bigdolph.jnano.model.block.BlockReceive;
 import in.bigdolph.jnano.model.block.BlockSend;
 import in.bigdolph.jnano.rpc.query.QueryBaseTest;
-import in.bigdolph.jnano.rpc.query.response.generic.BlockResponse;
+import in.bigdolph.jnano.rpc.query.response.BlockResponse;
 import in.bigdolph.jnano.tests.NodeTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
