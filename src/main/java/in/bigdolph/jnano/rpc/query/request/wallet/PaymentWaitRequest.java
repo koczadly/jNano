@@ -2,12 +2,12 @@ package in.bigdolph.jnano.rpc.query.request.wallet;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.request.RPCRequest;
+import in.bigdolph.jnano.rpc.query.request.RpcRequest;
 import in.bigdolph.jnano.rpc.query.response.PaymentStatusResponse;
 
 import java.math.BigInteger;
 
-public class PaymentWaitRequest extends RPCRequest<PaymentStatusResponse> {
+public class PaymentWaitRequest extends RpcRequest<PaymentStatusResponse> {
     
     @Expose
     @SerializedName("account")

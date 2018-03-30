@@ -2,12 +2,12 @@ package in.bigdolph.jnano.rpc.query.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
+import in.bigdolph.jnano.rpc.query.request.RpcRequest;
+import in.bigdolph.jnano.rpc.query.response.RpcResponse;
 
 import java.math.BigInteger;
 
-public class NodeSetMinimumReceiveRequest extends RPCRequest<RPCResponse> {
+public class NodeSetMinimumReceiveRequest extends RpcRequest<RpcResponse> {
     
     @Expose
     @SerializedName("amount")
@@ -15,7 +15,7 @@ public class NodeSetMinimumReceiveRequest extends RPCRequest<RPCResponse> {
     
     
     public NodeSetMinimumReceiveRequest(BigInteger amount) {
-        super("receive_minimum_set", RPCResponse.class);
+        super("receive_minimum_set", RpcResponse.class);
         this.amount = amount;
     }
     

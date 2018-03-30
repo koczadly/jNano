@@ -1,12 +1,12 @@
 package in.bigdolph.jnano.rpc.query.request.node;
 
-import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
+import in.bigdolph.jnano.rpc.query.request.RpcRequest;
+import in.bigdolph.jnano.rpc.query.response.RpcResponse;
 
-public class NodeShutdownRequest extends RPCRequest<RPCResponse> {
+public class NodeShutdownRequest extends RpcRequest<RpcResponse> {
     
     public NodeShutdownRequest() {
-        super("stop", RPCResponse.class);
+        super("stop", RpcResponse.class);
     }
     
 }

@@ -2,12 +2,12 @@ package in.bigdolph.jnano.rpc.query.request.compute;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.request.RPCRequest;
+import in.bigdolph.jnano.rpc.query.request.RpcRequest;
 import in.bigdolph.jnano.rpc.query.response.UnitConversionResponse;
 
 import java.math.BigInteger;
 
-public class UnitConversionRequest extends RPCRequest<UnitConversionResponse> {
+public class UnitConversionRequest extends RpcRequest<UnitConversionResponse> {
     
     @Expose
     @SerializedName("amount")

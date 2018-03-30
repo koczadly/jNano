@@ -1,15 +1,15 @@
 package in.bigdolph.jnano.rpc.query;
 
-import in.bigdolph.jnano.rpc.query.exception.RPCQueryException;
-import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
+import in.bigdolph.jnano.rpc.query.exception.RpcQueryException;
+import in.bigdolph.jnano.rpc.query.request.RpcRequest;
+import in.bigdolph.jnano.rpc.query.response.RpcResponse;
 import in.bigdolph.jnano.tests.Configuration;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 
-public class TestNode extends RPCQueryNode {
+public class TestNode extends RpcQueryNode {
     
     public TestNode() throws MalformedURLException {
         super(Configuration.NODE_IP, Configuration.NODE_PORT);
@@ -24,7 +24,7 @@ public class TestNode extends RPCQueryNode {
     }
     
     @Override
-    public <Q extends RPCRequest<R>, R extends RPCResponse> R processRequest(Q request) throws IOException, RPCQueryException {
+    public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request) throws IOException, RpcQueryException {
         return super.processRequest(request);
     }
     

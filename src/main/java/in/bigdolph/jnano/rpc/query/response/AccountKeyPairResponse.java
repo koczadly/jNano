@@ -2,9 +2,8 @@ package in.bigdolph.jnano.rpc.query.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
-public class AccountKeyPairResponse extends RPCResponse {
+public class AccountKeyPairResponse extends RpcResponse {
 
     @Expose
     @SerializedName("private")

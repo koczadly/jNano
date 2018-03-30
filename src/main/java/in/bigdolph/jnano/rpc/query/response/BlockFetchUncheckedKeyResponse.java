@@ -3,13 +3,10 @@ package in.bigdolph.jnano.rpc.query.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.model.block.Block;
-import in.bigdolph.jnano.model.block.BlockType;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
-import java.math.BigInteger;
 import java.util.Set;
 
-public class BlockFetchUncheckedKeyResponse extends RPCResponse {
+public class BlockFetchUncheckedKeyResponse extends RpcResponse {
     
     @Expose
     @SerializedName("unchecked")

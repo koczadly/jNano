@@ -2,11 +2,10 @@ package in.bigdolph.jnano.rpc.query.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
 import java.math.BigInteger;
 
-public class NodeMinimumReceiveResponse extends RPCResponse {
+public class NodeMinimumReceiveResponse extends RpcResponse {
 
     @Expose
     @SerializedName("amount")

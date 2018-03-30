@@ -2,11 +2,8 @@ package in.bigdolph.jnano.rpc.query.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
-import java.math.BigInteger;
-
-public class AccountBlockCountResponse extends RPCResponse {
+public class AccountBlockCountResponse extends RpcResponse {
 
     @Expose
     @SerializedName("block_count")

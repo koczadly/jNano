@@ -2,10 +2,10 @@ package in.bigdolph.jnano.rpc.query.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
+import in.bigdolph.jnano.rpc.query.request.RpcRequest;
+import in.bigdolph.jnano.rpc.query.response.RpcResponse;
 
-public class NodePeerKeepAlive extends RPCRequest<RPCResponse> {
+public class NodePeerKeepAlive extends RpcRequest<RpcResponse> {
     
     @Expose
     @SerializedName("address")
@@ -17,7 +17,7 @@ public class NodePeerKeepAlive extends RPCRequest<RPCResponse> {
     
     
     public NodePeerKeepAlive(String peerAddress, int peerPort) {
-        super("keepalive", RPCResponse.class);
+        super("keepalive", RpcResponse.class);
         this.peerAddress = peerAddress;
         this.peerPort = peerPort;
     }

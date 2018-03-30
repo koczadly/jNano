@@ -2,10 +2,10 @@ package in.bigdolph.jnano.rpc.query.request.wallet;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
+import in.bigdolph.jnano.rpc.query.request.RpcRequest;
+import in.bigdolph.jnano.rpc.query.response.RpcResponse;
 
-public class WalletChangeSeedRequest extends RPCRequest<RPCResponse> {
+public class WalletChangeSeedRequest extends RpcRequest<RpcResponse> {
     
     @Expose
     @SerializedName("wallet")
@@ -17,7 +17,7 @@ public class WalletChangeSeedRequest extends RPCRequest<RPCResponse> {
     
     
     public WalletChangeSeedRequest(String walletId, String seed) {
-        super("wallet_change_seed", RPCResponse.class);
+        super("wallet_change_seed", RpcResponse.class);
         this.walletId = walletId;
         this.seed = seed;
     }

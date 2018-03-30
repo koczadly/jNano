@@ -2,13 +2,11 @@ package in.bigdolph.jnano.rpc.query.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.model.block.Block;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
 import java.math.BigInteger;
 import java.util.Map;
 
-public class AccountPendingBlocksResponse extends RPCResponse {
+public class AccountPendingBlocksResponse extends RpcResponse {
     
     @Expose
     @SerializedName("blocks")

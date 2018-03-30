@@ -2,14 +2,10 @@ package in.bigdolph.jnano.rpc.query;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.exception.RPCQueryException;
-import in.bigdolph.jnano.rpc.query.request.RPCRequest;
+import in.bigdolph.jnano.rpc.query.exception.RpcQueryException;
+import in.bigdolph.jnano.rpc.query.request.RpcRequest;
 import in.bigdolph.jnano.rpc.query.request.node.NodeVersionRequest;
-import in.bigdolph.jnano.rpc.query.request.wallet.AccountCreateRequest;
-import in.bigdolph.jnano.rpc.query.request.wallet.WalletChangePasswordRequest;
-import in.bigdolph.jnano.rpc.query.request.wallet.WalletLockRequest;
-import in.bigdolph.jnano.rpc.query.request.wallet.WalletUnlockRequest;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
+import in.bigdolph.jnano.rpc.query.response.RpcResponse;
 import in.bigdolph.jnano.rpc.query.response.NodeVersionResponse;
 import in.bigdolph.jnano.tests.NodeTests;
 import org.junit.Test;
@@ -21,11 +17,11 @@ import java.util.concurrent.Future;
 
 import static org.junit.Assert.*;
 
-public class RPCQueryNodeTest {
+public class RpcQueryNodeTest {
     
     private TestNode node;
     
-    public RPCQueryNodeTest() throws Exception {
+    public RpcQueryNodeTest() throws Exception {
         this.node = new TestNode();
     }
     
@@ -47,9 +43,9 @@ public class RPCQueryNodeTest {
         
         //Test invalid query
         try {
-            RPCResponse invalidRes = node.processRequest(new TestRequest("invalid_command_ayy_lmao"));
+            RpcResponse invalidRes = node.processRequest(new TestRequest("invalid_command_ayy_lmao"));
             fail("Invalid command was processed");
-        } catch (RPCQueryException e) {}
+        } catch (RpcQueryException e) {}
     }
     
     @Test
@@ -57,7 +53,7 @@ public class RPCQueryNodeTest {
     public void testAsyncQuery() throws Exception {
         //Test valid query
         TestCallback callback = new TestCallback();
-        Future<RPCResponse> futureRes = node.processRequestAsync(new TestRequest("version"), 2500, callback);
+        Future<RpcResponse> futureRes = node.processRequestAsync(new TestRequest("version"), 2500, callback);
         assertNotNull(futureRes);
         while(!callback.processed); //Wait for query to respond
         System.out.println("Async query processed");
@@ -71,18 +67,18 @@ public class RPCQueryNodeTest {
         while(!callback.processed); //Wait for query to respond
         System.out.println("Async query processed");
         assertNotNull(callback.exception);
-        assertTrue(callback.exception instanceof RPCQueryException);
+        assertTrue(callback.exception instanceof RpcQueryException);
         assertNull(callback.response);
     }
     
     
-    private static class TestCallback implements QueryCallback<RPCResponse> {
+    private static class TestCallback implements QueryCallback<RpcResponse> {
         volatile boolean processed = false;
-        volatile RPCResponse response;
+        volatile RpcResponse response;
         volatile Exception exception;
         
         @Override
-        public void onResponse(RPCResponse response) {
+        public void onResponse(RpcResponse response) {
             this.response = response;
             this.processed = true;
         }
@@ -94,9 +90,9 @@ public class RPCQueryNodeTest {
         }
     }
     
-    public static class TestRequest extends RPCRequest<RPCResponse> {
+    public static class TestRequest extends RpcRequest<RpcResponse> {
         public TestRequest(String cmd) {
-            super(cmd, RPCResponse.class);
+            super(cmd, RpcResponse.class);
         }
     }
     

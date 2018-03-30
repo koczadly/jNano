@@ -2,12 +2,10 @@ package in.bigdolph.jnano.rpc.query.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
-import java.math.BigInteger;
 import java.util.Map;
 
-public class NodeFetchOnlinePeersResponse extends RPCResponse {
+public class NodeFetchOnlinePeersResponse extends RpcResponse {
     
     @Expose
     @SerializedName("peers")

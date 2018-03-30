@@ -1,12 +1,12 @@
 package in.bigdolph.jnano.rpc.query.request.node;
 
-import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
+import in.bigdolph.jnano.rpc.query.request.RpcRequest;
+import in.bigdolph.jnano.rpc.query.response.RpcResponse;
 
-public class NodePeerBootstrapInitializeRequest extends RPCRequest<RPCResponse> {
+public class NodePeerBootstrapInitializeRequest extends RpcRequest<RpcResponse> {
     
     public NodePeerBootstrapInitializeRequest() {
-        super("bootstrap_any", RPCResponse.class);
+        super("bootstrap_any", RpcResponse.class);
     }
     
 }

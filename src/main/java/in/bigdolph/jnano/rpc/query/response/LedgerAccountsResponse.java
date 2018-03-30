@@ -2,14 +2,12 @@ package in.bigdolph.jnano.rpc.query.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
-public class LedgerAccountsResponse extends RPCResponse {
+public class LedgerAccountsResponse extends RpcResponse {
     
     @Expose
     @SerializedName("accounts")

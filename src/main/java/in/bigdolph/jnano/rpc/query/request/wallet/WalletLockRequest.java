@@ -2,10 +2,10 @@ package in.bigdolph.jnano.rpc.query.request.wallet;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.request.RPCRequest;
+import in.bigdolph.jnano.rpc.query.request.RpcRequest;
 import in.bigdolph.jnano.rpc.query.response.WalletLockedResponse;
 
-public class WalletLockRequest extends RPCRequest<WalletLockedResponse> {
+public class WalletLockRequest extends RpcRequest<WalletLockedResponse> {
     
     @Expose
     @SerializedName("wallet")

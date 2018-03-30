@@ -1,19 +1,12 @@
 package in.bigdolph.jnano.rpc.query.response;
 
-import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
-import java.io.IOException;
 import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.Map;
 
-public class BalancesResponse extends RPCResponse {
+public class BalancesResponse extends RpcResponse {
     
     @Expose
     @SerializedName("balances")

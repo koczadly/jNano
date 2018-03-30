@@ -2,13 +2,12 @@ package in.bigdolph.jnano.rpc.query.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class FetchRepresentativesResponse extends RPCResponse {
+public class FetchRepresentativesResponse extends RpcResponse {
     
     @Expose
     @SerializedName("representatives")

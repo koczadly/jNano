@@ -2,11 +2,10 @@ package in.bigdolph.jnano.rpc.query.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 
 import java.util.Set;
 
-public class BlockHashesResponse extends RPCResponse {
+public class BlockHashesResponse extends RpcResponse {
 
     @Expose
     @SerializedName(value="blocks", alternate={"hashes"})

@@ -2,10 +2,10 @@ package in.bigdolph.jnano.rpc.query.request.compute;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.request.RPCRequest;
+import in.bigdolph.jnano.rpc.query.request.RpcRequest;
 import in.bigdolph.jnano.rpc.query.response.WorkResponse;
 
-public class WorkGenerateRequest extends RPCRequest<WorkResponse> {
+public class WorkGenerateRequest extends RpcRequest<WorkResponse> {
     
     @Expose
     @SerializedName("hash")

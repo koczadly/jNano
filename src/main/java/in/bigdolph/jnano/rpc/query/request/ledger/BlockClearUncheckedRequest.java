@@ -1,12 +1,12 @@
 package in.bigdolph.jnano.rpc.query.request.ledger;
 
-import in.bigdolph.jnano.rpc.query.request.RPCRequest;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
+import in.bigdolph.jnano.rpc.query.request.RpcRequest;
+import in.bigdolph.jnano.rpc.query.response.RpcResponse;
 
-public class BlockClearUncheckedRequest extends RPCRequest<RPCResponse> {
+public class BlockClearUncheckedRequest extends RpcRequest<RpcResponse> {
     
     public BlockClearUncheckedRequest() {
-        super("unchecked_clear", RPCResponse.class);
+        super("unchecked_clear", RpcResponse.class);
     }
     
 }

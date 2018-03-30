@@ -2,10 +2,10 @@ package in.bigdolph.jnano.rpc.query.request.ledger;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.request.RPCRequest;
+import in.bigdolph.jnano.rpc.query.request.RpcRequest;
 import in.bigdolph.jnano.rpc.query.response.BalancesResponse;
 
-public class AccountsBalancesRequest extends RPCRequest<BalancesResponse> {
+public class AccountsBalancesRequest extends RpcRequest<BalancesResponse> {
     
     @Expose
     @SerializedName("accounts")

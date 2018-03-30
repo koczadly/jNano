@@ -2,9 +2,9 @@ package in.bigdolph.jnano.rpc.query.request;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.response.RPCResponse;
+import in.bigdolph.jnano.rpc.query.response.RpcResponse;
 
-public abstract class RPCRequest<R extends RPCResponse> {
+public abstract class RpcRequest<R extends RpcResponse> {
     
     @Expose
     @SerializedName("action")
@@ -13,7 +13,7 @@ public abstract class RPCRequest<R extends RPCResponse> {
     private Class<R> responseClass;
     
     
-    public RPCRequest(String actionCommand, Class<R> responseClass) {
+    public RpcRequest(String actionCommand, Class<R> responseClass) {
         this.actionCommand = actionCommand;
         this.responseClass = responseClass;
     }
