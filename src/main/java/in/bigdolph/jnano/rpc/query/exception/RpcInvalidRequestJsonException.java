@@ -3,7 +3,7 @@ package in.bigdolph.jnano.rpc.query.exception;
 public class RpcInvalidRequestJsonException extends RpcQueryException {
     
     public RpcInvalidRequestJsonException() {
-        super("An invalid request was sent to the node");
+        super("The RPC server was unable to parse the JSON request");
     }
     
 }
