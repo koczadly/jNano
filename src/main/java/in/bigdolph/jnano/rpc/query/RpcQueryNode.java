@@ -5,7 +5,7 @@ import in.bigdolph.jnano.rpc.adapters.BooleanTypeDeserializer;
 import in.bigdolph.jnano.rpc.adapters.hotfix.ArrayTypeAdapterFactory;
 import in.bigdolph.jnano.rpc.adapters.hotfix.CollectionTypeAdapterFactory;
 import in.bigdolph.jnano.rpc.adapters.hotfix.MapTypeAdapterFactory;
-import in.bigdolph.jnano.rpc.query.exception.RpcQueryException;
+import in.bigdolph.jnano.rpc.query.exception.*;
 import in.bigdolph.jnano.rpc.query.request.RpcRequest;
 import in.bigdolph.jnano.rpc.query.response.RpcResponse;
 
@@ -266,12 +266,33 @@ public class RpcQueryNode {
         
         //Check for returned RPC error
         JsonElement responseError = response.get("error");
-        if(responseError != null) throw new RpcQueryException(responseError.getAsString());
+        if(responseError != null) throw this.parseException(responseError.getAsString());
         
         R responseObj = this.gson.fromJson(responseJson, responseClass); //Deserialize from JSON
         responseObj.init(response); //Initialise raw parameters
         
         return responseObj;
+    }
+    
+    
+    /**
+     * Parses a returned error string into the appropriate RpcQueryException type.
+     *
+     * @param message  the returned error message from the node
+     * @return the matching exception to be thrown
+     */
+    protected RpcQueryException parseException(String message) {
+        String msgLower = message.toLowerCase();
+        switch(msgLower) {
+            case "wallet is locked":
+            case "wallet locked":                   return new RpcWalletLockedException();
+            case "invalid authorization header":    return new RpcInvalidAuthTokenException();
+            case "rpc control is disabled":         return new RpcControlDisabledException();
+            case "unable to parse json":            return new RpcInvalidRequestJsonException();
+            case "unknown command":                 return new RpcUnknownCommandException();
+        }
+        if(msgLower.startsWith("bad "))             return new RpcInvalidRequestArgumentException(message);
+        return new RpcQueryException(message); //Default to regular
     }
     
     

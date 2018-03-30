@@ -3,8 +3,13 @@ package in.bigdolph.jnano.rpc.query;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.rpc.query.exception.RpcQueryException;
+import in.bigdolph.jnano.rpc.query.exception.RpcUnknownCommandException;
 import in.bigdolph.jnano.rpc.query.request.RpcRequest;
 import in.bigdolph.jnano.rpc.query.request.node.NodeVersionRequest;
+import in.bigdolph.jnano.rpc.query.request.wallet.AccountCreateRequest;
+import in.bigdolph.jnano.rpc.query.request.wallet.AccountRemoveRequest;
+import in.bigdolph.jnano.rpc.query.request.wallet.WalletLockRequest;
+import in.bigdolph.jnano.rpc.query.request.wallet.WalletUnlockRequest;
 import in.bigdolph.jnano.rpc.query.response.RpcResponse;
 import in.bigdolph.jnano.rpc.query.response.NodeVersionResponse;
 import in.bigdolph.jnano.tests.NodeTests;
@@ -26,12 +31,6 @@ public class RpcQueryNodeTest {
     }
     
     
-//    @Test //TODO
-//    public void ayy() throws Exception {
-//        this.node.processRequest(new WalletLockRequest("07E7898B0E4F63558039B6E54D073313263942B7D51A06443EFC54FB88B540C5"));
-//        this.node.processRequest(new AccountCreateRequest("07E7898B0E4F63558039B6E54D073313263942B7D51A06443EFC54FB88B540C5"));
-//    }
-    
     
     @Test
     @Category(NodeTests.class)
@@ -45,7 +44,7 @@ public class RpcQueryNodeTest {
         try {
             RpcResponse invalidRes = node.processRequest(new TestRequest("invalid_command_ayy_lmao"));
             fail("Invalid command was processed");
-        } catch (RpcQueryException e) {}
+        } catch (RpcUnknownCommandException e) {}
     }
     
     @Test
