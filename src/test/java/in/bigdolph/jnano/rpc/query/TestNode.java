@@ -30,8 +30,4 @@ public class TestNode extends RPCQueryNode {
         return super.processRequest(request);
     }
     
-    public Gson getGson() {
-        return this.gson;
-    }
-    
 }

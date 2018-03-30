@@ -11,8 +11,6 @@ import in.bigdolph.jnano.tests.NodeTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import javax.management.Query;
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -100,21 +98,21 @@ public class RPCQueryNodeTest {
         
         //2 items
         System.out.println("Test 2 items");
-        deserialized = node.getGson().fromJson("{arr:[1,2]}", ArrayTestResponse.class);
+        deserialized = node.getGsonInstance().fromJson("{arr:[1,2]}", ArrayTestResponse.class);
         assertNotNull(deserialized);
         assertNotNull(deserialized.array);
         assertEquals(2, deserialized.array.length);
     
         //0 items
         System.out.println("Test empty array");
-        deserialized = node.getGson().fromJson("{arr:[]}", ArrayTestResponse.class);
+        deserialized = node.getGsonInstance().fromJson("{arr:[]}", ArrayTestResponse.class);
         assertNotNull(deserialized);
         assertNotNull(deserialized.array);
         assertEquals(0, deserialized.array.length);
     
         //empty string
         System.out.println("Test empty string");
-        deserialized = node.getGson().fromJson("{arr:\"\"}", ArrayTestResponse.class);
+        deserialized = node.getGsonInstance().fromJson("{arr:\"\"}", ArrayTestResponse.class);
         assertNotNull(deserialized);
         assertNotNull(deserialized.array);
         assertEquals(0, deserialized.array.length);
@@ -127,21 +125,21 @@ public class RPCQueryNodeTest {
         
         //2 items
         System.out.println("Test 2 items");
-        deserialized = node.getGson().fromJson("{col:[1,2]}", CollectionTestResponse.class);
+        deserialized = node.getGsonInstance().fromJson("{col:[1,2]}", CollectionTestResponse.class);
         assertNotNull(deserialized);
         assertNotNull(deserialized.col);
         assertEquals(2, deserialized.col.size());
         
         //0 items
         System.out.println("Test empty collection");
-        deserialized = node.getGson().fromJson("{col:[]}", CollectionTestResponse.class);
+        deserialized = node.getGsonInstance().fromJson("{col:[]}", CollectionTestResponse.class);
         assertNotNull(deserialized);
         assertNotNull(deserialized.col);
         assertEquals(0, deserialized.col.size());
         
         //empty string
         System.out.println("Test empty string");
-        deserialized = node.getGson().fromJson("{col:\"\"}", CollectionTestResponse.class);
+        deserialized = node.getGsonInstance().fromJson("{col:\"\"}", CollectionTestResponse.class);
         assertNotNull(deserialized);
         assertNotNull(deserialized.col);
         assertEquals(0, deserialized.col.size());
@@ -154,21 +152,21 @@ public class RPCQueryNodeTest {
         
         //2 items
         System.out.println("Test 2 items");
-        deserialized = node.getGson().fromJson("{map:{1:1,2:2}}", MapTestResponse.class);
+        deserialized = node.getGsonInstance().fromJson("{map:{1:1,2:2}}", MapTestResponse.class);
         assertNotNull(deserialized);
         assertNotNull(deserialized.map);
         assertEquals(2, deserialized.map.size());
         
         //0 items
         System.out.println("Test empty map");
-        deserialized = node.getGson().fromJson("{map:{}}", MapTestResponse.class);
+        deserialized = node.getGsonInstance().fromJson("{map:{}}", MapTestResponse.class);
         assertNotNull(deserialized);
         assertNotNull(deserialized.map);
         assertEquals(0, deserialized.map.size());
         
         //empty string
         System.out.println("Test empty string");
-        deserialized = node.getGson().fromJson("{map:\"\"}", MapTestResponse.class);
+        deserialized = node.getGsonInstance().fromJson("{map:\"\"}", MapTestResponse.class);
         assertNotNull(deserialized);
         assertNotNull(deserialized.map);
         assertEquals(0, deserialized.map.size());

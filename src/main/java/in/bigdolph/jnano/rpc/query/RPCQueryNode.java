@@ -29,8 +29,9 @@ public class RPCQueryNode {
     
     protected static final ExecutorService executorService = Executors.newCachedThreadPool();
     
-    protected final URL address;
-    protected final Gson gson;
+    private final URL address;
+    private final Gson gson;
+    private volatile String authToken;
     
     
     /**
@@ -39,7 +40,17 @@ public class RPCQueryNode {
      * @throws MalformedURLException if the address cannot be parsed
      */
     public RPCQueryNode() throws MalformedURLException {
-        this("127.0.0.1", 7076); //Local address and default port
+        this((String)null);
+    }
+    
+    /**
+     * Constructs a new query node with the address 127.0.0.1:7076
+     *
+     * @param authToken   the authentication token to be sent with queries
+     * @throws MalformedURLException if the address cannot be parsed
+     */
+    public RPCQueryNode(String authToken) throws MalformedURLException {
+        this("127.0.0.1", 7076, authToken); //Local address and default port
     }
     
     /**
@@ -50,7 +61,19 @@ public class RPCQueryNode {
      * @throws MalformedURLException if the address cannot be parsed
      */
     public RPCQueryNode(String address, int port) throws MalformedURLException {
-        this(new URL("HTTP", address, port, ""));
+        this(address, port, null);
+    }
+    
+    /**
+     * Constructs a new query node with the given address and port
+     *
+     * @param address   the address of the node
+     * @param port      the port which the node is listening on
+     * @param authToken the authentication token to be sent with queries
+     * @throws MalformedURLException if the address cannot be parsed
+     */
+    public RPCQueryNode(String address, int port, String authToken) throws MalformedURLException {
+        this(new URL("HTTP", address, port, ""), authToken);
     }
     
     /**
@@ -58,11 +81,21 @@ public class RPCQueryNode {
      * @param address   the HTTP URL (address and port) which the node is listening on
      */
     public RPCQueryNode(URL address) {
-        this(address, new GsonBuilder());
+        this(address, null);
     }
     
-    protected RPCQueryNode(URL address, GsonBuilder gson) {
+    /**
+     * Constructs a new query node with the given address and port
+     * @param address   the HTTP URL (address and port) which the node is listening on
+     * @param authToken the authentication token to be sent with queries
+     */
+    public RPCQueryNode(URL address, String authToken) {
+        this(address, authToken, new GsonBuilder());
+    }
+    
+    protected RPCQueryNode(URL address, String authToken, GsonBuilder gson) {
         this.address = address;
+        this.authToken = authToken;
         this.gson = gson.excludeFieldsWithoutExposeAnnotation()
                 .registerTypeAdapterFactory(new ArrayTypeAdapterFactory())          //Empty array hotfix
                 .registerTypeAdapterFactory(new CollectionTypeAdapterFactory())     //Empty collection hotfix
@@ -73,12 +106,39 @@ public class RPCQueryNode {
     }
     
     
+    
     /**
      * @return the address of this node's RPC listener
      */
     public final URL getAddress() {
         return this.address;
     }
+    
+    
+    /**
+     * @return the authorization token to be sent to the RPC server
+     */
+    public final String getAuthToken() {
+        return this.authToken;
+    }
+    
+    /**
+     * Sets the authentication token to be used with future requests.
+     *
+     * @param authToken the new token to be used for queries, or null to remove
+     */
+    public final void setAuthToken(String authToken) {
+        this.authToken = authToken;
+    }
+    
+    
+    /**
+     * @return the Gson utility class used by this instance
+     */
+    public final Gson getGsonInstance() {
+        return this.gson;
+    }
+    
     
     
     /**
@@ -175,6 +235,9 @@ public class RPCQueryNode {
         con.setDoOutput(true);
         con.setDoInput(true);
         con.setRequestMethod("POST");
+        if(this.authToken != null) {
+            con.setRequestProperty("Authorization", "Bearer " + this.authToken); //Set authentication token header
+        }
         
         //Write request data
         OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
