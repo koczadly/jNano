@@ -83,6 +83,7 @@ public class RPCQueryNode {
     
     /**
      * Sends a query request to the node via RPC.
+     * This method will not timeout as long as the connection remains open.
      *
      * @param request the query request to send to the node
      * @return the successful reponse from the node
@@ -90,8 +91,32 @@ public class RPCQueryNode {
      * @throws RPCQueryException   if the node returns a non-successful response
      */
     public <Q extends RPCRequest<R>, R extends RPCResponse> R processRequest(Q request) throws IOException, RPCQueryException {
+        return this.processRequest(request, null);
+    }
+    
+    /**
+     * Sends a query request to the node via RPC.
+     *
+     * @param request the query request to send to the node
+     * @param timeout the timeout for the request in milliseconds, or null for none
+     * @return the successful reponse from the node
+     * @throws IOException         if an error occurs with the connection to the node
+     * @throws RPCQueryException   if the node returns a non-successful response
+     */
+    public <Q extends RPCRequest<R>, R extends RPCResponse> R processRequest(Q request, Integer timeout) throws IOException, RPCQueryException {
+        if(request == null) throw new IllegalArgumentException("Request argument must not be null");
+        if(timeout != null && timeout < 0) throw new IllegalArgumentException("Timeout period must be positive or null");
+        
         String requestJsonStr = this.serializeRequestToJSON(request); //Serialise the request into JSON
-        String responseJson = this.processRawRequest(requestJsonStr, (HttpURLConnection)this.address.openConnection()); //Send the request to the node
+        
+        //Configure connection
+        HttpURLConnection connection = (HttpURLConnection)this.address.openConnection();
+        if(timeout != null) { //Set timeouts
+            connection.setConnectTimeout(timeout);
+            connection.setReadTimeout(timeout);
+        }
+        
+        String responseJson = this.processRawRequest(requestJsonStr, connection); //Send the request to the node
         
         R response = this.deserializeResponseFromJSON(responseJson, request.getResponseClass());
         assert response != null : "Response JSON is null";
@@ -99,20 +124,36 @@ public class RPCQueryNode {
         return response;
     }
     
+    
     /**
      * Sends a query request to the node via RPC.
+     * The request will not timeout as long as the connection remains open.
      *
      * @param request   the query request to send to the node
      * @param callback  the callback to execute after the request has completed
      */
-    public <Q extends RPCRequest<R>, R extends RPCResponse> Future<R> processRequestAsync(Q request, QueryCallback<Q, R> callback) {
+    public <Q extends RPCRequest<R>, R extends RPCResponse> Future<R> processRequestAsync(Q request, QueryCallback<R> callback) {
+        return this.processRequestAsync(request, null, callback);
+    }
+    
+    /**
+     * Sends a query request to the node via RPC.
+     *
+     * @param request   the query request to send to the node
+     * @param timeout   the timeout for the request in milliseconds, or null for none
+     * @param callback  the callback to execute after the request has completed
+     */
+    public <Q extends RPCRequest<R>, R extends RPCResponse> Future<R> processRequestAsync(Q request, Integer timeout, QueryCallback<R> callback) {
+        if(request == null) throw new IllegalArgumentException("Request argument must not be null");
+        if(timeout != null && timeout < 0) throw new IllegalArgumentException("Timeout period must be positive or null");
+        
         return RPCQueryNode.executorService.submit(() -> {
             try {
-                R response = RPCQueryNode.this.processRequest(request);
-                if(callback != null) callback.onResponse(request, response);
+                R response = RPCQueryNode.this.processRequest(request, timeout);
+                if(callback != null) callback.onResponse(response);
                 return response;
             } catch (Exception e) {
-                if(callback != null) callback.onFailure(request, e);
+                if(callback != null) callback.onFailure(e);
                 throw e;
             }
         });
@@ -122,7 +163,8 @@ public class RPCQueryNode {
     /**
      * Sends a raw JSON query to the RPC server, and then returns the raw JSON response.
      *
-     * @param jsonRequest the JSON query to send to the node
+     * @param jsonRequest   the JSON query to send to the node
+     * @param con           a HTTP connection with the node to send the query to
      * @return the JSON response from the node
      * @throws IOException if an error occurs with the connection to the node
      */
@@ -133,7 +175,7 @@ public class RPCQueryNode {
         con.setDoOutput(true);
         con.setDoInput(true);
         con.setRequestMethod("POST");
-    
+        
         //Write request data
         OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
         writer.write(jsonRequest);

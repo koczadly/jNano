@@ -7,7 +7,9 @@ import in.bigdolph.jnano.rpc.query.request.RPCRequest;
 import in.bigdolph.jnano.rpc.query.request.node.NodeVersionRequest;
 import in.bigdolph.jnano.rpc.query.response.RPCResponse;
 import in.bigdolph.jnano.rpc.query.response.specific.NodeVersionResponse;
+import in.bigdolph.jnano.tests.NodeTests;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import javax.management.Query;
 import java.net.MalformedURLException;
@@ -27,26 +29,35 @@ public class RPCQueryNodeTest {
     
     
     @Test
+    @Category(NodeTests.class)
     public void testSyncQuery() throws Exception {
+        //Test valid query
         NodeVersionResponse res = node.processRequest(new NodeVersionRequest());
         assertNotNull(res);
         System.out.println(res.getNodeVendor());
+        
+        //Test invalid query
+        try {
+            RPCResponse invalidRes = node.processRequest(new TestRequest("invalid_command_ayy_lmao"));
+            fail("Invalid command was processed");
+        } catch (RPCQueryException e) {}
     }
     
     @Test
+    @Category(NodeTests.class)
     public void testAsyncQuery() throws Exception {
         //Test valid query
         TestCallback callback = new TestCallback();
-        Future<RPCResponse> futureRes = node.processRequestAsync(new TestRequest("version"), callback);
+        Future<RPCResponse> futureRes = node.processRequestAsync(new TestRequest("version"), 2500, callback);
         assertNotNull(futureRes);
         while(!callback.processed); //Wait for query to respond
         System.out.println("Async query processed");
         assertNull(callback.exception);
         assertNotNull(callback.response);
-    
+        
         //Test valid query
         callback = new TestCallback();
-        futureRes = node.processRequestAsync(new TestRequest("invalid_command_ayy_lmao"), callback);
+        futureRes = node.processRequestAsync(new TestRequest("invalid_command_ayy_lmao"), 2500, callback);
         assertNotNull(futureRes);
         while(!callback.processed); //Wait for query to respond
         System.out.println("Async query processed");
@@ -56,19 +67,19 @@ public class RPCQueryNodeTest {
     }
     
     
-    private static class TestCallback implements QueryCallback<RPCRequest<RPCResponse>, RPCResponse> {
+    private static class TestCallback implements QueryCallback<RPCResponse> {
         volatile boolean processed = false;
         volatile RPCResponse response;
         volatile Exception exception;
         
         @Override
-        public void onResponse(RPCRequest<RPCResponse> query, RPCResponse response) {
+        public void onResponse(RPCResponse response) {
             this.response = response;
             this.processed = true;
         }
         
         @Override
-        public void onFailure(RPCRequest<RPCResponse> query, Exception ex) {
+        public void onFailure(Exception ex) {
             this.exception = ex;
             this.processed = true;
         }
