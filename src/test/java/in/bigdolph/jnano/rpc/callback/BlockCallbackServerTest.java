@@ -2,10 +2,12 @@ package in.bigdolph.jnano.rpc.callback;
 
 import in.bigdolph.jnano.rpc.callback.server.BlockCallbackServer;
 import in.bigdolph.jnano.tests.FunctionalityTests;
+import in.bigdolph.jnano.util.CurrencyDivisor;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.math.BigDecimal;
 import java.net.InetAddress;
 
 public class BlockCallbackServerTest {
@@ -44,8 +46,11 @@ public class BlockCallbackServerTest {
             System.out.println("New block received: " + block.getBlockHash()); //Outputs the block hash
             System.out.println("Type: " + block.getBlock().getType().toString()); //Outputs block type
             if(block.getTransactionalAmount() != null) {
-                System.out.println("Value: " + block.getTransactionalAmount().toString()); //Outputs associated value
+                BigDecimal value = CurrencyDivisor.BASE_UNIT.convert(new BigDecimal(block.getTransactionalAmount()), CurrencyDivisor.RAW);
+                System.out.println("Value: " + value.toString() + " " + CurrencyDivisor.BASE_UNIT.getDisplayName()); //Outputs associated value
             }
+            System.out.println("Node IP: " + node.getHostAddress() + ", target: " + target);
+            System.out.println("");
         }
         
     }
