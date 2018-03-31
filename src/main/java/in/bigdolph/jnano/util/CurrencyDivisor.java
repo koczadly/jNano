@@ -119,9 +119,9 @@ public enum CurrencyDivisor {
         if(sourceUnit == this) return sourceAmount; //Same unit
         
         if(sourceUnit.exponent > this.exponent) { //Source is higher, multiply (shift right)
-            return sourceAmount.movePointRight(sourceUnit.exponent - this.exponent);
+            return sourceAmount.movePointRight(sourceUnit.exponent - this.exponent).stripTrailingZeros();
         } else { //Source is lower, divide (shift left)
-            return sourceAmount.movePointLeft(this.exponent - sourceUnit.exponent);
+            return sourceAmount.movePointLeft(this.exponent - sourceUnit.exponent).stripTrailingZeros();
         }
     }
     
