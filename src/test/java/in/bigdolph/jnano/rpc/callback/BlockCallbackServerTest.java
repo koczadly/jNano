@@ -2,7 +2,6 @@ package in.bigdolph.jnano.rpc.callback;
 
 import in.bigdolph.jnano.rpc.callback.server.BlockCallbackServer;
 import in.bigdolph.jnano.tests.FunctionalityTests;
-import in.bigdolph.jnano.tests.NodeTests;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -18,6 +17,8 @@ public class BlockCallbackServerTest {
     }
     
     
+    
+    
     @Test
     @Category(FunctionalityTests.class)
     public void testStartStop() {
@@ -28,14 +29,13 @@ public class BlockCallbackServerTest {
     }
     
     
+    
     @Test @Ignore
-    public void test() throws Exception {
+    public void testFunction() throws Exception {
         server.registerListener(new TestListener());
         server.start();
         while(true); //Keep main thread alive
     }
-    
-    
     
     public class TestListener implements BlockCallbackListener {
         
