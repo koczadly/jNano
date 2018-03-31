@@ -13,8 +13,8 @@ Before using this library, you will need to configure the node correctly.
 
 ## Examples
 Examples on how to use this library can be found on the associated [wiki pages](https://github.com/koczadly/jNano/wiki/).
-- For examples on how to use the request/query functions, [click here](https://github.com/koczadly/jNano/wiki/Query-requests#examples).
-- For examples on how to use the real-time callback function, [click here](https://github.com/koczadly/jNano/wiki/Block-callback#example).
+- For examples on how to use the request/query functions, [click here](https://github.com/koczadly/jNano/wiki/Query-requests#how-to-use-the-library).
+- For examples on how to use the real-time block callback listener, [click here](https://github.com/koczadly/jNano/wiki/Block-callback#how-to-use-the-library).
 - For other information on the utilities offered by this library, [click here](https://github.com/koczadly/jNano/wiki/Utilities).
 
 ## Build
