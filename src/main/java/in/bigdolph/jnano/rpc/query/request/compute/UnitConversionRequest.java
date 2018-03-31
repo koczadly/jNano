@@ -4,9 +4,16 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import in.bigdolph.jnano.rpc.query.request.RpcRequest;
 import in.bigdolph.jnano.rpc.query.response.UnitConversionResponse;
+import in.bigdolph.jnano.util.CurrencyDivisor;
 
 import java.math.BigInteger;
 
+/**
+ * This request class is used to convert between the various currency units.
+ *
+ * @deprecated Use native {@link CurrencyDivisor} utility class instead for efficiency
+ */
+@Deprecated
 public class UnitConversionRequest extends RpcRequest<UnitConversionResponse> {
     
     @Expose
