@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.math.BigInteger;
 
-public class BlockReceive extends Block {
+public class ReceiveBlock extends Block {
     
     @Expose
     @SerializedName("previous")
@@ -16,11 +16,11 @@ public class BlockReceive extends Block {
     private String sourceBlockHash;
     
     
-    BlockReceive() {
+    ReceiveBlock() {
         super(BlockType.RECEIVE);
     }
     
-    public BlockReceive(String jsonRepresentation, String signature, String workSolution, String previousBlockHash, String sourceBlockHash) {
+    public ReceiveBlock(String jsonRepresentation, String signature, String workSolution, String previousBlockHash, String sourceBlockHash) {
         super(BlockType.RECEIVE, jsonRepresentation, signature, workSolution);
         this.previousBlockHash = previousBlockHash;
         this.sourceBlockHash = sourceBlockHash;

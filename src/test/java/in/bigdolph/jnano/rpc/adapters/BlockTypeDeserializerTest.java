@@ -31,10 +31,10 @@ public class BlockTypeDeserializerTest {
     }
     
     public void testSend(Block rawBlock) {
-        assertTrue(rawBlock instanceof BlockSend);
+        assertTrue(rawBlock instanceof SendBlock);
         assertEquals(BlockType.SEND, rawBlock.getType());
         
-        BlockSend block = (BlockSend)rawBlock;
+        SendBlock block = (SendBlock)rawBlock;
         assertEquals("7DFEE7769F8BC0A72428E7898FDFDF0660A6E234559B3B284A63B14611783AEC0706FE79368C2816B26363FD65CF900F55DB90E086EA741D718E2758B64F3406", block.getSignature());
         assertEquals("6440a18c6061b71d", block.getWorkSolution());
         assertNotNull(block.getJsonRepresentation());
@@ -56,10 +56,10 @@ public class BlockTypeDeserializerTest {
     }
     
     public void testReceive(Block rawBlock) {
-        assertTrue(rawBlock instanceof BlockReceive);
+        assertTrue(rawBlock instanceof ReceiveBlock);
         assertEquals(BlockType.RECEIVE, rawBlock.getType());
     
-        BlockReceive block = (BlockReceive)rawBlock;
+        ReceiveBlock block = (ReceiveBlock)rawBlock;
         assertEquals("406F6A1C5818E0A3625A24AF0A7FDD194B5425C0836E0BE085C18044C19F1A3BBD4D98F5A4B112A38E6208211F3646CD398E437CA974BE1C43656F512693D102", block.getSignature());
         assertEquals("5e05b7f26d1e6563", block.getWorkSolution());
         assertNotNull(block.getJsonRepresentation());
@@ -80,10 +80,10 @@ public class BlockTypeDeserializerTest {
     }
     
     public void testOpen(Block rawBlock) {
-        assertTrue(rawBlock instanceof BlockOpen);
+        assertTrue(rawBlock instanceof OpenBlock);
         assertEquals(BlockType.OPEN, rawBlock.getType());
     
-        BlockOpen block = (BlockOpen)rawBlock;
+        OpenBlock block = (OpenBlock)rawBlock;
         assertEquals("0F323D7FEF67152289B288AFD9EE9CD3CD224A3874FA8833E5E2FE60ACC500DADDADE8F37D452088B584C7DB358CA7C79B79A77A3C764ADA964B33DBF34DAB09", block.getSignature());
         assertEquals("a7cf03e595499531", block.getWorkSolution());
         assertNotNull(block.getJsonRepresentation());
@@ -105,10 +105,10 @@ public class BlockTypeDeserializerTest {
     }
     
     public void testChange(Block rawBlock) {
-        assertTrue(rawBlock instanceof BlockChange);
+        assertTrue(rawBlock instanceof ChangeBlock);
         assertEquals(BlockType.CHANGE, rawBlock.getType());
     
-        BlockChange block = (BlockChange)rawBlock;
+        ChangeBlock block = (ChangeBlock)rawBlock;
         assertEquals("F9490F5C09A2B5B99EBD4D5F50C8095229ACFF7CD823155F14FAA6D17BC87C3EBD8B427A8F2882189D3488640BDA5221A91ED00FB7B72D089037ACA80D30E001", block.getSignature());
         assertEquals("727335966a97f67d", block.getWorkSolution());
         assertNotNull(block.getJsonRepresentation());

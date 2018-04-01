@@ -1,6 +1,6 @@
 package in.bigdolph.jnano.rpc.query.request.ledger;
 
-import in.bigdolph.jnano.model.block.BlockSend;
+import in.bigdolph.jnano.model.block.SendBlock;
 import in.bigdolph.jnano.rpc.query.QueryBaseTest;
 import in.bigdolph.jnano.rpc.query.response.BlocksResponse;
 import in.bigdolph.jnano.tests.NodeTests;
@@ -18,7 +18,7 @@ public class BlocksRetrieveRequestTest extends QueryBaseTest {
         assertNotNull(res.getBlocks());
         assertEquals(3, res.getBlocks().size());
         
-        assertEquals("3928845117595383247300999000000", ((BlockSend)res.getBlock(TEST_BLOCK_SEND)).getNewBalance().toString()); //Ensure balance is accurate
+        assertEquals("3928845117595383247300999000000", ((SendBlock)res.getBlock(TEST_BLOCK_SEND)).getNewBalance().toString()); //Ensure balance is accurate
     }
     
 }

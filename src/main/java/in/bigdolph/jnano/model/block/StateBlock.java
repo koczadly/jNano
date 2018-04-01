@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.math.BigInteger;
 
 //TODO may need confirming
-public class BlockState extends Block {
+public class StateBlock extends Block {
     
     @Expose
     @SerializedName("account")
@@ -33,11 +33,11 @@ public class BlockState extends Block {
     private String linkAccount;
     
     
-    BlockState() {
+    StateBlock() {
         super(BlockType.STATE);
     }
     
-    public BlockState(String jsonRepresentation, String signature, String workSolution, String accountAddress, String previousBlockHash, String representativeAddress, BigInteger newBalance, String linkData, String linkAccount) {
+    public StateBlock(String jsonRepresentation, String signature, String workSolution, String accountAddress, String previousBlockHash, String representativeAddress, BigInteger newBalance, String linkData, String linkAccount) {
         super(BlockType.STATE, jsonRepresentation, signature, workSolution);
         this.accountAddress = accountAddress;
         this.previousBlockHash = previousBlockHash;

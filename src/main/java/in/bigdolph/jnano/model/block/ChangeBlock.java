@@ -3,7 +3,7 @@ package in.bigdolph.jnano.model.block;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class BlockChange extends Block {
+public class ChangeBlock extends Block {
     
     @Expose
     @SerializedName("previous")
@@ -14,11 +14,11 @@ public class BlockChange extends Block {
     private String representativeAccount;
     
     
-    BlockChange() {
+    ChangeBlock() {
         super(BlockType.CHANGE);
     }
     
-    public BlockChange(String jsonRepresentation, String signature, String workSolution, String previousBlockHash, String representativeAccount) {
+    public ChangeBlock(String jsonRepresentation, String signature, String workSolution, String previousBlockHash, String representativeAccount) {
         super(BlockType.CHANGE, jsonRepresentation, signature, workSolution);
         this.previousBlockHash = previousBlockHash;
         this.representativeAccount = representativeAccount;

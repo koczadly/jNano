@@ -1,6 +1,6 @@
 package in.bigdolph.jnano.rpc.query.request.ledger;
 
-import in.bigdolph.jnano.model.block.BlockSend;
+import in.bigdolph.jnano.model.block.SendBlock;
 import in.bigdolph.jnano.rpc.query.QueryBaseTest;
 import in.bigdolph.jnano.rpc.query.response.BlocksInfoResponse;
 import in.bigdolph.jnano.tests.NodeTests;
@@ -18,7 +18,7 @@ public class BlocksInfoRequestTest extends QueryBaseTest {
         assertNotNull(res.getBlocks());
         assertNotNull(res.getBlock(TEST_BLOCK_SEND));
         assertEquals(3, res.getBlocks().size());
-        assertTrue(res.getBlock(TEST_BLOCK_SEND).getBlock() instanceof BlockSend);
+        assertTrue(res.getBlock(TEST_BLOCK_SEND).getBlock() instanceof SendBlock);
     }
     
 }

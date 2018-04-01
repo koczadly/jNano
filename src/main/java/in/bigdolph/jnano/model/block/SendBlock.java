@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.math.BigInteger;
 
-public class BlockSend extends Block {
+public class SendBlock extends Block {
     
     @Expose
     @SerializedName("previous")
@@ -20,11 +20,11 @@ public class BlockSend extends Block {
     private BigInteger newBalance;
     
     
-    BlockSend() {
+    SendBlock() {
         super(BlockType.SEND);
     }
     
-    public BlockSend(String jsonRepresentation, String signature, String workSolution, String previousBlockHash, String destinationAccount, BigInteger newBalance) {
+    public SendBlock(String jsonRepresentation, String signature, String workSolution, String previousBlockHash, String destinationAccount, BigInteger newBalance) {
         super(BlockType.SEND, jsonRepresentation, signature, workSolution);
         this.previousBlockHash = previousBlockHash;
         this.destinationAccount = destinationAccount;

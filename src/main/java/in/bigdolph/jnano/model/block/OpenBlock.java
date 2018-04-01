@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.math.BigInteger;
 
-public class BlockOpen extends Block {
+public class OpenBlock extends Block {
     
     @Expose
     @SerializedName("source")
@@ -20,11 +20,11 @@ public class BlockOpen extends Block {
     private String representativeAccount;
     
     
-    BlockOpen() {
+    OpenBlock() {
         super(BlockType.OPEN);
     }
     
-    public BlockOpen(String jsonRepresentation, String signature, String workSolution, String sourceBlockHash, String accountAddress, String representativeAccount) {
+    public OpenBlock(String jsonRepresentation, String signature, String workSolution, String sourceBlockHash, String accountAddress, String representativeAccount) {
         super(BlockType.OPEN, jsonRepresentation, signature, workSolution);
         this.sourceBlockHash = sourceBlockHash;
         this.accountAddress = accountAddress;
