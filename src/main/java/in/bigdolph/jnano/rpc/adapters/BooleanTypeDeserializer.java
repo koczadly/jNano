@@ -10,8 +10,8 @@ public class BooleanTypeDeserializer implements JsonDeserializer<Boolean> {
     
     @Override
     public Boolean deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        String str = jsonElement.getAsString();
-        return str.equals("1") || str.equalsIgnoreCase("true") || str.equalsIgnoreCase("t");
+        String str = jsonElement.getAsString().toLowerCase();
+        return str.equals("1") || str.equals("true");
     }
     
 }
