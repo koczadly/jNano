@@ -48,6 +48,17 @@ public class BlockTypeDeserializer implements JsonDeserializer<Block> {
                         jsonObj.get("work").getAsString(),
                         jsonObj.get("previous").getAsString(),
                         jsonObj.get("representative").getAsString());
+            case "UTX":
+            case "STATE":
+                return new BlockState(
+                        jsonStr,
+                        jsonObj.get("signature").getAsString(),
+                        jsonObj.get("work").getAsString(),
+                        jsonObj.get("account").getAsString(),
+                        jsonObj.get("previous").getAsString(),
+                        jsonObj.get("representative").getAsString(),
+                        new BigInteger(jsonObj.get("balance").getAsString(), 16), //TODO - balance might not be encoded
+                        jsonObj.get("link").getAsString());
             default: throw new JsonParseException("Block type " + blockType + " does not exist");
         }
     }
