@@ -5,22 +5,23 @@ import com.google.gson.annotations.SerializedName;
 public enum BlockType {
     
     @SerializedName("open")
-    OPEN(true),
+    OPEN    ("open",    true),
     
     @SerializedName("change")
-    CHANGE(false),
+    CHANGE  ("change",  false),
     
     @SerializedName("send")
-    SEND(true),
+    SEND    ("send",    true),
     
     @SerializedName("receive")
-    RECEIVE(true);
+    RECEIVE ("receive", true);
     
     
-    private final String name = this.name().toLowerCase();
-    private final boolean isTransaction;
+    private String name;
+    private boolean isTransaction;
     
-    BlockType(boolean isTransaction) {
+    BlockType(String name, boolean isTransaction) {
+        this.name = name;
         this.isTransaction = isTransaction;
     }
     
@@ -30,10 +31,14 @@ public enum BlockType {
         return isTransaction;
     }
     
+    public String getProtocolName() {
+        return name;
+    }
+    
     
     @Override
     public String toString() {
-        return this.name;
+        return this.getProtocolName();
     }
     
 }
