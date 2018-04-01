@@ -11,14 +11,16 @@ public class BlockInfo {
     
     private String rawJson, accountAddress, blockHash;
     private Block block;
+    private boolean isSend;
     private BigInteger amount;
     
-    public BlockInfo(String rawJson, String accountAddress, String blockHash, Block block, BigInteger amount) {
+    public BlockInfo(String rawJson, String accountAddress, String blockHash, Block block, boolean isSend, BigInteger amount) {
         this.rawJson = rawJson;
         this.accountAddress = accountAddress;
         this.blockHash = blockHash;
         this.block = block;
         this.amount = amount;
+        this.isSend = isSend;
     }
     
     
@@ -49,6 +51,14 @@ public class BlockInfo {
      */
     public Block getBlock() {
         return block;
+    }
+    
+    /**
+     * Part of the new universal blocks API
+     * @return if the block is a SEND transaction
+     */
+    public boolean isSendTransaction() {
+        return isSend;
     }
     
     /**

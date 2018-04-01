@@ -2,6 +2,7 @@ package in.bigdolph.jnano.rpc.callback;
 
 import in.bigdolph.jnano.rpc.callback.server.BlockCallbackServer;
 import in.bigdolph.jnano.tests.FunctionalityTests;
+import in.bigdolph.jnano.tests.NodeTests;
 import in.bigdolph.jnano.util.CurrencyDivisor;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -20,9 +21,8 @@ public class BlockCallbackServerTest {
     
     
     
-    
     @Test
-    @Category(FunctionalityTests.class)
+    @Category(NodeTests.class)
     public void testStartStop() {
         this.server.start();
         this.server.stop();
@@ -39,6 +39,7 @@ public class BlockCallbackServerTest {
         while(true); //Keep main thread alive
     }
     
+    
     public class TestListener implements BlockCallbackListener {
         
         @Override
@@ -47,7 +48,7 @@ public class BlockCallbackServerTest {
             System.out.println("Type: " + block.getBlock().getType().toString()); //Outputs block type
             if(block.getTransactionalAmount() != null) {
                 BigDecimal value = CurrencyDivisor.BASE_UNIT.convert(new BigDecimal(block.getTransactionalAmount()), CurrencyDivisor.RAW);
-                System.out.println("Value: " + value.toString() + " " + CurrencyDivisor.BASE_UNIT.getDisplayName()); //Outputs associated value
+                System.out.println("Value: " + value.toPlainString() + " " + CurrencyDivisor.BASE_UNIT.getDisplayName()); //Outputs associated value
             }
             System.out.println("Node IP: " + node.getHostAddress() + ", target: " + target);
             System.out.println("");

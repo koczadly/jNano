@@ -24,6 +24,7 @@ public class CallbackBlockTypeDeserializer implements JsonDeserializer<BlockInfo
                 json.get("account").getAsString(),
                 json.get("hash").getAsString(),
                 block,
+                json.has("is_send") ? json.get("is_send").getAsBoolean() : block.getType() == BlockType.SEND, //UTX state block
                 block.getType().isTransaction() ? json.get("amount").getAsBigInteger() : null); //Null if non-transactional
     }
     

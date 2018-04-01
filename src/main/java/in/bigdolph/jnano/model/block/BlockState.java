@@ -28,18 +28,23 @@ public class BlockState extends Block {
     @SerializedName("link")
     private String linkData;
     
+    @Expose
+    @SerializedName("link_as_account")
+    private String linkAccount;
+    
     
     BlockState() {
         super(BlockType.STATE);
     }
     
-    public BlockState(String jsonRepresentation, String signature, String workSolution, String accountAddress, String previousBlockHash, String representativeAddress, BigInteger newBalance, String linkData) {
+    public BlockState(String jsonRepresentation, String signature, String workSolution, String accountAddress, String previousBlockHash, String representativeAddress, BigInteger newBalance, String linkData, String linkAccount) {
         super(BlockType.STATE, jsonRepresentation, signature, workSolution);
         this.accountAddress = accountAddress;
         this.previousBlockHash = previousBlockHash;
         this.representativeAddress = representativeAddress;
         this.newBalance = newBalance;
         this.linkData = linkData;
+        this.linkAccount = linkAccount;
     }
     
     
@@ -62,6 +67,10 @@ public class BlockState extends Block {
     
     public String getLinkData() {
         return linkData;
+    }
+    
+    public String getLinkAccount() {
+        return linkAccount;
     }
     
 }

@@ -51,7 +51,7 @@ public class HttpClient implements Runnable {
     
             HttpRequest requestData = new HttpRequest(this.socket.getInetAddress(), request[1], contentLength, String.valueOf(buffer));
             this.callbackServer.handleRequest(requestData);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             //Close socket
