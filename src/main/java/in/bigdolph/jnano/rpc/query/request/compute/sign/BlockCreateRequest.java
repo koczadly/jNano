@@ -30,20 +30,20 @@ public abstract class BlockCreateRequest extends RpcRequest<BlockCreateResponse>
     
     
     public BlockCreateRequest(BlockType type, String privateKey, String workSolution) {
-        this(type, workSolution);
-        this.privateKey = privateKey;
+        this(type, null, null, privateKey, workSolution);
     }
     
     public BlockCreateRequest(BlockType type, String walletId, String account, String workSolution) {
-        this(type, workSolution);
-        this.walletId = walletId;
-        this.account = account;
+        this(type, walletId, account, null, workSolution);
     }
     
-    BlockCreateRequest(BlockType type, String workSolution) {
+    BlockCreateRequest(BlockType type, String walletId, String account, String privateKey, String workSolution) {
         super("block_create", BlockCreateResponse.class);
         this.type = type;
         this.workSolution = workSolution;
+        this.walletId = walletId;
+        this.account = account;
+        this.privateKey = privateKey;
     }
     
     

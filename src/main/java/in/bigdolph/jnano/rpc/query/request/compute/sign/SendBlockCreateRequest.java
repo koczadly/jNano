@@ -25,7 +25,7 @@ public class SendBlockCreateRequest extends BlockCreateRequest {
     private String previousBlockHash;
     
     
-    public SendBlockCreateRequest(String privateKey, String workSolution, String destinationAccount, BigInteger currentBalance, BigInteger amount, String previousBlockHash) {
+    public SendBlockCreateRequest(String destinationAccount, BigInteger currentBalance, BigInteger amount, String previousBlockHash, String privateKey, String workSolution) {
         super(BlockType.SEND, privateKey, workSolution);
         this.destinationAccount = destinationAccount;
         this.currentBalance = currentBalance;
@@ -33,7 +33,7 @@ public class SendBlockCreateRequest extends BlockCreateRequest {
         this.previousBlockHash = previousBlockHash;
     }
     
-    public SendBlockCreateRequest(String walletId, String account, String workSolution, String destinationAccount, BigInteger currentBalance, BigInteger amount, String previousBlockHash) {
+    public SendBlockCreateRequest(String destinationAccount, BigInteger currentBalance, BigInteger amount, String previousBlockHash, String walletId, String account, String workSolution) {
         super(BlockType.SEND, walletId, account, workSolution);
         this.destinationAccount = destinationAccount;
         this.currentBalance = currentBalance;
