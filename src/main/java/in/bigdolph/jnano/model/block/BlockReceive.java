@@ -20,8 +20,8 @@ public class BlockReceive extends Block {
         super(BlockType.RECEIVE);
     }
     
-    public BlockReceive(String signature, String workSolution, String previousBlockHash, String sourceBlockHash) {
-        super(BlockType.RECEIVE, signature, workSolution);
+    public BlockReceive(String jsonRepresentation, String signature, String workSolution, String previousBlockHash, String sourceBlockHash) {
+        super(BlockType.RECEIVE, jsonRepresentation, signature, workSolution);
         this.previousBlockHash = previousBlockHash;
         this.sourceBlockHash = sourceBlockHash;
     }

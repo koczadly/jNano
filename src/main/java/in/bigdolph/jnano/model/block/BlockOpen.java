@@ -24,8 +24,8 @@ public class BlockOpen extends Block {
         super(BlockType.OPEN);
     }
     
-    public BlockOpen(String signature, String workSolution, String sourceBlockHash, String accountAddress, String representativeAccount) {
-        super(BlockType.OPEN, signature, workSolution);
+    public BlockOpen(String jsonRepresentation, String signature, String workSolution, String sourceBlockHash, String accountAddress, String representativeAccount) {
+        super(BlockType.OPEN, jsonRepresentation, signature, workSolution);
         this.sourceBlockHash = sourceBlockHash;
         this.accountAddress = accountAddress;
         this.representativeAccount = representativeAccount;

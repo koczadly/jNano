@@ -29,8 +29,9 @@ public abstract class Block {
         this.type = type;
     }
     
-    public Block(BlockType type, String signature, String workSolution) {
+    public Block(BlockType type, String jsonRepresentation, String signature, String workSolution) {
         this.type = type;
+        this.jsonRepresentation = jsonRepresentation;
         this.signature = signature;
         this.workSolution = workSolution;
     }
@@ -53,15 +54,6 @@ public abstract class Block {
     public String getJsonRepresentation() {
         if(jsonRepresentation == null) jsonRepresentation = new GsonBuilder().create().toJson(this);
         return jsonRepresentation;
-    }
-    
-    /**
-     * This method may only be called once after construction.
-     * This method will be automatically called after deserialization from JSON.
-     */
-    public void setJsonRepresentation(String json) {
-        if(this.jsonRepresentation != null) throw new IllegalStateException("JSON representation has already been set");
-        this.jsonRepresentation = json;
     }
     
     

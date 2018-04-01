@@ -18,8 +18,8 @@ public class BlockChange extends Block {
         super(BlockType.CHANGE);
     }
     
-    public BlockChange(String signature, String workSolution, String previousBlockHash, String representativeAccount) {
-        super(BlockType.CHANGE, signature, workSolution);
+    public BlockChange(String jsonRepresentation, String signature, String workSolution, String previousBlockHash, String representativeAccount) {
+        super(BlockType.CHANGE, jsonRepresentation, signature, workSolution);
         this.previousBlockHash = previousBlockHash;
         this.representativeAccount = representativeAccount;
     }

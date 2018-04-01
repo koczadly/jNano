@@ -13,45 +13,43 @@ public class BlockTypeDeserializer implements JsonDeserializer<Block> {
     
     @Override
     public Block deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject json = element.isJsonObject() ? element.getAsJsonObject() : this.parser.parse(element.getAsString()).getAsJsonObject(); //Sometimes blocks are passed as string representations
+        JsonObject jsonObj = element.isJsonObject() ? element.getAsJsonObject() : this.parser.parse(element.getAsString()).getAsJsonObject(); //Sometimes blocks are passed as string representations
+        String jsonStr = jsonObj.toString();
         
-        String blockType = json.get("type").getAsString().toUpperCase();
-        Block block = null;
+        String blockType = jsonObj.get("type").getAsString().toUpperCase();
         switch(blockType) {
             case "OPEN":
-                block = new BlockOpen(
-                        json.get("signature").getAsString(),
-                        json.get("work").getAsString(),
-                        json.get("source").getAsString(),
-                        json.get("account").getAsString(),
-                        json.get("representative").getAsString());
-                break;
+                return new BlockOpen(
+                        jsonStr,
+                        jsonObj.get("signature").getAsString(),
+                        jsonObj.get("work").getAsString(),
+                        jsonObj.get("source").getAsString(),
+                        jsonObj.get("account").getAsString(),
+                        jsonObj.get("representative").getAsString());
             case "RECEIVE":
-                block = new BlockReceive(
-                        json.get("signature").getAsString(),
-                        json.get("work").getAsString(),
-                        json.get("previous").getAsString(),
-                        json.get("source").getAsString());
-                break;
+                return new BlockReceive(
+                        jsonStr,
+                        jsonObj.get("signature").getAsString(),
+                        jsonObj.get("work").getAsString(),
+                        jsonObj.get("previous").getAsString(),
+                        jsonObj.get("source").getAsString());
             case "SEND":
-                block = new BlockSend(
-                        json.get("signature").getAsString(),
-                        json.get("work").getAsString(),
-                        json.get("previous").getAsString(),
-                        json.get("destination").getAsString(),
-                        new BigInteger(json.get("balance").getAsString(), 16)); //Balance is encoded in hexadecimal
-                break;
+                return new BlockSend(
+                        jsonStr,
+                        jsonObj.get("signature").getAsString(),
+                        jsonObj.get("work").getAsString(),
+                        jsonObj.get("previous").getAsString(),
+                        jsonObj.get("destination").getAsString(),
+                        new BigInteger(jsonObj.get("balance").getAsString(), 16)); //Balance is encoded in hexadecimal
             case "CHANGE":
-                block = new BlockChange(
-                        json.get("signature").getAsString(),
-                        json.get("work").getAsString(),
-                        json.get("previous").getAsString(),
-                        json.get("representative").getAsString());
-                break;
+                return new BlockChange(
+                        jsonStr,
+                        jsonObj.get("signature").getAsString(),
+                        jsonObj.get("work").getAsString(),
+                        jsonObj.get("previous").getAsString(),
+                        jsonObj.get("representative").getAsString());
+            default: throw new JsonParseException("Block type " + blockType + " does not exist");
         }
-        if(block == null) throw new JsonParseException("Block type " + blockType + " does not exist");
-        block.setJsonRepresentation(json.toString());
-        return block;
     }
     
 }

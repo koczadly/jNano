@@ -24,8 +24,8 @@ public class BlockSend extends Block {
         super(BlockType.SEND);
     }
     
-    public BlockSend(String signature, String workSolution, String previousBlockHash, String destinationAccount, BigInteger newBalance) {
-        super(BlockType.SEND, signature, workSolution);
+    public BlockSend(String jsonRepresentation, String signature, String workSolution, String previousBlockHash, String destinationAccount, BigInteger newBalance) {
+        super(BlockType.SEND, jsonRepresentation, signature, workSolution);
         this.previousBlockHash = previousBlockHash;
         this.destinationAccount = destinationAccount;
         this.newBalance = newBalance;
