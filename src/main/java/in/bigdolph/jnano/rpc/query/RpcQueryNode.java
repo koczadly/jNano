@@ -292,10 +292,13 @@ public class RpcQueryNode {
             case "unable to parse json":            return new RpcInvalidRequestJsonException();        //Invalid request body
             case "unknown command":                 return new RpcUnknownCommandException();            //Unknown command
         }
-        if(msgLower.startsWith("bad")
-                || msgLower.startsWith("invalid")) return new RpcInvalidArgumentException(message);    //Invalid/bad argument
         
-        if(msgLower.contains("not found"))         return new RpcEntityNotFoundException(message);     //Unknown referenced entity
+        if(msgLower.startsWith("bad")
+                || msgLower.startsWith("invalid"))  return new RpcInvalidArgumentException(message);    //Invalid/bad argument
+    
+        if(msgLower.contains("not found"))          return new RpcEntityNotFoundException(message);     //Unknown referenced entity
+    
+        if(msgLower.startsWith("internal"))         return new RpcInternalException(message);           //Internal server error
         
         return new RpcQueryException(message); //Default to regular
     }
