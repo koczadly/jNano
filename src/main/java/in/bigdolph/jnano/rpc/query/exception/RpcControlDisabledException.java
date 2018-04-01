@@ -1,5 +1,8 @@
 package in.bigdolph.jnano.rpc.query.exception;
 
+/**
+ * Thrown when a request needs control access but it's disabled on the node.
+ */
 public class RpcControlDisabledException extends RpcQueryException {
     
     public RpcControlDisabledException() {
