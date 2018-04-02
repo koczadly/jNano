@@ -89,26 +89,49 @@ public enum CurrencyDivisor {
     }
     
     
-    /** Converts the given amount and unit to this unit. Note that downscaling will truncate any fractional amounts.
+    
+    /**
+     * Converts the given amount and unit to this unit.
+     * Note that downscaling will truncate any fractional amounts.
+     *
      * @param sourceAmount  the source amount to convert from
      * @param sourceUnit    the source unit to convert from
-     * @return              the converted value in this unit
+     * @return the converted value in this unit
      */
-    public BigInteger convert(BigInteger sourceAmount, CurrencyDivisor sourceUnit) {
-        //Argument checks
-        if(sourceAmount == null) throw new IllegalArgumentException("Source amount cannot be null");
-        if(sourceUnit == null) throw new IllegalArgumentException("Source unit cannot be null");
-        if(sourceAmount.compareTo(BigInteger.ZERO) < 0) throw new IllegalArgumentException("Source amount cannot be negative");
-        
-        if(sourceUnit == this) return sourceAmount; //Same unit
-        
-        return this.convert(new BigDecimal(sourceAmount), sourceUnit).toBigInteger();
+    public BigInteger convertInt(BigInteger sourceAmount, CurrencyDivisor sourceUnit) {
+        return this.convert(sourceAmount, sourceUnit).toBigInteger();
     }
     
-    /** Converts the given amount and unit to this unit.
+    /**
+     * Converts the given amount and unit to this unit.
+     * Note that downscaling will truncate any fractional amounts.
+     *
      * @param sourceAmount  the source amount to convert from
      * @param sourceUnit    the source unit to convert from
-     * @return              the converted value in this unit
+     * @return the converted value in this unit
+     */
+    public BigInteger convertInt(BigDecimal sourceAmount, CurrencyDivisor sourceUnit) {
+        return this.convert(sourceAmount, sourceUnit).toBigInteger();
+    }
+    
+    
+    /**
+     * Converts the given amount and unit to this unit.
+     *
+     * @param sourceAmount  the source amount to convert from
+     * @param sourceUnit    the source unit to convert from
+     * @return the converted value in this unit
+     */
+    public BigDecimal convert(BigInteger sourceAmount, CurrencyDivisor sourceUnit) {
+        return this.convert(new BigDecimal(sourceAmount), sourceUnit);
+    }
+    
+    /**
+     * Converts the given amount and unit to this unit.
+     *
+     * @param sourceAmount  the source amount to convert from
+     * @param sourceUnit    the source unit to convert from
+     * @return the converted value in this unit
      */
     public BigDecimal convert(BigDecimal sourceAmount, CurrencyDivisor sourceUnit) {
         //Argument checks
