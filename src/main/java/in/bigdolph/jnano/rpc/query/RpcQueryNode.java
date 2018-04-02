@@ -287,6 +287,7 @@ public class RpcQueryNode {
         switch(msgLower) {
             case "wallet is locked":
             case "wallet locked":                   return new RpcWalletLockedException();              //Wallet locked
+            case "insufficient balance":            return new RpcInvalidArgumentException(message);    //Invalid/bad argument (not enough funds)
             case "invalid authorization header":    return new RpcInvalidAuthTokenException();          //Invalid auth token
             case "rpc control is disabled":         return new RpcControlDisabledException();           //RPC disabled
             case "unable to parse json":            return new RpcInvalidRequestJsonException();        //Invalid request body
@@ -294,10 +295,11 @@ public class RpcQueryNode {
         }
         
         if(msgLower.startsWith("bad")
-                || msgLower.startsWith("invalid"))  return new RpcInvalidArgumentException(message);    //Invalid/bad argument
-    
+                || msgLower.startsWith("invalid")
+                || msgLower.endsWith("required"))   return new RpcInvalidArgumentException(message);    //Invalid/bad argument
+        
         if(msgLower.contains("not found"))          return new RpcEntityNotFoundException(message);     //Unknown referenced entity
-    
+        
         if(msgLower.startsWith("internal"))         return new RpcInternalException(message);           //Internal server error
         
         return new RpcQueryException(message); //Default to regular
