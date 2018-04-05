@@ -8,40 +8,42 @@ import in.bigdolph.jnano.rpc.query.response.LedgerAccountsResponse;
 
 public class LedgerAccountsRequest extends RpcRequest<LedgerAccountsResponse> {
     
-    @Expose
-    @SerializedName("account")
+    @Expose @SerializedName("account")
     private String account;
     
-    @Expose
-    @SerializedName("count")
-    private int transactionCount;
+    @Expose @SerializedName("count")
+    private int count;
     
-    @Expose
-    @SerializedName("representative")
+    @Expose @SerializedName("modified_since")
+    private Long modifiedSince;
+    
+    @Expose @SerializedName("sorting")
+    private SortingOrder sortingOrder;
+    
+    @Expose @SerializedName("representative")
     private boolean fetchRepresentative = true;
     
-    @Expose
-    @SerializedName("weight")
+    @Expose @SerializedName("weight")
     private boolean fetchWeight = true;
     
-    @Expose
-    @SerializedName("pending")
+    @Expose @SerializedName("pending")
     private boolean fetchPending = true;
     
-    @Expose
-    @SerializedName("sorting")
-    private SortingOrder order;
     
-    
-    public LedgerAccountsRequest(String account, int transactionCount) {
-        this(account, transactionCount, SortingOrder.DEFAULT);
+    public LedgerAccountsRequest(String account, int count) {
+        this(account, count, null);
     }
     
-    public LedgerAccountsRequest(String account, int transactionCount, SortingOrder order) {
+    public LedgerAccountsRequest(String account, int count, Long modifiedSince) {
+        this(account, count, modifiedSince, SortingOrder.DEFAULT);
+    }
+    
+    public LedgerAccountsRequest(String account, int count, Long modifiedSince, SortingOrder sortingOrder) {
         super("ledger", LedgerAccountsResponse.class);
         this.account = account;
-        this.transactionCount = transactionCount;
-        this.order = order;
+        this.count = count;
+        this.modifiedSince = modifiedSince;
+        this.sortingOrder = sortingOrder;
     }
     
     
@@ -50,8 +52,16 @@ public class LedgerAccountsRequest extends RpcRequest<LedgerAccountsResponse> {
         return account;
     }
     
-    public int getTransactionCount() {
-        return transactionCount;
+    public int getCount() {
+        return count;
+    }
+    
+    public Long getModifiedSince() {
+        return modifiedSince;
+    }
+    
+    public SortingOrder getSortingOrder() {
+        return sortingOrder;
     }
     
 }
