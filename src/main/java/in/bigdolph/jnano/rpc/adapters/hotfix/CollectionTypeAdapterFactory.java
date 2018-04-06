@@ -33,30 +33,45 @@ public class CollectionTypeAdapterFactory implements TypeAdapterFactory {
         TypeAdapter<T> delegateAdapter = gson.getDelegateAdapter(this, typeToken);
         if(delegateAdapter == null) return null;
         
-        return new Adapter(delegateAdapter, constructor.get(typeToken));
+        return new Adapter(gson, delegateAdapter, constructor.get(typeToken));
     }
-    
     
     
     private static class Adapter<E> extends TypeAdapter<Collection<E>> {
         
+        private final Gson gson;
         private final TypeAdapter<Collection<E>> delegateAdapter;
         private final ObjectConstructor<? extends Collection<E>> constructor;
         
-        public Adapter(TypeAdapter<Collection<E>> standardAdapter, ObjectConstructor<? extends Collection<E>> constructor) {
+        public Adapter(Gson gson, TypeAdapter<Collection<E>> standardAdapter, ObjectConstructor<? extends Collection<E>> constructor) {
+            this.gson = gson;
             this.delegateAdapter = standardAdapter;
             this.constructor = constructor;
         }
         
         
-        
         @Override
         public Collection<E> read(JsonReader in) throws IOException {
+            //From blank string
             if(in.peek() == JsonToken.STRING) {
                 if(in.nextString().length() == 0) return constructor.construct();
                 throw new JsonSyntaxException("Parsed hotfix string is not empty");
             }
-            return this.delegateAdapter.read(in); //Standard read operation
+            
+            //From map keyset
+            if(in.peek() == JsonToken.BEGIN_OBJECT) {
+                //Read map
+                Type type = new TypeToken<Map<E, ?>>(){}.getType();
+                Map<E, ?> map = this.gson.fromJson(in, type);
+                
+                //Create collection
+                Collection<E> col = constructor.construct();
+                col.addAll(map.keySet());
+                return col;
+            }
+            
+            //Standard read operation
+            return this.delegateAdapter.read(in);
         }
         
         @Override
