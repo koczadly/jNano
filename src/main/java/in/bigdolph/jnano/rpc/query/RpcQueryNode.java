@@ -43,7 +43,7 @@ public class RpcQueryNode {
     /**
      * Constructs a new query node with the address 127.0.0.1:7076
      *
-     * @param authToken   the authentication token to be sent with queries
+     * @param authToken   the authorization token to be sent with queries
      * @throws MalformedURLException if the address cannot be parsed
      */
     public RpcQueryNode(String authToken) throws MalformedURLException {
@@ -66,7 +66,7 @@ public class RpcQueryNode {
      *
      * @param address   the address of the node
      * @param port      the port which the node is listening on
-     * @param authToken the authentication token to be sent with queries
+     * @param authToken the authorization token to be sent with queries
      * @throws MalformedURLException if the address cannot be parsed
      */
     public RpcQueryNode(String address, int port, String authToken) throws MalformedURLException {
@@ -84,7 +84,7 @@ public class RpcQueryNode {
     /**
      * Constructs a new query node with the given address and port
      * @param address   the HTTP URL (address and port) which the node is listening on
-     * @param authToken the authentication token to be sent with queries
+     * @param authToken the authorization token to be sent with queries
      */
     public RpcQueryNode(URL address, String authToken) {
         this(address, authToken, new GsonBuilder());
@@ -120,7 +120,7 @@ public class RpcQueryNode {
     }
     
     /**
-     * Sets the authentication token to be used with future requests.
+     * Sets the authorization token to be used with future requests.
      *
      * @param authToken the new token to be used for queries, or null to remove
      */
@@ -233,7 +233,7 @@ public class RpcQueryNode {
         con.setDoInput(true);
         con.setRequestMethod("POST");
         if(this.authToken != null) {
-            con.setRequestProperty("Authorization", "Bearer " + this.authToken); //Set authentication token header
+            con.setRequestProperty("Authorization", "Bearer " + this.authToken); //Set authorization token header
         }
         
         //Write request data
