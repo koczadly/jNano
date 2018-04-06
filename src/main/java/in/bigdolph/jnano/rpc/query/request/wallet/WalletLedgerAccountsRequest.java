@@ -1,4 +1,4 @@
-package in.bigdolph.jnano.rpc.query.request.ledger;
+package in.bigdolph.jnano.rpc.query.request.wallet;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -6,13 +6,13 @@ import in.bigdolph.jnano.rpc.query.request.RpcRequest;
 import in.bigdolph.jnano.rpc.query.request.SortingOrder;
 import in.bigdolph.jnano.rpc.query.response.LedgerAccountsResponse;
 
-public class LedgerAccountsRequest extends RpcRequest<LedgerAccountsResponse> {
+public class WalletLedgerAccountsRequest extends RpcRequest<LedgerAccountsResponse> {
     
     @Expose @SerializedName("account")
     private String account;
     
-    @Expose @SerializedName("count")
-    private int count;
+    @Expose @SerializedName("wallet")
+    private String walletId;
     
     @Expose @SerializedName("modified_since")
     private Integer modifiedSince;
@@ -30,18 +30,18 @@ public class LedgerAccountsRequest extends RpcRequest<LedgerAccountsResponse> {
     private boolean fetchPending = true;
     
     
-    public LedgerAccountsRequest(String account, int count) {
-        this(account, count, null);
+    public WalletLedgerAccountsRequest(String account, String walletId) {
+        this(account, walletId, null);
     }
     
-    public LedgerAccountsRequest(String account, int count, Integer modifiedSince) {
-        this(account, count, modifiedSince, SortingOrder.DEFAULT);
+    public WalletLedgerAccountsRequest(String account, String walletId, Integer modifiedSince) {
+        this(account, walletId, modifiedSince, SortingOrder.DEFAULT);
     }
     
-    public LedgerAccountsRequest(String account, int count, Integer modifiedSince, SortingOrder sortingOrder) {
-        super("ledger", LedgerAccountsResponse.class);
+    public WalletLedgerAccountsRequest(String account, String walletId, Integer modifiedSince, SortingOrder sortingOrder) {
+        super("wallet_ledger", LedgerAccountsResponse.class);
         this.account = account;
-        this.count = count;
+        this.walletId = walletId;
         this.modifiedSince = modifiedSince;
         this.sortingOrder = sortingOrder;
     }
@@ -52,8 +52,8 @@ public class LedgerAccountsRequest extends RpcRequest<LedgerAccountsResponse> {
         return account;
     }
     
-    public int getCount() {
-        return count;
+    public String getWalletId() {
+        return walletId;
     }
     
     public Integer getModifiedSince() {
