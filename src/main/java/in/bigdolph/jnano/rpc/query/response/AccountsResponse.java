@@ -8,7 +8,7 @@ import java.util.Set;
 public class AccountsResponse extends RpcResponse {
 
     @Expose
-    @SerializedName("accounts")
+    @SerializedName(value = "accounts", alternate = {"representatives"})
     private Set<String> accounts;
     
     
