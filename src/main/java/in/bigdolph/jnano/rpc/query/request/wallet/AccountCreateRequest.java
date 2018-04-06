@@ -17,7 +17,7 @@ public class AccountCreateRequest extends RpcRequest<AccountResponse> {
     
     
     public AccountCreateRequest(String walletId) {
-        this(walletId, true);
+        this(walletId, false);
     }
     
     public AccountCreateRequest(String walletId, boolean generateWork) {

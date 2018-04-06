@@ -20,6 +20,10 @@ public class AccountsCreateRequest extends RpcRequest<AccountsResponse> {
     private boolean generateWork;
     
     
+    public AccountsCreateRequest(String walletId, int count) {
+        this(walletId, count, false);
+    }
+    
     public AccountsCreateRequest(String walletId, int count, boolean generateWork) {
         super("accounts_create", AccountsResponse.class);
         this.walletId = walletId;
