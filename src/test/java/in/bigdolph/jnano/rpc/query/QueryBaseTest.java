@@ -1,6 +1,6 @@
 package in.bigdolph.jnano.rpc.query;
 
-import in.bigdolph.jnano.rpc.query.exception.RpcQueryException;
+import in.bigdolph.jnano.rpc.query.exception.RpcException;
 import in.bigdolph.jnano.rpc.query.request.RpcRequest;
 import in.bigdolph.jnano.rpc.query.response.RpcResponse;
 import in.bigdolph.jnano.tests.Configuration;
@@ -33,7 +33,7 @@ public abstract class QueryBaseTest implements Configuration {
             R response = this.node.processRequest(req);
             Assert.assertNotNull(response);
             return response;
-        } catch (IOException | RpcQueryException e) {
+        } catch (IOException | RpcException e) {
             e.printStackTrace();
         }
         return null;
@@ -42,7 +42,7 @@ public abstract class QueryBaseTest implements Configuration {
     public <R extends RpcResponse> R query(Class<R> responseClass, String responseJson) {
         try {
             return this.node.deserializeResponseFromJSON(responseJson, responseClass);
-        } catch(RpcQueryException e) {
+        } catch(RpcException e) {
             e.printStackTrace();
             return null;
         }

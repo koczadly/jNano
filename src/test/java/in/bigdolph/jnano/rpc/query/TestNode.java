@@ -1,6 +1,6 @@
 package in.bigdolph.jnano.rpc.query;
 
-import in.bigdolph.jnano.rpc.query.exception.RpcQueryException;
+import in.bigdolph.jnano.rpc.query.exception.RpcException;
 import in.bigdolph.jnano.rpc.query.request.RpcRequest;
 import in.bigdolph.jnano.rpc.query.response.RpcResponse;
 import in.bigdolph.jnano.tests.Configuration;
@@ -24,7 +24,7 @@ public class TestNode extends RpcQueryNode {
     }
     
     @Override
-    public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request) throws IOException, RpcQueryException {
+    public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request) throws IOException, RpcException {
         return super.processRequest(request);
     }
     

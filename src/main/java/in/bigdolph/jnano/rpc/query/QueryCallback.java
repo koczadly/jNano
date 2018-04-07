@@ -1,6 +1,6 @@
 package in.bigdolph.jnano.rpc.query;
 
-import in.bigdolph.jnano.rpc.query.exception.RpcQueryException;
+import in.bigdolph.jnano.rpc.query.exception.RpcException;
 import in.bigdolph.jnano.rpc.query.response.RpcResponse;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ public interface QueryCallback<R extends RpcResponse> {
     
     /**
      * This method is called if there is an error processing the query.
-     * Common exceptions caught by the executor are {@link RpcQueryException} and {@link IOException}.
+     * Common exceptions caught by the executor are {@link RpcException} and {@link IOException}.
      *
      * @param ex    the exception thrown
      */

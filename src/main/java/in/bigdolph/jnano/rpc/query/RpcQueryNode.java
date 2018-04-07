@@ -145,9 +145,9 @@ public class RpcQueryNode {
      * @param request the query request to send to the node
      * @return the successful reponse from the node
      * @throws IOException         if an error occurs with the connection to the node
-     * @throws RpcQueryException   if the node returns a non-successful response
+     * @throws RpcException   if the node returns a non-successful response
      */
-    public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request) throws IOException, RpcQueryException {
+    public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request) throws IOException, RpcException {
         return this.processRequest(request, null);
     }
     
@@ -158,9 +158,9 @@ public class RpcQueryNode {
      * @param timeout the timeout for the request in milliseconds, or null for none
      * @return the successful reponse from the node
      * @throws IOException         if an error occurs with the connection to the node
-     * @throws RpcQueryException   if the node returns a non-successful response
+     * @throws RpcException   if the node returns a non-successful response
      */
-    public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request, Integer timeout) throws IOException, RpcQueryException {
+    public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request, Integer timeout) throws IOException, RpcException {
         if(request == null) throw new IllegalArgumentException("Request argument must not be null");
         if(timeout != null && timeout < 0) throw new IllegalArgumentException("Timeout period must be positive or null");
         
@@ -261,7 +261,7 @@ public class RpcQueryNode {
      * @param responseClass the response class to deserialize into
      * @return the deserialized response instance
      */
-    protected <R extends RpcResponse> R deserializeResponseFromJSON(String responseJson, Class<R> responseClass) throws RpcQueryException {
+    protected <R extends RpcResponse> R deserializeResponseFromJSON(String responseJson, Class<R> responseClass) throws RpcException {
         JsonObject response = RpcQueryNode.JSON_PARSER.parse(responseJson).getAsJsonObject(); //Parse response
         
         //Check for returned RPC error
@@ -276,12 +276,12 @@ public class RpcQueryNode {
     
     
     /**
-     * Parses a returned error string into the appropriate RpcQueryException type.
+     * Parses a returned error string into the appropriate RpcException type.
      *
      * @param message  the returned error message from the node
      * @return the matching exception to be thrown
      */
-    protected RpcQueryException parseException(String message) {
+    protected RpcException parseException(String message) {
         String msgLower = message.toLowerCase();
         
         switch(msgLower) {
@@ -302,7 +302,7 @@ public class RpcQueryNode {
         
         if(msgLower.startsWith("internal"))         return new RpcInternalException(message);           //Internal server error
         
-        return new RpcQueryException(message); //Default to regular
+        return new RpcException(message); //Default to regular
     }
     
     

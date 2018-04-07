@@ -2,14 +2,10 @@ package in.bigdolph.jnano.rpc.query;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import in.bigdolph.jnano.rpc.query.exception.RpcQueryException;
+import in.bigdolph.jnano.rpc.query.exception.RpcException;
 import in.bigdolph.jnano.rpc.query.exception.RpcUnknownCommandException;
 import in.bigdolph.jnano.rpc.query.request.RpcRequest;
 import in.bigdolph.jnano.rpc.query.request.node.NodeVersionRequest;
-import in.bigdolph.jnano.rpc.query.request.wallet.AccountCreateRequest;
-import in.bigdolph.jnano.rpc.query.request.wallet.AccountRemoveRequest;
-import in.bigdolph.jnano.rpc.query.request.wallet.WalletLockRequest;
-import in.bigdolph.jnano.rpc.query.request.wallet.WalletUnlockRequest;
 import in.bigdolph.jnano.rpc.query.response.RpcResponse;
 import in.bigdolph.jnano.rpc.query.response.NodeVersionResponse;
 import in.bigdolph.jnano.tests.NodeTests;
@@ -66,7 +62,7 @@ public class RpcQueryNodeTest {
         while(!callback.processed); //Wait for query to respond
         System.out.println("Async query processed");
         assertNotNull(callback.exception);
-        assertTrue(callback.exception instanceof RpcQueryException);
+        assertTrue(callback.exception instanceof RpcException);
         assertNull(callback.response);
     }
     
