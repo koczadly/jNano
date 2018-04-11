@@ -10,4 +10,8 @@ public class RpcException extends Exception {
         super(message);
     }
     
+    public RpcException(String message, Throwable cause) {
+        super(message, cause);
+    }
+    
 }

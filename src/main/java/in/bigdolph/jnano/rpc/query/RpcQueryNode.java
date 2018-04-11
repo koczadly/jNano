@@ -262,15 +262,20 @@ public class RpcQueryNode {
      * @return the deserialized response instance
      */
     protected <R extends RpcResponse> R deserializeResponseFromJSON(String responseJson, Class<R> responseClass) throws RpcException {
-        JsonObject response = RpcQueryNode.JSON_PARSER.parse(responseJson).getAsJsonObject(); //Parse response
+        JsonObject response;
+        try {
+            response = RpcQueryNode.JSON_PARSER.parse(responseJson).getAsJsonObject(); //Parse response
+        } catch (JsonSyntaxException ex) {
+            throw new RpcInvalidResponseException(responseJson, ex); //If unable to parse
+        }
         
         //Check for returned RPC error
         JsonElement responseError = response.get("error");
         if(responseError != null) throw this.parseException(responseError.getAsString());
         
+        //Deserialize response
         R responseObj = this.gson.fromJson(responseJson, responseClass); //Deserialize from JSON
         responseObj.init(response); //Initialise raw parameters
-        
         return responseObj;
     }
     
