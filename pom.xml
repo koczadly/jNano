@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>in.bigdolph.jnano</groupId>
+    <groupId>uk.oczadly.karl.jnano</groupId>
     <artifactId>jNano</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -62,7 +62,7 @@
             <id>koczadly</id>
             <name>Karl Oczadly</name>
             <email>kocz@live.co.uk</email>
-            <url>http://bigdolph.in</url>
+            <url>http://karl.oczadly.uk</url>
         </developer>
     </developers>
 

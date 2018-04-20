@@ -4,7 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.adapters.BlockTypeDeserializer;
+import uk.oczadly.karl.jnano.gsonadapters.BlockTypeDeserializer;
 
 @JsonAdapter(BlockTypeDeserializer.class)
 public abstract class Block {
