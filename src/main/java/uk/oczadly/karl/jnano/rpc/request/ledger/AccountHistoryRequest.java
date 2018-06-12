@@ -3,9 +3,9 @@ package uk.oczadly.karl.jnano.rpc.request.ledger;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
-import uk.oczadly.karl.jnano.rpc.response.AccountHistoryResponse;
+import uk.oczadly.karl.jnano.rpc.response.BlocksResponse;
 
-public class AccountHistoryRequest extends RpcRequest<AccountHistoryResponse> {
+public class AccountHistoryRequest extends RpcRequest<BlocksResponse> {
     
     @Expose
     @SerializedName("account")
@@ -21,7 +21,7 @@ public class AccountHistoryRequest extends RpcRequest<AccountHistoryResponse> {
     
     
     public AccountHistoryRequest(String account, int transactionCount) {
-        super("account_history", AccountHistoryResponse.class);
+        super("account_history", BlocksResponse.class);
         this.account = account;
         this.transactionCount = transactionCount;
     }

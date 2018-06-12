@@ -3,9 +3,9 @@ package uk.oczadly.karl.jnano.rpc.request.ledger;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
-import uk.oczadly.karl.jnano.rpc.response.BlocksResponse;
+import uk.oczadly.karl.jnano.rpc.response.BlocksMapResponse;
 
-public class BlockFetchUncheckedRequest extends RpcRequest<BlocksResponse> {
+public class BlockFetchUncheckedRequest extends RpcRequest<BlocksMapResponse> {
     
     @Expose
     @SerializedName("count")
@@ -13,7 +13,7 @@ public class BlockFetchUncheckedRequest extends RpcRequest<BlocksResponse> {
     
     
     public BlockFetchUncheckedRequest(int count) {
-        super("unchecked", BlocksResponse.class);
+        super("unchecked", BlocksMapResponse.class);
         this.count = count;
     }
     

@@ -3,9 +3,9 @@ package uk.oczadly.karl.jnano.rpc.request.ledger;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
-import uk.oczadly.karl.jnano.rpc.response.BlocksResponse;
+import uk.oczadly.karl.jnano.rpc.response.BlocksMapResponse;
 
-public class BlocksRetrieveRequest extends RpcRequest<BlocksResponse> {
+public class BlocksRetrieveRequest extends RpcRequest<BlocksMapResponse> {
     
     @Expose
     @SerializedName("hashes")
@@ -13,7 +13,7 @@ public class BlocksRetrieveRequest extends RpcRequest<BlocksResponse> {
     
     
     public BlocksRetrieveRequest(String... blockHashes) {
-        super("blocks", BlocksResponse.class);
+        super("blocks", BlocksMapResponse.class);
         this.blockHashes = blockHashes;
     }
     
