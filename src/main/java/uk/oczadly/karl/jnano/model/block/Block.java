@@ -10,6 +10,10 @@ import uk.oczadly.karl.jnano.gsonadapters.BlockTypeDeserializer;
 public abstract class Block {
     
     @Expose
+    @SerializedName("hash")
+    private String hash;
+    
+    @Expose
     @SerializedName("type")
     private final BlockType type;
     
@@ -28,14 +32,18 @@ public abstract class Block {
         this.type = type;
     }
     
-    public Block(BlockType type, String jsonRepresentation, String signature, String workSolution) {
+    public Block(BlockType type, String hash, String jsonRepresentation, String signature, String workSolution) {
         this.type = type;
+        this.hash = hash;
         this.jsonRepresentation = jsonRepresentation;
         this.signature = signature;
         this.workSolution = workSolution;
     }
     
     
+    public final String getHash() {
+        return hash;
+    }
     
     public final BlockType getType() {
         return type;

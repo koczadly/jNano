@@ -22,8 +22,8 @@ public class OpenBlock extends Block {
         super(BlockType.OPEN);
     }
     
-    public OpenBlock(String jsonRepresentation, String signature, String workSolution, String sourceBlockHash, String accountAddress, String representativeAccount) {
-        super(BlockType.OPEN, jsonRepresentation, signature, workSolution);
+    public OpenBlock(String jsonRepresentation, String hash, String signature, String workSolution, String sourceBlockHash, String accountAddress, String representativeAccount) {
+        super(BlockType.OPEN, hash, jsonRepresentation, signature, workSolution);
         this.sourceBlockHash = sourceBlockHash;
         this.accountAddress = accountAddress;
         this.representativeAccount = representativeAccount;

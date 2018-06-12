@@ -18,8 +18,8 @@ public class ChangeBlock extends Block {
         super(BlockType.CHANGE);
     }
     
-    public ChangeBlock(String jsonRepresentation, String signature, String workSolution, String previousBlockHash, String representativeAccount) {
-        super(BlockType.CHANGE, jsonRepresentation, signature, workSolution);
+    public ChangeBlock(String jsonRepresentation, String hash, String signature, String workSolution, String previousBlockHash, String representativeAccount) {
+        super(BlockType.CHANGE, hash, jsonRepresentation, signature, workSolution);
         this.previousBlockHash = previousBlockHash;
         this.representativeAccount = representativeAccount;
     }

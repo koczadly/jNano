@@ -37,8 +37,8 @@ public class StateBlock extends Block {
         super(BlockType.STATE);
     }
     
-    public StateBlock(String jsonRepresentation, String signature, String workSolution, String accountAddress, String previousBlockHash, String representativeAddress, BigInteger newBalance, String linkData, String linkAccount) {
-        super(BlockType.STATE, jsonRepresentation, signature, workSolution);
+    public StateBlock(String jsonRepresentation, String hash, String signature, String workSolution, String accountAddress, String previousBlockHash, String representativeAddress, BigInteger newBalance, String linkData, String linkAccount) {
+        super(BlockType.STATE, hash, jsonRepresentation, signature, workSolution);
         this.accountAddress = accountAddress;
         this.previousBlockHash = previousBlockHash;
         this.representativeAddress = representativeAddress;

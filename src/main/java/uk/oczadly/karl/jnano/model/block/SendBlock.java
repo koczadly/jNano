@@ -24,8 +24,8 @@ public class SendBlock extends Block {
         super(BlockType.SEND);
     }
     
-    public SendBlock(String jsonRepresentation, String signature, String workSolution, String previousBlockHash, String destinationAccount, BigInteger newBalance) {
-        super(BlockType.SEND, jsonRepresentation, signature, workSolution);
+    public SendBlock(String jsonRepresentation, String hash, String signature, String workSolution, String previousBlockHash, String destinationAccount, BigInteger newBalance) {
+        super(BlockType.SEND, hash, jsonRepresentation, signature, workSolution);
         this.previousBlockHash = previousBlockHash;
         this.destinationAccount = destinationAccount;
         this.newBalance = newBalance;
