@@ -19,6 +19,10 @@ public class BlocksInfoRequest extends RpcRequest<BlocksInfoResponse> {
     @SerializedName("source")
     private boolean fetchSource = true;
     
+    @Expose
+    @SerializedName("balance")
+    private boolean fetchBalance = true;
+    
     
     public BlocksInfoRequest(String... blockHashes) {
         super("blocks_info", BlocksInfoResponse.class);

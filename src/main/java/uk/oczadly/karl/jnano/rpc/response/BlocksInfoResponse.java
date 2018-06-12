@@ -46,6 +46,10 @@ public class BlocksInfoResponse extends RpcResponse {
         @Expose
         @SerializedName("pending")
         private BigInteger pending;
+    
+        @Expose
+        @SerializedName("balance")
+        private BigInteger balance;
         
     
         public Block getBlock() {
@@ -66,6 +70,10 @@ public class BlocksInfoResponse extends RpcResponse {
     
         public BigInteger getPending() {
             return pending;
+        }
+    
+        public BigInteger getBalance() {
+            return balance;
         }
         
     }
