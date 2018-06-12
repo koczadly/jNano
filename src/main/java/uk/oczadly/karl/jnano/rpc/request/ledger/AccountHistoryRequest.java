@@ -15,6 +15,10 @@ public class AccountHistoryRequest extends RpcRequest<AccountHistoryResponse> {
     @SerializedName("count")
     private int transactionCount;
     
+    @Expose
+    @SerializedName("raw")
+    private boolean fetchRaw = true;
+    
     
     public AccountHistoryRequest(String account, int transactionCount) {
         super("account_history", AccountHistoryResponse.class);

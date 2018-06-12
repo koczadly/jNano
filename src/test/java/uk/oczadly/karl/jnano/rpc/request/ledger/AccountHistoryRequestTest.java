@@ -1,5 +1,6 @@
 package uk.oczadly.karl.jnano.rpc.request.ledger;
 
+import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.rpc.QueryBaseTest;
 import uk.oczadly.karl.jnano.rpc.response.AccountHistoryResponse;
 import uk.oczadly.karl.jnano.tests.NodeTests;
@@ -19,13 +20,10 @@ public class AccountHistoryRequestTest extends QueryBaseTest {
         
         assertEquals(1, response.getHistory().size());
         
-        for(AccountHistoryResponse.AccountHistory history : response.getHistory()) {
-            assertNotNull(history.getBlockHash());
-            assertNotNull(history.getBlockType());
-            assertNotNull(history.getAccountAddress());
-            assertNotNull(history.getAmount());
+        for(Block block : response.getHistory()) {
+            assertNotNull(block.getHash());
+            assertNotNull(block.getType());
         }
-        
         
         //Test empty account
         response = query(new AccountHistoryRequest(Configuration.TEST_ACCOUNT, 0));
