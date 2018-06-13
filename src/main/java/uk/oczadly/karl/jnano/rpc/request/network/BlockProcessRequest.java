@@ -1,4 +1,4 @@
-package uk.oczadly.karl.jnano.rpc.request.ledger;
+package uk.oczadly.karl.jnano.rpc.request.network;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -12,19 +12,28 @@ public class BlockProcessRequest extends RpcRequest<BlockHashResponse> {
     @SerializedName("block")
     private String blockJson;
     
+    @Expose
+    @SerializedName("force")
+    private boolean force;
     
-    public BlockProcessRequest(Block block) {
-        this(block.getJsonRepresentation());
+    
+    public BlockProcessRequest(Block block, boolean force) {
+        this(block.getJsonRepresentation(), force);
     }
     
-    public BlockProcessRequest(String blockJson) {
+    public BlockProcessRequest(String blockJson, boolean force) {
         super("process", BlockHashResponse.class);
         this.blockJson = blockJson;
+        this.force = force;
     }
     
     
     public String getBlockJson() {
         return blockJson;
+    }
+    
+    public boolean shouldForce() {
+        return force;
     }
     
 }
