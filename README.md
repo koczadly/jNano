@@ -32,7 +32,7 @@ Import the dependency into your pom.xml:
 ```xml
 <dependency>
     <groupId>com.github.koczadly</groupId>
-    <artifactId>jnano</artifactId>
+    <artifactId>jNano</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```
