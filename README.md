@@ -19,9 +19,7 @@ Examples on how to use this library can be found on the associated [wiki pages](
 
 ## Use in your project
 ### Maven
-To import jNano into your own project, the dependency can be imported as demonstrated:
-
-- Add the JitPack repository in your pom.xml:
+Add the JitPack repository in your pom.xml:
 ```xml
 <repositories>
     <repository>
@@ -30,7 +28,7 @@ To import jNano into your own project, the dependency can be imported as demonst
     </repository>
 </repositories>
 ```
-- Import the dependency into your pom.xml:
+Import the dependency into your pom.xml:
 ```xml
 <dependency>
     <groupId>com.github.koczadly</groupId>
