@@ -13,7 +13,7 @@ public class WalletPendingBlocksResponse extends RpcResponse {
     private Map<String, Map<String, PendingBlock>> blocks;
     
     
-    /** Account -> block hash -> block info */
+    /** Account -&gt; block hash -&gt; block info */
     public Map<String, Map<String, PendingBlock>> getPendingBlocks() {
         return blocks;
     }

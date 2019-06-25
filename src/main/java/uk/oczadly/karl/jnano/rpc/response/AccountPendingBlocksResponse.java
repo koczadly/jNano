@@ -13,7 +13,7 @@ public class AccountPendingBlocksResponse extends RpcResponse {
     private Map<String, PendingBlock> blocks;
     
     
-    /** Hash -> Block info */
+    /** Hash -&gt; Block info */
     public Map<String, PendingBlock> getPendingBlocks() {
         return blocks;
     }

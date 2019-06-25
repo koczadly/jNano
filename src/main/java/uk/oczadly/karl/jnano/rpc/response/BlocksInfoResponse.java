@@ -14,7 +14,7 @@ public class BlocksInfoResponse extends RpcResponse {
     private Map<String, BlockInfo> blocks;
     
     
-    /** Hash -> Block info */
+    /** Hash -&gt; Block info */
     public Map<String, BlockInfo> getBlocks() {
         return blocks;
     }

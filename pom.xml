@@ -14,14 +14,6 @@
     <description>A Java library for interfacing with the Nano RPC node</description>
     <url>https://github.com/koczadly/jnano</url>
 
-
-
-    <properties>
-        <jdk.version>1.8</jdk.version>
-    </properties>
-
-
-
     <licenses>
         <license>
             <name>MIT License</name>
@@ -30,9 +22,7 @@
     </licenses>
 
 
-
     <dependencies>
-
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -45,40 +35,28 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
-
-
-
-    <scm>
-        <url>https://github.com/koczadly/jnano</url>
-        <connection>scm:git:git://github.com/koczadly/jnano.git</connection>
-        <developerConnection>scm:git:git@github.com:koczadly/jNano.git</developerConnection>
-    </scm>
-
 
 
     <developers>
         <developer>
             <id>koczadly</id>
             <name>Karl Oczadly</name>
-            <email>kocz@live.co.uk</email>
             <url>http://karl.oczadly.uk</url>
         </developer>
     </developers>
 
 
-
     <build>
         <plugins>
-
+            <!-- Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.1</version>
                 <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
             </plugin>
 
@@ -88,10 +66,23 @@
                 <version>3.0.2</version>
             </plugin>
 
+            <!-- Javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
         <pluginManagement>
-
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -103,7 +94,6 @@
                     </configuration>
                 </plugin>
             </plugins>
-
         </pluginManagement>
     </build>
 

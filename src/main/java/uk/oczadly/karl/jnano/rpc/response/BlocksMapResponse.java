@@ -13,7 +13,7 @@ public class BlocksMapResponse extends RpcResponse {
     private Map<String, Block> blocks;
     
     
-    /** Hash -> Block */
+    /** Hash -&gt; Block */
     public Map<String, Block> getBlocks() {
         return blocks;
     }

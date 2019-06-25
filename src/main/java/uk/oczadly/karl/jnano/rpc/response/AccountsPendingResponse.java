@@ -15,7 +15,7 @@ public class AccountsPendingResponse extends RpcResponse {
     
     
     
-    /** Address > Block hash > Block details */
+    /** Address -&gt; Block hash -&gt; Block details */
     public Map<String, Map<String, PendingBlock>> getPendingBlocks() {
         return blocks;
     }

@@ -12,7 +12,7 @@ public class NodeFetchOnlinePeersResponse extends RpcResponse {
     private Map<String, String> peers;
     
     
-    /** Address -> Network version */
+    /** Address -&gt; Network version */
     public Map<String, String> getPeers() {
         return peers;
     }
