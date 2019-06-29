@@ -6,36 +6,30 @@ Almost all of the features have been implemented, however it is still currently 
 Expecting full completion of the project around the end of March.
 
 
-## Configuring the node
+## Usage
+### Maven
+This project is hosted on Maven Central. To import this library, add the following dependency into your pom.xml:
+```xml
+<dependency>
+    <groupId>uk.oczadly.karl</groupId>
+    <artifactId>jnano</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+### Documentation
+The latest Javadoc pages can be [viewed online through Javadoc.io](https://www.javadoc.io/doc/uk.oczadly.karl/jnano).
+
+### Configuring the node
 Before using this library, you will need to configure the node correctly.
 - If you wish to make RPC requests using this library, [view the queries wiki page](https://github.com/koczadly/jNano/wiki/Query-requests#node-configuration).
 - If you are wanting to listen for live blocks on the Nano network, [view the callback wiki page](https://github.com/koczadly/jNano/wiki/Block-callback#node-configuration).
 
-## Examples
+### Examples
 Examples on how to use this library can be found on the associated [wiki pages](https://github.com/koczadly/jNano/wiki/):
 - For examples on how to use the request/query functions, [click here](https://github.com/koczadly/jNano/wiki/Query-requests#how-to-use-the-library).
 - For examples on how to use the real-time block callback listener, [click here](https://github.com/koczadly/jNano/wiki/Block-callback#how-to-use-the-library).
 - For other information on the utilities offered by this library, [click here](https://github.com/koczadly/jNano/wiki/Utilities).
-
-## Use in your project
-### Maven
-Add the JitPack repository in your pom.xml:
-```xml
-<repositories>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-```
-Import the dependency into your pom.xml:
-```xml
-<dependency>
-    <groupId>com.github.koczadly</groupId>
-    <artifactId>jNano</artifactId>
-    <version>1.0.0</version>
-</dependency>
-```
 
 
 ## Dependencies
