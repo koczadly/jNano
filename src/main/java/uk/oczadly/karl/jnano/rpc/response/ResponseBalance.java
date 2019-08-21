@@ -1,0 +1,31 @@
+package uk.oczadly.karl.jnano.rpc.response;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.math.BigInteger;
+
+
+public class ResponseBalance extends RpcResponse {
+
+    @Expose @SerializedName("balance")
+    private BigInteger pocketed;
+    
+    @Expose @SerializedName("pending")
+    private BigInteger pending;
+    
+    
+    
+    public BigInteger getPocketed() {
+        return pocketed;
+    }
+    
+    public BigInteger getPending() {
+        return pending;
+    }
+    
+    public BigInteger getTotal() {
+        return pending.add(pocketed);
+    }
+    
+}
