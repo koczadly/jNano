@@ -60,7 +60,7 @@ public abstract class Block {
     
     
     public String getJsonString() {
-        return getJsonObject().getAsString();
+        return getJsonObject().toString();
     }
     
     public JsonObject getJsonObject() {
