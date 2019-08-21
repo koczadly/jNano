@@ -1,7 +1,6 @@
 package uk.oczadly.karl.jnano.rpc.request.node;
 
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
-import uk.oczadly.karl.jnano.rpc.response.AvailableSupplyResponse;
 import uk.oczadly.karl.jnano.rpc.response.ResponseAmount;
 
 public class RequestAvailableSupply extends RpcRequest<ResponseAmount> {
