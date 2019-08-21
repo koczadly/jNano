@@ -1,19 +1,20 @@
 package uk.oczadly.karl.jnano.rpc.request.ledger;
 
-import uk.oczadly.karl.jnano.rpc.QueryBaseTest;
-import uk.oczadly.karl.jnano.rpc.response.AvailableSupplyResponse;
-import uk.oczadly.karl.jnano.tests.NodeTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import uk.oczadly.karl.jnano.rpc.QueryBaseTest;
+import uk.oczadly.karl.jnano.rpc.request.node.RequestAvailableSupply;
+import uk.oczadly.karl.jnano.rpc.response.AvailableSupplyResponse;
+import uk.oczadly.karl.jnano.tests.NodeTests;
 
 import static org.junit.Assert.*;
 
-public class AvailableSupplyRequestTest extends QueryBaseTest {
+public class RequestAvailableSupplyTest extends QueryBaseTest {
     
     @Test
     @Category(NodeTests.class)
     public void test() {
-        AvailableSupplyResponse res = query(new AvailableSupplyRequest());
+        AvailableSupplyResponse res = query(new RequestAvailableSupply());
         System.out.println(res.getSupply().toString());
         
         assertNotNull(res.getSupply());

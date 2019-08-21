@@ -1,12 +1,12 @@
 package uk.oczadly.karl.jnano.rpc.request.ledger;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import uk.oczadly.karl.jnano.model.block.BlockType;
 import uk.oczadly.karl.jnano.rpc.QueryBaseTest;
 import uk.oczadly.karl.jnano.rpc.response.BlockHistoryResponse;
-import uk.oczadly.karl.jnano.tests.NodeTests;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import uk.oczadly.karl.jnano.tests.Configuration;
+import uk.oczadly.karl.jnano.tests.NodeTests;
 
 import static org.junit.Assert.*;
 

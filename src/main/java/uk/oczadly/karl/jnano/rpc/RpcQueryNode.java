@@ -1,13 +1,13 @@
 package uk.oczadly.karl.jnano.rpc;
 
 import com.google.gson.*;
+import uk.oczadly.karl.jnano.exception.*;
 import uk.oczadly.karl.jnano.gsonadapters.BooleanTypeDeserializer;
 import uk.oczadly.karl.jnano.gsonadapters.hotfix.ArrayTypeAdapterFactory;
 import uk.oczadly.karl.jnano.gsonadapters.hotfix.CollectionTypeAdapterFactory;
 import uk.oczadly.karl.jnano.gsonadapters.hotfix.MapTypeAdapterFactory;
-import uk.oczadly.karl.jnano.rpc.request_v19.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
-import uk.oczadly.karl.jnano.exception.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,11 +1,11 @@
 package uk.oczadly.karl.jnano.rpc;
 
+import org.junit.Assert;
+import org.junit.Before;
 import uk.oczadly.karl.jnano.exception.RpcException;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 import uk.oczadly.karl.jnano.tests.Configuration;
-import org.junit.Assert;
-import org.junit.Before;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

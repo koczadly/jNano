@@ -18,7 +18,7 @@ public class TestNode extends RpcQueryNode {
     @Override
     public String processRawRequest(String jsonRequest, HttpURLConnection con) throws IOException {
         System.out.println("Processing query: " + jsonRequest);
-        String response = super.processRawRequest(jsonRequest, con);
+        String response = super.processRequestRaw(jsonRequest, con);
         System.out.println("Response: " + response);
         return response;
     }

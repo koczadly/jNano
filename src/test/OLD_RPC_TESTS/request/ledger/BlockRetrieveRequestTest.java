@@ -1,15 +1,15 @@
 package uk.oczadly.karl.jnano.rpc.request.ledger;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import uk.oczadly.karl.jnano.model.block.ChangeBlock;
 import uk.oczadly.karl.jnano.model.block.OpenBlock;
 import uk.oczadly.karl.jnano.model.block.ReceiveBlock;
 import uk.oczadly.karl.jnano.model.block.SendBlock;
 import uk.oczadly.karl.jnano.rpc.QueryBaseTest;
-import uk.oczadly.karl.jnano.rpc.response.BlockResponse;
-import uk.oczadly.karl.jnano.tests.NodeTests;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import uk.oczadly.karl.jnano.rpc.response.ResponseBlock;
 import uk.oczadly.karl.jnano.tests.Configuration;
+import uk.oczadly.karl.jnano.tests.NodeTests;
 
 import static org.junit.Assert.*;
 
@@ -18,7 +18,7 @@ public class BlockRetrieveRequestTest extends QueryBaseTest {
     @Test
     @Category(NodeTests.class)
     public void testSendBlock() {
-        BlockResponse res = query(new BlockRetrieveRequest(Configuration.TEST_BLOCK_SEND));
+        ResponseBlock res = query(new BlockRetrieveRequest(Configuration.TEST_BLOCK_SEND));
         
         assertTrue(res.getBlock() instanceof SendBlock);
         SendBlock block = (SendBlock)res.getBlock();
@@ -34,7 +34,7 @@ public class BlockRetrieveRequestTest extends QueryBaseTest {
     @Test
     @Category(NodeTests.class)
     public void testReceiveBlock() {
-        BlockResponse res = query(new BlockRetrieveRequest(Configuration.TEST_BLOCK_RECEIVE));
+        ResponseBlock res = query(new BlockRetrieveRequest(Configuration.TEST_BLOCK_RECEIVE));
         
         assertTrue(res.getBlock() instanceof ReceiveBlock);
         ReceiveBlock block = (ReceiveBlock)res.getBlock();
@@ -49,7 +49,7 @@ public class BlockRetrieveRequestTest extends QueryBaseTest {
     @Test
     @Category(NodeTests.class)
     public void testOpenBlock() {
-        BlockResponse res = query(new BlockRetrieveRequest(Configuration.TEST_BLOCK_OPEN));
+        ResponseBlock res = query(new BlockRetrieveRequest(Configuration.TEST_BLOCK_OPEN));
         
         assertTrue(res.getBlock() instanceof OpenBlock);
         OpenBlock block = (OpenBlock)res.getBlock();
@@ -65,7 +65,7 @@ public class BlockRetrieveRequestTest extends QueryBaseTest {
     @Test
     @Category(NodeTests.class)
     public void testChangeBlock() {
-        BlockResponse res = query(new BlockRetrieveRequest(Configuration.TEST_BLOCK_CHANGE));
+        ResponseBlock res = query(new BlockRetrieveRequest(Configuration.TEST_BLOCK_CHANGE));
         
         assertTrue(res.getBlock() instanceof ChangeBlock);
         ChangeBlock block = (ChangeBlock)res.getBlock();

@@ -2,15 +2,15 @@ package uk.oczadly.karl.jnano.rpc;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import uk.oczadly.karl.jnano.exception.RpcException;
 import uk.oczadly.karl.jnano.exception.RpcUnknownCommandException;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
-import uk.oczadly.karl.jnano.rpc.request.node.NodeVersionRequest;
+import uk.oczadly.karl.jnano.rpc.request.node.RequestVersion;
+import uk.oczadly.karl.jnano.rpc.response.ResponseVersion;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
-import uk.oczadly.karl.jnano.rpc.response.NodeVersionResponse;
 import uk.oczadly.karl.jnano.tests.NodeTests;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.util.List;
 import java.util.Map;
@@ -32,7 +32,7 @@ public class RpcQueryNodeTest {
     @Category(NodeTests.class)
     public void testSyncQuery() throws Exception {
         //Test valid query
-        NodeVersionResponse res = node.processRequest(new NodeVersionRequest());
+        ResponseVersion res = node.processRequest(new RequestVersion());
         assertNotNull(res);
         System.out.println(res.getNodeVendor());
         

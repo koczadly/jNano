@@ -1,21 +1,22 @@
 package uk.oczadly.karl.jnano.rpc.request.ledger;
 
-import uk.oczadly.karl.jnano.rpc.QueryBaseTest;
-import uk.oczadly.karl.jnano.rpc.response.BalancesResponse;
-import uk.oczadly.karl.jnano.tests.NodeTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import uk.oczadly.karl.jnano.rpc.QueryBaseTest;
+import uk.oczadly.karl.jnano.rpc.request.node.RequestMultiAccountBalances;
+import uk.oczadly.karl.jnano.rpc.response.ResponseMultiAccountBalances;
 import uk.oczadly.karl.jnano.tests.Configuration;
+import uk.oczadly.karl.jnano.tests.NodeTests;
 
 import static org.junit.Assert.*;
 
-public class AccountsBalancesRequestTest extends QueryBaseTest {
+public class RequestMultiAccountBalancesTest extends QueryBaseTest {
     
     @Test
     @Category(NodeTests.class)
     public void test() {
-        BalancesResponse response = query(
-                new AccountsBalancesRequest(
+        ResponseMultiAccountBalances response = query(
+                new RequestMultiAccountBalances(
                     Configuration.TEST_ACCOUNT,
                     "xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3"));
         
@@ -30,7 +31,7 @@ public class AccountsBalancesRequestTest extends QueryBaseTest {
         assertEquals("316000000000000000000000000", response.getBalance(Configuration.TEST_ACCOUNT).getTotal().toString());
         
         //Test empty
-        response = query(new AccountsBalancesRequest());
+        response = query(new RequestMultiAccountBalances());
         assertNotNull(response.getBalances());
         assertTrue(response.getBalances().isEmpty());
         
