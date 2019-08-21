@@ -5,7 +5,7 @@ import uk.oczadly.karl.jnano.gsonadapters.BooleanTypeDeserializer;
 import uk.oczadly.karl.jnano.gsonadapters.hotfix.ArrayTypeAdapterFactory;
 import uk.oczadly.karl.jnano.gsonadapters.hotfix.CollectionTypeAdapterFactory;
 import uk.oczadly.karl.jnano.gsonadapters.hotfix.MapTypeAdapterFactory;
-import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request_v19.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 import uk.oczadly.karl.jnano.exception.*;
 
@@ -47,7 +47,7 @@ public class RpcQueryNode {
      * @throws MalformedURLException if the address cannot be parsed
      */
     public RpcQueryNode(String authToken) throws MalformedURLException {
-        this("127.0.0.1", 7076, authToken); //Local address and default port
+        this("::1", 7076, authToken); //Local address and default port
     }
     
     /**
@@ -294,7 +294,7 @@ public class RpcQueryNode {
             case "wallet locked":                   return new RpcWalletLockedException();              //Wallet locked
             case "insufficient balance":            return new RpcInvalidArgumentException(message);    //Invalid/bad argument (not enough funds)
             case "invalid authorization header":    return new RpcInvalidAuthTokenException();          //Invalid auth token
-            case "rpc control is disabled":         return new RpcControlDisabledException();           //RPC disabled
+            case "OLD_RPC_TESTS control is disabled":         return new RpcControlDisabledException();           //RPC disabled
             case "unable to parse json":            return new RpcInvalidRequestJsonException();        //Invalid request body
             case "unknown command":                 return new RpcUnknownCommandException();            //Unknown command
         }
