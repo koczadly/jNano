@@ -1,7 +1,10 @@
-package uk.oczadly.karl.jnano.model.block;
+package uk.oczadly.karl.jnano.model.block.type;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.block.BlockType;
 
 public class OpenBlock extends Block {
     
@@ -22,7 +25,7 @@ public class OpenBlock extends Block {
         super(BlockType.OPEN);
     }
     
-    public OpenBlock(String jsonRepresentation, String hash, String signature, String workSolution, String sourceBlockHash, String accountAddress, String representativeAccount) {
+    public OpenBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution, String sourceBlockHash, String accountAddress, String representativeAccount) {
         super(BlockType.OPEN, hash, jsonRepresentation, signature, workSolution);
         this.sourceBlockHash = sourceBlockHash;
         this.accountAddress = accountAddress;

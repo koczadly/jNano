@@ -1,7 +1,10 @@
-package uk.oczadly.karl.jnano.model.block;
+package uk.oczadly.karl.jnano.model.block.type;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.block.BlockType;
 
 import java.math.BigInteger;
 
@@ -24,7 +27,7 @@ public class SendBlock extends Block {
         super(BlockType.SEND);
     }
     
-    public SendBlock(String jsonRepresentation, String hash, String signature, String workSolution, String previousBlockHash, String destinationAccount, BigInteger newBalance) {
+    public SendBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution, String previousBlockHash, String destinationAccount, BigInteger newBalance) {
         super(BlockType.SEND, hash, jsonRepresentation, signature, workSolution);
         this.previousBlockHash = previousBlockHash;
         this.destinationAccount = destinationAccount;

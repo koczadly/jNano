@@ -1,6 +1,7 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
@@ -25,14 +26,14 @@ public abstract class Block {
     @SerializedName("work")
     private String workSolution;
     
-    private String jsonRepresentation;
+    private JsonObject jsonRepresentation;
     
     
     protected Block(BlockType type) {
         this.type = type;
     }
     
-    public Block(BlockType type, String hash, String jsonRepresentation, String signature, String workSolution) {
+    public Block(BlockType type, String hash, JsonObject jsonRepresentation, String signature, String workSolution) {
         this.type = type;
         this.hash = hash;
         this.jsonRepresentation = jsonRepresentation;
@@ -58,14 +59,19 @@ public abstract class Block {
     }
     
     
-    public String getJsonRepresentation() {
-        if(jsonRepresentation == null) jsonRepresentation = new GsonBuilder().create().toJson(this);
+    public String getJsonString() {
+        return getJsonObject().getAsString();
+    }
+    
+    public JsonObject getJsonObject() {
+        if(jsonRepresentation == null)
+            jsonRepresentation = new GsonBuilder().create().toJsonTree(this).getAsJsonObject();
         return jsonRepresentation;
     }
     
     
     @Override
     public String toString() {
-        return this.getJsonRepresentation();
+        return this.getJsonString();
     }
 }

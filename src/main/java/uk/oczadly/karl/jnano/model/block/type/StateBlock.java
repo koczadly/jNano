@@ -1,7 +1,10 @@
-package uk.oczadly.karl.jnano.model.block;
+package uk.oczadly.karl.jnano.model.block.type;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.block.BlockType;
 
 import java.math.BigInteger;
 
@@ -37,7 +40,7 @@ public class StateBlock extends Block {
         super(BlockType.STATE);
     }
     
-    public StateBlock(String jsonRepresentation, String hash, String signature, String workSolution, String accountAddress, String previousBlockHash, String representativeAddress, BigInteger newBalance, String linkData, String linkAccount) {
+    public StateBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution, String accountAddress, String previousBlockHash, String representativeAddress, BigInteger newBalance, String linkData, String linkAccount) {
         super(BlockType.STATE, hash, jsonRepresentation, signature, workSolution);
         this.accountAddress = accountAddress;
         this.previousBlockHash = previousBlockHash;

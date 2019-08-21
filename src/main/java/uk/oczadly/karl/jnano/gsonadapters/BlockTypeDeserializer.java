@@ -1,7 +1,8 @@
 package uk.oczadly.karl.jnano.gsonadapters;
 
 import com.google.gson.*;
-import uk.oczadly.karl.jnano.model.block.*;
+import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.block.type.*;
 
 import java.lang.reflect.Type;
 import java.math.BigInteger;
@@ -13,7 +14,8 @@ public class BlockTypeDeserializer implements JsonDeserializer<Block> {
     
     @Override
     public Block deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject jsonObj = element.isJsonObject() ? element.getAsJsonObject() : this.parser.parse(element.getAsString()).getAsJsonObject(); //Sometimes blocks are passed as string representations
+        JsonObject jsonObj = element.isJsonObject() ? element.getAsJsonObject()
+                : this.parser.parse(element.getAsString()).getAsJsonObject(); //Sometimes blocks are passed as string representations
         String jsonStr = jsonObj.toString();
         
         String hash = jsonObj.get("hash") != null ? jsonObj.get("hash").getAsString() : null;
@@ -21,7 +23,7 @@ public class BlockTypeDeserializer implements JsonDeserializer<Block> {
         switch(blockType) {
             case "UTX": //Old universal blocks type name
             case "STATE": return new StateBlock(
-                    jsonStr,
+                    jsonObj,
                     hash,
                     jsonObj.get("signature").getAsString(),
                     jsonObj.get("work").getAsString(),
@@ -32,7 +34,7 @@ public class BlockTypeDeserializer implements JsonDeserializer<Block> {
                     jsonObj.get("link").getAsString(),
                     jsonObj.get("link_as_account").getAsString());
             case "OPEN": return new OpenBlock(
-                    jsonStr,
+                    jsonObj,
                     hash,
                     jsonObj.get("signature").getAsString(),
                     jsonObj.get("work").getAsString(),
@@ -40,14 +42,14 @@ public class BlockTypeDeserializer implements JsonDeserializer<Block> {
                     jsonObj.get("account").getAsString(),
                     jsonObj.get("representative").getAsString());
             case "RECEIVE": return new ReceiveBlock(
-                    jsonStr,
+                    jsonObj,
                     hash,
                     jsonObj.get("signature").getAsString(),
                     jsonObj.get("work").getAsString(),
                     jsonObj.get("previous").getAsString(),
                     jsonObj.get("source").getAsString());
             case "SEND": return new SendBlock(
-                    jsonStr,
+                    jsonObj,
                     hash,
                     jsonObj.get("signature").getAsString(),
                     jsonObj.get("work").getAsString(),
@@ -55,7 +57,7 @@ public class BlockTypeDeserializer implements JsonDeserializer<Block> {
                     jsonObj.get("destination").getAsString(),
                     new BigInteger(jsonObj.get("balance").getAsString(), 16)); //Balance is encoded in hexadecimal
             case "CHANGE": return new ChangeBlock(
-                    jsonStr,
+                    jsonObj,
                     hash,
                     jsonObj.get("signature").getAsString(),
                     jsonObj.get("work").getAsString(),

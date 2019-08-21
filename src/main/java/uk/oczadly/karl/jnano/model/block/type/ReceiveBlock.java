@@ -1,7 +1,10 @@
-package uk.oczadly.karl.jnano.model.block;
+package uk.oczadly.karl.jnano.model.block.type;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.block.BlockType;
 
 public class ReceiveBlock extends Block {
     
@@ -18,7 +21,7 @@ public class ReceiveBlock extends Block {
         super(BlockType.RECEIVE);
     }
     
-    public ReceiveBlock(String jsonRepresentation, String hash, String signature, String workSolution, String previousBlockHash, String sourceBlockHash) {
+    public ReceiveBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution, String previousBlockHash, String sourceBlockHash) {
         super(BlockType.RECEIVE, hash, jsonRepresentation, signature, workSolution);
         this.previousBlockHash = previousBlockHash;
         this.sourceBlockHash = sourceBlockHash;
