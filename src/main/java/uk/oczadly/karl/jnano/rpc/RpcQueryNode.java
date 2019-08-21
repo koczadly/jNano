@@ -166,14 +166,7 @@ public class RpcQueryNode {
         
         String requestJsonStr = this.serializeRequestToJSON(request); //Serialise the request into JSON
         
-        //Configure connection
-        HttpURLConnection connection = (HttpURLConnection)this.address.openConnection();
-        if(timeout != null) { //Set timeouts
-            connection.setConnectTimeout(timeout);
-            connection.setReadTimeout(timeout);
-        }
-        
-        String responseJson = this.processRawRequest(requestJsonStr, connection); //Send the request to the node
+        String responseJson = this.processRequestRaw(requestJsonStr, timeout); //Send the request to the node
         
         R response = this.deserializeResponseFromJSON(responseJson, request.getResponseClass());
         assert response != null : "Response JSON is null";
@@ -221,12 +214,19 @@ public class RpcQueryNode {
      * Sends a raw JSON query to the RPC server, and then returns the raw JSON response.
      *
      * @param jsonRequest   the JSON query to send to the node
-     * @param con           a HTTP connection with the node to send the query to
+     * @param timeout       the connection timeout in milliseconds, or null to disable timeouts
      * @return the JSON response from the node
      * @throws IOException if an error occurs with the connection to the node
      */
-    protected String processRawRequest(String jsonRequest, HttpURLConnection con) throws IOException {
+    public String processRequestRaw(String jsonRequest, Integer timeout) throws IOException {
         if(jsonRequest == null) throw new IllegalArgumentException("JSON request string cannot be null");
+    
+        //Configure connection
+        HttpURLConnection con = (HttpURLConnection)this.address.openConnection();
+        if(timeout != null) { //Set timeouts
+            con.setConnectTimeout(timeout);
+            con.setReadTimeout(timeout);
+        }
         
         //Configure connection
         con.setDoOutput(true);
