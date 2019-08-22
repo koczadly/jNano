@@ -161,8 +161,10 @@ public class RpcQueryNode {
      * @throws RpcException   if the node returns a non-successful response
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request, Integer timeout) throws IOException, RpcException {
-        if(request == null) throw new IllegalArgumentException("Request argument must not be null");
-        if(timeout != null && timeout < 0) throw new IllegalArgumentException("Timeout period must be positive or null");
+        if(request == null)
+            throw new IllegalArgumentException("Request argument must not be null");
+        if(timeout != null && timeout < 0)
+            throw new IllegalArgumentException("Timeout period must be positive or null");
         
         String requestJsonStr = this.serializeRequestToJSON(request); //Serialise the request into JSON
         
@@ -194,16 +196,20 @@ public class RpcQueryNode {
      * @param callback  the callback to execute after the request has completed
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request, Integer timeout, QueryCallback<R> callback) {
-        if(request == null) throw new IllegalArgumentException("Request argument must not be null");
-        if(timeout != null && timeout < 0) throw new IllegalArgumentException("Timeout period must be positive or null");
+        if(request == null)
+            throw new IllegalArgumentException("Request argument must not be null");
+        if(timeout != null && timeout < 0)
+            throw new IllegalArgumentException("Timeout period must be positive or null");
         
         return RpcQueryNode.executorService.submit(() -> {
             try {
                 R response = RpcQueryNode.this.processRequest(request, timeout);
-                if(callback != null) callback.onResponse(response);
+                if(callback != null)
+                    callback.onResponse(response);
                 return response;
             } catch (Exception e) {
-                if(callback != null) callback.onFailure(e);
+                if(callback != null)
+                    callback.onFailure(e);
                 throw e;
             }
         });
@@ -291,21 +297,26 @@ public class RpcQueryNode {
         
         switch(msgLower) {
             case "wallet is locked":
-            case "wallet locked":                   return new RpcWalletLockedException();              //Wallet locked
-            case "insufficient balance":            return new RpcInvalidArgumentException(message);    //Invalid/bad argument (not enough funds)
-            case "invalid authorization header":    return new RpcInvalidAuthTokenException();          //Invalid auth token
-            case "OLD_RPC_TESTS control is disabled":         return new RpcControlDisabledException();           //RPC disabled
-            case "unable to parse json":            return new RpcInvalidRequestJsonException();        //Invalid request body
-            case "unknown command":                 return new RpcUnknownCommandException();            //Unknown command
+            case "wallet locked":
+                return new RpcWalletLockedException();           //Wallet locked
+            case "insufficient balance":
+                return new RpcInvalidArgumentException(message); //Invalid/bad argument (not enough funds)
+            case "invalid authorization header":
+                return new RpcInvalidAuthTokenException();       //Invalid auth token
+            case "rpc control is disabled":
+                return new RpcControlDisabledException();        //RPC disabled
+            case "unable to parse json":
+                return new RpcInvalidRequestJsonException();     //Invalid request body
+            case "unknown command":
+                return new RpcUnknownCommandException();         //Unknown command
         }
         
-        if(msgLower.startsWith("bad")
-                || msgLower.startsWith("invalid")
-                || msgLower.endsWith("required"))   return new RpcInvalidArgumentException(message);    //Invalid/bad argument
-        
-        if(msgLower.contains("not found"))          return new RpcEntityNotFoundException(message);     //Unknown referenced entity
-        
-        if(msgLower.startsWith("internal"))         return new RpcInternalException(message);           //Internal server error
+        if(msgLower.startsWith("bad") || msgLower.startsWith("invalid") || msgLower.endsWith("required"))
+            return new RpcInvalidArgumentException(message);    //Invalid/bad argument
+        if(msgLower.contains("not found"))
+            return new RpcEntityNotFoundException(message);     //Unknown referenced entity
+        if(msgLower.startsWith("internal"))
+            return new RpcInternalException(message);           //Internal server error
         
         return new RpcException(message); //Default to regular
     }
@@ -318,7 +329,9 @@ public class RpcQueryNode {
      * @return the serialized JSON command
      */
     public String serializeRequestToJSON(RpcRequest<?> req) {
-        if(req == null) throw new IllegalArgumentException("Query request argument cannot be null");
+        if(req == null)
+            throw new IllegalArgumentException("Query request argument cannot be null");
+        
         return this.gson.toJson(req);
     }
 
