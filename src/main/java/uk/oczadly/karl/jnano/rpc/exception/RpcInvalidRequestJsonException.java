@@ -1,4 +1,4 @@
-package uk.oczadly.karl.jnano.exception;
+package uk.oczadly.karl.jnano.rpc.exception;
 
 /**
  * Thrown if the node was unable to parse the sent request.

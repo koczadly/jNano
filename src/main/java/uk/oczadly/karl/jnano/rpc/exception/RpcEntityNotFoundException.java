@@ -1,4 +1,4 @@
-package uk.oczadly.karl.jnano.exception;
+package uk.oczadly.karl.jnano.rpc.exception;
 
 /**
  * Thrown if one of the referenced entities (eg. account, wallet, block hash) do not exist.

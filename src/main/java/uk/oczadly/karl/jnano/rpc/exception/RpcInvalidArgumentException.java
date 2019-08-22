@@ -1,4 +1,4 @@
-package uk.oczadly.karl.jnano.exception;
+package uk.oczadly.karl.jnano.rpc.exception;
 
 /**
  * Thrown if one of the given request arguments are not valid.

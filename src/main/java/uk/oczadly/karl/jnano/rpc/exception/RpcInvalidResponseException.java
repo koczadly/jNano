@@ -1,4 +1,4 @@
-package uk.oczadly.karl.jnano.exception;
+package uk.oczadly.karl.jnano.rpc.exception;
 
 import com.google.gson.JsonSyntaxException;
 

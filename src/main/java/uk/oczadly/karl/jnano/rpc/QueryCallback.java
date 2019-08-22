@@ -1,6 +1,6 @@
 package uk.oczadly.karl.jnano.rpc;
 
-import uk.oczadly.karl.jnano.exception.RpcException;
+import uk.oczadly.karl.jnano.rpc.exception.RpcException;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 
 import java.io.IOException;
