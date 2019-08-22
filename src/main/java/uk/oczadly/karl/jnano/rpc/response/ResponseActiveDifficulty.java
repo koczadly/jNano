@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * This response class contains information about the current network active difficulty.
+ */
 public class ResponseActiveDifficulty extends RpcResponse {
     
     @Expose @SerializedName("network_minimum")
@@ -21,18 +24,30 @@ public class ResponseActiveDifficulty extends RpcResponse {
     private List<BigDecimal> difficultyTrend;
     
     
+    /**
+     * @return the minimum work value required
+     */
     public String getNetworkMinimum() {
         return networkMinimum;
     }
     
+    /**
+     * @return the current average work value
+     */
     public String getNetworkCurrent() {
         return networkCurrent;
     }
     
+    /**
+     * @return the current average multiplier
+     */
     public BigDecimal getMultiplier() {
         return multiplier;
     }
     
+    /**
+     * @return a list of historical difficulty trends
+     */
     public List<BigDecimal> getDifficultyTrend() {
         return difficultyTrend;
     }

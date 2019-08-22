@@ -6,7 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import java.math.BigInteger;
 import java.util.List;
 
-
+/**
+ * This response class contains information about the current confirmation requirements.
+ */
 public class ResponseConfirmationQuorum extends RpcResponse {
     
     @Expose @SerializedName("quorum_delta")
@@ -31,30 +33,51 @@ public class ResponseConfirmationQuorum extends RpcResponse {
     private List<PeerInfo> peers;
     
     
+    /**
+     * @return the total voting weight required for a block to be confirmed
+     */
     public BigInteger getQuorumDelta() {
         return quorumDelta;
     }
     
+    /**
+     * @return the percentage of online voting weight required to confirm a block (constant)
+     */
     public double getOnlineQuorumPercent() {
         return onlineQuorumPercent;
     }
     
+    /**
+     * @return the minimum voting weight required (constant)
+     */
     public BigInteger getOnlineQuorumMinimum() {
         return onlineQuorumMinimum;
     }
     
+    /**
+     * @return the total online stake from representatives
+     */
     public BigInteger getOnlineStakeTotal() {
         return onlineStakeTotal;
     }
     
+    /**
+     * @return the total online stake from peers
+     */
     public BigInteger getPeersStakeTotal() {
         return peersStakeTotal;
     }
     
+    /**
+     * @return the required voting weight from all peers
+     */
     public BigInteger getPeersStakeRequired() {
         return peersStakeRequired;
     }
     
+    /**
+     * @return a list of online representative peers
+     */
     public List<PeerInfo> getPeers() {
         return peers;
     }
@@ -71,14 +94,23 @@ public class ResponseConfirmationQuorum extends RpcResponse {
         private BigInteger weight;
     
     
+        /**
+         * @return the address of the representative
+         */
         public String getAccount() {
             return account;
         }
     
+        /**
+         * @return the IP address of the representative
+         */
         public String getIp() {
             return ip;
         }
     
+        /**
+         * @return the voting weight of this representative
+         */
         public BigInteger getWeight() {
             return weight;
         }

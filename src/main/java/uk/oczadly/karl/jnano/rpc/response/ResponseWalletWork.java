@@ -5,17 +5,28 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Map;
 
+/**
+ * This response class contains a set of pre-computed work for a wallet.
+ */
 public class ResponseWalletWork extends RpcResponse {
     
     @Expose @SerializedName("works")
     private Map<String, String> work;
     
     
-    public Map<String, String> getPrecomputedWork() {
+    /**
+     * Map follows the structure {@code account address -> work}.
+     * @return a map of pre-computed work
+     */
+    public Map<String, String> getWork() {
         return work;
     }
     
-    public String getPrecomputedWork(String accountAddress) {
+    /**
+     * @param accountAddress a local account's address
+     * @return a pre-computed work solution, or null if no work has been pre-computed
+     */
+    public String getWork(String accountAddress) {
         return this.work.get(accountAddress.toLowerCase());
     }
     

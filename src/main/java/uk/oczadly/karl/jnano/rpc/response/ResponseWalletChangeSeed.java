@@ -3,6 +3,9 @@ package uk.oczadly.karl.jnano.rpc.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * This response class contains information given when changing a wallet's seed.
+ */
 public class ResponseWalletChangeSeed extends RpcResponse {
     
     @Expose @SerializedName("last_restored_account")
@@ -12,10 +15,16 @@ public class ResponseWalletChangeSeed extends RpcResponse {
     private int restoredCount;
     
     
+    /**
+     * @return the address of the last account to be restored
+     */
     public String getLastAccount() {
         return lastAccount;
     }
     
+    /**
+     * @return the number of accounts restored
+     */
     public int getRestoredCount() {
         return restoredCount;
     }

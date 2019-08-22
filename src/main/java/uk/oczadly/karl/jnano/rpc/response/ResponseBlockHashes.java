@@ -5,14 +5,18 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Set;
 
+/**
+ * This response class contains a series of block hashes.
+ */
 public class ResponseBlockHashes extends RpcResponse {
 
-    @Expose
-    @SerializedName(value="blocks", alternate={"hashes", "confirmations"})
+    @Expose @SerializedName(value="blocks", alternate={"hashes", "confirmations"})
     private Set<String> blockHashes;
     
     
-    
+    /**
+     * @return a set of block hashes
+     */
     public Set<String> getBlockHashes() {
         return blockHashes;
     }

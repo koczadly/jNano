@@ -5,18 +5,21 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Map;
 
+/**
+ * This response class contains a set of connected peers and associated information about them.
+ */
 public class ResponsePeers extends RpcResponse {
     
     @Expose @SerializedName("peers")
     private Map<String, PeerInfo> peers;
     
     
+    /**
+     * Map follows the structure {@code IP address -> node information}.
+     * @return a map of representatives
+     */
     public Map<String, PeerInfo> getPeers() {
         return peers;
-    }
-    
-    public PeerInfo getPeerInfo(String address) {
-        return this.peers.get(address.toLowerCase());
     }
     
     
@@ -30,16 +33,25 @@ public class ResponsePeers extends RpcResponse {
     
         @Expose @SerializedName("type")
         private String type;
-        
-        
+    
+    
+        /**
+         * @return the protocol version this node is using
+         */
         public int getProtocolVer() {
             return protocolVer;
         }
     
+        /**
+         * @return the unique ID of this node
+         */
         public String getNodeId() {
             return nodeId;
         }
     
+        /**
+         * @return the type of network connection to this node
+         */
         public String getType() {
             return type;
         }

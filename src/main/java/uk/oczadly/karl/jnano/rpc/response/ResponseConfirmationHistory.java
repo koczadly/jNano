@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import java.math.BigInteger;
 import java.util.List;
 
+/**
+ * This response class contains historical information about confirmations.
+ */
 public class ResponseConfirmationHistory extends RpcResponse {
     
     @Expose @SerializedName("confirmation_stats")
@@ -15,10 +18,16 @@ public class ResponseConfirmationHistory extends RpcResponse {
     private List<Confirmation> confirmations;
     
     
+    /**
+     * @return a set of statistics associated with confirmations
+     */
     public ConfirmationStats getStats() {
         return stats;
     }
     
+    /**
+     * @return a historical list of confirmations
+     */
     public List<Confirmation> getConfirmations() {
         return confirmations;
     }
@@ -31,12 +40,18 @@ public class ResponseConfirmationHistory extends RpcResponse {
         
         @Expose @SerializedName("average")
         private int average;
-        
     
+    
+        /**
+         * @return the number of confirmations
+         */
         public int getCount() {
             return count;
         }
-    
+        
+        /**
+         * @return the average confirmation duration time
+         */
         public int getAverage() {
             return average;
         }
@@ -56,18 +71,30 @@ public class ResponseConfirmationHistory extends RpcResponse {
         private BigInteger tally;
     
     
+        /**
+         * @return the block's hash
+         */
         public String getHash() {
             return hash;
         }
     
+        /**
+         * @return the elapsed duration of the confirmation
+         */
         public int getDuration() {
             return duration;
         }
     
+        /**
+         * @return the starting UNIX timestamp of the confirmation
+         */
         public int getTime() {
             return time;
         }
     
+        /**
+         * @return the total voted weight of this block
+         */
         public BigInteger getTally() {
             return tally;
         }

@@ -5,6 +5,10 @@ import com.google.gson.annotations.JsonAdapter;
 
 import java.lang.reflect.Type;
 
+/**
+ * This response class is a generic class used when a single boolean response is expected, or in some cases, where no
+ * response is expected from the server.
+ */
 @JsonAdapter(ResponseSuccessful.Deserializer.class)
 public class ResponseSuccessful extends RpcResponse {
     
@@ -15,10 +19,13 @@ public class ResponseSuccessful extends RpcResponse {
     }
     
     
+    /**
+     * Note: depending on the query, the given value may have no function and could be incorrect.
+     * @return whether the query was successful
+     */
     public boolean isSuccessful() {
         return success;
     }
-    
     
     
     protected static class Deserializer implements JsonDeserializer<ResponseSuccessful> {
@@ -35,11 +42,12 @@ public class ResponseSuccessful extends RpcResponse {
                     String singleVal = obj.entrySet().iterator().next().getValue().getAsString();
                     return new ResponseSuccessful(singleVal.equalsIgnoreCase("true") || singleVal.equals("1")
                             || singleVal.equals(""));
+                } else {
+                    //More or less than 1 argument given
+                    return new ResponseSuccessful(true);
                 }
-                
-                return new ResponseSuccessful(true);
             }
-            return new ResponseSuccessful(false);
+            return new ResponseSuccessful(false); //Unknown response type
         }
     }
     

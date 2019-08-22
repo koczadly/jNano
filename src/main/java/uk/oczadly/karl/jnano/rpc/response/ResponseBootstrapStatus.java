@@ -3,6 +3,9 @@ package uk.oczadly.karl.jnano.rpc.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * This response class contains debug information about the current bootstrap attempt.
+ */
 public class ResponseBootstrapStatus extends RpcResponse {
 
     @Expose @SerializedName("count")

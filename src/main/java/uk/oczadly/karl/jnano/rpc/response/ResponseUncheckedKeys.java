@@ -6,12 +6,18 @@ import uk.oczadly.karl.jnano.model.block.Block;
 
 import java.util.Set;
 
+/**
+ * This response class contains a set of unchecked keys and blocks.
+ */
 public class ResponseUncheckedKeys extends RpcResponse {
     
     @Expose @SerializedName("unchecked")
     private Set<UncheckedBlock> blocks;
     
     
+    /**
+     * @return a set of unchecked block information
+     */
     public Set<UncheckedBlock> getUncheckedBlocks() {
         return blocks;
     }
@@ -31,19 +37,31 @@ public class ResponseUncheckedKeys extends RpcResponse {
         @Expose @SerializedName("contents")
         private Block block;
     
-        
+    
+        /**
+         * @return the key (hash)
+         */
         public String getKey() {
             return key;
         }
-        
+    
+        /**
+         * @return the block's hash
+         */
         public String getBlockHash() {
             return blockHash;
         }
-        
+    
+        /**
+         * @return the UNIX timestamp when this block was last modified/processed
+         */
         public int getModifiedTimestamp() {
             return modifiedTimestamp;
         }
-        
+    
+        /**
+         * @return the block's contents
+         */
         public Block getBlock() {
             return block;
         }
