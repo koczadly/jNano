@@ -5,15 +5,26 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
+/**
+ * This request class is used to tell the node to send a keepalive packet to the specified remote node.
+ * The server responds with a {@link ResponseSuccessful} data object.<br>
+ * Calls the internal RPC method {@code keepalive}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#keepalive">Official RPC documentation</a>
+ */
 public class RequestKeepAlive extends RpcRequest<ResponseSuccessful> {
     
     @Expose @SerializedName("address")
-    private String peerAddress;
+    private final String peerAddress;
     
     @Expose @SerializedName("port")
-    private int peerPort;
+    private final int peerPort;
     
     
+    /**
+     * @param peerAddress   the remote peer's IP address
+     * @param peerPort      the remote peer's port
+     */
     public RequestKeepAlive(String peerAddress, int peerPort) {
         super("keepalive", ResponseSuccessful.class);
         this.peerAddress = peerAddress;
@@ -21,10 +32,16 @@ public class RequestKeepAlive extends RpcRequest<ResponseSuccessful> {
     }
     
     
+    /**
+     * @return the requested peer's address
+     */
     public String getPeerAddress() {
         return peerAddress;
     }
     
+    /**
+     * @return the requested peer's port
+     */
     public int getPeerPort() {
         return peerPort;
     }

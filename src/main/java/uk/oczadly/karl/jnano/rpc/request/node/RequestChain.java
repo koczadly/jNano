@@ -5,51 +5,91 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHashes;
 
+/**
+ * This request class is used to request a consecutive list of block hashes for an account.
+ * The server responds with a {@link ResponseBlockHashes} data object.<br>
+ * Calls the internal RPC method {@code chain}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#chain">Official RPC documentation</a>
+ */
 public class RequestChain extends RpcRequest<ResponseBlockHashes> {
     
     @Expose @SerializedName("hash")
-    private String blockHash;
+    private final String blockHash;
     
     @Expose @SerializedName("count")
-    private int count;
+    private final int count;
     
     @Expose @SerializedName("offset")
-    private Integer offset;
+    private final Integer offset;
     
     @Expose @SerializedName("reverse")
-    private Boolean reverse;
+    private final Boolean reverse;
     
     
-    public RequestChain(String blockHash, int count) {
+    /**
+     * @param blockHash the starting block's hash
+     */
+    public RequestChain(String blockHash) {
+        this(blockHash, null);
+    }
+    
+    /**
+     * @param blockHash the starting block's hash
+     * @param count     (optional) the number of blocks to limit
+     */
+    public RequestChain(String blockHash, Integer count) {
         this(blockHash, count, null);
     }
     
-    public RequestChain(String blockHash, int count, Integer offset) {
+    /**
+     * @param blockHash the starting block's hash
+     * @param count     (optional) the number of blocks to limit
+     * @param offset    (optional) the offset to start listing from
+     */
+    public RequestChain(String blockHash, Integer count, Integer offset) {
         this(blockHash, count, offset, null);
     }
     
-    public RequestChain(String blockHash, int count, Integer offset, Boolean reverse) {
+    /**
+     * @param blockHash the starting block's hash
+     * @param count     (optional) the number of blocks to limit
+     * @param offset    (optional) the offset to start listing from
+     * @param reverse   (optional) whether the blocks should be listed in reverse order
+     */
+    public RequestChain(String blockHash, Integer count, Integer offset, Boolean reverse) {
         super("chain", ResponseBlockHashes.class);
         this.blockHash = blockHash;
-        this.count = count;
+        this.count = count != null ? count : -1;
         this.offset = offset;
         this.reverse = reverse;
     }
     
     
-    
+    /**
+     * @return the requested starting block's hash
+     */
     public String getBlockHash() {
         return blockHash;
     }
     
+    /**
+     * @return the requested limit
+     */
     public int getCount() {
         return count;
     }
     
+    /**
+     * @return the requested offset
+     */
     public Integer getOffset() {
         return offset;
     }
     
+    /**
+     * @return the requested order
+     */
     public Boolean getReverse() {
         return reverse;
     }

@@ -5,15 +5,26 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseWork;
 
+/**
+ * This request class is used to retrieve the pre-computed work solution for a specified local account.
+ * The server responds with a {@link ResponseWork} data object.<br>
+ * Calls the internal RPC method {@code work_get}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#work_get">Official RPC documentation</a>
+ */
 public class RequestWorkGet extends RpcRequest<ResponseWork> {
     
     @Expose @SerializedName("wallet")
-    private String walletId;
+    private final String walletId;
     
     @Expose @SerializedName("account")
-    private String account;
+    private final String account;
     
     
+    /**
+     * @param walletId  the wallet's ID
+     * @param account   the account's address
+     */
     public RequestWorkGet(String walletId, String account) {
         super("work_get", ResponseWork.class);
         this.walletId = walletId;
@@ -21,10 +32,16 @@ public class RequestWorkGet extends RpcRequest<ResponseWork> {
     }
     
     
+    /**
+     * @return the wallet's ID
+     */
     public String getWalletId() {
         return walletId;
     }
     
+    /**
+     * @return the account's address
+     */
     public String getAccount() {
         return account;
     }

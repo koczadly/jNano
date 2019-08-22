@@ -5,18 +5,30 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseAccountsMoved;
 
+/**
+ * This request class is used to move accounts from one local wallet to another.
+ * The server responds with a {@link ResponseAccountsMoved} data object.<br>
+ * Calls the internal RPC method {@code account_move}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#account_move">Official RPC documentation</a>
+ */
 public class RequestAccountsMove extends RpcRequest<ResponseAccountsMoved> {
     
     @Expose @SerializedName("wallet")
-    private String destinationWalletId;
+    private final String destinationWalletId;
     
     @Expose @SerializedName("source")
-    private String sourceWalletId;
+    private final String sourceWalletId;
     
     @Expose @SerializedName("accounts")
-    private String[] accounts;
+    private final String[] accounts;
     
     
+    /**
+     * @param sourceWalletId        the source wallet ID
+     * @param destinationWalletId   the destination wallet ID
+     * @param accounts              an array of accounts' addresses to be moved
+     */
     public RequestAccountsMove(String sourceWalletId, String destinationWalletId, String... accounts) {
         super("account_move", ResponseAccountsMoved.class);
         this.sourceWalletId = sourceWalletId;
@@ -25,14 +37,23 @@ public class RequestAccountsMove extends RpcRequest<ResponseAccountsMoved> {
     }
     
     
+    /**
+     * @return the source wallet ID
+     */
     public String getSourceWalletId() {
         return sourceWalletId;
     }
     
+    /**
+     * @return the destination wallet ID
+     */
     public String getDestinationWalletId() {
         return destinationWalletId;
     }
     
+    /**
+     * @return the accounts to be moved
+     */
     public String[] getAccounts() {
         return accounts;
     }

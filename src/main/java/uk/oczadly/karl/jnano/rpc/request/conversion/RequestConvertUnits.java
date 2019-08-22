@@ -10,15 +10,18 @@ import java.math.BigInteger;
 
 /**
  * This request class is used to convert between the various currency units.
+ * The server responds with a {@link ResponseAmount} data object.
  *
- * @deprecated Use native {@link CurrencyDivisor} utility class instead for efficiency
+ * @see CurrencyDivisor
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#unit-conversion-rpcs">Official RPC documentation</a>
+ *
+ * @deprecated Use the native {@link CurrencyDivisor} utility class instead for efficiency
  */
 @Deprecated
 public class RequestConvertUnits extends RpcRequest<ResponseAmount> {
     
-    @Expose
-    @SerializedName("amount")
-    private BigInteger amount;
+    @Expose @SerializedName("amount")
+    private final BigInteger amount;
     
     private final NanoDenomination conversion;
     
@@ -42,11 +45,16 @@ public class RequestConvertUnits extends RpcRequest<ResponseAmount> {
     }
     
     
-    
+    /**
+     * @return the requested amount
+     */
     public BigInteger getAmount() {
         return amount;
     }
     
+    /**
+     * @return the requested conversion method
+     */
     public final NanoDenomination getConversionType() {
         return conversion;
     }
@@ -54,11 +62,22 @@ public class RequestConvertUnits extends RpcRequest<ResponseAmount> {
     
     
     public enum NanoDenomination {
+        /** Divide a raw amount down by the Mrai ratio. */
         MRAI_FROM_RAW,
+    
+        /** Multiply an Mrai amount by the Mrai ratio. */
         MRAI_TO_RAW,
+    
+        /** Divide a raw amount down by the krai ratio. */
         KRAI_FROM_RAW,
+    
+        /** Multiply an krai amount by the krai ratio. */
         KRAI_TO_RAW,
+    
+        /** Divide a raw amount down by the rai ratio. */
         RAI_FROM_RAW,
+    
+        /** Multiply an rai amount by the rai ratio. */
         RAI_TO_RAW;
     }
     

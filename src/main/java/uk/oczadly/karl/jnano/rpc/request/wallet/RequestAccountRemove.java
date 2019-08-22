@@ -5,15 +5,26 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
+/**
+ * This request class is used to remove an account from a local wallet.
+ * The server responds with a {@link ResponseSuccessful} data object.<br>
+ * Calls the internal RPC method {@code account_remove}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#account_remove">Official RPC documentation</a>
+ */
 public class RequestAccountRemove extends RpcRequest<ResponseSuccessful> {
     
     @Expose @SerializedName("wallet")
-    private String walletId;
+    private final String walletId;
     
     @Expose @SerializedName("account")
-    private String account;
+    private final String account;
     
     
+    /**
+     * @param walletId  the containing wallet's ID
+     * @param account   the account's address
+     */
     public RequestAccountRemove(String walletId, String account) {
         super("account_remove", ResponseSuccessful.class);
         this.walletId = walletId;
@@ -21,11 +32,16 @@ public class RequestAccountRemove extends RpcRequest<ResponseSuccessful> {
     }
     
     
-    
+    /**
+     * @return the requested wallet's ID
+     */
     public String getWalletId() {
         return walletId;
     }
     
+    /**
+     * @return the requested account
+     */
     public String getAccount() {
         return account;
     }

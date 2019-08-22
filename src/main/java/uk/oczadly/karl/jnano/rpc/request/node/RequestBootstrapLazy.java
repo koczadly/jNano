@@ -5,21 +5,33 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
+/**
+ * This request class is used to initialize bootstrap from a given block hash.
+ * The server responds with a {@link ResponseSuccessful} data object.<br>
+ * Calls the internal RPC method {@code bootstrap_lazy}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#bootstrap_lazy">Official RPC documentation</a>
+ */
 public class RequestBootstrapLazy extends RpcRequest<ResponseSuccessful> {
     
-    @Expose
-    @SerializedName("hash")
-    private String blockHash;
+    @Expose @SerializedName("hash")
+    private final String blockHash;
     
-    @Expose
-    @SerializedName("force")
-    private Boolean force;
+    @Expose @SerializedName("force")
+    private final Boolean force;
     
     
+    /**
+     * @param blockHash the block's hash
+     */
     public RequestBootstrapLazy(String blockHash) {
         this(blockHash, null);
     }
     
+    /**
+     * @param blockHash the block's hash
+     * @param force     (optional) whether all current bootstraps should be forcefully closed
+     */
     public RequestBootstrapLazy(String blockHash, Boolean force) {
         super("bootstrap_lazy", ResponseSuccessful.class);
         this.blockHash = blockHash;
@@ -27,10 +39,16 @@ public class RequestBootstrapLazy extends RpcRequest<ResponseSuccessful> {
     }
     
     
+    /**
+     * @return the requested block hash
+     */
     public String getBlockHash() {
         return blockHash;
     }
     
+    /**
+     * @return whether all current bootstraps should be forcefully closed
+     */
     public Boolean getForce() {
         return force;
     }

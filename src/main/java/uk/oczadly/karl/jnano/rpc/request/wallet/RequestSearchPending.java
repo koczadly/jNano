@@ -5,18 +5,31 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
+/**
+ * This request class is used to manually search for pending blocks in the specified local wallet.
+ * The server responds with a {@link ResponseSuccessful} data object.<br>
+ * Calls the internal RPC method {@code search_pending}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#search_pending">Official RPC documentation</a>
+ */
 public class RequestSearchPending extends RpcRequest<ResponseSuccessful> {
     
     @Expose @SerializedName("wallet")
-    private String walletId;
+    private final String walletId;
     
     
+    /**
+     * @param walletId the wallet's ID
+     */
     public RequestSearchPending(String walletId) {
         super("search_pending", ResponseSuccessful.class);
         this.walletId = walletId;
     }
     
     
+    /**
+     * @return the wallet's ID
+     */
     public String getWalletId() {
         return walletId;
     }

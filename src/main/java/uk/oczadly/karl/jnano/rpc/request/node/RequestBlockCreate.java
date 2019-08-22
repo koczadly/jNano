@@ -9,7 +9,13 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlockCreate;
 import java.math.BigInteger;
 
 /**
+ * This request class is used to create a new state block. Use the {@link Builder} class to create the block, rather
+ * than the constructor.
+ * The server responds with a {@link ResponseBlockCreate} data object.<br>
+ * Calls the internal RPC method {@code block_create}.
+ *
  * @see Builder
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#block_create">Official RPC documentation</a>
  */
 public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
     
@@ -20,77 +26,117 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
     private final BlockType type = BlockType.STATE;
     
     @Expose @SerializedName("balance")
-    private BigInteger balance;
+    private final BigInteger balance;
     
     @Expose @SerializedName("representative")
-    private String representative;
+    private final String representative;
     
     @Expose @SerializedName("previous")
-    private String previous;
+    private final String previous;
     
     @Expose @SerializedName("wallet")
-    private String walletId;
+    private final String walletId;
     
     @Expose @SerializedName("account")
-    private String account;
+    private final String account;
     
     @Expose @SerializedName("key")
-    private String privateKey;
+    private final String privateKey;
     
     @Expose @SerializedName("source")
-    private String sourceBlock;
+    private final String sourceBlock;
     
     @Expose @SerializedName("destination")
-    private String destination;
+    private final String destination;
     
     @Expose @SerializedName("link")
-    private String linkData;
+    private final String linkData;
     
     @Expose @SerializedName("work")
-    private String work;
+    private final String work;
     
     
-    private RequestBlockCreate() {
+    private RequestBlockCreate(BigInteger balance, String representative, String previous, String walletId, String account, String privateKey, String sourceBlock, String destination, String linkData, String work) {
         super("block_create", ResponseBlockCreate.class);
+        this.balance = balance;
+        this.representative = representative;
+        this.previous = previous;
+        this.walletId = walletId;
+        this.account = account;
+        this.privateKey = privateKey;
+        this.sourceBlock = sourceBlock;
+        this.destination = destination;
+        this.linkData = linkData;
+        this.work = work;
     }
     
     
+    /**
+     * @return the requested block's balance field
+     */
     public BigInteger getBalance() {
         return balance;
     }
     
+    /**
+     * @return the requested block's representative field
+     */
     public String getRepresentative() {
         return representative;
     }
     
+    /**
+     * @return the requested block's previous field
+     */
     public String getPrevious() {
         return previous;
     }
     
+    /**
+     * @return the requested wallet ID to sign the block
+     */
     public String getWalletId() {
         return walletId;
     }
     
+    /**
+     * @return the requested account to sign the block
+     */
     public String getAccount() {
         return account;
     }
     
+    /**
+     * @return the requested private key to sign the block
+     */
     public String getPrivateKey() {
         return privateKey;
     }
     
+    /**
+     * @return the requested block's source field
+     */
     public String getSourceBlock() {
         return sourceBlock;
     }
     
+    /**
+     * @return the requested block's destination field
+     */
     public String getDestination() {
         return destination;
     }
     
+    /**
+     * @return the requested block's link field
+     */
     public String getLinkData() {
         return linkData;
     }
     
+    /**
+     * @return the requested block's work field
+     */
     public String getWork() {
         return work;
     }
@@ -207,18 +253,8 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
         
         
         public RequestBlockCreate buildRequest() {
-            RequestBlockCreate request = new RequestBlockCreate();
-            request.balance = balance;
-            request.representative = representative;
-            request.previous = previous;
-            request.walletId = walletId;
-            request.account = account;
-            request.privateKey = privKey;
-            request.sourceBlock = sourceBlock;
-            request.destination = destination;
-            request.linkData = link;
-            request.work = work;
-            return request;
+            return new RequestBlockCreate(balance, representative, previous, walletId, account, privKey, sourceBlock,
+                    destination, link, work);
         }
         
     }

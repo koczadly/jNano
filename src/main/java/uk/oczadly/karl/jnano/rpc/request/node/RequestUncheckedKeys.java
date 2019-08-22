@@ -5,6 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseUncheckedKeys;
 
+/**
+ * This request class is used to retrieve unchecked database keys and blocks.
+ * The server responds with a {@link ResponseUncheckedKeys} data object.<br>
+ * Calls the internal RPC method {@code unchecked_keys}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#unchecked_keys">Official RPC documentation</a>
+ */
 public class RequestUncheckedKeys extends RpcRequest<ResponseUncheckedKeys> {
     
     @Expose @SerializedName("json_block")
@@ -12,12 +19,16 @@ public class RequestUncheckedKeys extends RpcRequest<ResponseUncheckedKeys> {
     
     
     @Expose @SerializedName("key")
-    private String key;
+    private final String key;
     
     @Expose @SerializedName("count")
-    private int count;
+    private final int count;
     
     
+    /**
+     * @param key   the key to look up
+     * @param count the result limit
+     */
     public RequestUncheckedKeys(String key, int count) {
         super("unchecked_keys", ResponseUncheckedKeys.class);
         this.key = key;
@@ -25,11 +36,16 @@ public class RequestUncheckedKeys extends RpcRequest<ResponseUncheckedKeys> {
     }
     
     
-    
+    /**
+     * @return the requested key
+     */
     public String getKey() {
         return key;
     }
     
+    /**
+     * @return the requested limit
+     */
     public int getCount() {
         return count;
     }

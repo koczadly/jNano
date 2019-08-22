@@ -5,6 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseMultiBlockInfo;
 
+/**
+ * This request class is used to fetch detailed information about the specified block hashes.
+ * The server responds with a {@link ResponseMultiBlockInfo} data object.<br>
+ * Calls the internal RPC method {@code blocks_info}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#blocks_info">Official RPC documentation</a>
+ */
 public class RequestMultiBlocksInfo extends RpcRequest<ResponseMultiBlockInfo> {
     
     @Expose @SerializedName("json_block")
@@ -19,17 +26,25 @@ public class RequestMultiBlocksInfo extends RpcRequest<ResponseMultiBlockInfo> {
     @Expose @SerializedName("balance")
     private final boolean fetchBalance = true;
     
+    
     @Expose @SerializedName("include_not_found")
-    private Boolean includeNotFound;
+    private final Boolean includeNotFound;
     
     @Expose @SerializedName("hashes")
-    private String[] blockHashes;
+    private final String[] blockHashes;
     
     
+    /**
+     * @param blockHashes   the block hashes
+     */
     public RequestMultiBlocksInfo(String... blockHashes) {
         this(null, blockHashes);
     }
     
+    /**
+     * @param includeNotFound   (optional) whether blocks should be included if they aren't found in the ledger
+     * @param blockHashes       the block hashes
+     */
     public RequestMultiBlocksInfo(Boolean includeNotFound, String... blockHashes) {
         super("blocks_info", ResponseMultiBlockInfo.class);
         this.blockHashes = blockHashes;
@@ -37,8 +52,18 @@ public class RequestMultiBlocksInfo extends RpcRequest<ResponseMultiBlockInfo> {
     }
     
     
+    /**
+     * @return the requested block hashes
+     */
     public String[] getBlockHashes() {
         return blockHashes;
+    }
+    
+    /**
+     * @return whether blocks should be included if they aren't found in the ledger
+     */
+    public Boolean getIncludeNotFound() {
+        return includeNotFound;
     }
     
 }

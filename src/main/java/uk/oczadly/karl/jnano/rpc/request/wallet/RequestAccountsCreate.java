@@ -5,22 +5,39 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseAccounts;
 
+/**
+ * This request class is used to create a set of new accounts in a local wallet.
+ * The server responds with a {@link ResponseAccounts} data object.<br>
+ * Calls the internal RPC method {@code accounts_create}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#accounts_create">Official RPC documentation</a>
+ */
 public class RequestAccountsCreate extends RpcRequest<ResponseAccounts> {
     
     @Expose @SerializedName("wallet")
-    private String walletId;
+    private final String walletId;
     
     @Expose @SerializedName("count")
-    private int count;
+    private final int count;
+    
     
     @Expose @SerializedName("work")
-    private Boolean generateWork;
+    private final Boolean generateWork;
     
     
+    /**
+     * @param walletId  the wallet ID
+     * @param count     the number of accounts to create
+     */
     public RequestAccountsCreate(String walletId, int count) {
         this(walletId, count, null);
     }
     
+    /**
+     * @param walletId      the wallet ID
+     * @param count         the number of accounts to create
+     * @param generateWork  whether work should be pre-computed for each account
+     */
     public RequestAccountsCreate(String walletId, int count, Boolean generateWork) {
         super("accounts_create", ResponseAccounts.class);
         this.walletId = walletId;
@@ -29,14 +46,23 @@ public class RequestAccountsCreate extends RpcRequest<ResponseAccounts> {
     }
     
     
+    /**
+     * @return the requested wallet's ID
+     */
     public String getWalletId() {
         return walletId;
     }
     
+    /**
+     * @return the requested number of accounts
+     */
     public int getCount() {
         return count;
     }
     
+    /**
+     * @return whether work should be pre-computed for each account
+     */
     public boolean getGenerateWork() {
         return generateWork;
     }

@@ -5,25 +5,21 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseBlockCount;
 
+/**
+ * This request class is used to request the total number of blocks in the ledger.
+ * The server responds with a {@link ResponseBlockCount} data object.<br>
+ * Calls the internal RPC method {@code block_count}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#block_count">Official RPC documentation</a>
+ */
 public class RequestBlockCount extends RpcRequest<ResponseBlockCount> {
     
-    @Expose
-    @SerializedName("include_cemented")
-    private boolean includeCemented;
+    @Expose @SerializedName("include_cemented")
+    private final boolean includeCemented = true;
     
     
     public RequestBlockCount() {
-        this(null);
-    }
-    
-    public RequestBlockCount(Boolean includeCemented) {
         super("block_count", ResponseBlockCount.class);
-        this.includeCemented = includeCemented;
-    }
-    
-    
-    public boolean getIncludeCemented() {
-        return includeCemented;
     }
     
 }

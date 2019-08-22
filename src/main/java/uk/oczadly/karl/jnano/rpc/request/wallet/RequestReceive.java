@@ -5,25 +5,43 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHash;
 
+/**
+ * This request class is used to manually receive a pending block for a local wallet account.
+ * The server responds with a {@link ResponseBlockHash} data object.<br>
+ * Calls the internal RPC method {@code receive}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#receive">Official RPC documentation</a>
+ */
 public class RequestReceive extends RpcRequest<ResponseBlockHash> {
     
     @Expose @SerializedName("wallet")
-    private String walletId;
+    private final String walletId;
     
     @Expose @SerializedName("account")
-    private String account;
+    private final String account;
     
     @Expose @SerializedName("block")
-    private String blockHash;
+    private final String blockHash;
     
     @Expose @SerializedName("work")
-    private String workSolution;
+    private final String workSolution;
     
     
+    /**
+     * @param walletId  the wallet's ID
+     * @param account   the account's address
+     * @param blockHash the pending block's hash
+     */
     public RequestReceive(String walletId, String account, String blockHash) {
         this(walletId, account, blockHash, null);
     }
     
+    /**
+     * @param walletId      the wallet's ID
+     * @param account       the account's address
+     * @param blockHash     the pending block's hash
+     * @param workSolution  a pre-computed work solution
+     */
     public RequestReceive(String walletId, String account, String blockHash, String workSolution) {
         super("receive", ResponseBlockHash.class);
         this.walletId = walletId;
@@ -33,18 +51,30 @@ public class RequestReceive extends RpcRequest<ResponseBlockHash> {
     }
     
     
+    /**
+     * @return the wallet's ID
+     */
     public String getWalletId() {
         return walletId;
     }
     
+    /**
+     * @return the account's address
+     */
     public String getAccount() {
         return account;
     }
     
+    /**
+     * @return the pending block's hash
+     */
     public String getBlockHash() {
         return blockHash;
     }
     
+    /**
+     * @return a pre-computed work solution
+     */
     public String getWorkSolution() {
         return workSolution;
     }

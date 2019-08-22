@@ -5,6 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseLedger;
 
+/**
+ * This request class is used to request detailed account information from the ledger within a specific wallet.
+ * The server responds with a {@link ResponseLedger} data object.<br>
+ * Calls the internal RPC method {@code wallet_ledger}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_ledger">Official RPC documentation</a>
+ */
 public class RequestWalletLedger extends RpcRequest<ResponseLedger> {
     
     @Expose @SerializedName("representative")
@@ -18,17 +25,24 @@ public class RequestWalletLedger extends RpcRequest<ResponseLedger> {
     
     
     @Expose @SerializedName("wallet")
-    private String walletId;
+    private final String walletId;
     
     
     @Expose @SerializedName("modified_since")
-    private Integer modifiedSince;
+    private final Integer modifiedSince;
     
     
+    /**
+     * @param walletId the wallet's ID
+     */
     public RequestWalletLedger(String walletId) {
         this(walletId, null);
     }
     
+    /**
+     * @param walletId      the wallet's Id
+     * @param modifiedSince filter out transactions before the specified UNIX timestamp
+     */
     public RequestWalletLedger(String walletId, Integer modifiedSince) {
         super("wallet_ledger", ResponseLedger.class);
         this.walletId = walletId;
@@ -36,10 +50,16 @@ public class RequestWalletLedger extends RpcRequest<ResponseLedger> {
     }
     
     
+    /**
+     * @return the wallet's ID
+     */
     public String getWalletId() {
         return walletId;
     }
     
+    /**
+     * @return the modified since threshold
+     */
     public Integer getModifiedSince() {
         return modifiedSince;
     }

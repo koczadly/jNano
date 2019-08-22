@@ -5,6 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseConfirmationQuorum;
 
+/**
+ * This request class is used to request information about the network state.
+ * The server responds with a {@link ResponseConfirmationQuorum} data object.<br>
+ * Calls the internal RPC method {@code confirmation_quorum}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#confirmation_quorum">Official RPC documentation</a>
+ */
 public class RequestConfirmationQuorum extends RpcRequest<ResponseConfirmationQuorum> {
     
     @Expose @SerializedName("peer_details")

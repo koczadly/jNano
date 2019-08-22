@@ -5,19 +5,31 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseCount;
 
+/**
+ * This request class is used to request the number of delegators for a specified representative.
+ * The server responds with a {@link ResponseCount} data object.<br>
+ * Calls the internal RPC method {@code delegators_count}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#delegators_count">Official RPC documentation</a>
+ */
 public class RequestDelegatorsCount extends RpcRequest<ResponseCount> {
     
-    @Expose
-    @SerializedName("account")
-    private String account;
+    @Expose @SerializedName("account")
+    private final String account;
     
     
+    /**
+     * @param account the representative's address
+     */
     public RequestDelegatorsCount(String account) {
         super("delegators_count", ResponseCount.class);
         this.account = account;
     }
     
     
+    /**
+     * @return the requested representative's address
+     */
     public String getAccount() {
         return account;
     }

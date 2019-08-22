@@ -5,6 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseConfirmationInfo;
 
+/**
+ * This request class is used to request information about the specified active election.
+ * The server responds with a {@link ResponseConfirmationInfo} data object.<br>
+ * Calls the internal RPC method {@code confirmation_info}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#confirmation_info">Official RPC documentation</a>
+ */
 public class RequestConfirmationInfo extends RpcRequest<ResponseConfirmationInfo> {
     
     @Expose @SerializedName("json_block")
@@ -18,15 +25,21 @@ public class RequestConfirmationInfo extends RpcRequest<ResponseConfirmationInfo
     
     
     @Expose @SerializedName("root")
-    private String rootHash;
+    private final String rootHash;
     
     
+    /**
+     * @param rootHash the election's root hash
+     */
     public RequestConfirmationInfo(String rootHash) {
         super("confirmation_info", ResponseConfirmationInfo.class);
         this.rootHash = rootHash;
     }
     
     
+    /**
+     * @return the requested election's root hash
+     */
     public String getRootHash() {
         return rootHash;
     }

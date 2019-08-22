@@ -5,17 +5,26 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
+/**
+ * This request class is used to initialize bootstrap to a specified remote node.
+ * The server responds with a {@link ResponseSuccessful} data object.<br>
+ * Calls the internal RPC method {@code bootstrap}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#bootstrap">Official RPC documentation</a>
+ */
 public class RequestBootstrap extends RpcRequest<ResponseSuccessful> {
     
-    @Expose
-    @SerializedName("address")
-    private String peerAddress;
+    @Expose @SerializedName("address")
+    private final String peerAddress;
     
-    @Expose
-    @SerializedName("port")
-    private int peerPort;
+    @Expose @SerializedName("port")
+    private final int peerPort;
     
     
+    /**
+     * @param peerAddress   the IP address of the remote node
+     * @param peerPort      the port of the remote node
+     */
     public RequestBootstrap(String peerAddress, int peerPort) {
         super("bootstrap", ResponseSuccessful.class);
         this.peerAddress = peerAddress;
@@ -23,10 +32,16 @@ public class RequestBootstrap extends RpcRequest<ResponseSuccessful> {
     }
     
     
+    /**
+     * @return the requested node's IP address
+     */
     public String getPeerAddress() {
         return peerAddress;
     }
     
+    /**
+     * @return the requested node's port
+     */
     public int getPeerPort() {
         return peerPort;
     }

@@ -5,22 +5,40 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseWalletChangeSeed;
 
+/**
+ * This request class is used to change a local wallet's seed.
+ * The server responds with a {@link ResponseWalletChangeSeed} data object.<br>
+ * Calls the internal RPC method {@code wallet_change_seed}.
+ * <br><br>
+ * Note: this method will clear existing deterministic accounts from the wallet.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_change_seed">Official RPC documentation</a>
+ */
 public class RequestWalletChangeSeed extends RpcRequest<ResponseWalletChangeSeed> {
     
     @Expose @SerializedName("wallet")
-    private String walletId;
+    private final String walletId;
     
     @Expose @SerializedName("seed")
-    private String seed;
+    private final String seed;
     
     @Expose @SerializedName("count")
-    private Integer count;
+    private final Integer count;
     
     
+    /**
+     * @param walletId  the wallet's ID
+     * @param seed      the new seed
+     */
     public RequestWalletChangeSeed(String walletId, String seed) {
         this(walletId, seed, null);
     }
     
+    /**
+     * @param walletId  the wallet's ID
+     * @param seed      the new seed
+     * @param count     the number of accounts to restore from the seed
+     */
     public RequestWalletChangeSeed(String walletId, String seed, Integer count) {
         super("wallet_change_seed", ResponseWalletChangeSeed.class);
         this.walletId = walletId;
@@ -29,14 +47,23 @@ public class RequestWalletChangeSeed extends RpcRequest<ResponseWalletChangeSeed
     }
     
     
+    /**
+     * @return the wallet's ID
+     */
     public String getWalletId() {
         return walletId;
     }
     
+    /**
+     * @return the new seed
+     */
     public String getSeed() {
         return seed;
     }
     
+    /**
+     * @return the number of accounts to restore from the seed
+     */
     public Integer getCount() {
         return count;
     }

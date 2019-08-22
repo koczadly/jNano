@@ -5,6 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSignature;
 
+/**
+ * This request class is used to fetch sign a provided block using a specified private key or wallet address.
+ * The server responds with a {@link ResponseSignature} data object.<br>
+ * Calls the internal RPC method {@code sign}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#sign">Official RPC documentation</a>
+ */
 public class RequestSign extends RpcRequest<ResponseSignature> {
     
     @Expose @SerializedName("json_block")
@@ -12,30 +19,45 @@ public class RequestSign extends RpcRequest<ResponseSignature> {
     
     
     @Expose @SerializedName("hash")
-    private String blockHash;
+    private final String blockHash;
     
     @Expose @SerializedName("block")
-    private String blockJson;
+    private final String blockJson;
     
     @Expose @SerializedName("key")
-    private String privateKey;
+    private final String privateKey;
     
     @Expose @SerializedName("wallet")
-    private String walletId;
+    private final String walletId;
     
     @Expose @SerializedName("account")
-    private String account;
+    private final String account;
     
     
+    /**
+     * Constructs a sign request using a private key.
+     * @param blockJson     the block's JSON contents
+     * @param privateKey    the private key of the account
+     */
     public RequestSign(String blockJson, String privateKey) {
         this(null, blockJson, privateKey, null, null);
     }
     
+    /**
+     * Constructs a sign request using a wallet account.
+     * @param blockJson the block's JSON contents
+     * @param walletId  the local wallet ID of the account
+     * @param account   the local account's address
+     */
     public RequestSign(String blockJson, String walletId, String account) {
         this(null, blockJson, null, walletId, account);
     }
     
-    public RequestSign(String blockHash) {
+    /**
+     * I've got no idea what this does or how it works.
+     * @param blockHash the block's hash
+     */
+    public RequestSign(String blockHash) { //TODO
         this(blockHash, null, null, null, null);
     }
     
@@ -49,22 +71,37 @@ public class RequestSign extends RpcRequest<ResponseSignature> {
     }
     
     
+    /**
+     * @return the requested block hash
+     */
     public String getBlockHash() {
         return blockHash;
     }
     
+    /**
+     * @return the block's JSON contents
+     */
     public String getBlockJson() {
         return blockJson;
     }
     
+    /**
+     * @return the private key
+     */
     public String getPrivateKey() {
         return privateKey;
     }
     
+    /**
+     * @return the wallet ID
+     */
     public String getWalletId() {
         return walletId;
     }
     
+    /**
+     * @return the account address
+     */
     public String getAccount() {
         return account;
     }

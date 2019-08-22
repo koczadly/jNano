@@ -5,15 +5,26 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseExists;
 
+/**
+ * This request class is used to check whether a wallet contains a specified account.
+ * The server responds with a {@link ResponseExists} data object.<br>
+ * Calls the internal RPC method {@code wallet_contains}.
+ *
+ * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_contains">Official RPC documentation</a>
+ */
 public class RequestWalletContains extends RpcRequest<ResponseExists> {
     
     @Expose @SerializedName("wallet")
-    private String walletId;
+    private final String walletId;
     
     @Expose @SerializedName("account")
-    private String account;
+    private final String account;
     
     
+    /**
+     * @param walletId  the wallet's ID
+     * @param account   the account's address
+     */
     public RequestWalletContains(String walletId, String account) {
         super("wallet_contains", ResponseExists.class);
         this.walletId = walletId;
@@ -21,10 +32,16 @@ public class RequestWalletContains extends RpcRequest<ResponseExists> {
     }
     
     
+    /**
+     * @return the wallet's ID
+     */
     public String getWalletId() {
         return walletId;
     }
     
+    /**
+     * @return the account's address
+     */
     public String getAccount() {
         return account;
     }
