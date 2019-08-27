@@ -1,19 +1,15 @@
-package uk.oczadly.karl.jnano.model.block.type;
+package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.model.block.BlockType;
 
 public class ChangeBlock extends Block {
     
-    @Expose
-    @SerializedName("previous")
+    @Expose @SerializedName("previous")
     private String previousBlockHash;
     
-    @Expose
-    @SerializedName("representative")
+    @Expose @SerializedName("representative")
     private String representativeAccount;
     
     

@@ -1,38 +1,30 @@
-package uk.oczadly.karl.jnano.model.block.type;
+package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.model.block.BlockType;
 
 import java.math.BigInteger;
 
 //TODO may need confirming
 public class StateBlock extends Block {
     
-    @Expose
-    @SerializedName("account")
+    @Expose @SerializedName("account")
     private String accountAddress;
     
-    @Expose
-    @SerializedName("previous")
+    @Expose @SerializedName("previous")
     private String previousBlockHash;
     
-    @Expose
-    @SerializedName("representative")
+    @Expose @SerializedName("representative")
     private String representativeAddress;
     
-    @Expose
-    @SerializedName("balance")
+    @Expose @SerializedName("balance")
     private BigInteger newBalance;
     
-    @Expose
-    @SerializedName("link")
+    @Expose @SerializedName("link")
     private String linkData;
     
-    @Expose
-    @SerializedName("link_as_account")
+    @Expose @SerializedName("link_as_account")
     private String linkAccount;
     
     

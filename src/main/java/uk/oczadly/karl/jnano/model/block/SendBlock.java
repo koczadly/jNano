@@ -1,25 +1,20 @@
-package uk.oczadly.karl.jnano.model.block.type;
+package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.model.block.BlockType;
 
 import java.math.BigInteger;
 
 public class SendBlock extends Block {
     
-    @Expose
-    @SerializedName("previous")
+    @Expose @SerializedName("previous")
     private String previousBlockHash;
     
-    @Expose
-    @SerializedName("destination")
+    @Expose @SerializedName("destination")
     private String destinationAccount;
     
-    @Expose
-    @SerializedName("balance")
+    @Expose @SerializedName("balance")
     private BigInteger newBalance;
     
     
