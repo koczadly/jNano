@@ -311,7 +311,8 @@ public class RpcQueryNode {
                 return new RpcUnknownCommandException();         //Unknown command
         }
         
-        if(msgLower.startsWith("bad") || msgLower.startsWith("invalid") || msgLower.endsWith("required"))
+        if(msgLower.startsWith("bad") || msgLower.startsWith("invalid") || msgLower.endsWith("invalid")
+                || msgLower.endsWith("required"))
             return new RpcInvalidArgumentException(message);    //Invalid/bad argument
         if(msgLower.contains("not found"))
             return new RpcEntityNotFoundException(message);     //Unknown referenced entity
