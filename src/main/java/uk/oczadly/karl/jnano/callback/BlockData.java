@@ -1,24 +1,31 @@
 package uk.oczadly.karl.jnano.callback;
 
 import com.google.gson.annotations.JsonAdapter;
-import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.gsonadapters.CallbackBlockTypeDeserializer;
+import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.block.BlockType;
 
 import java.math.BigInteger;
 
+/**
+ * This class encapsulates a variety of data relating to newly-processed blocks. Instances of this class
+ * are generated and returned by a {@link BlockCallbackServer} as new blocks are received.
+ */
 @JsonAdapter(CallbackBlockTypeDeserializer.class)
-public class BlockInfo {
+public class BlockData {
     
-    private String rawJson, accountAddress, blockHash;
-    private Block block;
-    private boolean isSend;
-    private BigInteger amount;
+    private final String rawJson, accountAddress, blockHash;
+    private final Block block;
+    private final BlockType subtype;
+    private final boolean isSend;
+    private final BigInteger amount;
     
-    public BlockInfo(String rawJson, String accountAddress, String blockHash, Block block, boolean isSend, BigInteger amount) {
+    public BlockData(String rawJson, String accountAddress, String blockHash, Block block, BlockType subtype, boolean isSend, BigInteger amount) {
         this.rawJson = rawJson;
         this.accountAddress = accountAddress;
         this.blockHash = blockHash;
         this.block = block;
+        this.subtype = subtype;
         this.amount = amount;
         this.isSend = isSend;
     }
@@ -49,12 +56,22 @@ public class BlockInfo {
     /**
      * @return the block's contents
      */
-    public Block getBlock() {
+    public Block getBlockContents() {
         return block;
     }
     
     /**
-     * Part of the new universal blocks API
+     * Returns the legacy block type if the block is of universal state type.
+     *
+     * @return the subtype of the block, or null if not a state block
+     */
+    public BlockType getSubtype() {
+        return subtype;
+    }
+    
+    /**
+     * Returns whether or not the block is sending funds to another account.
+     *
      * @return if the block is a SEND transaction
      */
     public boolean isSendTransaction() {
@@ -62,7 +79,7 @@ public class BlockInfo {
     }
     
     /**
-     * @return the value of funds involved in the transaction, or null if non-transactional
+     * @return the value of funds involved, or null if non-transactional
      */
     public BigInteger getTransactionalAmount() {
         return amount;

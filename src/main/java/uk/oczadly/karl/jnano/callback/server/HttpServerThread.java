@@ -8,16 +8,16 @@ import java.util.concurrent.ExecutorService;
 public class HttpServerThread extends Thread {
     
     private ServerSocket socket;
-    private BlockCallbackServer callbackServer;
+    private HttpCallback callbackListener;
     private ExecutorService executorService;
     
-    public HttpServerThread(ServerSocket socket, BlockCallbackServer callbackServer, ExecutorService executorService) {
+    
+    public HttpServerThread(ServerSocket socket, HttpCallback callbackListener, ExecutorService executorService) {
         super("http-server-thread");
         this.socket = socket;
-        this.callbackServer = callbackServer;
+        this.callbackListener = callbackListener;
         this.executorService = executorService;
     }
-    
     
     
     @Override
@@ -25,9 +25,12 @@ public class HttpServerThread extends Thread {
         while(!Thread.interrupted()) {
             try {
                 Socket socket = this.socket.accept(); //Listen for requests
-                socket.setSoTimeout(20000);
+                
+                socket.setSoTimeout(10000);
                 socket.setKeepAlive(false);
-                this.executorService.submit(new HttpClient(socket, this.callbackServer)); //Start new thread for client
+                
+                this.executorService.submit(
+                        new HttpRequestHandler(socket, this.callbackListener)); //Start new thread for client
             } catch (IOException e) {
                 e.printStackTrace();
             }

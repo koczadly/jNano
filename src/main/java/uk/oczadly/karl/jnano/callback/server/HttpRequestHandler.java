@@ -1,23 +1,28 @@
 package uk.oczadly.karl.jnano.callback.server;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
-public class HttpClient implements Runnable {
+public class HttpRequestHandler implements Runnable {
     
     private Socket socket;
-    private BlockCallbackServer callbackServer;
+    private HttpCallback callback;
     
-    public HttpClient(Socket socket, BlockCallbackServer callbackServer) {
+    public HttpRequestHandler(Socket socket, HttpCallback callback) {
         this.socket = socket;
-        this.callbackServer = callbackServer;
+        this.callback = callback;
     }
     
     
     @Override
     public void run() {
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream(), "utf-8"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream(),
+                    StandardCharsets.UTF_8));
             
             String[] request = reader.readLine().split(" ");
             if(!request[0].equalsIgnoreCase("POST")) return; //Ignore non-post
@@ -43,22 +48,25 @@ public class HttpClient implements Runnable {
             
             //Return OK
             BufferedOutputStream output = new BufferedOutputStream(this.socket.getOutputStream());
-            output.write("HTTP/1.1 200 OK\r\n\r\n".getBytes("UTF-8"));
+            output.write("HTTP/1.1 200 OK\r\n\r\n".getBytes(StandardCharsets.UTF_8));
             output.flush();
             output.close();
             
             //Close socket
             this.socket.close();
             
-            HttpRequest requestData = new HttpRequest(this.socket.getInetAddress(), request.length > 2 ? request[1] : "", contentLength, String.valueOf(buffer));
-            this.callbackServer.handleRequest(requestData);
+            HttpRequest requestData = new HttpRequest(this.socket.getInetAddress(), request.length > 2 ? request[1]
+                    : "", contentLength, String.valueOf(buffer));
+            
+            //Notify callback
+            callback.onRequest(requestData);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             //Close socket
             try {
                 if(!this.socket.isClosed()) this.socket.close();
-            } catch (IOException e) {}
+            } catch (IOException ignored) {}
         }
     }
     

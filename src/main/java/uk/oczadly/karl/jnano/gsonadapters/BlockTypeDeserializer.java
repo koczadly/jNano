@@ -1,8 +1,7 @@
 package uk.oczadly.karl.jnano.gsonadapters;
 
 import com.google.gson.*;
-import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.model.block.type.*;
+import uk.oczadly.karl.jnano.model.block.*;
 
 import java.lang.reflect.Type;
 import java.math.BigInteger;
@@ -16,7 +15,6 @@ public class BlockTypeDeserializer implements JsonDeserializer<Block> {
     public Block deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObj = element.isJsonObject() ? element.getAsJsonObject()
                 : this.parser.parse(element.getAsString()).getAsJsonObject(); //Sometimes blocks are passed as string representations
-        String jsonStr = jsonObj.toString();
         
         String hash = jsonObj.get("hash") != null ? jsonObj.get("hash").getAsString() : null;
         String blockType = jsonObj.get("type").getAsString().toUpperCase();

@@ -1,11 +1,10 @@
 package uk.oczadly.karl.jnano.callback;
 
-import uk.oczadly.karl.jnano.callback.server.BlockCallbackServer;
-import uk.oczadly.karl.jnano.tests.NodeTests;
-import uk.oczadly.karl.jnano.util.CurrencyDivisor;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import uk.oczadly.karl.jnano.tests.NodeTests;
+import uk.oczadly.karl.jnano.util.CurrencyDivisor;
 
 import java.math.BigDecimal;
 import java.net.InetAddress;
@@ -42,9 +41,9 @@ public class BlockCallbackServerTest {
     public class TestListener implements BlockCallbackListener {
         
         @Override
-        public void onNewBlock(BlockInfo block, String target, InetAddress node) {
+        public void onNewBlock(BlockData block, String target, InetAddress node) {
             System.out.println("New block received: " + block.getBlockHash()); //Outputs the block hash
-            System.out.println("Type: " + block.getBlock().getType().toString()); //Outputs block type
+            System.out.println("Type: " + block.getBlockContents().getType().toString()); //Outputs block type
             if(block.getTransactionalAmount() != null) {
                 BigDecimal value = CurrencyDivisor.BASE_UNIT.convert(new BigDecimal(block.getTransactionalAmount()), CurrencyDivisor.RAW);
                 System.out.println("Value: " + value.toPlainString() + " " + CurrencyDivisor.BASE_UNIT.getDisplayName()); //Outputs associated value

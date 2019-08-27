@@ -1,9 +1,10 @@
-package uk.oczadly.karl.jnano.callback.server;
+package uk.oczadly.karl.jnano.callback;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import uk.oczadly.karl.jnano.callback.BlockCallbackListener;
-import uk.oczadly.karl.jnano.callback.BlockInfo;
+import uk.oczadly.karl.jnano.callback.server.HttpCallback;
+import uk.oczadly.karl.jnano.callback.server.HttpRequest;
+import uk.oczadly.karl.jnano.callback.server.HttpServerThread;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -20,6 +21,7 @@ public class BlockCallbackServer {
     private final ExecutorService executorService;
     private final Gson gson;
     private final Set<BlockCallbackListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final HttpCallback callbackListener = new HttpCallbackProcessor();
     
     private HttpServerThread thread;
     
@@ -44,7 +46,7 @@ public class BlockCallbackServer {
     
     
     /**
-     * Registers a new listener to be called when new blocks are captured.
+     * Registers a new listener to be called when new blocks are processed.
      *
      * @param listener  the listener instance to send updates to
      */
@@ -53,7 +55,7 @@ public class BlockCallbackServer {
     }
     
     /**
-     * Removes a previously registered listener.
+     * Removes a previously registered block listener.
      *
      * @param listener  the listener instance to remove
      * @return whether the listener instance was previously registered
@@ -63,9 +65,9 @@ public class BlockCallbackServer {
     }
     
     /**
-     * Notifies the registered listener instances
+     * Notifies the registered block listener instances.
      */
-    protected void notifyListeners(BlockInfo block, String target, InetAddress node) {
+    protected void notifyListeners(BlockData block, String target, InetAddress node) {
         this.listeners.forEach(listener -> listener.onNewBlock(block, target, node));
     }
     
@@ -78,37 +80,43 @@ public class BlockCallbackServer {
     }
     
     /**
-     * Starts the HTTP server and listens for blocks.
+     * Starts the HTTP server and listens for blocks from a configured remote node. This is a non-blocking operation,
+     * and is executed from a newly issued thread.
+     *
      * @throws IllegalStateException if the server is already running
      */
-    public void start() {
-        if(this.isRunning()) throw new IllegalStateException("Server is currently running");
-        this.thread = new HttpServerThread(this.serverSocket, this, this.executorService);
+    public synchronized void start() {
+        if(this.isRunning())
+            throw new IllegalStateException("Server is currently running");
+        
+        this.thread = new HttpServerThread(this.serverSocket, callbackListener, this.executorService);
         this.thread.start();
     }
     
     /**
-     * Stops the HTTP server from running and frees the port.
+     * Stops the HTTP server from running and frees the network port.
+     *
      * @throws IllegalStateException if the server is not currently running
      */
-    public void stop() {
-        if(!this.isRunning()) throw new IllegalStateException("Server is not currently running");
+    public synchronized void stop() {
+        if(!this.isRunning())
+            throw new IllegalStateException("Server is not currently running");
+        
         this.thread.interrupt();
         this.thread = null;
     }
     
     
-    /**
-     * Handles an incoming block request from the HTTP client and broadcasts it to the listeners.
-     *
-     * @param request   the HTTP request information
-     */
-    protected void handleRequest(HttpRequest request) {
-        //Deserialize JSON
-        BlockInfo blockInfo = this.gson.fromJson(request.getBody(), BlockInfo.class);
-        
-        //Notify listeners
-        this.notifyListeners(blockInfo, request.getPath(), request.getClientAddr());
+    
+    private class HttpCallbackProcessor implements HttpCallback {
+        @Override
+        public void onRequest(HttpRequest request) {
+            //Deserialize
+            BlockData blockData = gson.fromJson(request.getBody(), BlockData.class);
+            
+            //Notify listeners
+            notifyListeners(blockData, request.getPath(), request.getClientAddr());
+        }
     }
     
 }

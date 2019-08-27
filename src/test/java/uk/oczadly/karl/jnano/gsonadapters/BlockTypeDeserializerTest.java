@@ -4,12 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.model.block.BlockType;
-import uk.oczadly.karl.jnano.model.block.type.ChangeBlock;
-import uk.oczadly.karl.jnano.model.block.type.OpenBlock;
-import uk.oczadly.karl.jnano.model.block.type.ReceiveBlock;
-import uk.oczadly.karl.jnano.model.block.type.SendBlock;
+import uk.oczadly.karl.jnano.model.block.*;
 import uk.oczadly.karl.jnano.tests.FunctionalityTests;
 
 import static org.junit.Assert.*;

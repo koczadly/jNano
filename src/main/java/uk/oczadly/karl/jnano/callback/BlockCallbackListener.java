@@ -11,6 +11,6 @@ public interface BlockCallbackListener {
      * @param target    the HTTP target address
      * @param node      the IP address of the node that issued the callback
      */
-    void onNewBlock(BlockInfo block, String target, InetAddress node);
+    void onNewBlock(BlockData block, String target, InetAddress node);
     
 }
