@@ -13,9 +13,9 @@ public abstract class RpcResponse {
     
     
     /**
-     * @return the raw JSON data sent from the node
+     * @return the raw JSON response data sent from the node
      */
-    public final JsonObject getRawJSON() {
+    public final JsonObject getRawResponseJson() {
         return this.rawJson;
     }
     
