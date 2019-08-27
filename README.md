@@ -11,7 +11,7 @@ This project is hosted on Maven Central. To import this library, add the followi
 ```xml
 <dependency>
     <groupId>uk.oczadly.karl</groupId>
-    <artifactId>jnano</artifactId>
+    <artifactId>2.0.0-V19</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```
