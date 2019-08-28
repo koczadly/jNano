@@ -1,4 +1,4 @@
-package uk.oczadly.karl.jnano.callback.server;
+package uk.oczadly.karl.jnano.callback.httpserver;
 
 import java.io.IOException;
 import java.net.ServerSocket;

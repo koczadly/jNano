@@ -2,9 +2,9 @@ package uk.oczadly.karl.jnano.callback;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import uk.oczadly.karl.jnano.callback.server.HttpCallback;
-import uk.oczadly.karl.jnano.callback.server.HttpRequest;
-import uk.oczadly.karl.jnano.callback.server.HttpServerThread;
+import uk.oczadly.karl.jnano.callback.httpserver.HttpCallback;
+import uk.oczadly.karl.jnano.callback.httpserver.HttpRequest;
+import uk.oczadly.karl.jnano.callback.httpserver.HttpServerThread;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -111,11 +111,8 @@ public class BlockCallbackServer {
     private class HttpCallbackProcessor implements HttpCallback {
         @Override
         public void onRequest(HttpRequest request) {
-            //Deserialize
-            BlockData blockData = gson.fromJson(request.getBody(), BlockData.class);
-            
-            //Notify listeners
-            notifyListeners(blockData, request.getPath(), request.getClientAddr());
+            BlockData blockData = gson.fromJson(request.getBody(), BlockData.class); //Deserialize
+            notifyListeners(blockData, request.getPath(), request.getClientAddr()); //Notify listeners
         }
     }
     
