@@ -43,11 +43,11 @@ public class ResponseSuccessful extends RpcResponse {
                     return new ResponseSuccessful(singleVal.equalsIgnoreCase("true") || singleVal.equals("1")
                             || singleVal.equals(""));
                 } else {
-                    //More or less than 1 argument given
+                    // More or less than 1 argument given
                     return new ResponseSuccessful(true);
                 }
             }
-            return new ResponseSuccessful(false); //Unknown response type
+            return new ResponseSuccessful(false); // Unknown response type
         }
     }
     

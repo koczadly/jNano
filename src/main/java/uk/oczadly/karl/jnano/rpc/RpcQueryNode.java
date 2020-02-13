@@ -47,7 +47,7 @@ public class RpcQueryNode {
      * @throws MalformedURLException if the address cannot be parsed
      */
     public RpcQueryNode(String authToken) throws MalformedURLException {
-        this("::1", 7076, authToken); //Local address and default port
+        this("::1", 7076, authToken); // Local address and default port
     }
     
     /**
@@ -94,11 +94,11 @@ public class RpcQueryNode {
         this.address = address;
         this.authToken = authToken;
         this.gson = gson.excludeFieldsWithoutExposeAnnotation()
-                .registerTypeAdapterFactory(new ArrayTypeAdapterFactory())          //Empty array hotfix
-                .registerTypeAdapterFactory(new CollectionTypeAdapterFactory())     //Empty collection hotfix
-                .registerTypeAdapterFactory(new MapTypeAdapterFactory())            //Empty map hotfix
-                .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer())  //Boolean deserializer
-                .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer())  //Boolean deserializer
+                .registerTypeAdapterFactory(new ArrayTypeAdapterFactory())          // Empty array hotfix
+                .registerTypeAdapterFactory(new CollectionTypeAdapterFactory())     // Empty collection hotfix
+                .registerTypeAdapterFactory(new MapTypeAdapterFactory())            // Empty map hotfix
+                .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer())  // Boolean deserializer
+                .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer())  // Boolean deserializer
                 .create();
     }
     
@@ -166,9 +166,9 @@ public class RpcQueryNode {
         if(timeout != null && timeout < 0)
             throw new IllegalArgumentException("Timeout period must be positive or null");
         
-        String requestJsonStr = this.serializeRequestToJSON(request); //Serialise the request into JSON
+        String requestJsonStr = this.serializeRequestToJSON(request); // Serialise the request into JSON
         
-        String responseJson = this.processRequestRaw(requestJsonStr, timeout); //Send the request to the node
+        String responseJson = this.processRequestRaw(requestJsonStr, timeout); // Send the request to the node
         
         R response = this.deserializeResponseFromJSON(responseJson, request.getResponseClass());
         assert response != null : "Response JSON is null";
@@ -233,27 +233,27 @@ public class RpcQueryNode {
     public String processRequestRaw(String jsonRequest, Integer timeout) throws IOException {
         if(jsonRequest == null) throw new IllegalArgumentException("JSON request string cannot be null");
     
-        //Configure connection
+        // Configure connection
         HttpURLConnection con = (HttpURLConnection)this.address.openConnection();
-        if(timeout != null) { //Set timeouts
+        if(timeout != null) { // Set timeouts
             con.setConnectTimeout(timeout);
             con.setReadTimeout(timeout);
         }
         
-        //Configure connection
+        // Configure connection
         con.setDoOutput(true);
         con.setDoInput(true);
         con.setRequestMethod("POST");
         if(this.authToken != null) {
-            con.setRequestProperty("Authorization", "Bearer " + this.authToken); //Set authorization token header
+            con.setRequestProperty("Authorization", "Bearer " + this.authToken); // Set authorization token header
         }
         
-        //Write request data
+        // Write request data
         OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
         writer.write(jsonRequest);
         writer.close();
     
-        //Read response data
+        // Read response data
         InputStreamReader input = new InputStreamReader(con.getInputStream());
         BufferedReader inputReader = new BufferedReader(input);
         
@@ -276,18 +276,18 @@ public class RpcQueryNode {
     protected <R extends RpcResponse> R deserializeResponseFromJSON(String responseJson, Class<R> responseClass) throws RpcException {
         JsonObject response;
         try {
-            response = RpcQueryNode.JSON_PARSER.parse(responseJson).getAsJsonObject(); //Parse response
+            response = RpcQueryNode.JSON_PARSER.parse(responseJson).getAsJsonObject(); // Parse response
         } catch (JsonSyntaxException ex) {
-            throw new RpcInvalidResponseException(responseJson, ex); //If unable to parse
+            throw new RpcInvalidResponseException(responseJson, ex); // If unable to parse
         }
         
-        //Check for returned RPC error
+        // Check for returned RPC error
         JsonElement responseError = response.get("error");
         if(responseError != null) throw this.parseException(responseError.getAsString());
         
-        //Deserialize response
-        R responseObj = this.gson.fromJson(responseJson, responseClass); //Deserialize from JSON
-        responseObj.init(response); //Initialise raw parameters
+        // Deserialize response
+        R responseObj = this.gson.fromJson(responseJson, responseClass); // Deserialize from JSON
+        responseObj.init(response); // Initialise raw parameters
         return responseObj;
     }
     
@@ -304,28 +304,28 @@ public class RpcQueryNode {
         switch(msgLower) {
             case "wallet is locked":
             case "wallet locked":
-                return new RpcWalletLockedException();           //Wallet locked
+                return new RpcWalletLockedException();           // Wallet locked
             case "insufficient balance":
-                return new RpcInvalidArgumentException(message); //Invalid/bad argument (not enough funds)
+                return new RpcInvalidArgumentException(message); // Invalid/bad argument (not enough funds)
             case "invalid authorization header":
-                return new RpcInvalidAuthTokenException();       //Invalid auth token
+                return new RpcInvalidAuthTokenException();       // Invalid auth token
             case "rpc control is disabled":
-                return new RpcControlDisabledException();        //RPC disabled
+                return new RpcControlDisabledException();        // RPC disabled
             case "unable to parse json":
-                return new RpcInvalidRequestJsonException();     //Invalid request body
+                return new RpcInvalidRequestJsonException();     // Invalid request body
             case "unknown command":
-                return new RpcUnknownCommandException();         //Unknown command
+                return new RpcUnknownCommandException();         // Unknown command
         }
         
         if(msgLower.startsWith("bad") || msgLower.startsWith("invalid") || msgLower.endsWith("invalid")
                 || msgLower.endsWith("required"))
-            return new RpcInvalidArgumentException(message);    //Invalid/bad argument
+            return new RpcInvalidArgumentException(message);    // Invalid/bad argument
         if(msgLower.contains("not found"))
-            return new RpcEntityNotFoundException(message);     //Unknown referenced entity
+            return new RpcEntityNotFoundException(message);     // Unknown referenced entity
         if(msgLower.startsWith("internal"))
-            return new RpcInternalException(message);           //Internal server error
+            return new RpcInternalException(message);           // Internal server error
         
-        return new RpcException(message); //Default to regular
+        return new RpcException(message); // Default to regular
     }
     
     

@@ -21,7 +21,7 @@ public abstract class RpcResponse {
     
     /** This method should only be called after instantiation, and is done automatically through the RPC processor. */
     public synchronized final void init(JsonObject rawJson) {
-        //Double-checked locking to prevent multi-threading issues
+        // Double-checked locking to prevent multi-threading issues
         if(this.rawJson != null)
             throw new IllegalStateException("Initial parameters have already been set");
         this.rawJson = rawJson;

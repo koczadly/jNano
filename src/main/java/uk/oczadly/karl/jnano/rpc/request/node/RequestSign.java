@@ -57,7 +57,7 @@ public class RequestSign extends RpcRequest<ResponseSignature> {
      * I've got no idea what this does or how it works.
      * @param blockHash the block's hash
      */
-    public RequestSign(String blockHash) { //TODO
+    public RequestSign(String blockHash) { // TODO
         this(blockHash, null, null, null, null);
     }
     

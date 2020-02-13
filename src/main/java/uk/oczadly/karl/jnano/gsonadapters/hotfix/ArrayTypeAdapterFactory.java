@@ -52,12 +52,12 @@ public class ArrayTypeAdapterFactory implements TypeAdapterFactory {
                 if(in.nextString().length() == 0) return Array.newInstance(componentType, 0);
                 throw new JsonSyntaxException("Parsed hotfix string is not empty");
             }
-            return this.delegateAdapter.read(in); //Standard read operation
+            return this.delegateAdapter.read(in); // Standard read operation
         }
         
         @Override
         public void write(JsonWriter out, Object obj) throws IOException {
-            this.delegateAdapter.write(out, obj); //Standard write operation
+            this.delegateAdapter.write(out, obj); // Standard write operation
         }
         
     }

@@ -51,12 +51,12 @@ public class MapTypeAdapterFactory implements TypeAdapterFactory {
                 if(in.nextString().length() == 0) return constructor.construct();
                 throw new JsonSyntaxException("Parsed hotfix string is not empty");
             }
-            return this.delegateAdapter.read(in); //Standard read operation
+            return this.delegateAdapter.read(in); // Standard read operation
         }
         
         @Override
         public void write(JsonWriter out, Map<K, V> obj) throws IOException {
-            this.delegateAdapter.write(out, obj); //Standard write operation
+            this.delegateAdapter.write(out, obj); // Standard write operation
         }
         
     }

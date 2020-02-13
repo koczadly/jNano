@@ -134,16 +134,16 @@ public enum CurrencyDivisor {
      * @return the converted value in this unit
      */
     public BigDecimal convert(BigDecimal sourceAmount, CurrencyDivisor sourceUnit) {
-        //Argument checks
+        // Argument checks
         if(sourceAmount == null) throw new IllegalArgumentException("Source amount cannot be null");
         if(sourceUnit == null) throw new IllegalArgumentException("Source unit cannot be null");
         if(sourceAmount.compareTo(BigDecimal.ZERO) < 0) throw new IllegalArgumentException("Source amount cannot be negative");
         
-        if(sourceUnit == this) return sourceAmount; //Same unit
+        if(sourceUnit == this) return sourceAmount; // Same unit
         
-        if(sourceUnit.exponent > this.exponent) { //Source is higher, multiply (shift right)
+        if(sourceUnit.exponent > this.exponent) { // Source is higher, multiply (shift right)
             return sourceAmount.movePointRight(sourceUnit.exponent - this.exponent).stripTrailingZeros();
-        } else { //Source is lower, divide (shift left)
+        } else { // Source is lower, divide (shift left)
             return sourceAmount.movePointLeft(this.exponent - sourceUnit.exponent).stripTrailingZeros();
         }
     }

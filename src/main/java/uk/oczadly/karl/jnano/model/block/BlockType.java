@@ -17,7 +17,7 @@ public enum BlockType {
     RECEIVE ("receive", true),
     
     @SerializedName("state")
-    STATE   ("state",   true); //TODO block classes may need re-working
+    STATE   ("state",   true); // TODO block classes may need re-working
     
     
     private String name;

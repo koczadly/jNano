@@ -35,7 +35,7 @@ public class BlockCallbackServer {
     }
     
     public BlockCallbackServer(ServerSocket server) {
-        this(server, Executors.newFixedThreadPool(100), new GsonBuilder().create()); //Max 100 threads
+        this(server, Executors.newFixedThreadPool(100), new GsonBuilder().create()); // Max 100 threads
     }
     
     protected BlockCallbackServer(ServerSocket serverSocket, ExecutorService executorService, Gson gson) {
@@ -111,8 +111,8 @@ public class BlockCallbackServer {
     private class HttpCallbackProcessor implements HttpCallback {
         @Override
         public void onRequest(HttpRequest request) {
-            BlockData blockData = gson.fromJson(request.getBody(), BlockData.class); //Deserialize
-            notifyListeners(blockData, request.getPath(), request.getClientAddr()); //Notify listeners
+            BlockData blockData = gson.fromJson(request.getBody(), BlockData.class); // Deserialize
+            notifyListeners(blockData, request.getPath(), request.getClientAddr()); // Notify listeners
         }
     }
     

@@ -14,12 +14,12 @@ public class BlockTypeDeserializer implements JsonDeserializer<Block> {
     @Override
     public Block deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObj = element.isJsonObject() ? element.getAsJsonObject()
-                : this.parser.parse(element.getAsString()).getAsJsonObject(); //Sometimes blocks are passed as string representations
+                : this.parser.parse(element.getAsString()).getAsJsonObject(); // Sometimes blocks are passed as string representations
         
         String hash = jsonObj.get("hash") != null ? jsonObj.get("hash").getAsString() : null;
         String blockType = jsonObj.get("type").getAsString().toUpperCase();
         switch(blockType) {
-            case "UTX": //Old universal blocks type name
+            case "UTX": // Old universal blocks type name
             case "STATE": return new StateBlock(
                     jsonObj,
                     hash,
@@ -53,7 +53,7 @@ public class BlockTypeDeserializer implements JsonDeserializer<Block> {
                     jsonObj.get("work").getAsString(),
                     jsonObj.get("previous").getAsString(),
                     jsonObj.get("destination").getAsString(),
-                    new BigInteger(jsonObj.get("balance").getAsString(), 16)); //Balance is encoded in hexadecimal
+                    new BigInteger(jsonObj.get("balance").getAsString(), 16)); // Balance is encoded in hexadecimal
             case "CHANGE": return new ChangeBlock(
                     jsonObj,
                     hash,

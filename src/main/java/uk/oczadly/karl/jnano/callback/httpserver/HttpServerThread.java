@@ -24,13 +24,13 @@ public class HttpServerThread extends Thread {
     public void run() {
         while(!Thread.interrupted()) {
             try {
-                Socket socket = this.socket.accept(); //Listen for requests
+                Socket socket = this.socket.accept(); // Listen for requests
                 
                 socket.setSoTimeout(10000);
                 socket.setKeepAlive(false);
                 
                 this.executorService.submit(
-                        new HttpRequestHandler(socket, this.callbackListener)); //Start new thread for client
+                        new HttpRequestHandler(socket, this.callbackListener)); // Start new thread for client
             } catch (IOException e) {
                 e.printStackTrace();
             }

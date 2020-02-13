@@ -49,31 +49,31 @@ public class CollectionTypeAdapterFactory implements TypeAdapterFactory {
         
         @Override
         public Collection<E> read(JsonReader in) throws IOException {
-            //From blank string
+            // From blank string
             if(in.peek() == JsonToken.STRING) {
                 if(in.nextString().length() == 0) return constructor.construct();
                 throw new JsonSyntaxException("Parsed hotfix string is not empty");
             }
             
-            //From map keyset
+            // From map keyset
             if(in.peek() == JsonToken.BEGIN_OBJECT) {
-                //Read map
+                // Read map
                 Type type = new TypeToken<Map<E, ?>>(){}.getType();
                 Map<E, ?> map = this.gson.fromJson(in, type);
                 
-                //Create collection
+                // Create collection
                 Collection<E> col = constructor.construct();
                 col.addAll(map.keySet());
                 return col;
             }
             
-            //Standard read operation
+            // Standard read operation
             return this.delegateAdapter.read(in);
         }
         
         @Override
         public void write(JsonWriter out, Collection<E> obj) throws IOException {
-            this.delegateAdapter.write(out, obj); //Standard write operation
+            this.delegateAdapter.write(out, obj); // Standard write operation
         }
         
     }

@@ -16,18 +16,18 @@ public class CallbackBlockTypeDeserializer implements JsonDeserializer<BlockData
     public BlockData deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
         JsonObject json = element.getAsJsonObject();
         
-        //Deserialize block
+        // Deserialize block
         Block block = context.deserialize(json.get("block"), Block.class);
         
-        //Construct and return
+        // Construct and return
         return new BlockData(
                 element.toString(),
                 json.get("account").getAsString(),
                 json.get("hash").getAsString(),
                 block,
                 context.deserialize(json.get("subtype"), BlockType.class),
-                json.has("is_send") ? json.get("is_send").getAsBoolean() : block.getType() == BlockType.SEND, //UTX state block
-                block.getType().isTransaction() ? json.get("amount").getAsBigInteger() : null); //Null if non-transactional
+                json.has("is_send") ? json.get("is_send").getAsBoolean() : block.getType() == BlockType.SEND, // UTX state block
+                block.getType().isTransaction() ? json.get("amount").getAsBigInteger() : null); // Null if non-transactional
     }
     
 }
