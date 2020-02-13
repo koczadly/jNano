@@ -12,6 +12,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBootstrapStatus;
  *
  * @deprecated This request is for debugging purposes only and is subject to change with each node revision.
  */
+@Deprecated
 public class RequestBootstrapStatus extends RpcRequest<ResponseBootstrapStatus> {
     
     public RequestBootstrapStatus() {
