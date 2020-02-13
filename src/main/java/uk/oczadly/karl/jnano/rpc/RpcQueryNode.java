@@ -183,6 +183,9 @@ public class RpcQueryNode {
      *
      * @param request   the query request to send to the node
      * @param callback  the callback to execute after the request has completed
+     *
+     * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#lookup-table">See the GitHub wiki for a list
+     * of supported request operations.</a>
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request, QueryCallback<R> callback) {
         return this.processRequestAsync(request, null, callback);
@@ -194,6 +197,9 @@ public class RpcQueryNode {
      * @param request   the query request to send to the node
      * @param timeout   the timeout for the request in milliseconds, or null for none
      * @param callback  the callback to execute after the request has completed
+     *
+     * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#lookup-table">See the GitHub wiki for a list
+     * of supported request operations.</a>
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request, Integer timeout, QueryCallback<R> callback) {
         if(request == null)
