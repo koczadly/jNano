@@ -20,15 +20,28 @@ public class RequestBootstrap extends RpcRequest<ResponseSuccessful> {
     @Expose @SerializedName("port")
     private final int peerPort;
     
+    @Expose @SerializedName("bypass_frontier_confirmation")
+    private Boolean bypassFrontierConfirmation;
+    
     
     /**
      * @param peerAddress   the IP address of the remote node
      * @param peerPort      the port of the remote node
      */
     public RequestBootstrap(String peerAddress, int peerPort) {
+        this(peerAddress, peerPort, null);
+    }
+    
+    /**
+     * @param peerAddress   the IP address of the remote node
+     * @param peerPort      the port of the remote node
+     * @param bypassFrontierConfirmation (optional) whether frontier confirmation should not be performed
+     */
+    public RequestBootstrap(String peerAddress, int peerPort, Boolean bypassFrontierConfirmation) {
         super("bootstrap", ResponseSuccessful.class);
         this.peerAddress = peerAddress;
         this.peerPort = peerPort;
+        this.bypassFrontierConfirmation = bypassFrontierConfirmation;
     }
     
     
@@ -46,4 +59,10 @@ public class RequestBootstrap extends RpcRequest<ResponseSuccessful> {
         return peerPort;
     }
     
+    /**
+     * @return whether frontier confirmation should not be performed
+     */
+    public Boolean getBypassFrontierConfirmation() {
+        return bypassFrontierConfirmation;
+    }
 }

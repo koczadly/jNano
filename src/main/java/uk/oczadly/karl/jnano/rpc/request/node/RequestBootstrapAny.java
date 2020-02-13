@@ -1,5 +1,7 @@
 package uk.oczadly.karl.jnano.rpc.request.node;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
@@ -12,8 +14,27 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
  */
 public class RequestBootstrapAny extends RpcRequest<ResponseSuccessful> {
     
+    @Expose @SerializedName("force")
+    private Boolean forceClose;
+    
     public RequestBootstrapAny() {
+        this(null);
+    }
+    
+    /**
+     * @param forceClose (optional) whether current bootstraps should be force-closed
+     */
+    public RequestBootstrapAny(Boolean forceClose) {
         super("bootstrap_any", ResponseSuccessful.class);
+        this.forceClose = forceClose;
+    }
+    
+    
+    /**
+     * @return whether current bootstraps should be force-closed
+     */
+    public Boolean getForceClose() {
+        return forceClose;
     }
     
 }

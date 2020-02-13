@@ -70,6 +70,9 @@ public class ResponseConfirmationHistory extends RpcResponse {
         @Expose @SerializedName("tally")
         private BigInteger tally;
     
+        @Expose @SerializedName("request_count")
+        private int requestCount;
+    
     
         /**
          * @return the block's hash
@@ -97,6 +100,13 @@ public class ResponseConfirmationHistory extends RpcResponse {
          */
         public BigInteger getTally() {
             return tally;
+        }
+    
+        /**
+         * @return the number of requests made for this block
+         */
+        public int getRequestCount() {
+            return requestCount;
         }
     }
     
