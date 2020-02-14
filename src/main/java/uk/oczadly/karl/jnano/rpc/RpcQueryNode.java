@@ -1,13 +1,11 @@
 package uk.oczadly.karl.jnano.rpc;
 
-import com.google.gson.*;
-import uk.oczadly.karl.jnano.gsonadapters.BooleanTypeDeserializer;
-import uk.oczadly.karl.jnano.gsonadapters.hotfix.ArrayTypeAdapterFactory;
-import uk.oczadly.karl.jnano.gsonadapters.hotfix.CollectionTypeAdapterFactory;
-import uk.oczadly.karl.jnano.gsonadapters.hotfix.MapTypeAdapterFactory;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.rpc.exception.*;
-import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
-import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,12 +20,9 @@ import java.util.concurrent.Future;
 
 public class RpcQueryNode {
     
-    protected static final JsonParser JSON_PARSER = new JsonParser();
-    
     protected static final ExecutorService executorService = Executors.newCachedThreadPool();
     
     private final URL address;
-    private final Gson gson;
     private volatile String authToken;
     
     
@@ -87,21 +82,9 @@ public class RpcQueryNode {
      * @param authToken the authorization token to be sent with queries
      */
     public RpcQueryNode(URL address, String authToken) {
-        this(address, authToken, new GsonBuilder());
-    }
-    
-    protected RpcQueryNode(URL address, String authToken, GsonBuilder gson) {
         this.address = address;
         this.authToken = authToken;
-        this.gson = gson.excludeFieldsWithoutExposeAnnotation()
-                .registerTypeAdapterFactory(new ArrayTypeAdapterFactory())          // Empty array hotfix
-                .registerTypeAdapterFactory(new CollectionTypeAdapterFactory())     // Empty collection hotfix
-                .registerTypeAdapterFactory(new MapTypeAdapterFactory())            // Empty map hotfix
-                .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer())  // Boolean deserializer
-                .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer())  // Boolean deserializer
-                .create();
     }
-    
     
     
     /**
@@ -131,9 +114,11 @@ public class RpcQueryNode {
     
     /**
      * @return the Gson utility class used by this instance
+     * @deprecated moved to use internal static utility
      */
+    @Deprecated
     public final Gson getGsonInstance() {
-        return this.gson;
+        return JNanoHelper.GSON;
     }
     
     
@@ -276,7 +261,7 @@ public class RpcQueryNode {
     protected <R extends RpcResponse> R deserializeResponseFromJSON(String responseJson, Class<R> responseClass) throws RpcException {
         JsonObject response;
         try {
-            response = RpcQueryNode.JSON_PARSER.parse(responseJson).getAsJsonObject(); // Parse response
+            response = JNanoHelper.JSON_PARSER.parse(responseJson).getAsJsonObject(); // Parse response
         } catch (JsonSyntaxException ex) {
             throw new RpcInvalidResponseException(responseJson, ex); // If unable to parse
         }
@@ -286,7 +271,7 @@ public class RpcQueryNode {
         if(responseError != null) throw this.parseException(responseError.getAsString());
         
         // Deserialize response
-        R responseObj = this.gson.fromJson(responseJson, responseClass); // Deserialize from JSON
+        R responseObj = JNanoHelper.GSON.fromJson(responseJson, responseClass); // Deserialize from JSON
         responseObj.init(response); // Initialise raw parameters
         return responseObj;
     }
@@ -339,7 +324,7 @@ public class RpcQueryNode {
         if(req == null)
             throw new IllegalArgumentException("Query request argument cannot be null");
         
-        return this.gson.toJson(req);
+        return JNanoHelper.GSON.toJson(req);
     }
 
 }

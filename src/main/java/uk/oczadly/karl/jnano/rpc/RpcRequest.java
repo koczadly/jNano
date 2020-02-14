@@ -1,8 +1,7 @@
-package uk.oczadly.karl.jnano.rpc.request;
+package uk.oczadly.karl.jnano.rpc;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 
 public abstract class RpcRequest<R extends RpcResponse> {
     

@@ -1,4 +1,4 @@
-package uk.oczadly.karl.jnano.rpc.response;
+package uk.oczadly.karl.jnano.rpc;
 
 import com.google.gson.JsonObject;
 
@@ -19,11 +19,14 @@ public abstract class RpcResponse {
         return this.rawJson;
     }
     
-    /** This method should only be called after instantiation, and is done automatically through the RPC processor. */
-    public synchronized final void init(JsonObject rawJson) {
-        // Double-checked locking to prevent multi-threading issues
-        if(this.rawJson != null)
-            throw new IllegalStateException("Initial parameters have already been set");
+    @Override
+    public String toString() {
+        return rawJson.toString();
+    }
+    
+    
+    /** Internal method for initializing */
+    final void init(JsonObject rawJson) {
         this.rawJson = rawJson;
     }
     

@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.conversion;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseAmount;
 import uk.oczadly.karl.jnano.util.CurrencyDivisor;
 
@@ -78,7 +78,7 @@ public class RequestConvertUnits extends RpcRequest<ResponseAmount> {
         RAI_FROM_RAW,
     
         /** Multiply an rai amount by the rai ratio. */
-        RAI_TO_RAW;
+        RAI_TO_RAW
     }
     
 }

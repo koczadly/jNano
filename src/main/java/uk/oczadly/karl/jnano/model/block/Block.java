@@ -1,11 +1,11 @@
 package uk.oczadly.karl.jnano.model.block;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.gsonadapters.BlockTypeDeserializer;
+import uk.oczadly.karl.jnano.internal.JNanoHelper;
 
 @JsonAdapter(BlockTypeDeserializer.class)
 public abstract class Block {
@@ -65,7 +65,8 @@ public abstract class Block {
     
     public JsonObject getJsonObject() {
         if(jsonRepresentation == null)
-            jsonRepresentation = new GsonBuilder().create().toJsonTree(this).getAsJsonObject();
+            jsonRepresentation = JNanoHelper.GSON.toJsonTree(this).getAsJsonObject();
+        
         return jsonRepresentation;
     }
     
@@ -74,4 +75,5 @@ public abstract class Block {
     public String toString() {
         return this.getJsonString();
     }
+    
 }

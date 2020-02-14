@@ -3,6 +3,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.rpc.RpcResponse;
 
 /**
  * This response class contains a block and an accompanying signature.

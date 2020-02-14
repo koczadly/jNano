@@ -9,9 +9,6 @@ import java.lang.reflect.Type;
 
 public class CallbackBlockTypeDeserializer implements JsonDeserializer<BlockData> {
     
-    private JsonParser parser = new JsonParser();
-    
-    
     @Override
     public BlockData deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
         JsonObject json = element.getAsJsonObject();

@@ -2,6 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.rpc.RpcResponse;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -93,7 +94,7 @@ public class ResponseWalletHistory extends RpcResponse {
         @SerializedName("send")     SEND,
     
         /** Inbound transaction. */
-        @SerializedName("receive")  RECEIVE;
+        @SerializedName("receive")  RECEIVE
     }
     
 }
