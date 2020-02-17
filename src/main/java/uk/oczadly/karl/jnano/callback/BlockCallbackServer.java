@@ -9,9 +9,8 @@ import uk.oczadly.karl.jnano.callback.httpserver.HttpServerThread;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.util.Collections;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,7 +19,7 @@ public class BlockCallbackServer {
     private final ServerSocket serverSocket;
     private final ExecutorService executorService;
     private final Gson gson;
-    private final Set<BlockCallbackListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<BlockCallbackListener> listeners = new CopyOnWriteArraySet<>();
     private final HttpCallback callbackListener = new HttpCallbackProcessor();
     
     private HttpServerThread thread;
