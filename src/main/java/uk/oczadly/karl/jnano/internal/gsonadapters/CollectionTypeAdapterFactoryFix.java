@@ -1,4 +1,4 @@
-package uk.oczadly.karl.jnano.gsonadapters.hotfix;
+package uk.oczadly.karl.jnano.internal.gsonadapters;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /** This adapter has to be implemented as the Nano RPC client returns blank strings rather than an empty array. */
-public class CollectionTypeAdapterFactory implements TypeAdapterFactory {
+public class CollectionTypeAdapterFactoryFix implements TypeAdapterFactory {
     
     private final ConstructorConstructor constructor = new ConstructorConstructor(new HashMap<>());
     

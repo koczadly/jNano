@@ -1,4 +1,4 @@
-package uk.oczadly.karl.jnano.gsonadapters;
+package uk.oczadly.karl.jnano.internal.gsonadapters;
 
 import com.google.gson.*;
 import uk.oczadly.karl.jnano.callback.BlockData;

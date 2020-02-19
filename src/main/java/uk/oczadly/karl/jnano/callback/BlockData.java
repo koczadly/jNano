@@ -1,7 +1,7 @@
 package uk.oczadly.karl.jnano.callback;
 
 import com.google.gson.annotations.JsonAdapter;
-import uk.oczadly.karl.jnano.gsonadapters.CallbackBlockTypeDeserializer;
+import uk.oczadly.karl.jnano.internal.gsonadapters.CallbackBlockTypeDeserializer;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.BlockType;
 

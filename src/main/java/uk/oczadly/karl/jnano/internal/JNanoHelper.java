@@ -3,10 +3,10 @@ package uk.oczadly.karl.jnano.internal;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
-import uk.oczadly.karl.jnano.gsonadapters.BooleanTypeDeserializer;
-import uk.oczadly.karl.jnano.gsonadapters.hotfix.ArrayTypeAdapterFactory;
-import uk.oczadly.karl.jnano.gsonadapters.hotfix.CollectionTypeAdapterFactory;
-import uk.oczadly.karl.jnano.gsonadapters.hotfix.MapTypeAdapterFactory;
+import uk.oczadly.karl.jnano.internal.gsonadapters.ArrayTypeAdapterFactoryFix;
+import uk.oczadly.karl.jnano.internal.gsonadapters.BooleanTypeDeserializer;
+import uk.oczadly.karl.jnano.internal.gsonadapters.CollectionTypeAdapterFactoryFix;
+import uk.oczadly.karl.jnano.internal.gsonadapters.MapTypeAdapterFactoryFix;
 
 public class JNanoHelper {
     
@@ -14,9 +14,9 @@ public class JNanoHelper {
     
     public static final Gson GSON = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
-            .registerTypeAdapterFactory(new ArrayTypeAdapterFactory())          //Empty array hotfix
-            .registerTypeAdapterFactory(new CollectionTypeAdapterFactory())     //Empty collection hotfix
-            .registerTypeAdapterFactory(new MapTypeAdapterFactory())            //Empty map hotfix
+            .registerTypeAdapterFactory(new ArrayTypeAdapterFactoryFix())          //Empty array hotfix
+            .registerTypeAdapterFactory(new CollectionTypeAdapterFactoryFix())     //Empty collection hotfix
+            .registerTypeAdapterFactory(new MapTypeAdapterFactoryFix())            //Empty map hotfix
             .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer())  //Boolean deserializer
             .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer())  //Boolean deserializer
             .create();

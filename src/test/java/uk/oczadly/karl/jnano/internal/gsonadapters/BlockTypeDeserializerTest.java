@@ -1,4 +1,4 @@
-package uk.oczadly.karl.jnano.gsonadapters;
+package uk.oczadly.karl.jnano.internal.gsonadapters;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

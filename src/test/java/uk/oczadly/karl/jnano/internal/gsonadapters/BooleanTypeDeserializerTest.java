@@ -1,14 +1,15 @@
-package uk.oczadly.karl.jnano.gsonadapters;
+package uk.oczadly.karl.jnano.internal.gsonadapters;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.tests.FunctionalityTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import uk.oczadly.karl.jnano.tests.FunctionalityTests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class BooleanTypeDeserializerTest {
     
