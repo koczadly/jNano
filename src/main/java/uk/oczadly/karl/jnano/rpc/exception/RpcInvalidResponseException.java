@@ -10,7 +10,7 @@ public class RpcInvalidResponseException extends RpcException {
     private String response;
     
     public RpcInvalidResponseException(String response, JsonSyntaxException source) {
-        super("Unable to parse response JSON: " + response, source);
+        super("Unable to parse response JSON", source);
         this.response = response;
     }
     
