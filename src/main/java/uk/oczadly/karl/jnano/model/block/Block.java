@@ -10,20 +10,16 @@ import uk.oczadly.karl.jnano.internal.gsonadapters.BlockTypeDeserializer;
 @JsonAdapter(BlockTypeDeserializer.class)
 public abstract class Block {
     
-    @Expose
-    @SerializedName("hash")
+    @Expose @SerializedName("hash")
     private String hash;
     
-    @Expose
-    @SerializedName("type")
+    @Expose @SerializedName("type")
     private final BlockType type;
     
-    @Expose
-    @SerializedName("signature")
+    @Expose @SerializedName("signature")
     private String signature;
     
-    @Expose
-    @SerializedName("work")
+    @Expose @SerializedName("work")
     private String workSolution;
     
     private JsonObject jsonRepresentation;
