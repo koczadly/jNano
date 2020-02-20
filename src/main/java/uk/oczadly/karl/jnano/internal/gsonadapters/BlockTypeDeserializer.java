@@ -9,6 +9,7 @@ import java.math.BigInteger;
 
 public class BlockTypeDeserializer implements JsonDeserializer<Block> {
     
+    @SuppressWarnings("deprecation")
     @Override
     public Block deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObj = element.isJsonObject() ? element.getAsJsonObject()

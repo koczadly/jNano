@@ -6,8 +6,11 @@ import com.google.gson.annotations.SerializedName;
 
 import java.math.BigInteger;
 
-//TODO may need confirming
-public class StateBlock extends Block {
+/**
+ * <p>Represents a state block, and the associated data.</p>
+ * <p>To construct a new state block, use the {@link StateBlockBuilder} provided.</p>
+ */
+public final class StateBlock extends Block {
     
     @Expose @SerializedName("account")
     private String accountAddress;
@@ -27,11 +30,35 @@ public class StateBlock extends Block {
     @Expose @SerializedName("link_as_account")
     private String linkAccount;
     
+    @Expose @SerializedName("subtype")
+    private BlockSubType subType;
+    
     
     StateBlock() {
         super(BlockType.STATE);
     }
     
+    /**
+     * Constructs a new state block.
+     *
+     * @param jsonRepresentation        the JSON representation if deserialized, or null
+     * @param hash                      the block's hash
+     * @param signature                 the block verification signature
+     * @param workSolution              the computed work solution
+     * @param accountAddress            the account's address
+     * @param previousBlockHash         the previous block's hash
+     * @param representativeAddress     the representative address of this account
+     * @param newBalance                the (newly updated) balance, in raw
+     * @param linkData                  the link data for this transaction
+     * @param linkAccount               the link data for this transaction, specified in the account address format
+     *
+     * @deprecated Use of this constructor is not advised. Use the provided {@link StateBlockBuilder} to construct
+     * state blocks.
+     *
+     * @see StateBlockBuilder
+     */
+    @SuppressWarnings("DeprecatedIsStillUsed")
+    @Deprecated
     public StateBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution, String accountAddress, String previousBlockHash, String representativeAddress, BigInteger newBalance, String linkData, String linkAccount) {
         super(BlockType.STATE, hash, jsonRepresentation, signature, workSolution);
         this.accountAddress = accountAddress;
@@ -66,6 +93,10 @@ public class StateBlock extends Block {
     
     public String getLinkAccount() {
         return linkAccount;
+    }
+    
+    public BlockSubType getSubType() {
+        return subType;
     }
     
 }
