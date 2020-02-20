@@ -4,6 +4,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Represents a {@code change} block, and the associated data.
+ * @deprecated Only state blocks ({@link StateBlock}) are supported by the Nano node.
+ */
+@Deprecated
 public class ChangeBlock extends Block {
     
     @Expose @SerializedName("previous")

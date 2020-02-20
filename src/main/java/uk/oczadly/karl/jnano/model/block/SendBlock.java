@@ -6,6 +6,11 @@ import com.google.gson.annotations.SerializedName;
 
 import java.math.BigInteger;
 
+/**
+ * Represents a {@code send} block, and the associated data.
+ * @deprecated Only state blocks ({@link StateBlock}) are supported by the Nano node.
+ */
+@Deprecated
 public class SendBlock extends Block {
     
     @Expose @SerializedName("previous")
