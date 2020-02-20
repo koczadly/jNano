@@ -2,46 +2,57 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * This class represents the types of block available. Only {@link #STATE} blocks should be used from hereon, and have
+ * since been deprecated on the official Nano node.
+ */
 public enum BlockType {
     
     @SerializedName("open")
-    OPEN    ("open",    true),
+    @Deprecated
+    OPEN    (true),
     
     @SerializedName("change")
-    CHANGE  ("change",  false),
+    @Deprecated
+    CHANGE  (false),
     
     @SerializedName("send")
-    SEND    ("send",    true),
+    @Deprecated
+    SEND    (true),
     
     @SerializedName("receive")
-    RECEIVE ("receive", true),
+    @Deprecated
+    RECEIVE (true),
     
     @SerializedName("state")
-    STATE   ("state",   true); // TODO block classes may need re-working
+    STATE   (true);
     
     
-    private String name;
-    private boolean isTransaction;
+    boolean isTransaction;
     
-    BlockType(String name, boolean isTransaction) {
-        this.name = name;
+    BlockType(boolean isTransaction) {
         this.isTransaction = isTransaction;
     }
     
     
-    
+    /**
+     * @return whether the block type represents a transfer of funds
+     */
     public boolean isTransaction() {
         return isTransaction;
     }
     
+    /**
+     * @return the official protocol name of this subtype
+     */
     public String getProtocolName() {
-        return name;
+        return name().toLowerCase();
     }
     
     
     @Override
     public String toString() {
-        return this.getProtocolName();
+        return getProtocolName();
     }
     
 }
