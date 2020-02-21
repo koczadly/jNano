@@ -8,7 +8,9 @@ import static org.junit.Assert.*;
 
 public class StateBlockBuilderTest {
     
-    public StateBlockBuilder newBuilder() {
+    private static final String NULL_ZERO_STRING = "0000000000000000000000000000000000000000000000000000000000000000";
+    
+    public static StateBlockBuilder newBuilder() {
         return new StateBlockBuilder(
                 "ACCOUNT",
                 "PREVHASH",
@@ -52,17 +54,21 @@ public class StateBlockBuilderTest {
     
     @Test
     public void testLinkFormats() {
-        // Hex
+        // Hex format
         assertEquals("LINK", newBuilder()
-                .setLinkData("LINK", StateBlockBuilder.LinkFormat.RAW_HEX).build().getLinkData());
+                .setLinkData("LINK", StateBlockBuilder.LinkFormat.RAW_HEX)
+                .build().getLinkData());
+        assertEquals("LINK", newBuilder().setLinkData("LINK", null).build().getLinkData());
         
-        // Account
+        // Account format
         assertEquals("LINK", newBuilder()
-                .setLinkData("LINK", StateBlockBuilder.LinkFormat.ACCOUNT).build().getLinkAsAccount());
+                .setLinkData("LINK", StateBlockBuilder.LinkFormat.ACCOUNT)
+                .build().getLinkAsAccount());
         
         // Null should default to 000000...
-        assertNotNull(newBuilder().build().getLinkData());
-        assertNotNull(newBuilder().setLinkData(null, null).build().getLinkData());
+        assertEquals(NULL_ZERO_STRING, newBuilder().build().getLinkData());
+        assertEquals(NULL_ZERO_STRING, newBuilder()
+                .setLinkData(null, null).build().getLinkData());
     }
     
 }
