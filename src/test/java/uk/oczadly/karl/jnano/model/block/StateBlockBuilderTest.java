@@ -59,9 +59,9 @@ public class StateBlockBuilderTest {
         assertEquals("LINK", newBuilder()
                 .setLinkData("LINK", StateBlockBuilder.LinkFormat.ACCOUNT).build().getLinkAsAccount());
         
-        // Null
-        assertNotNull(newBuilder().setLinkData(null, null).build().getLinkData());
+        // Null should default to 000000...
         assertNotNull(newBuilder().build().getLinkData());
+        assertNotNull(newBuilder().setLinkData(null, null).build().getLinkData());
     }
     
 }
