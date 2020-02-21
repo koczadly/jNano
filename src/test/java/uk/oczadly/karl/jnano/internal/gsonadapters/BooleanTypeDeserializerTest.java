@@ -5,8 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import uk.oczadly.karl.jnano.tests.FunctionalityTests;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -18,7 +16,6 @@ public class BooleanTypeDeserializerTest {
     
     
     @Test
-    @Category(FunctionalityTests.class)
     public void test() {
         runTests("true", "false");
         runTests("TRUE", "FALSE");

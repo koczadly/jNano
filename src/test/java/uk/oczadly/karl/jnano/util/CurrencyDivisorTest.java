@@ -1,15 +1,12 @@
 package uk.oczadly.karl.jnano.util;
 
-import uk.oczadly.karl.jnano.tests.UtilTests;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-@Category(UtilTests.class)
 public class CurrencyDivisorTest {
     
     @Test
