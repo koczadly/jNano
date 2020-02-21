@@ -13,7 +13,7 @@ public class StateBlockBuilderTest {
                 "ACCOUNT",
                 "PREVHASH",
                 "REP",
-                BigInteger.ZERO);
+                new BigInteger("1337"));
     }
     
 
@@ -39,7 +39,8 @@ public class StateBlockBuilderTest {
                 .build();
     
         assertEquals(BlockType.STATE, block.getType());
-        
+    
+        assertEquals(new BigInteger("1337"), block.getBalance());
         assertEquals("HASH", block.getHash());
         assertEquals("ACCOUNT", block.getAccountAddress());
         assertEquals("PREVHASH", block.getPreviousBlockHash());
