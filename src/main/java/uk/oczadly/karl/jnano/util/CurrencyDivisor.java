@@ -4,44 +4,49 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
- * The unit divisions used for Nano balances.
- *
- * This class can be used to natively convert between the different units.
+ * <p>The unit divisions used for Nano balances. This class can be used to natively convert between the different
+ * units.</p>
+ * <p>If you are intending to parse or display an amount of Nano to the user, it is recommended that you use the
+ * {@link #BASE_UNIT} constant, rather than explicitly specifying the unit. This constant represents the unit that
+ * common users of the currency will be most familiar with.</p>
  */
 public enum CurrencyDivisor {
     
-    /** The largest divisor, equal to 10^33 */
-    GIGA    (33,    "Gxrb",     "Gxrb"),
+    /** The largest divisor, equivalent to {@code 10^33} raw. */
+    GIGA    (33,    "Gnano",     "Gxrb"),
     
-    /** The 2nd largest divisor, equal to 10^30 */
+    /** The 2nd largest divisor, equivalent to {@code 10^30} raw. */
     MEGA    (30,    "Nano",     "Mxrb"),
     
-    /** The 3rd largest divisor, equal to 10^27 */
-    KILO    (27,    "kxrb",     "kxrb"),
+    /** The 3rd largest divisor, equivalent to {@code 10^27} raw. */
+    KILO    (27,    "knano",     "kxrb"),
     
-    /** The 4th largest divisor, equal to 10^24 */
-    XRB     (24,    "xrb",      "xrb"),
+    /** The 4th largest divisor, equivalent to {@code 10^24} raw. */
+    XRB     (24,    "nano",      "xrb"),
     
-    /** The 5th largest divisor, equal to 10^21 */
-    MILLI   (21,    "mxrb",     "mxrb"),
+    /** The 5th largest divisor, equivalent to {@code 10^21} raw. */
+    MILLI   (21,    "mnano",     "mxrb"),
     
-    /** The 2nd smallest divisor, equal to 10^18 */
-    MICRO   (18,    "uxrb",     "uxrb"),
+    /** The 2nd smallest divisor, equivalent to {@code 10^18} raw. */
+    MICRO   (18,    "μnano",     "uxrb"),
     
-    /** The smallest divisor, equal to 10^0 */
+    /** The smallest possible unit. */
     RAW     (0,     "raw",      "raw");
     
     
     /**
-     * The standard base unit currently used
+     * <p>The standard base unit currently used by most services, block explorers and exchanges.</p>
+     * <p>End-users are likely to be most familiar with this unit, and it is recommended that this constant is used so
+     * your application can be automatically updated should the units system ever change.</p>
+     * <p>As of this current version, this is equal to the {@link #MEGA} unit.</p>
      */
     public static final CurrencyDivisor BASE_UNIT = CurrencyDivisor.MEGA;
     
     
     
-    private int exponent;
-    private BigInteger value;
-    private String displayName, classicName;
+    int exponent;
+    BigInteger value;
+    String displayName, classicName;
     
     CurrencyDivisor(int exponent, String displayName, String classicName) {
         this.exponent = exponent;
@@ -78,7 +83,7 @@ public enum CurrencyDivisor {
     }
     
     /**
-     * @return  the classic name for this currency unit
+     * Returns the classic legacy name used within previous versions of the node.
      */
     public String getClassicName() {
         return classicName;
