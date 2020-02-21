@@ -22,7 +22,7 @@ public final class StateBlock extends Block {
     private String representativeAddress;
     
     @Expose @SerializedName("balance")
-    private BigInteger newBalance;
+    private BigInteger balance;
     
     @Expose @SerializedName("link")
     private String linkData;
@@ -48,7 +48,7 @@ public final class StateBlock extends Block {
      * @param accountAddress            the account's address
      * @param previousBlockHash         the previous block's hash
      * @param representativeAddress     the representative address of this account
-     * @param newBalance                the (newly updated) balance, in raw
+     * @param balance                the (newly updated) balance, in raw
      * @param linkData                  the link data for this transaction
      * @param linkAccount               the link data for this transaction, specified in the account address format
      *
@@ -59,12 +59,12 @@ public final class StateBlock extends Block {
      */
     @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
-    public StateBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution, String accountAddress, String previousBlockHash, String representativeAddress, BigInteger newBalance, String linkData, String linkAccount) {
+    public StateBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution, String accountAddress, String previousBlockHash, String representativeAddress, BigInteger balance, String linkData, String linkAccount) {
         super(BlockType.STATE, hash, jsonRepresentation, signature, workSolution);
         this.accountAddress = accountAddress;
         this.previousBlockHash = previousBlockHash;
         this.representativeAddress = representativeAddress;
-        this.newBalance = newBalance;
+        this.balance = balance;
         this.linkData = linkData;
         this.linkAccount = linkAccount;
     }
@@ -83,15 +83,15 @@ public final class StateBlock extends Block {
         return representativeAddress;
     }
     
-    public final BigInteger getNewBalance() {
-        return newBalance;
+    public final BigInteger getBalance() {
+        return balance;
     }
     
     public String getLinkData() {
         return linkData;
     }
     
-    public String getLinkAccount() {
+    public String getLinkAsAccount() {
         return linkAccount;
     }
     
