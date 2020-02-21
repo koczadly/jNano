@@ -27,7 +27,7 @@ public enum CurrencyDivisor {
     /** The 5th largest divisor, equivalent to {@code 10^21} raw. */
     MILLI   (21,    "mnano",     "mxrb"),
     
-    /** The 2nd smallest divisor, equivalent to {@code 10^18} raw. */
+    /** The 6th largest divisor, equivalent to {@code 10^18} raw. */
     MICRO   (18,    "μnano",     "uxrb"),
     
     /** The smallest possible unit. */
