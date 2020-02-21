@@ -23,11 +23,11 @@ public enum  BlockSubType {
     EPOCH                   ("epoch",   false);
     
     
-    static final Map<String, BlockSubType> NAME_MAP = new HashMap<>();
+    static final Map<String, BlockSubType> nameLookupMap = new HashMap<>();
     
     static {
         for (BlockSubType type : values())
-            NAME_MAP.put(type.getProtocolName().toLowerCase(), type);
+            nameLookupMap.put(type.getProtocolName().toLowerCase(), type);
     }
     
     
@@ -67,7 +67,8 @@ public enum  BlockSubType {
      * @param type the legacy block type
      * @return the corresponding subtype, or null if incompatible
      */
-    public static BlockSubType getFromLegacyType(@SuppressWarnings("deprecation") BlockType type) {
+    @SuppressWarnings("deprecation")
+    public static BlockSubType getFromLegacyType(BlockType type) {
         switch (type) {
             case SEND:
                 return SEND;
@@ -87,7 +88,7 @@ public enum  BlockSubType {
      * @return the corresponding subtype, or null if not found
      */
     public static BlockSubType getFromName(String name) {
-        return NAME_MAP.get(name.toLowerCase());
+        return nameLookupMap.get(name.toLowerCase());
     }
     
 }
