@@ -52,7 +52,8 @@ public enum CurrencyDivisor {
     
     
     /**
-     * @return  the exponent of the unit as a power of 10
+     * <p>Returns the exponent of the unit as a power of 10.</p>
+     * <p>Example: {@code 10^x}, with {@code x} being the value returned by this method.</p>
      */
     public int getExponent() {
         return exponent;
@@ -135,11 +136,15 @@ public enum CurrencyDivisor {
      */
     public BigDecimal convert(BigDecimal sourceAmount, CurrencyDivisor sourceUnit) {
         // Argument checks
-        if(sourceAmount == null) throw new IllegalArgumentException("Source amount cannot be null");
-        if(sourceUnit == null) throw new IllegalArgumentException("Source unit cannot be null");
-        if(sourceAmount.compareTo(BigDecimal.ZERO) < 0) throw new IllegalArgumentException("Source amount cannot be negative");
+        if(sourceAmount == null)
+            throw new IllegalArgumentException("Source amount cannot be null");
+        if(sourceUnit == null)
+            throw new IllegalArgumentException("Source unit cannot be null");
+        if(sourceAmount.compareTo(BigDecimal.ZERO) < 0)
+            throw new IllegalArgumentException("Source amount cannot be negative");
         
-        if(sourceUnit == this) return sourceAmount; // Same unit
+        if(sourceUnit == this)
+            return sourceAmount; // Same unit
         
         if(sourceUnit.exponent > this.exponent) { // Source is higher, multiply (shift right)
             return sourceAmount.movePointRight(sourceUnit.exponent - this.exponent).stripTrailingZeros();
