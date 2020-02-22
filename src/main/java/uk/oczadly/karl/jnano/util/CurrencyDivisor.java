@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
- * <p>The unit divisions used for Nano balances. This class can be used to natively convert between the different
- * units.</p>
+ * <p>This class represents the currency units and denominations used to represent an amount of Nano, and can be
+ * used to natively convert between the different units.</p>
  * <p>If you are intending to parse or display an amount of Nano to the user, it is recommended that you use the
  * {@link #BASE_UNIT} constant, rather than explicitly specifying the unit. This constant represents the unit that
- * common users of the currency will be most familiar with.</p>
+ * users of Nano will be most familiar with.</p>
  */
 public enum CurrencyDivisor {
     
@@ -16,13 +16,13 @@ public enum CurrencyDivisor {
     GIGA    (33, "Gnano", "Gxrb"),
     
     /** The 2nd largest divisor, equivalent to {@code 10^30} raw. */
-    MEGA    (30, "Nano", "Mxrb"),
+    MEGA    (30, "Nano",  "Mxrb"),
     
     /** The 3rd largest divisor, equivalent to {@code 10^27} raw. */
     KILO    (27, "knano", "kxrb"),
     
     /** The 4th largest divisor, equivalent to {@code 10^24} raw. */
-    XRB     (24, "nano", "xrb"),
+    XRB     (24, "nano",  "xrb"),
     
     /** The 5th largest divisor, equivalent to {@code 10^21} raw. */
     MILLI   (21, "mnano", "mxrb"),
