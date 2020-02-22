@@ -22,22 +22,22 @@ public class CurrencyDivisorTest {
     public void testDecimalConversionToLargerUnit() {
         //Convert RAW to GIGA
         assertEquals("25", CurrencyDivisor.GIGA.convertFrom(
-                new BigDecimal("25000000000000000000000000000000000"), CurrencyDivisor.RAW)
+                CurrencyDivisor.RAW, new BigDecimal("25000000000000000000000000000000000"))
                 .stripTrailingZeros().toPlainString());
         
         //Convert RAW to GIGA
         assertEquals("25.000000000000000000000000000000001", CurrencyDivisor.GIGA.convertFrom(
-                new BigDecimal("25000000000000000000000000000000001"), CurrencyDivisor.RAW)
+                CurrencyDivisor.RAW, new BigDecimal("25000000000000000000000000000000001"))
                 .stripTrailingZeros().toPlainString());
         
         //Convert RAW to GIGA
         assertEquals("24.999999999999999999999999999999999", CurrencyDivisor.GIGA.convertFrom(
-                new BigDecimal("24999999999999999999999999999999999"), CurrencyDivisor.RAW)
+                CurrencyDivisor.RAW, new BigDecimal("24999999999999999999999999999999999"))
                 .stripTrailingZeros().toPlainString());
         
         //Convert MILLI to XRB
         assertEquals("2", CurrencyDivisor.XRB.convertFrom(
-                new BigDecimal("2000"), CurrencyDivisor.MILLI)
+                CurrencyDivisor.MILLI, new BigDecimal("2000"))
                 .stripTrailingZeros().toPlainString());
     }
     
@@ -46,17 +46,17 @@ public class CurrencyDivisorTest {
     public void testDecimalConversionToSmallerUnit() {
         //Convert 25 GIGA to RAW
         assertEquals("25000000000000000000000000000000000", CurrencyDivisor.RAW.convertFrom(
-                new BigDecimal(25), CurrencyDivisor.GIGA)
+                CurrencyDivisor.GIGA, new BigDecimal(25))
                 .stripTrailingZeros().toPlainString());
         
         //Convert 1 GIGA to MEGA
         assertEquals("1000", CurrencyDivisor.MEGA.convertFrom(
-                BigDecimal.ONE, CurrencyDivisor.GIGA)
+                CurrencyDivisor.GIGA, BigDecimal.ONE)
                 .stripTrailingZeros().toPlainString());
         
         //Convert 1 GIGA to KILO
         assertEquals("1000000", CurrencyDivisor.KILO.convertFrom(
-                BigDecimal.ONE, CurrencyDivisor.GIGA)
+                CurrencyDivisor.GIGA, BigDecimal.ONE)
                 .stripTrailingZeros().toPlainString());
     }
     
@@ -66,24 +66,24 @@ public class CurrencyDivisorTest {
         //Convert RAW to GIGA
         assertThrows(ArithmeticException.class, () ->
                 CurrencyDivisor.GIGA.convertIntFrom(
-                        new BigInteger("25000000000000000000000000000000001"), CurrencyDivisor.RAW));
+                        CurrencyDivisor.RAW, new BigInteger("25000000000000000000000000000000001")));
     
         //Convert RAW to GIGA
         assertThrows(ArithmeticException.class, () ->
                 CurrencyDivisor.GIGA.convertIntFrom(
-                        new BigInteger("24999999999999999999999999999999999"), CurrencyDivisor.RAW));
+                        CurrencyDivisor.RAW, new BigInteger("24999999999999999999999999999999999")));
     }
     
     @Test
     public void testIntegerConversionToLargerUnit() {
         //Convert RAW to GIGA
         assertEquals("25", CurrencyDivisor.GIGA.convertIntFrom(
-                new BigInteger("25000000000000000000000000000000000"), CurrencyDivisor.RAW)
+                CurrencyDivisor.RAW, new BigInteger("25000000000000000000000000000000000"))
                 .toString());
         
         //Convert MILLI to XRB
         assertEquals("2", CurrencyDivisor.XRB.convertIntFrom(
-                new BigInteger("2000"), CurrencyDivisor.MILLI)
+                CurrencyDivisor.MILLI, new BigInteger("2000"))
                 .toString());
     }
     
@@ -91,17 +91,17 @@ public class CurrencyDivisorTest {
     public void testIntegerConversionToSmallerUnit() {
         //Convert 25 GIGA to RAW
         assertEquals("25000000000000000000000000000000000", CurrencyDivisor.RAW.convertIntFrom(
-                BigInteger.valueOf(25), CurrencyDivisor.GIGA)
+                CurrencyDivisor.GIGA, BigInteger.valueOf(25))
                 .toString());
         
         //Convert 1 GIGA to MEGA
         assertEquals("1000", CurrencyDivisor.MEGA.convertIntFrom(
-                BigInteger.ONE, CurrencyDivisor.GIGA)
+                CurrencyDivisor.GIGA, BigInteger.ONE)
                 .toString());
         
         //Convert 1 GIGA to KILO
         assertEquals("1000000", CurrencyDivisor.KILO.convertIntFrom(
-                BigInteger.ONE, CurrencyDivisor.GIGA)
+                CurrencyDivisor.GIGA, BigInteger.ONE)
                 .toString());
     }
     
