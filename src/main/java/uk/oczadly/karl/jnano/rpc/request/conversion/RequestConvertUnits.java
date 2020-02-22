@@ -23,14 +23,14 @@ public class RequestConvertUnits extends RpcRequest<ResponseAmount> {
     @Expose @SerializedName("amount")
     private final BigInteger amount;
     
-    private final NanoDenomination conversion;
+    private final Conversion conversion;
     
     
     /**
      * @param conversion    the units of currency to convert between
      * @param amount        the quantity of the origin currency
      */
-    public RequestConvertUnits(NanoDenomination conversion, long amount) {
+    public RequestConvertUnits(Conversion conversion, long amount) {
         this(conversion, BigInteger.valueOf(amount));
     }
     
@@ -38,7 +38,7 @@ public class RequestConvertUnits extends RpcRequest<ResponseAmount> {
      * @param conversion    the units of currency to convert between
      * @param amount        the quantity of the origin currency
      */
-    public RequestConvertUnits(NanoDenomination conversion, BigInteger amount) {
+    public RequestConvertUnits(Conversion conversion, BigInteger amount) {
         super(conversion.name().toLowerCase(), ResponseAmount.class);
         this.conversion = conversion;
         this.amount = amount;
@@ -55,13 +55,13 @@ public class RequestConvertUnits extends RpcRequest<ResponseAmount> {
     /**
      * @return the requested conversion method
      */
-    public final NanoDenomination getConversionType() {
+    public final Conversion getConversionType() {
         return conversion;
     }
     
     
     
-    public enum NanoDenomination {
+    public enum Conversion {
         /** Divide a raw amount down by the Mrai ratio. */
         MRAI_FROM_RAW,
     
