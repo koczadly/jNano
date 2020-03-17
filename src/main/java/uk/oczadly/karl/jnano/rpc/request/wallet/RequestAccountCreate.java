@@ -20,7 +20,7 @@ public class RequestAccountCreate extends RpcRequest<ResponseAccount> {
     @Expose @SerializedName("work")
     private final Boolean generateWork;
     
-    @Expose @SerializedName("work")
+    @Expose @SerializedName("index")
     private final Integer index;
     
     
