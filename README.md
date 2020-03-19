@@ -12,7 +12,7 @@ This project is hosted on Maven Central. To import this library, add the followi
 <dependency>
     <groupId>uk.oczadly.karl</groupId>
     <artifactId>jnano</artifactId>
-    <version>2.0.0-V19</version>
+    <version>2.0.1-V20</version>
 </dependency>
 ```
 
