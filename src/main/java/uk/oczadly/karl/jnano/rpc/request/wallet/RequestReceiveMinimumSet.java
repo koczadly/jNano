@@ -9,8 +9,7 @@ import java.math.BigInteger;
 
 /**
  * This request class is used to set the minimum amount required for the node to automatically receive a pending block.
- * The server responds with a {@link ResponseSuccessful} data object.<br>
- * Calls the internal RPC method {@code receive_minimum_set}.
+ * <br>Calls the RPC command {@code receive_minimum_set}, and returns a {@link ResponseSuccessful} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#receive_minimum_set">Official RPC documentation</a>
  */

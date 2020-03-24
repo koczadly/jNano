@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
 /**
  * This request class is used to destroy an existing local wallet.
- * The server responds with a {@link ResponseSuccessful} data object.<br>
- * Calls the internal RPC method {@code wallet_destroy}.
+ * <br>Calls the RPC command {@code wallet_destroy}, and returns a {@link ResponseSuccessful} data object.
  * <br><br>
  * Caution: this will destroy all seeds and private keys associated with the wallet!
  *

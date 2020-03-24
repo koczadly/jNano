@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHashes;
 
 /**
  * This request class is used to republish every account's blocks within the specified wallet.
- * The server responds with a {@link ResponseBlockHashes} data object.<br>
- * Calls the internal RPC method {@code wallet_republish}.
+ * <br>Calls the RPC command {@code wallet_republish}, and returns a {@link ResponseBlockHashes} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_republish">Official RPC documentation</a>
  */

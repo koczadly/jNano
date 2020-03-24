@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseWalletHistory;
 
 /**
  * This request class is used to fetch transaction history for all accounts within a wallet.
- * The server responds with a {@link ResponseWalletHistory} data object.<br>
- * Calls the internal RPC method {@code wallet_history}.
+ * <br>Calls the RPC command {@code wallet_history}, and returns a {@link ResponseWalletHistory} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_history">Official RPC documentation</a>
  */

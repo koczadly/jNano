@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseConfirmationQuorum;
 
 /**
  * This request class is used to request information about the network state.
- * The server responds with a {@link ResponseConfirmationQuorum} data object.<br>
- * Calls the internal RPC method {@code confirmation_quorum}.
+ * <br>Calls the RPC command {@code confirmation_quorum}, and returns a {@link ResponseConfirmationQuorum} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#confirmation_quorum">Official RPC documentation</a>
  */

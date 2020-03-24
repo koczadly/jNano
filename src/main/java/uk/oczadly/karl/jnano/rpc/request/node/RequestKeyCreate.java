@@ -5,8 +5,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseKeyPair;
 
 /**
  * This request class is used to generate a random public and private key.
- * The server responds with a {@link ResponseKeyPair} data object.<br>
- * Calls the internal RPC method {@code key_create}.
+ * <br>Calls the RPC command {@code key_create}, and returns a {@link ResponseKeyPair} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#key_create">Official RPC documentation</a>
  */

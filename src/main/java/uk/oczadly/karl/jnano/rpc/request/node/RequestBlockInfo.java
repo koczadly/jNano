@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlockInfo;
 
 /**
  * This request class is used to request a block's information.
- * The server responds with a {@link ResponseBlockInfo} data object.<br>
- * Calls the internal RPC method {@code block_info}.
+ * <br>Calls the RPC command {@code block_info}, and returns a {@link ResponseBlockInfo} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#block_info">Official RPC documentation</a>
  */

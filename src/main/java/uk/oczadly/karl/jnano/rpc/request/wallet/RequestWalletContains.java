@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseExists;
 
 /**
  * This request class is used to check whether a wallet contains a specified account.
- * The server responds with a {@link ResponseExists} data object.<br>
- * Calls the internal RPC method {@code wallet_contains}.
+ * <br>Calls the RPC command {@code wallet_contains}, and returns a {@link ResponseExists} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_contains">Official RPC documentation</a>
  */

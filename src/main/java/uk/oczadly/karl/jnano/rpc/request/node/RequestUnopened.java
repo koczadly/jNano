@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseUnopened;
 
 /**
  * This request class is used to fetch a list of unopened accounts with a pending balance.
- * The server responds with a {@link ResponseUnopened} data object.<br>
- * Calls the internal RPC method {@code unopened}.
+ * <br>Calls the RPC command {@code unopened}, and returns a {@link ResponseUnopened} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#unopened">Official RPC documentation</a>
  */

@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseKeyPair;
 
 /**
  * This request class is used to derive a public key and account from a given private key.
- * The server responds with a {@link ResponseKeyPair} data object.<br>
- * Calls the internal RPC method {@code key_expand}.
+ * <br>Calls the RPC command {@code key_expand}, and returns a {@link ResponseKeyPair} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#key_expand">Official RPC documentation</a>
  */

@@ -8,8 +8,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHash;
 
 /**
  * This request class is used to calculate the hash of a block based on the provided data.
- * The server responds with a {@link ResponseBlockHash} data object.<br>
- * Calls the internal RPC method {@code block_hash}.
+ * <br>Calls the RPC command {@code block_hash}, and returns a {@link ResponseBlockHash} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#block_hash">Official RPC documentation</a>
  */

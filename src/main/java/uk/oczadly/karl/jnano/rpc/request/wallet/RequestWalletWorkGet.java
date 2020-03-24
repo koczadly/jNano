@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseWalletWork;
 
 /**
  * This request class is used to fetch the pre-computed work for every existing account within the specified wallet.
- * The server responds with a {@link ResponseWalletWork} data object.<br>
- * Calls the internal RPC method {@code wallet_work_get}.
+ * <br>Calls the RPC command {@code wallet_work_get}, and returns a {@link ResponseWalletWork} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_work_get">Official RPC documentation</a>
  */

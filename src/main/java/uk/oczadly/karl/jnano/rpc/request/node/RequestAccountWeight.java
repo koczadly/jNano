@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseAmount;
 
 /**
  * This request class is used to request the voting weight for the account.
- * The server responds with a {@link ResponseAmount} data object.<br>
- * Calls the internal RPC method {@code account_weight}.
+ * <br>Calls the RPC command {@code account_weight}, and returns a {@link ResponseAmount} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#account_weight">Official RPC documentation</a>
  */

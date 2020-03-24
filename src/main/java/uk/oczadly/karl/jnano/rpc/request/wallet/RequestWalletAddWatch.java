@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
 /**
  * This request class is used to add watch-only accounts to the a local wallet.
- * The server responds with a {@link ResponseSuccessful} data object.<br>
- * Calls the internal RPC method {@code wallet_add_watch}.
+ * <br>Calls the RPC command {@code wallet_add_watch}, and returns a {@link ResponseSuccessful} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_add_watch">Official RPC documentation</a>
  */

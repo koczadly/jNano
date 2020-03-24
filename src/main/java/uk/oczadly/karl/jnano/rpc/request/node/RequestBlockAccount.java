@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseAccount;
 
 /**
  * This request class is used to request the account which contains the specified block.
- * The server responds with a {@link ResponseAccount} data object.<br>
- * Calls the internal RPC method {@code block_account}.
+ * <br>Calls the RPC command {@code block_account}, and returns a {@link ResponseAccount} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#block_account">Official RPC documentation</a>
  */

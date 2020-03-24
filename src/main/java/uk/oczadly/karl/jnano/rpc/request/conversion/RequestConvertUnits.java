@@ -10,7 +10,7 @@ import java.math.BigInteger;
 
 /**
  * This request class is used to convert between the various currency units.
- * The server responds with a {@link ResponseAmount} data object.
+ * <br>Calls the appropriate RPC command, and returns a {@link ResponseAmount} data object.
  *
  * @see CurrencyDivisor
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#unit-conversion-rpcs">Official RPC documentation</a>

@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseAccount;
 
 /**
  * This request class is used to add a new account to a local wallet from it's private key.
- * The server responds with a {@link ResponseAccount} data object.<br>
- * Calls the internal RPC method {@code wallet_add}.
+ * <br>Calls the RPC command {@code wallet_add}, and returns a {@link ResponseAccount} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_add">Official RPC documentation</a>
  */

@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
 /**
  * This request class is used to set a new representative for accounts within a wallet.
- * The server responds with a {@link ResponseSuccessful} data object.<br>
- * Calls the internal RPC method {@code wallet_representative_set}.
+ * <br>Calls the RPC command {@code wallet_representative_set}, and returns a {@link ResponseSuccessful} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_representative_set">Official RPC documentation</a>
  */

@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
 /**
  * This request class is used to initialize bootstrap to a specified remote node.
- * The server responds with a {@link ResponseSuccessful} data object.<br>
- * Calls the internal RPC method {@code bootstrap}.
+ * <br>Calls the RPC command {@code bootstrap}, and returns a {@link ResponseSuccessful} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#bootstrap">Official RPC documentation</a>
  */

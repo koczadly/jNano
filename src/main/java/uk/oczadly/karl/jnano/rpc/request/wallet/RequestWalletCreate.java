@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseWalletId;
 
 /**
  * This request class is used to create a new local wallet.
- * The server responds with a {@link ResponseWalletId} data object.<br>
- * Calls the internal RPC method {@code wallet_create}.
+ * <br>Calls the RPC command {@code wallet_create}, and returns a {@link ResponseWalletId} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_create">Official RPC documentation</a>
  */

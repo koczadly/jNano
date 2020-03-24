@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseWork;
 
 /**
  * This request class is used to generate work for the specified block hash.
- * The server responds with a {@link ResponseWork} data object.<br>
- * Calls the internal RPC method {@code work_generate}.
+ * <br>Calls the RPC command {@code work_generate}, and returns a {@link ResponseWork} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#work_generate">Official RPC documentation</a>
  */

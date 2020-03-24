@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseWorkValidation;
 
 /**
  * This request class is used to check whether the specified work is valid for the specified block.
- * The server responds with a {@link ResponseWorkValidation} data object.<br>
- * Calls the internal RPC method {@code work_validate}.
+ * <br>Calls the RPC command {@code work_validate}, and returns a {@link ResponseWorkValidation} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#work_validate">Official RPC documentation</a>
  */

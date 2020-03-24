@@ -5,8 +5,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBootstrapStatus;
 
 /**
  * This request class is used to request the status of the current bootstrap attempt.
- * The server responds with a {@link ResponseBootstrapStatus} data object.<br>
- * Calls the internal RPC method {@code bootstrap_status}.
+ * <br>Calls the RPC command {@code bootstrap_status}, and returns a {@link ResponseBootstrapStatus} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#bootstrap_status">Official RPC documentation</a>
  *

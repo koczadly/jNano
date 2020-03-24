@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseAccount;
 
 /**
  * This request class is used to request an account's current representative.
- * The server responds with a {@link ResponseAccount} data object.<br>
- * Calls the internal RPC method {@code account_representative}.
+ * <br>Calls the RPC command {@code account_representative}, and returns a {@link ResponseAccount} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#account_representative">Official RPC documentation</a>
  */

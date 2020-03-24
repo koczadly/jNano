@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseAccounts;
 
 /**
  * This request class is used to fetch a list of accounts inside in the given wallet.
- * The server responds with a {@link ResponseAccounts} data object.<br>
- * Calls the internal RPC method {@code account_list}.
+ * <br>Calls the RPC command {@code account_list}, and returns a {@link ResponseAccounts} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#account_list">Official RPC documentation</a>
  */

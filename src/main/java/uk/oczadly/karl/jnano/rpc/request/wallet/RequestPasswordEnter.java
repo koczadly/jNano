@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseValidation;
 
 /**
  * This request class is used to unlock an encrypted local wallet.
- * The server responds with a {@link ResponseValidation} data object.<br>
- * Calls the internal RPC method {@code password_enter}.
+ * <br>Calls the RPC command {@code password_enter}, and returns a {@link ResponseValidation} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#password_enter">Official RPC documentation</a>
  */

@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseRepresentatives;
 
 /**
  * This request class is used to fetch a list of representatives and their voting weight.
- * The server responds with a {@link ResponseRepresentatives} data object.<br>
- * Calls the internal RPC method {@code representatives}.
+ * <br>Calls the RPC command {@code representatives}, and returns a {@link ResponseRepresentatives} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#representatives">Official RPC documentation</a>
  */

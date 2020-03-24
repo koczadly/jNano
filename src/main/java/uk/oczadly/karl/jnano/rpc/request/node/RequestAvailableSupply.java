@@ -5,8 +5,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseAmount;
 
 /**
  * This request class is used to request the total available supply of Nano.
- * The server responds with a {@link ResponseAmount} data object.<br>
- * Calls the internal RPC method {@code available_supply}.
+ * <br>Calls the RPC command {@code available_supply}, and returns a {@link ResponseAmount} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#available_supply">Official RPC documentation</a>
  */

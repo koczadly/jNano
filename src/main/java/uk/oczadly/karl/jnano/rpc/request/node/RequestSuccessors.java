@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHashes;
 
 /**
  * This request class is used to fetch a list of block hashes in the account chain.
- * The server responds with a {@link ResponseBlockHashes} data object.<br>
- * Calls the internal RPC method {@code successors}.
+ * <br>Calls the RPC command {@code successors}, and returns a {@link ResponseBlockHashes} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#successors">Official RPC documentation</a>
  */

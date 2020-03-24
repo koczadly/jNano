@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseAccountInfo;
 
 /**
  * This request class is used to request an account's information.
- * The server responds with a {@link ResponseAccountInfo} data object.<br>
- * Calls the internal RPC method {@code account_info}.
+ * <br>Calls the RPC command {@code account_info}, and returns a {@link ResponseAccountInfo} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#account_info">Official RPC documentation</a>
  */

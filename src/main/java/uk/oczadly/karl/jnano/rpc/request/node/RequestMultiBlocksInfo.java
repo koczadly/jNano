@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseMultiBlockInfo;
 
 /**
  * This request class is used to fetch detailed information about the specified block hashes.
- * The server responds with a {@link ResponseMultiBlockInfo} data object.<br>
- * Calls the internal RPC method {@code blocks_info}.
+ * <br>Calls the RPC command {@code blocks_info}, and returns a {@link ResponseMultiBlockInfo} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#blocks_info">Official RPC documentation</a>
  */

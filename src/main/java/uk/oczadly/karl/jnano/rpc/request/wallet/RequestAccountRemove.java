@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
 /**
  * This request class is used to remove an account from a local wallet.
- * The server responds with a {@link ResponseSuccessful} data object.<br>
- * Calls the internal RPC method {@code account_remove}.
+ * <br>Calls the RPC command {@code account_remove}, and returns a {@link ResponseSuccessful} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#account_remove">Official RPC documentation</a>
  */

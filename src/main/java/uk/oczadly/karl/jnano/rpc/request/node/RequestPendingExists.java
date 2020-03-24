@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseExists;
 
 /**
  * This request class is used to check whether a specified block is still pending.
- * The server responds with a {@link ResponseExists} data object.<br>
- * Calls the internal RPC method {@code pending_exists}.
+ * <br>Calls the RPC command {@code pending_exists}, and returns a {@link ResponseExists} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#pending_exists">Official RPC documentation</a>
  */

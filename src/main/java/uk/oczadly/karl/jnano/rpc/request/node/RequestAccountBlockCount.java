@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseAccountBlockCount;
 
 /**
  * This request class is used to request the number of blocks for a specific account.
- * The server responds with a {@link ResponseAccountBlockCount} data object.<br>
- * Calls the internal RPC method {@code account_block_count}.
+ * <br>Calls the RPC command {@code account_block_count}, and returns a {@link ResponseAccountBlockCount} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#account_block_count">Official RPC documentation</a>
  */

@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHash;
 
 /**
  * This request class is used to manually receive a pending block for a local wallet account.
- * The server responds with a {@link ResponseBlockHash} data object.<br>
- * Calls the internal RPC method {@code receive}.
+ * <br>Calls the RPC command {@code receive}, and returns a {@link ResponseBlockHash} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#receive">Official RPC documentation</a>
  */

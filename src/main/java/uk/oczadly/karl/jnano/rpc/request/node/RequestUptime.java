@@ -5,8 +5,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseUptime;
 
 /**
  * This request class is used to retrieve the current uptime of the node.
- * The server responds with a {@link ResponseUptime} data object.<br>
- * Calls the internal RPC method {@code uptime}.
+ * <br>Calls the RPC command {@code uptime}, and returns a {@link ResponseUptime} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#uptime">Official RPC documentation</a>
  */

@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseMultiAccountBalances;
 
 /**
  * This request class is used to request the balances of multiple specified accounts.
- * The server responds with a {@link ResponseMultiAccountBalances} data object.<br>
- * Calls the internal RPC method {@code accounts_balances}.
+ * <br>Calls the RPC command {@code accounts_balances}, and returns a {@link ResponseMultiAccountBalances} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#accounts_balances">Official RPC documentation</a>
  */

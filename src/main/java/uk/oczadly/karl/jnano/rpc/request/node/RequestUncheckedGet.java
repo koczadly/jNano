@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlock;
 
 /**
  * This request class is used to fetch an unchecked block by its hash.
- * The server responds with a {@link ResponseBlock} data object.<br>
- * Calls the internal RPC method {@code unchecked_get}.
+ * <br>Calls the RPC command {@code unchecked_get}, and returns a {@link ResponseBlock} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#unchecked_get">Official RPC documentation</a>
  */

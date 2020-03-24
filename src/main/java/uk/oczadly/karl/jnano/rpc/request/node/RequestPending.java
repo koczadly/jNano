@@ -9,8 +9,7 @@ import java.math.BigInteger;
 
 /**
  * This request class is used to fetch a list of pending blocks which have not been received by the specified account.
- * The server responds with a {@link ResponsePending} data object.<br>
- * Calls the internal RPC method {@code pending}.
+ * <br>Calls the RPC command {@code pending}, and returns a {@link ResponsePending} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#pending">Official RPC documentation</a>
  */

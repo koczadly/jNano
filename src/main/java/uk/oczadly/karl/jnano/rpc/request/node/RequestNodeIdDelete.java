@@ -5,8 +5,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
 /**
  * This request class is used to delete the node's current ID (requires a restart).
- * The server responds with a {@link ResponseSuccessful} data object.<br>
- * Calls the internal RPC method {@code node_id_delete}.
+ * <br>Calls the RPC command {@code node_id_delete}, and returns a {@link ResponseSuccessful} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#node_id_delete">Official RPC documentation</a>
  *

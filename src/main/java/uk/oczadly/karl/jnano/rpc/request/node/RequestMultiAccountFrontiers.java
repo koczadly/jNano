@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseMultiAccountFrontiers;
 
 /**
  * This request class is used to fetch the head block for the specified accounts.
- * The server responds with a {@link ResponseMultiAccountFrontiers} data object.<br>
- * Calls the internal RPC method {@code accounts_frontiers}.
+ * <br>Calls the RPC command {@code accounts_frontiers}, and returns a {@link ResponseMultiAccountFrontiers} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#accounts_frontiers">Official RPC documentation</a>
  */

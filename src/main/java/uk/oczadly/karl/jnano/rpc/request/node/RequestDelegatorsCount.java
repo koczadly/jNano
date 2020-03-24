@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseCount;
 
 /**
  * This request class is used to request the number of delegators for a specified representative.
- * The server responds with a {@link ResponseCount} data object.<br>
- * Calls the internal RPC method {@code delegators_count}.
+ * <br>Calls the RPC command {@code delegators_count}, and returns a {@link ResponseCount} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#delegators_count">Official RPC documentation</a>
  */

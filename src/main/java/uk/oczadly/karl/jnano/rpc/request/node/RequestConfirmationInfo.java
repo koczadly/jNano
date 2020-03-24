@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseConfirmationInfo;
 
 /**
  * This request class is used to request information about the specified active election.
- * The server responds with a {@link ResponseConfirmationInfo} data object.<br>
- * Calls the internal RPC method {@code confirmation_info}.
+ * <br>Calls the RPC command {@code confirmation_info}, and returns a {@link ResponseConfirmationInfo} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#confirmation_info">Official RPC documentation</a>
  */

@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseKeyPair;
 
 /**
  * This request class is used to generate a private and public key from the given seed.
- * The server responds with a {@link ResponseKeyPair} data object.<br>
- * Calls the internal RPC method {@code deterministic_key}.
+ * <br>Calls the RPC command {@code deterministic_key}, and returns a {@link ResponseKeyPair} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#deterministic_key">Official RPC documentation</a>
  */

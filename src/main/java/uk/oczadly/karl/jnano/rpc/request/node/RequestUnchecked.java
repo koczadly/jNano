@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlocksMap;
 
 /**
  * This request class is used to fetch a list of unchecked blocks.
- * The server responds with a {@link ResponseBlocksMap} data object.<br>
- * Calls the internal RPC method {@code unchecked}.
+ * <br>Calls the RPC command {@code unchecked}, and returns a {@link ResponseBlocksMap} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#unchecked">Official RPC documentation</a>
  */

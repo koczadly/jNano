@@ -9,8 +9,7 @@ import java.math.BigInteger;
 
 /**
  * This request class is used to retrieve the balances of every account within a wallet.
- * The server responds with a {@link ResponseMultiAccountBalances} data object.<br>
- * Calls the internal RPC method {@code wallet_balances}.
+ * <br>Calls the RPC command {@code wallet_balances}, and returns a {@link ResponseMultiAccountBalances} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_balances">Official RPC documentation</a>
  */

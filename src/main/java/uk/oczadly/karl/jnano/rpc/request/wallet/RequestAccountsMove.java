@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseAccountsMoved;
 
 /**
  * This request class is used to move accounts from one local wallet to another.
- * The server responds with a {@link ResponseAccountsMoved} data object.<br>
- * Calls the internal RPC method {@code account_move}.
+ * <br>Calls the RPC command {@code account_move}, and returns a {@link ResponseAccountsMoved} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#account_move">Official RPC documentation</a>
  */

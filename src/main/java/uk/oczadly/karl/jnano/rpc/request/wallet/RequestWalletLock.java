@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseWalletLocked;
 
 /**
  * This request class locks and re-encrypts the specified wallet.
- * The server responds with a {@link ResponseWalletLocked} data object.<br>
- * Calls the internal RPC method {@code wallet_lock}.
+ * <br>Calls the RPC command {@code wallet_lock}, and returns a {@link ResponseWalletLocked} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_lock">Official RPC documentation</a>
  */

@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseLedger;
 
 /**
  * This request class is used to request detailed account information from the ledger within a specific wallet.
- * The server responds with a {@link ResponseLedger} data object.<br>
- * Calls the internal RPC method {@code wallet_ledger}.
+ * <br>Calls the RPC command {@code wallet_ledger}, and returns a {@link ResponseLedger} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_ledger">Official RPC documentation</a>
  */

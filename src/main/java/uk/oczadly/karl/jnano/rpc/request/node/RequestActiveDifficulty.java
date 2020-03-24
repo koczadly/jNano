@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseActiveDifficulty;
 
 /**
  * This request class is used to request the current active difficulty.
- * The server responds with a {@link ResponseActiveDifficulty} data object.<br>
- * Calls the internal RPC method {@code active_difficulty}.
+ * <br>Calls the RPC command {@code active_difficulty}, and returns a {@link ResponseActiveDifficulty} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#active_difficulty">Official RPC documentation</a>
  */

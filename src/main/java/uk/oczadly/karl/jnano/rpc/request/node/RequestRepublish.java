@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHashes;
 
 /**
  * This request class is used to republish a set of blocks starting at the specified block hash.
- * The server responds with a {@link ResponseBlockHashes} data object.<br>
- * Calls the internal RPC method {@code republish}.
+ * <br>Calls the RPC command {@code republish}, and returns a {@link ResponseBlockHashes} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#republish">Official RPC documentation</a>
  */

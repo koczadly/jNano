@@ -9,8 +9,7 @@ import java.math.BigInteger;
 
 /**
  * This request class is used to fetch a list of pending block hashes for the specified accounts.
- * The server responds with a {@link ResponseMultiAccountsPending} data object.<br>
- * Calls the internal RPC method {@code accounts_pending}.
+ * <br>Calls the RPC command {@code accounts_pending}, and returns a {@link ResponseMultiAccountsPending} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#accounts_pending">Official RPC documentation</a>
  */

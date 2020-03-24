@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHashes;
 
 /**
  * This request class is used to request a list of active election roots.
- * The server responds with a {@link ResponseBlockHashes} data object.<br>
- * Calls the internal RPC method {@code confirmation_active}.
+ * <br>Calls the RPC command {@code confirmation_active}, and returns a {@link ResponseBlockHashes} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#confirmation_active">Official RPC documentation</a>
  */

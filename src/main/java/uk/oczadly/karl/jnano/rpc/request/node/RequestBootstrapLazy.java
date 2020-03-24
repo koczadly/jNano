@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
 /**
  * This request class is used to initialize bootstrap from a given block hash.
- * The server responds with a {@link ResponseSuccessful} data object.<br>
- * Calls the internal RPC method {@code bootstrap_lazy}.
+ * <br>Calls the RPC command {@code bootstrap_lazy}, and returns a {@link ResponseSuccessful} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#bootstrap_lazy">Official RPC documentation</a>
  */

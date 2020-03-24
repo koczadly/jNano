@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseDelegators;
 
 /**
  * This request class is used to fetch a list of delegators for the specified representative account.
- * The server responds with a {@link ResponseDelegators} data object.<br>
- * Calls the internal RPC method {@code delegators}.
+ * <br>Calls the RPC command {@code delegators}, and returns a {@link ResponseDelegators} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#delegators">Official RPC documentation</a>
  */

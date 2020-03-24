@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseWork;
 
 /**
  * This request class is used to retrieve the pre-computed work solution for a specified local account.
- * The server responds with a {@link ResponseWork} data object.<br>
- * Calls the internal RPC method {@code work_get}.
+ * <br>Calls the RPC command {@code work_get}, and returns a {@link ResponseWork} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#work_get">Official RPC documentation</a>
  */

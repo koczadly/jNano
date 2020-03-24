@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHash;
 
 /**
  * This request class is used to set the representative for a local account.
- * The server responds with a {@link ResponseBlockHash} data object.<br>
- * Calls the internal RPC method {@code account_representative_set}.
+ * <br>Calls the RPC command {@code account_representative_set}, and returns a {@link ResponseBlockHash} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#account_representative_set">Official RPC documentation</a>
  */

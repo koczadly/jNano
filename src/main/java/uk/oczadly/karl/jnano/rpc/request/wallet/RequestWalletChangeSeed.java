@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseWalletChangeSeed;
 
 /**
  * This request class is used to change a local wallet's seed.
- * The server responds with a {@link ResponseWalletChangeSeed} data object.<br>
- * Calls the internal RPC method {@code wallet_change_seed}.
+ * <br>Calls the RPC command {@code wallet_change_seed}, and returns a {@link ResponseWalletChangeSeed} data object.
  * <br><br>
  * Note: this method will clear existing deterministic accounts from the wallet.
  *

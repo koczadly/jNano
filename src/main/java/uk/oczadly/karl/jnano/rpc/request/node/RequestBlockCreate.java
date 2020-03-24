@@ -12,8 +12,7 @@ import java.math.BigInteger;
 
 /**
  * This request class is used to create a new state block. Use the {@link Builder} class to construct the request.<br>
- * The server responds with a {@link ResponseBlockCreate} data object.<br>
- * Calls the internal RPC method {@code block_create}.
+ * <br>Calls the RPC command {@code block_create}, and returns a {@link ResponseBlockCreate} data object.
  *
  * @see Builder
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#block_create">Official RPC documentation</a>

@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseSignature;
 
 /**
  * This request class is used to fetch sign a provided block using a specified private key or wallet address.
- * The server responds with a {@link ResponseSignature} data object.<br>
- * Calls the internal RPC method {@code sign}.
+ * <br>Calls the RPC command {@code sign}, and returns a {@link ResponseSignature} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#sign">Official RPC documentation</a>
  */

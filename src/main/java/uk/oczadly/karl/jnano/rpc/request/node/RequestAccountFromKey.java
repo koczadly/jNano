@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseAccount;
 
 /**
  * This request class is used to convert a public key into a standardized account address.
- * The server responds with a {@link ResponseAccount} data object.<br>
- * Calls the internal RPC method {@code account_get}.
+ * <br>Calls the RPC command {@code account_get}, and returns a {@link ResponseAccount} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#account_get">Official RPC documentation</a>
  */

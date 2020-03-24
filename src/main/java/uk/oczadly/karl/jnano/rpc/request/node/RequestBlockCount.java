@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlockCount;
 
 /**
  * This request class is used to request the total number of blocks in the ledger.
- * The server responds with a {@link ResponseBlockCount} data object.<br>
- * Calls the internal RPC method {@code block_count}.
+ * <br>Calls the RPC command {@code block_count}, and returns a {@link ResponseBlockCount} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#block_count">Official RPC documentation</a>
  */

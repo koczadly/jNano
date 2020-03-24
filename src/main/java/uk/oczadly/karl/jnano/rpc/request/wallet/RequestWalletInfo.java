@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseWalletInfo;
 
 /**
  * This request class is used to retrieve summarized information about all of the accounts within a given wallet.
- * The server responds with a {@link ResponseWalletInfo} data object.<br>
- * Calls the internal RPC method {@code wallet_info}.
+ * <br>Calls the RPC command {@code wallet_info}, and returns a {@link ResponseWalletInfo} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_info">Official RPC documentation</a>
  */

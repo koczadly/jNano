@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseWalletExport;
 
 /**
  * This request class is used to export a wallet as a JSON string.
- * The server responds with a {@link ResponseWalletExport} data object.<br>
- * Calls the internal RPC method {@code wallet_export}.
+ * <br>Calls the RPC command {@code wallet_export}, and returns a {@link ResponseWalletExport} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_export">Official RPC documentation</a>
  */

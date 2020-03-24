@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlocksMap;
 
 /**
  * This request class is used to fetch a JSON representation of the specified block hashes.
- * The server responds with a {@link ResponseBlocksMap} data object.<br>
- * Calls the internal RPC method {@code blocks}.
+ * <br>Calls the RPC command {@code blocks}, and returns a {@link ResponseBlocksMap} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#blocks">Official RPC documentation</a>
  */

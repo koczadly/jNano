@@ -9,8 +9,7 @@ import java.math.BigInteger;
 
 /**
  * This request class is used to request detailed account information from the ledger.
- * The server responds with a {@link ResponseLedger} data object.<br>
- * Calls the internal RPC method {@code ledger}.
+ * <br>Calls the RPC command {@code ledger}, and returns a {@link ResponseLedger} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#ledger">Official RPC documentation</a>
  */

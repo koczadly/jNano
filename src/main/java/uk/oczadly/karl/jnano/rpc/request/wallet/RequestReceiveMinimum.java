@@ -5,8 +5,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseAmount;
 
 /**
  * This request class is used to get the minimum amount for the node to automatically receive transactions.
- * The server responds with a {@link ResponseAmount} data object.<br>
- * Calls the internal RPC method {@code receive_minimum}.
+ * <br>Calls the RPC command {@code receive_minimum}, and returns a {@link ResponseAmount} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#receive_minimum">Official RPC documentation</a>
  */

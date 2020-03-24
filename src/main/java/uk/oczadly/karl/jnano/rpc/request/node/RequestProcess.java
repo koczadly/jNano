@@ -8,8 +8,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHash;
 
 /**
  * This request class is used to manually publish a block to the network.
- * The server responds with a {@link ResponseBlockHash} data object.<br>
- * Calls the internal RPC method {@code process}.
+ * <br>Calls the RPC command {@code process}, and returns a {@link ResponseBlockHash} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#process">Official RPC documentation</a>
  */

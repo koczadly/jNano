@@ -10,8 +10,7 @@ import java.math.BigInteger;
 /**
  * This request class is used to fetch a list of pending blocks which have not been received by accounts in the
  * specified wallet.
- * The server responds with a {@link ResponseWalletPending} data object.<br>
- * Calls the internal RPC method {@code wallet_pending}.
+ * <br>Calls the RPC command {@code wallet_pending}, and returns a {@link ResponseWalletPending} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_pending">Official RPC documentation</a>
  */

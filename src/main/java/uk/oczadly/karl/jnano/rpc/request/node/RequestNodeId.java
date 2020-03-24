@@ -5,8 +5,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseNodeId;
 
 /**
  * This request class is used to fetch the node's ID and private key.
- * The server responds with a {@link ResponseNodeId} data object.<br>
- * Calls the internal RPC method {@code node_id}.
+ * <br>Calls the RPC command {@code node_id}, and returns a {@link ResponseNodeId} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#node_id">Official RPC documentation</a>
  *

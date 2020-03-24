@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBalance;
 
 /**
  * This request class is used to request an account's balance.
- * The server responds with a {@link ResponseBalance} data object.<br>
- * Calls the internal RPC method {@code account_balance}.
+ * <br>Calls the RPC command {@code account_balance}, and returns a {@link ResponseBalance} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#account_balance">Official RPC documentation</a>
  */

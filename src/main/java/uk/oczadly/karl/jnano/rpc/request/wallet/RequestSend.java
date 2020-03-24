@@ -9,8 +9,7 @@ import java.math.BigInteger;
 
 /**
  * This request class is used to send an amount from a specified local wallet account to another account.
- * The server responds with a {@link ResponseBlockHash} data object.<br>
- * Calls the internal RPC method {@code send}.
+ * <br>Calls the RPC command {@code send}, and returns a {@link ResponseBlockHash} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#send">Official RPC documentation</a>
  */

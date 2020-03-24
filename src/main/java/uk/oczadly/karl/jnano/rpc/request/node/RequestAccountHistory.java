@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseAccountHistory;
 
 /**
  * This request class is used to request an account's transaction history.
- * The server responds with a {@link ResponseAccountHistory} data object.<br>
- * Calls the internal RPC method {@code account_history}.
+ * <br>Calls the RPC command {@code account_history}, and returns a {@link ResponseAccountHistory} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#account_history">Official RPC documentation</a>
  */

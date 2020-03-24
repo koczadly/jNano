@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseAccount;
 
 /**
  * This request class is used to create an account in the specified local wallet.
- * The server responds with a {@link ResponseAccount} data object.<br>
- * Calls the internal RPC method {@code account_create}.
+ * <br>Calls the RPC command {@code account_create}, and returns a {@link ResponseAccount} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#account_create">Official RPC documentation</a>
  */

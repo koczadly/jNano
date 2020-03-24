@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseMultiAccountFrontiers;
 
 /**
  * This request class is used to fetch a list of accounts within a wallet, and their head block hashes.
- * The server responds with a {@link ResponseMultiAccountFrontiers} data object.<br>
- * Calls the internal RPC method {@code wallet_frontiers}.
+ * <br>Calls the RPC command {@code wallet_frontiers}, and returns a {@link ResponseMultiAccountFrontiers} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#wallet_frontiers">Official RPC documentation</a>
  */

@@ -7,8 +7,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseUncheckedKeys;
 
 /**
  * This request class is used to retrieve unchecked database keys and blocks.
- * The server responds with a {@link ResponseUncheckedKeys} data object.<br>
- * Calls the internal RPC method {@code unchecked_keys}.
+ * <br>Calls the RPC command {@code unchecked_keys}, and returns a {@link ResponseUncheckedKeys} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#unchecked_keys">Official RPC documentation</a>
  */
