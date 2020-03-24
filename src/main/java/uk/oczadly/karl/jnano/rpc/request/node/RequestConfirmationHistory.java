@@ -11,7 +11,9 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseConfirmationHistory;
  * Calls the internal RPC method {@code confirmation_history}.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#confirmation_history">Official RPC documentation</a>
+ * @deprecated This request is for debugging purposes only and is subject to change with each node revision.
  */
+@Deprecated
 public class RequestConfirmationHistory extends RpcRequest<ResponseConfirmationHistory> {
     
     @Expose @SerializedName("hash")
