@@ -43,4 +43,4 @@ can be found on the `feature/util/account` branch, although have no guaranteed f
 
 ---
 
-<sup><sup>If you found this library useful and would like to offer a donation, my Nano address is <b>xrb_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz</b> - any amount would be greatly appreciated :D</sup></sup>
+<sup><sup>If you found this library useful and would like to offer a donation, my Nano address is <b>nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz</b> - any amount would be greatly appreciated :D</sup></sup>
