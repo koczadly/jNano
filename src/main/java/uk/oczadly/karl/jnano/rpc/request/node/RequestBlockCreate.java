@@ -2,15 +2,16 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.block.BlockSubType;
 import uk.oczadly.karl.jnano.model.block.BlockType;
+import uk.oczadly.karl.jnano.model.block.StateBlock;
 import uk.oczadly.karl.jnano.rpc.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseBlockCreate;
 
 import java.math.BigInteger;
 
 /**
- * This request class is used to create a new state block. Use the {@link Builder} class to create the block, rather
- * than the constructor.
+ * This request class is used to create a new state block. Use the {@link Builder} class to construct the request.<br>
  * The server responds with a {@link ResponseBlockCreate} data object.<br>
  * Calls the internal RPC method {@code block_create}.
  *
@@ -154,13 +155,39 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
         private String destination;
         private String link;
         private String work;
-        
+    
+        /**
+         * Sets the parameters from the block data. Note that the private key and wallet parameters will not be
+         * assigned.
+         * @param block the state block
+         */
+        public Builder(StateBlock block) {
+            this.balance = block.getBalance();
+            this.representative = block.getRepresentativeAddress();
+            this.previous = block.getPreviousBlockHash();
+            this.account = block.getAccountAddress();
+            if (block.getSubType() == BlockSubType.SEND) {
+                this.destination = block.getLinkAsAccount();
+            } else if(block.getSubType() == BlockSubType.RECEIVE) {
+                this.sourceBlock = block.getLinkData();
+            } else {
+                this.link = block.getLinkData();
+            }
+            this.work = block.getWorkSolution();
+        }
+    
+        /**
+         * @param balance           the account's balance after the block
+         * @param representative    the representative address
+         * @param previous          the previous block's hash
+         */
         public Builder(BigInteger balance, String representative, String previous) {
             this.balance = balance;
             this.representative = representative;
             this.previous = previous;
         }
     
+        
         public BigInteger getBalance() {
             return balance;
         }
@@ -253,8 +280,25 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
         
         
         public RequestBlockCreate buildRequest() {
-            return new RequestBlockCreate(balance, representative, previous, walletId, account, privKey, sourceBlock,
-                    destination, link, work);
+            if (link != null && (sourceBlock != null || destination != null)
+                    || sourceBlock != null && destination != null)
+                throw new IllegalStateException("Only one of the link/source/destination arguments may be set.");
+            
+            if (privKey != null && walletId != null)
+                throw new IllegalStateException("Private key and wallet ID cannot be assigned at the same time.");
+            
+            if (balance == null)
+                throw new IllegalStateException("No balance argument is assigned.");
+            if (representative == null)
+                throw new IllegalStateException("No representative argument is assigned.");
+            if (previous == null)
+                throw new IllegalStateException("No previous argument is assigned.");
+            if (link == null && sourceBlock == null && destination == null)
+                throw new IllegalStateException("No link, source block or destination address is assigned.");
+            
+            return new RequestBlockCreate(balance, representative, previous, walletId,
+                    (privKey == null) ? account : null,
+                    privKey, sourceBlock, destination, link, work);
         }
         
     }
