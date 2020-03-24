@@ -139,9 +139,9 @@ public class RpcQueryNode {
      * of supported request operations.</a>
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request, Integer timeout) throws IOException, RpcException {
-        if(request == null)
+        if (request == null)
             throw new IllegalArgumentException("Request argument must not be null");
-        if(timeout != null && timeout < 0)
+        if (timeout != null && timeout < 0)
             throw new IllegalArgumentException("Timeout period must be positive or null");
         
         String requestJsonStr = this.serializeRequestToJSON(request); // Serialise the request into JSON
@@ -159,8 +159,36 @@ public class RpcQueryNode {
      * Sends a query request to the node via RPC. The request will not timeout as long as the connection remains open.
      *
      * @param request   the query request to send to the node
-     * @param callback  the callback to execute after the request has completed
-     * @return a future instance representing the response data/exception
+     * @return a future instance containing the response data/exception
+     *
+     * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#lookup-table">See the GitHub wiki for a list
+     * of supported request operations.</a>
+     */
+    public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request) {
+        return this.processRequestAsync(request, null, null);
+    }
+    
+    /**
+     * Sends a query request to the node via RPC.
+     *
+     * @param request   the query request to send to the node
+     * @param timeout   the timeout for the request in milliseconds, or null for none
+     * @return a future instance containing the response data/exception
+     *
+     * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#lookup-table">See the GitHub wiki for a list
+     * of supported request operations.</a>
+     */
+    public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request, Integer timeout) {
+        return this.processRequestAsync(request, timeout, null);
+    }
+    
+    
+    /**
+     * Sends a query request to the node via RPC. The request will not timeout as long as the connection remains open.
+     *
+     * @param request   the query request to send to the node
+     * @param callback  the callback to execute after the request has completed (or null for no callback)
+     * @return a future instance containing the response data/exception
      *
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#lookup-table">See the GitHub wiki for a list
      * of supported request operations.</a>
@@ -174,29 +202,27 @@ public class RpcQueryNode {
      *
      * @param request   the query request to send to the node
      * @param timeout   the timeout for the request in milliseconds, or null for none
-     * @param callback  the callback to execute after the request has completed
-     * @return a future instance representing the response data/exception
+     * @param callback  the callback to execute after the request has completed (or null for no callback)
+     * @return a future instance containing the response data/exception
      *
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#lookup-table">See the GitHub wiki for a list
      * of supported request operations.</a>
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request, Integer timeout, QueryCallback<R> callback) {
-        if(request == null)
+        if (request == null)
             throw new IllegalArgumentException("Request argument must not be null");
-        if(timeout != null && timeout < 0)
+        if (timeout != null && timeout < 0)
             throw new IllegalArgumentException("Timeout period must be positive or null");
         
         return RpcQueryNode.EXECUTOR_SERVICE.submit(() -> {
             try {
                 R response = RpcQueryNode.this.processRequest(request, timeout);
-                if(callback != null) {
+                if (callback != null)
                     callback.onResponse(response);
-                }
                 return response;
             } catch (Exception e) {
-                if(callback != null) {
+                if (callback != null)
                     callback.onFailure(e);
-                }
                 throw e;
             }
         });
@@ -212,12 +238,12 @@ public class RpcQueryNode {
      * @throws IOException if an error occurs with the connection to the node
      */
     public String processRequestRaw(String jsonRequest, Integer timeout) throws IOException {
-        if(jsonRequest == null)
+        if (jsonRequest == null)
             throw new IllegalArgumentException("JSON request string cannot be null");
     
         // Configure connection
         HttpURLConnection con = (HttpURLConnection)this.address.openConnection();
-        if(timeout != null) { // Set timeouts
+        if (timeout != null) { // Set timeouts
             con.setConnectTimeout(timeout);
             con.setReadTimeout(timeout);
         }
@@ -228,7 +254,7 @@ public class RpcQueryNode {
         con.setRequestMethod("POST");
         
         // Set authorization token header (if set)
-        if(this.authToken != null) {
+        if (this.authToken != null) {
             con.setRequestProperty("Authorization", "Bearer " + this.authToken);
         }
         
@@ -269,7 +295,7 @@ public class RpcQueryNode {
         
         // Check for returned RPC error
         JsonElement responseError = response.get("error");
-        if(responseError != null)
+        if (responseError != null)
             throw this.parseException(responseError.getAsString());
         
         // Deserialize response
@@ -304,12 +330,12 @@ public class RpcQueryNode {
                 return new RpcUnknownCommandException();         // Unknown command
         }
     
-        if(msgLower.startsWith("bad") || msgLower.startsWith("invalid") || msgLower.endsWith("invalid")
+        if (msgLower.startsWith("bad") || msgLower.startsWith("invalid") || msgLower.endsWith("invalid")
                 || msgLower.endsWith("required")) {
             return new RpcInvalidArgumentException(message);    // Invalid/bad argument
-        } else if(msgLower.contains("not found")) {
+        } else if (msgLower.contains("not found")) {
             return new RpcEntityNotFoundException(message);     // Unknown referenced entity
-        } else if(msgLower.startsWith("internal")) {
+        } else if (msgLower.startsWith("internal")) {
             return new RpcInternalException(message);           // Internal server error
         }
         
@@ -324,7 +350,7 @@ public class RpcQueryNode {
      * @return the serialized JSON command
      */
     public String serializeRequestToJSON(RpcRequest<?> req) {
-        if(req == null)
+        if (req == null)
             throw new IllegalArgumentException("Query request argument cannot be null");
         
         return JNanoHelper.GSON.toJson(req);
