@@ -13,9 +13,9 @@ import com.google.gson.annotations.SerializedName;
 public abstract class RpcRequest<R extends RpcResponse> {
     
     @Expose @SerializedName("action")
-    private String actionCommand;
+    private final String actionCommand;
     
-    private Class<R> responseClass;
+    private final Class<R> responseClass;
     
     
     /**

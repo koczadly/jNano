@@ -269,7 +269,7 @@ public class RpcQueryNode {
         
         StringBuilder response = new StringBuilder();
         String line;
-        while((line = inputReader.readLine()) != null) {
+        while ((line = inputReader.readLine()) != null) {
             response.append(line);
         }
         inputReader.close();
@@ -300,7 +300,7 @@ public class RpcQueryNode {
         
         // Deserialize response
         R responseObj = JNanoHelper.GSON.fromJson(responseJson, responseClass); // Deserialize from JSON
-        responseObj.init(response); // Initialise raw parameters
+        responseObj.initResponseObject(response); // Initialise raw parameters
         return responseObj;
     }
     
@@ -314,7 +314,7 @@ public class RpcQueryNode {
     protected RpcException parseException(String message) {
         String msgLower = message.toLowerCase();
     
-        switch(msgLower) {
+        switch (msgLower) {
             case "wallet is locked":
             case "wallet locked":
                 return new RpcWalletLockedException();                  // Wallet locked
@@ -341,7 +341,7 @@ public class RpcQueryNode {
             return new RpcInternalException(message + ".");           // Internal server error
         }
         
-        return new RpcException(message + "."); // Default to regular
+        return new RpcException(message.isEmpty() ? null : (message + ".")); // Default to base exception
     }
     
     
