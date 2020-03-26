@@ -2,66 +2,24 @@ package uk.oczadly.karl.jnano.internal.gsonadapters;
 
 import com.google.gson.*;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
-import uk.oczadly.karl.jnano.model.block.*;
+import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.block.BlockDeserializer;
 
 import java.lang.reflect.Type;
-import java.math.BigInteger;
 
 public class BlockTypeDeserializer implements JsonDeserializer<Block> {
     
-    @SuppressWarnings("deprecation")
+    private static final BlockDeserializer blockDeserializer = new BlockDeserializer();
+    
+    
     @Override
     public Block deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject jsonObj = element.isJsonObject() ? element.getAsJsonObject()
-                : JNanoHelper.JSON_PARSER.parse(element.getAsString()).getAsJsonObject(); // Sometimes blocks are passed as string representations
+        // Check if string - sometimes blocks are passed as string representations
+        JsonObject jsonObj = element.isJsonObject()
+                ? element.getAsJsonObject()
+                : JNanoHelper.JSON_PARSER.parse(element.getAsString()).getAsJsonObject();
         
-        String hash = jsonObj.get("hash") != null ? jsonObj.get("hash").getAsString() : null;
-        String blockType = jsonObj.get("type").getAsString().toUpperCase();
-        switch(blockType) {
-            case "UTX": // Old universal blocks type name
-            case "STATE": return new StateBlock(
-                    jsonObj,
-                    hash,
-                    jsonObj.get("signature").getAsString(),
-                    jsonObj.get("work").getAsString(),
-                    jsonObj.get("account").getAsString(),
-                    jsonObj.get("previous").getAsString(),
-                    jsonObj.get("representative").getAsString(),
-                    jsonObj.get("balance").getAsBigInteger(),
-                    jsonObj.get("link").getAsString(),
-                    jsonObj.get("link_as_account").getAsString());
-            case "OPEN": return new OpenBlock(
-                    jsonObj,
-                    hash,
-                    jsonObj.get("signature").getAsString(),
-                    jsonObj.get("work").getAsString(),
-                    jsonObj.get("source").getAsString(),
-                    jsonObj.get("account").getAsString(),
-                    jsonObj.get("representative").getAsString());
-            case "RECEIVE": return new ReceiveBlock(
-                    jsonObj,
-                    hash,
-                    jsonObj.get("signature").getAsString(),
-                    jsonObj.get("work").getAsString(),
-                    jsonObj.get("previous").getAsString(),
-                    jsonObj.get("source").getAsString());
-            case "SEND": return new SendBlock(
-                    jsonObj,
-                    hash,
-                    jsonObj.get("signature").getAsString(),
-                    jsonObj.get("work").getAsString(),
-                    jsonObj.get("previous").getAsString(),
-                    jsonObj.get("destination").getAsString(),
-                    new BigInteger(jsonObj.get("balance").getAsString(), 16)); // Balance is encoded in hexadecimal
-            case "CHANGE": return new ChangeBlock(
-                    jsonObj,
-                    hash,
-                    jsonObj.get("signature").getAsString(),
-                    jsonObj.get("work").getAsString(),
-                    jsonObj.get("previous").getAsString(),
-                    jsonObj.get("representative").getAsString());
-            default: throw new JsonParseException("Block type " + blockType + " is invalid");
-        }
+        return blockDeserializer.deserialize(jsonObj);
     }
     
 }

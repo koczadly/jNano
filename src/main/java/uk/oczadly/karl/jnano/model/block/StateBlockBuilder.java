@@ -4,13 +4,13 @@ import java.math.BigInteger;
 
 public class StateBlockBuilder {
     
-    private final String accountAddress;
-    private final String previousBlockHash;
-    private final String representativeAddress;
-    private final BigInteger balance;
+    private StateBlockSubType subtype;
+    private String accountAddress;
+    private String previousBlockHash;
+    private String representativeAddress;
+    private BigInteger balance;
     private LinkFormat linkFormat;
     private String linkData;
-    
     private String hash;
     private String signature;
     private String workSolution;
@@ -23,24 +23,13 @@ public class StateBlockBuilder {
      * @param representativeAddress the representative for this account
      * @param balance               the (newly updated) balance of this account
      */
-    public StateBlockBuilder(String accountAddress, String previousBlockHash, String representativeAddress,
-                             BigInteger balance) {
-        // Validate params
-        if (accountAddress == null)
-            throw new IllegalArgumentException("Account address argument cannot be null.");
-        if (previousBlockHash == null)
-            throw new IllegalArgumentException("Previous block hash argument cannot be null.");
-        if (representativeAddress == null)
-            throw new IllegalArgumentException("Representative address argument cannot be null.");
-        if (balance == null)
-            throw new IllegalArgumentException("Balance argument cannot be null.");
-        if (balance.compareTo(BigInteger.ZERO) < 0)
-            throw new IllegalArgumentException("Balance argument must be zero or greater.");
-        
-        this.accountAddress = accountAddress;
-        this.previousBlockHash = previousBlockHash;
-        this.representativeAddress = representativeAddress;
-        this.balance = balance;
+    public StateBlockBuilder(StateBlockSubType subtype, String accountAddress, String previousBlockHash,
+                             String representativeAddress, BigInteger balance) {
+        setSubtype(subtype);
+        setAccountAddress(accountAddress);
+        setPreviousBlockHash(previousBlockHash);
+        setRepresentativeAddress(representativeAddress);
+        setBalance(balance);
     }
     
     
@@ -71,20 +60,66 @@ public class StateBlockBuilder {
         return this;
     }
     
+    public StateBlockSubType getSubtype() {
+        return subtype;
+    }
+    
+    public StateBlockBuilder setSubtype(StateBlockSubType subtype) {
+        if (subtype == null)
+            throw new IllegalArgumentException("Block subtype cannot be null.");
+        
+        this.subtype = subtype;
+        return this;
+    }
+    
     public String getAccountAddress() {
         return accountAddress;
+    }
+    
+    public StateBlockBuilder setAccountAddress(String accountAddress) {
+        if (accountAddress == null)
+            throw new IllegalArgumentException("Account address argument cannot be null.");
+        
+        this.accountAddress = accountAddress;
+        return this;
     }
     
     public String getPreviousBlockHash() {
         return previousBlockHash;
     }
     
+    public StateBlockBuilder setPreviousBlockHash(String previousBlockHash) {
+        if (previousBlockHash == null)
+            throw new IllegalArgumentException("Previous block hash argument cannot be null.");
+        
+        this.previousBlockHash = previousBlockHash;
+        return this;
+    }
+    
     public String getRepresentativeAddress() {
         return representativeAddress;
     }
     
+    public StateBlockBuilder setRepresentativeAddress(String representativeAddress) {
+        if (representativeAddress == null)
+            throw new IllegalArgumentException("Representative address argument cannot be null.");
+        
+        this.representativeAddress = representativeAddress;
+        return this;
+    }
+    
     public BigInteger getBalance() {
         return balance;
+    }
+    
+    public StateBlockBuilder setBalance(BigInteger balance) {
+        if (balance == null)
+            throw new IllegalArgumentException("Balance argument cannot be null.");
+        if (balance.compareTo(BigInteger.ZERO) < 0)
+            throw new IllegalArgumentException("Balance argument must be zero or greater.");
+        
+        this.balance = balance;
+        return this;
     }
     
     public StateBlockBuilder setLinkData(String linkData, LinkFormat format) {
@@ -105,7 +140,6 @@ public class StateBlockBuilder {
     /**
      * @return a new instance of the {@link StateBlock} class using the configured parameters.
      */
-    @SuppressWarnings("deprecation")
     public StateBlock build() {
         // Process link data
         String processedLinkData = linkData;
@@ -116,8 +150,8 @@ public class StateBlockBuilder {
         }
         
         // Construct
-        return new StateBlock(null, hash, signature, workSolution, accountAddress, previousBlockHash,
-                representativeAddress, balance,
+        return new StateBlock(null, subtype, hash, signature, workSolution, accountAddress,
+                previousBlockHash, representativeAddress, balance,
                 (processedLinkFormat == LinkFormat.RAW_HEX) ? processedLinkData : null,
                 (processedLinkFormat == LinkFormat.ACCOUNT) ? processedLinkData : null);
     }

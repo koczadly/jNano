@@ -31,7 +31,7 @@ public final class StateBlock extends Block {
     private String linkAccount;
     
     @Expose @SerializedName("subtype")
-    private BlockSubType subType;
+    private StateBlockSubType subType;
     
     
     StateBlock() {
@@ -48,7 +48,7 @@ public final class StateBlock extends Block {
      * @param accountAddress            the account's address
      * @param previousBlockHash         the previous block's hash
      * @param representativeAddress     the representative address of this account
-     * @param balance                the (newly updated) balance, in raw
+     * @param balance                   the (newly updated) balance, in raw
      * @param linkData                  the link data for this transaction
      * @param linkAccount               the link data for this transaction, specified in the account address format
      *
@@ -57,10 +57,36 @@ public final class StateBlock extends Block {
      *
      * @see StateBlockBuilder
      */
-    @SuppressWarnings("DeprecatedIsStillUsed")
-    @Deprecated
-    public StateBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution, String accountAddress, String previousBlockHash, String representativeAddress, BigInteger balance, String linkData, String linkAccount) {
+    @Deprecated(forRemoval = true)
+    public StateBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
+                      String accountAddress, String previousBlockHash, String representativeAddress, BigInteger balance,
+                      String linkData, String linkAccount) {
+        this(jsonRepresentation, null, hash, signature, workSolution, accountAddress, previousBlockHash,
+                representativeAddress, balance, linkData, linkAccount);
+    }
+    
+    /**
+     * Constructs a new state block.
+     *
+     * @param jsonRepresentation        the JSON representation if deserialized, or null
+     * @param subtype                   the block's action subtype
+     * @param hash                      the block's hash
+     * @param signature                 the block verification signature
+     * @param workSolution              the computed work solution
+     * @param accountAddress            the account's address
+     * @param previousBlockHash         the previous block's hash
+     * @param representativeAddress     the representative address of this account
+     * @param balance                   the (newly updated) balance, in raw
+     * @param linkData                  the link data for this transaction
+     * @param linkAccount               the link data for this transaction, specified in the account address format
+     *
+     * @see StateBlockBuilder
+     */
+    StateBlock(JsonObject jsonRepresentation, StateBlockSubType subtype, String hash, String signature,
+               String workSolution, String accountAddress, String previousBlockHash, String representativeAddress,
+               BigInteger balance, String linkData, String linkAccount) {
         super(BlockType.STATE, hash, jsonRepresentation, signature, workSolution);
+        this.subType = subtype;
         this.accountAddress = accountAddress;
         this.previousBlockHash = previousBlockHash;
         this.representativeAddress = representativeAddress;
@@ -68,7 +94,6 @@ public final class StateBlock extends Block {
         this.linkData = linkData;
         this.linkAccount = linkAccount;
     }
-    
     
     
     public String getAccountAddress() {
@@ -95,7 +120,7 @@ public final class StateBlock extends Block {
         return linkAccount;
     }
     
-    public BlockSubType getSubType() {
+    public StateBlockSubType getSubType() {
         return subType;
     }
     

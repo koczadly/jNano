@@ -12,6 +12,7 @@ public class StateBlockBuilderTest {
     
     public static StateBlockBuilder newBuilder() {
         return new StateBlockBuilder(
+                StateBlockSubType.EPOCH,
                 "ACCOUNT",
                 "PREVHASH",
                 "REP",
@@ -43,6 +44,7 @@ public class StateBlockBuilderTest {
         assertEquals(BlockType.STATE, block.getType());
     
         assertEquals(new BigInteger("1337"), block.getBalance());
+        assertEquals(StateBlockSubType.EPOCH, block.getSubType());
         assertEquals("HASH", block.getHash());
         assertEquals("ACCOUNT", block.getAccountAddress());
         assertEquals("PREVHASH", block.getPreviousBlockHash());
@@ -50,6 +52,10 @@ public class StateBlockBuilderTest {
         assertEquals("LINK", block.getLinkData());
         assertEquals("SIG", block.getSignature());
         assertEquals("WORK", block.getWorkSolution());
+        
+        //TODO test JSON
+        assertNotNull(block.getJsonObject());
+        assertNotNull(block.getJsonString());
     }
     
     @Test

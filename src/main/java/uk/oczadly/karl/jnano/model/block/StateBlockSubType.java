@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * This class contains enum instances which each represent a sub-type of state block.
  */
-public enum  BlockSubType {
+public enum StateBlockSubType {
     
     @SerializedName("send")
     SEND                    ("send",    true),
@@ -23,10 +23,10 @@ public enum  BlockSubType {
     EPOCH                   ("epoch",   false);
     
     
-    static final Map<String, BlockSubType> nameLookupMap = new HashMap<>();
+    static final Map<String, StateBlockSubType> nameLookupMap = new HashMap<>();
     
     static {
-        for (BlockSubType type : values())
+        for (StateBlockSubType type : values())
             nameLookupMap.put(type.getProtocolName().toLowerCase(), type);
     }
     
@@ -34,7 +34,7 @@ public enum  BlockSubType {
     String name;
     boolean isTransaction;
     
-    BlockSubType(String name, boolean isTransaction) {
+    StateBlockSubType(String name, boolean isTransaction) {
         this.name = name;
         this.isTransaction = isTransaction;
     }
@@ -68,7 +68,7 @@ public enum  BlockSubType {
      * @return the corresponding subtype, or null if incompatible
      */
     @SuppressWarnings("deprecation")
-    public static BlockSubType getFromLegacyType(BlockType type) {
+    public static StateBlockSubType getFromLegacyType(BlockType type) {
         switch (type) {
             case SEND:
                 return SEND;
@@ -87,7 +87,7 @@ public enum  BlockSubType {
      * @param name the official type name
      * @return the corresponding subtype, or null if not found
      */
-    public static BlockSubType getFromName(String name) {
+    public static StateBlockSubType getFromName(String name) {
         return nameLookupMap.get(name.toLowerCase());
     }
     

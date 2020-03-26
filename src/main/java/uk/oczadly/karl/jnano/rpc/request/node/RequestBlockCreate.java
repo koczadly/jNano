@@ -2,9 +2,9 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.model.block.BlockSubType;
 import uk.oczadly.karl.jnano.model.block.BlockType;
 import uk.oczadly.karl.jnano.model.block.StateBlock;
+import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
 import uk.oczadly.karl.jnano.rpc.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseBlockCreate;
 
@@ -165,9 +165,9 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
             this.representative = block.getRepresentativeAddress();
             this.previous = block.getPreviousBlockHash();
             this.account = block.getAccountAddress();
-            if (block.getSubType() == BlockSubType.SEND) {
+            if (block.getSubType() == StateBlockSubType.SEND) {
                 this.destination = block.getLinkAsAccount();
-            } else if(block.getSubType() == BlockSubType.RECEIVE) {
+            } else if(block.getSubType() == StateBlockSubType.RECEIVE) {
                 this.sourceBlock = block.getLinkData();
             } else {
                 this.link = block.getLinkData();
