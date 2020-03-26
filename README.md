@@ -2,12 +2,11 @@
 jNano is a Java library used to interface with the official Nano node via RPC requests.
 It also includes many native utilities and tools so that a node isn't always necessary.
 
-Almost all of the features have been implemented, however it is still currently a work in progress.
-
+WebSocket support is currently in development, and will be made publicly available shortly.
 
 ## Usage
 ### Maven
-This project is hosted on Maven Central. To import this library, add the following dependency into your pom.xml:
+This project is hosted on [Maven Central](https://search.maven.org/artifact/uk.oczadly.karl/jnano). To import this library, add the following dependency into your pom.xml:
 ```xml
 <dependency>
     <groupId>uk.oczadly.karl</groupId>
@@ -35,11 +34,6 @@ Examples can be found on the associated wiki pages linked below:
 ## Dependencies
 The following dependencies are required, and are handled automatically through Maven:
 - [Gson 2.8.2](https://github.com/google/gson)
-
-
-## Future development
-A few features or commands may be currently outdated, although most should remain functional. Additional features
-can be found on the `feature/util/account` branch, although have no guaranteed functionality or documentation.
 
 ---
 
