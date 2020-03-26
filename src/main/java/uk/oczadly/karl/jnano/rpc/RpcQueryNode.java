@@ -190,7 +190,7 @@ public class RpcQueryNode {
      * for a list of supported request operations.</a>
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request,
-                                                                                          QueryCallback<R> callback) {
+            QueryCallback<R> callback) {
         return this.processRequestAsync(request, null, callback);
     }
     
@@ -206,7 +206,7 @@ public class RpcQueryNode {
      * for a list of supported request operations.</a>
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request, Integer timeout,
-                                                                                          QueryCallback<R> callback) {
+            QueryCallback<R> callback) {
         if (request == null)
             throw new IllegalArgumentException("Request argument must not be null.");
         if (timeout != null && timeout < 0)
