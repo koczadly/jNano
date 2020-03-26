@@ -6,7 +6,7 @@ package uk.oczadly.karl.jnano.rpc.exception;
 public class RpcUnknownCommandException extends RpcException {
     
     public RpcUnknownCommandException() {
-        super("An invalid request command was sent to the RPC server");
+        super("An invalid request command was sent to the RPC server.");
     }
     
 }

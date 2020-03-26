@@ -7,10 +7,10 @@ import com.google.gson.JsonSyntaxException;
  */
 public class RpcInvalidResponseException extends RpcException {
     
-    private String response;
+    private final String response;
     
     public RpcInvalidResponseException(String response, JsonSyntaxException source) {
-        super("Unable to parse response JSON", source);
+        super("Unable to parse JSON response.", source);
         this.response = response;
     }
     

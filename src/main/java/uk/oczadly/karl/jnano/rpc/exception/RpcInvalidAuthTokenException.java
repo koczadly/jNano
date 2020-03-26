@@ -6,7 +6,7 @@ package uk.oczadly.karl.jnano.rpc.exception;
 public class RpcInvalidAuthTokenException extends RpcException {
     
     public RpcInvalidAuthTokenException() {
-        super("The specified authentication token was rejected by the RPC server");
+        super("The specified authentication token was rejected by the RPC server.");
     }
     
 }

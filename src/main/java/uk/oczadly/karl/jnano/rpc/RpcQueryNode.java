@@ -317,29 +317,31 @@ public class RpcQueryNode {
         switch(msgLower) {
             case "wallet is locked":
             case "wallet locked":
-                return new RpcWalletLockedException();           // Wallet locked
+                return new RpcWalletLockedException();                  // Wallet locked
             case "insufficient balance":
-                return new RpcInvalidArgumentException(message); // Invalid/bad argument (not enough funds)
+                return new RpcInvalidArgumentException(message + ".");  // Invalid/bad argument
             case "invalid authorization header":
-                return new RpcInvalidAuthTokenException();       // Invalid auth token
+                return new RpcInvalidAuthTokenException();              // Invalid auth token
             case "rpc control is disabled":
-                return new RpcControlDisabledException();        // RPC disabled
+                return new RpcControlDisabledException();               // RPC disabled
             case "unable to parse json":
-                return new RpcInvalidRequestJsonException();     // Invalid request body
+                return new RpcInvalidRequestJsonException();            // Invalid request body
             case "unknown command":
-                return new RpcUnknownCommandException();         // Unknown command
+                return new RpcUnknownCommandException();                // Unknown command
         }
     
         if (msgLower.startsWith("bad") || msgLower.startsWith("invalid") || msgLower.endsWith("invalid")
                 || msgLower.endsWith("required")) {
-            return new RpcInvalidArgumentException(message);    // Invalid/bad argument
+            return new RpcInvalidArgumentException(message + ".");    // Invalid/bad argument
         } else if (msgLower.contains("not found")) {
-            return new RpcEntityNotFoundException(message);     // Unknown referenced entity
+            return new RpcEntityNotFoundException(message + ".");     // Unknown referenced entity
+        } else if (msgLower.endsWith("is disabled")) {
+            return new RpcFeatureDisabledException(message + ".");    // Feature is disabled
         } else if (msgLower.startsWith("internal")) {
-            return new RpcInternalException(message);           // Internal server error
+            return new RpcInternalException(message + ".");           // Internal server error
         }
         
-        return new RpcException(message); // Default to regular
+        return new RpcException(message + "."); // Default to regular
     }
     
     
