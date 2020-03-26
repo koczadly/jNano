@@ -14,7 +14,7 @@ public abstract class Block {
     private String hash;
     
     @Expose @SerializedName("type")
-    private final BlockType type;
+    private BlockType type;
     
     @Expose @SerializedName("signature")
     private String signature;
@@ -22,7 +22,7 @@ public abstract class Block {
     @Expose @SerializedName("work")
     private String workSolution;
     
-    private JsonObject jsonRepresentation;
+    private volatile JsonObject jsonRepresentation;
     
     
     protected Block(BlockType type) {
@@ -55,13 +55,19 @@ public abstract class Block {
     }
     
     
-    public String getJsonString() {
+    public final String getJsonString() {
         return getJsonObject().toString();
     }
     
-    public JsonObject getJsonObject() {
-        if(jsonRepresentation == null)
-            jsonRepresentation = JNanoHelper.GSON.toJsonTree(this).getAsJsonObject();
+    public final JsonObject getJsonObject() {
+        // Double-checked locking for initialization
+        if(jsonRepresentation == null) {
+            synchronized (this) {
+                if(jsonRepresentation == null) {
+                    jsonRepresentation = JNanoHelper.GSON.toJsonTree(this).getAsJsonObject();
+                }
+            }
+        }
         
         return jsonRepresentation;
     }
