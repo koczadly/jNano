@@ -15,7 +15,7 @@ public abstract class RpcRequest<R extends RpcResponse> {
     @Expose @SerializedName("action")
     private final String actionCommand;
     
-    private final Class<R> responseClass;
+    private final transient Class<R> responseClass;
     
     
     /**
@@ -40,6 +40,15 @@ public abstract class RpcRequest<R extends RpcResponse> {
      */
     public final Class<R> getResponseClass() {
         return this.responseClass;
+    }
+    
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" +
+                "command='" + actionCommand + '\'' +
+                ", responseClass=" + responseClass.getName() +
+                '}';
     }
     
 }
