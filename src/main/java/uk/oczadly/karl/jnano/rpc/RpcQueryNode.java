@@ -240,6 +240,9 @@ public class RpcQueryNode {
      */
     public <R extends RpcResponse> R processRequestRaw(String jsonRequest, Integer timeout, Class<R> responseClass)
             throws IOException, RpcException {
+        if (responseClass == null)
+            throw new IllegalArgumentException("Response class argument cannot be null.");
+        
         String responseJson = this.processRequestRaw(jsonRequest, timeout); // Send the request to the node
         return this.deserializeResponseFromJSON(responseJson, responseClass);
     }
