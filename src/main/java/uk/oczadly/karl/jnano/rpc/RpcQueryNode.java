@@ -15,6 +15,33 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+/**
+ * <p>This class represents a connection to a specified Nano node endpoint, with the main purpose of sending and
+ * queuing RPC requests.</p>
+ * <p>To use this class, set the endpoint address, port and authorization token (if configured) in the constructor,
+ * and then pass request arguments to one of the {@code processRequest()} methods. Asynchronous requests can also be
+ * accomplished using one of the {@code processRequestAsync} methods, which can take a callback, as well as
+ * returning a future object representing the response.</p>
+ * <p>Below is an example of a synchronous query which creates a new account from a provided wallet ID:</p>
+ * <pre>
+ *  try {
+ *      // Configure a connection to localhost:7076
+ *      RpcQueryNode node = new RpcQueryNode();
+ *
+ *      // Construct the request (and pass query arguments)
+ *      RequestAccountCreate request = new RequestAccountCreate(
+ *              "B4ECF585D887B590907949C41F73BB11AA0BD4FD98563CC5D810EF26FAAD948E"); // Wallet ID
+ *
+ *      // Send request to the node synchronously and retrieve response
+ *      ResponseAccount response = node.processRequest(request);
+ *
+ *      // Output new account
+ *      System.out.println("New account: " + response.getAccountAddress());
+ *  } catch (RpcException | IOException e) {
+ *      e.printStackTrace();
+ *  }
+ * </pre>
+ */
 public class RpcQueryNode {
     
     protected static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
