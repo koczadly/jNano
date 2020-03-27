@@ -155,7 +155,7 @@ public class RpcQueryNode {
      * Sends a query request to the node via RPC. The request will not timeout as long as the connection remains open.
      *
      * @param request   the query request to send to the node
-     * @return a future instance containing the response data/exception
+     * @return a future instance representing the response data/exception
      *
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#command-lookup-table">See the GitHub wiki
      * for a list of supported request operations.</a>
@@ -169,7 +169,7 @@ public class RpcQueryNode {
      *
      * @param request   the query request to send to the node
      * @param timeout   the timeout for the request in milliseconds, or null for none
-     * @return a future instance containing the response data/exception
+     * @return a future instance representing the response data/exception
      *
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#command-lookup-table">See the GitHub wiki
      * for a list of supported request operations.</a>
@@ -184,7 +184,7 @@ public class RpcQueryNode {
      *
      * @param request   the query request to send to the node
      * @param callback  the callback to execute after the request has completed (or null for no callback)
-     * @return a future instance containing the response data/exception
+     * @return a future instance representing the response data/exception
      *
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#command-lookup-table">See the GitHub wiki
      * for a list of supported request operations.</a>
@@ -200,11 +200,12 @@ public class RpcQueryNode {
      * @param request   the query request to send to the node
      * @param timeout   the timeout for the request in milliseconds, or null for none
      * @param callback  the callback to execute after the request has completed (or null for no callback)
-     * @return a future instance containing the response data/exception
+     * @return a future instance representing the response data/exception
      *
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#command-lookup-table">See the GitHub wiki
      * for a list of supported request operations.</a>
      */
+    @SuppressWarnings("removal")
     public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request, Integer timeout,
             QueryCallback<R> callback) {
         if (request == null)
@@ -215,13 +216,22 @@ public class RpcQueryNode {
         return RpcQueryNode.EXECUTOR_SERVICE.submit(() -> {
             try {
                 R response = RpcQueryNode.this.processRequest(request, timeout);
-                if (callback != null)
+                if (callback != null) {
                     callback.onResponse(response);
+                }
                 return response;
-            } catch (Exception e) {
-                if (callback != null)
-                    callback.onFailure(e);
-                throw e;
+            } catch (RpcException ex) {
+                if (callback != null) {
+                    callback.onRpcFailure(ex);
+                    callback.onFailure(ex);
+                }
+                throw ex; // Re-throw for Future object
+            } catch (IOException ex) {
+                if (callback != null) {
+                    callback.onIoFailure(ex);
+                    callback.onFailure(ex);
+                }
+                throw ex; // Re-throw for Future object
             }
         });
     }
