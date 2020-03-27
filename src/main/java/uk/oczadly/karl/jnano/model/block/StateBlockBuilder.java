@@ -19,6 +19,7 @@ public class StateBlockBuilder {
     /**
      * Constructs a new {@link StateBlockBuilder} with the non-optional parameters.
      *
+     * @param subtype               the context of the state block's action
      * @param accountAddress        the account which owns this block
      * @param previousBlockHash     the hash of the previous (or latest) block for the account
      * @param representativeAddress the representative for this account
