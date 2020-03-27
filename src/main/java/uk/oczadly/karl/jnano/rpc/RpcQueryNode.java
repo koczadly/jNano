@@ -28,7 +28,7 @@ public class RpcQueryNode {
     
     
     /**
-     * Constructs a new query node with the address 127.0.0.1:7076
+     * Constructs a new query node with the address {@code 127.0.0.1:7076}.
      *
      * @throws MalformedURLException if the address cannot be parsed
      */
@@ -37,7 +37,7 @@ public class RpcQueryNode {
     }
     
     /**
-     * Constructs a new query node with the address 127.0.0.1:7076
+     * Constructs a new query node with the address {@code 127.0.0.1:7076} and specified authorization token.
      *
      * @param authToken   the authorization token to be sent with queries
      * @throws MalformedURLException if the address cannot be parsed
@@ -47,7 +47,7 @@ public class RpcQueryNode {
     }
     
     /**
-     * Constructs a new query node with the given address and port
+     * Constructs a new query node with the provided address and port.
      *
      * @param address   the address of the node
      * @param port      the port which the node is listening on
@@ -58,7 +58,7 @@ public class RpcQueryNode {
     }
     
     /**
-     * Constructs a new query node with the given address and port
+     * Constructs a new query node with the given address, port and authorization token.
      *
      * @param address   the address of the node
      * @param port      the port which the node is listening on
@@ -70,7 +70,7 @@ public class RpcQueryNode {
     }
     
     /**
-     * Constructs a new query node with the given address and port
+     * Constructs a new query node with the given address (as a URL).
      * @param address   the HTTP URL (address and port) which the node is listening on
      */
     public RpcQueryNode(URL address) {
@@ -78,7 +78,7 @@ public class RpcQueryNode {
     }
     
     /**
-     * Constructs a new query node with the given address and port
+     * Constructs a new query node with the given address (as a URL) and authorization token.
      * @param address   the HTTP URL (address and port) which the node is listening on
      * @param authToken the authorization token to be sent with queries
      */
