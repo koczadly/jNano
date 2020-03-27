@@ -13,12 +13,13 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBalance;
  */
 public class RequestAccountBalance extends RpcRequest<ResponseBalance> {
     
-    @Expose @SerializedName("account")
+    @Expose
+    @SerializedName("account")
     private final String account;
     
     
     /**
-     * @param account   the account's address
+     * @param account the account's address
      */
     public RequestAccountBalance(String account) {
         super("account_balance", ResponseBalance.class);

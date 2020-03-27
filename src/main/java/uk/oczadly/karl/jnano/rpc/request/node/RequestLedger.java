@@ -58,7 +58,8 @@ public class RequestLedger extends RpcRequest<ResponseLedger> {
      *                          'count' is ignored if specified)
      * @param thresholdBalance  (optional) the minimum threshold balance for listed accounts
      */
-    public RequestLedger(String account, int count, Integer modifiedSince, Boolean sorting, BigInteger thresholdBalance) {
+    public RequestLedger(String account, int count, Integer modifiedSince, Boolean sorting,
+                         BigInteger thresholdBalance) {
         super("ledger", ResponseLedger.class);
         this.account = account;
         this.count = count;

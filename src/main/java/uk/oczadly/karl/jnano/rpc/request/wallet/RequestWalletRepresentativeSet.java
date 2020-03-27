@@ -41,7 +41,8 @@ public class RequestWalletRepresentativeSet extends RpcRequest<ResponseSuccessfu
      * @param updateExistingAccounts    whether existing accounts should generate new blocks and change their
      *                                  representative.
      */
-    public RequestWalletRepresentativeSet(String walletId, String representativeAccount, Boolean updateExistingAccounts) {
+    public RequestWalletRepresentativeSet(String walletId, String representativeAccount,
+                                          Boolean updateExistingAccounts) {
         super("wallet_representative_set", ResponseSuccessful.class);
         this.walletId = walletId;
         this.representativeAccount = representativeAccount;

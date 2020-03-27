@@ -56,7 +56,8 @@ public class RequestMultiAccountsPending extends RpcRequest<ResponseMultiAccount
      * @param includeOnlyConfirmed  (optional) whether only blocks undergoing confirmation height processing should
      *                              be listed
      */
-    public RequestMultiAccountsPending(String[] accounts, int count, BigInteger threshold, Boolean includeActive, Boolean sorting, Boolean includeOnlyConfirmed) {
+    public RequestMultiAccountsPending(String[] accounts, int count, BigInteger threshold, Boolean includeActive,
+                                       Boolean sorting, Boolean includeOnlyConfirmed) {
         super("accounts_pending", ResponseMultiAccountsPending.class);
         this.accounts = accounts;
         this.count = count;

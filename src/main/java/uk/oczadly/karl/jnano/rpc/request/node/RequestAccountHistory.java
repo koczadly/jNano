@@ -60,7 +60,8 @@ public class RequestAccountHistory extends RpcRequest<ResponseAccountHistory> {
      * @param reverse           (optional) whether the list should list backwards from the head
      * @param accountFilter     (optional) a list of accounts to filter by
      */
-    public RequestAccountHistory(String account, Integer transactionCount, String head, Integer offset, Boolean reverse, String[] accountFilter) {
+    public RequestAccountHistory(String account, Integer transactionCount, String head, Integer offset, Boolean reverse,
+                                 String[] accountFilter) {
         super("account_history", ResponseAccountHistory.class);
         this.account = account;
         this.transactionCount = transactionCount != null ? transactionCount : -1;

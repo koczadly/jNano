@@ -9,8 +9,10 @@ import java.lang.reflect.Type;
 
 public class CallbackBlockTypeDeserializer implements JsonDeserializer<BlockData> {
     
+    @SuppressWarnings("deprecation")
     @Override
-    public BlockData deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
+    public BlockData deserialize(JsonElement element, Type type, JsonDeserializationContext context)
+            throws JsonParseException {
         JsonObject json = element.getAsJsonObject();
         
         // Deserialize block
@@ -23,8 +25,12 @@ public class CallbackBlockTypeDeserializer implements JsonDeserializer<BlockData
                 json.get("hash").getAsString(),
                 block,
                 context.deserialize(json.get("subtype"), BlockType.class),
-                json.has("is_send") ? json.get("is_send").getAsBoolean() : block.getType() == BlockType.SEND, // UTX state block
-                block.getType().isTransaction() ? json.get("amount").getAsBigInteger() : null); // Null if non-transactional
+                json.has("is_send")
+                        ? json.get("is_send").getAsBoolean()
+                        : block.getType() == BlockType.SEND, // UTX state block
+                block.getType().isTransaction()
+                        ? json.get("amount").getAsBigInteger()
+                        : null); // Null if non-transactional
     }
     
 }

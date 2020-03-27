@@ -41,7 +41,8 @@ public class RequestAccountRepresentativeSet extends RpcRequest<ResponseBlockHas
      * @param representativeAccount the new representative address
      * @param workSolution          a pre-computed work solution
      */
-    public RequestAccountRepresentativeSet(String walletId, String account, String representativeAccount, String workSolution) {
+    public RequestAccountRepresentativeSet(String walletId, String account, String representativeAccount,
+                                           String workSolution) {
         super("account_representative_set", ResponseBlockHash.class);
         this.walletId = walletId;
         this.account = account;

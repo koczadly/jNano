@@ -56,7 +56,9 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
     private final String work;
     
     
-    private RequestBlockCreate(BigInteger balance, String representative, String previous, String walletId, String account, String privateKey, String sourceBlock, String destination, String linkData, String work) {
+    private RequestBlockCreate(BigInteger balance, String representative, String previous, String walletId,
+                               String account, String privateKey, String sourceBlock, String destination,
+                               String linkData, String work) {
         super("block_create", ResponseBlockCreate.class);
         this.balance = balance;
         this.representative = representative;

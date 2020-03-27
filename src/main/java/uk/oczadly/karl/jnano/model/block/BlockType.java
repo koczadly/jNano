@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * This class represents the types of block available. Only {@link #STATE} blocks should be used from hereon, and have
  * since been deprecated on the official Nano node.
  */
+@SuppressWarnings("DeprecatedIsStillUsed")
 public enum BlockType {
     
     @SerializedName("open")

@@ -7,7 +7,8 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseConfirmationHistory;
 
 /**
  * This request class is used to request confirmation history and statistics.
- * <br>Calls the RPC command {@code confirmation_history}, and returns a {@link ResponseConfirmationHistory} data object.
+ * <br>Calls the RPC command {@code confirmation_history}, and returns a {@link ResponseConfirmationHistory} data
+ * object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#confirmation_history">Official RPC documentation</a>
  * @deprecated This request is for debugging purposes only and is subject to change with each node revision.

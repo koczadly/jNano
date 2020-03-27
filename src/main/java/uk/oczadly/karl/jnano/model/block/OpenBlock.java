@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
  * Represents an {@code open} block, and the associated data.
  * @deprecated Only state blocks ({@link StateBlock}) are supported by the Nano node.
  */
+@SuppressWarnings("DeprecatedIsStillUsed")
 @Deprecated
 public class OpenBlock extends Block {
     
@@ -25,7 +26,8 @@ public class OpenBlock extends Block {
         super(BlockType.OPEN);
     }
     
-    public OpenBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution, String sourceBlockHash, String accountAddress, String representativeAccount) {
+    public OpenBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
+                     String sourceBlockHash, String accountAddress, String representativeAccount) {
         super(BlockType.OPEN, hash, jsonRepresentation, signature, workSolution);
         this.sourceBlockHash = sourceBlockHash;
         this.accountAddress = accountAddress;

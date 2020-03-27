@@ -20,7 +20,8 @@ public class BlockData {
     private final boolean isSend;
     private final BigInteger amount;
     
-    public BlockData(String rawJson, String accountAddress, String blockHash, Block block, BlockType subtype, boolean isSend, BigInteger amount) {
+    public BlockData(String rawJson, String accountAddress, String blockHash, Block block, BlockType subtype,
+                     boolean isSend, BigInteger amount) {
         this.rawJson = rawJson;
         this.accountAddress = accountAddress;
         this.blockHash = blockHash;

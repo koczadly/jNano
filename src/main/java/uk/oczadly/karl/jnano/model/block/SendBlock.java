@@ -10,6 +10,7 @@ import java.math.BigInteger;
  * Represents a {@code send} block, and the associated data.
  * @deprecated Only state blocks ({@link StateBlock}) are supported by the Nano node.
  */
+@SuppressWarnings("DeprecatedIsStillUsed")
 @Deprecated
 public class SendBlock extends Block {
     
@@ -27,7 +28,8 @@ public class SendBlock extends Block {
         super(BlockType.SEND);
     }
     
-    public SendBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution, String previousBlockHash, String destinationAccount, BigInteger newBalance) {
+    public SendBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
+                     String previousBlockHash, String destinationAccount, BigInteger newBalance) {
         super(BlockType.SEND, hash, jsonRepresentation, signature, workSolution);
         this.previousBlockHash = previousBlockHash;
         this.destinationAccount = destinationAccount;

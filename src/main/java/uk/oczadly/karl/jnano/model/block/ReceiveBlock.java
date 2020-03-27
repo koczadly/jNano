@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
  * Represents a {@code receive} block, and the associated data.
  * @deprecated Only state blocks ({@link StateBlock}) are supported by the Nano node.
  */
+@SuppressWarnings("DeprecatedIsStillUsed")
 @Deprecated
 public class ReceiveBlock extends Block {
     
@@ -22,7 +23,8 @@ public class ReceiveBlock extends Block {
         super(BlockType.RECEIVE);
     }
     
-    public ReceiveBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution, String previousBlockHash, String sourceBlockHash) {
+    public ReceiveBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
+                        String previousBlockHash, String sourceBlockHash) {
         super(BlockType.RECEIVE, hash, jsonRepresentation, signature, workSolution);
         this.previousBlockHash = previousBlockHash;
         this.sourceBlockHash = sourceBlockHash;

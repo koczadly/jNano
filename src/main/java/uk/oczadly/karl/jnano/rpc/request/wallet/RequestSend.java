@@ -54,7 +54,8 @@ public class RequestSend extends RpcRequest<ResponseBlockHash> {
      * @param amount                the amount to send (in RAW)
      * @param transactionId         a unique ID for idempotency
      */
-    public RequestSend(String walletId, String sourceAccount, String destinationAccount, BigInteger amount, String transactionId) {
+    public RequestSend(String walletId, String sourceAccount, String destinationAccount, BigInteger amount,
+                       String transactionId) {
         this(walletId, sourceAccount, destinationAccount, amount, transactionId, null);
     }
     
@@ -66,7 +67,8 @@ public class RequestSend extends RpcRequest<ResponseBlockHash> {
      * @param transactionId         a unique ID for idempotency
      * @param workSolution          a pre-computed work solution
      */
-    public RequestSend(String walletId, String sourceAccount, String destinationAccount, BigInteger amount, String transactionId, String workSolution) {
+    public RequestSend(String walletId, String sourceAccount, String destinationAccount, BigInteger amount,
+                       String transactionId, String workSolution) {
         super("send", ResponseBlockHash.class);
         this.walletId = walletId;
         this.sourceAccount = sourceAccount;
