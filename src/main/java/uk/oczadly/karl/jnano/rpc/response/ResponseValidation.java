@@ -8,7 +8,7 @@ import uk.oczadly.karl.jnano.rpc.RpcResponse;
  * This response class contains a single boolean which represents if something is valid.
  */
 public class ResponseValidation extends RpcResponse {
-
+    
     @Expose @SerializedName("valid")
     private boolean isValid;
     

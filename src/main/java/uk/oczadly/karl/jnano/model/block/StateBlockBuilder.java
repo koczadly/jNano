@@ -18,6 +18,7 @@ public class StateBlockBuilder {
     
     /**
      * Constructs a new {@link StateBlockBuilder} with the non-optional parameters.
+     *
      * @param accountAddress        the account which owns this block
      * @param previousBlockHash     the hash of the previous (or latest) block for the account
      * @param representativeAddress the representative for this account
@@ -161,10 +162,14 @@ public class StateBlockBuilder {
      * The format of the specified link data.
      */
     public enum LinkFormat {
-        /** Raw hexadecimal format. */
+        /**
+         * Raw hexadecimal format.
+         */
         RAW_HEX,
         
-        /** Account address format, including address prefix. */
+        /**
+         * Account address format, including address prefix.
+         */
         ACCOUNT
     }
     

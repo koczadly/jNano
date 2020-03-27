@@ -17,6 +17,7 @@ public class ResponseMultiAccountFrontiers extends RpcResponse {
     
     /**
      * Map follows the structure {@code address -> head block hash}.
+     *
      * @return a map of account frontiers
      */
     public Map<String, String> getFrontiers() {

@@ -13,13 +13,14 @@ import java.util.Set;
  * This response class contains a set pending blocks for multiple accounts.
  */
 public class ResponseMultiAccountsPending extends RpcResponse {
-
+    
     @Expose @SerializedName("blocks")
     private Map<String, LinkedHashMap<String, PendingBlock>> blocks;
     
     
     /**
      * Map follows the structure {@code address -> block hash -> block details}.
+     *
      * @return a map of pending blocks
      */
     public Map<String, LinkedHashMap<String, PendingBlock>> getPendingBlocks() {
@@ -28,6 +29,7 @@ public class ResponseMultiAccountsPending extends RpcResponse {
     
     /**
      * Map follows the structure {@code block hash -> block details}.
+     *
      * @param accountAddress an account's address
      * @return a map of pending blocks for the specified account, or null if not present in the response
      */
@@ -45,22 +47,21 @@ public class ResponseMultiAccountsPending extends RpcResponse {
     }
     
     
-    
     public static class PendingBlock {
         @Expose @SerializedName("amount")
         private BigInteger amount;
-    
+        
         @Expose @SerializedName("source")
         private String sourceAccount;
-    
-    
+        
+        
         /**
          * @return the pending amount, in RAW
          */
         public BigInteger getAmount() {
             return amount;
         }
-    
+        
         /**
          * @return the sending account of this block
          */

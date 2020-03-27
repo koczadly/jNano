@@ -24,62 +24,61 @@ public class ResponseWalletHistory extends RpcResponse {
     }
     
     
-    
     public static class BlockHistory {
         @Expose @SerializedName("type")
         private TransactionType type;
-    
+        
         @Expose @SerializedName("account")
         private String account;
-    
+        
         @Expose @SerializedName("amount")
         private BigInteger amount;
-    
+        
         @Expose @SerializedName("block_account")
         private String block_account;
-    
+        
         @Expose @SerializedName("hash")
         private String hash;
-    
+        
         @Expose @SerializedName("local_timestamp")
         private int localTimestamp;
-    
-    
+        
+        
         /**
          * @return the type/direction of the transaction
          */
         public TransactionType getType() {
             return type;
         }
-    
+        
         /**
          * @return the address of the account
          */
         public String getAccount() {
             return account;
         }
-    
+        
         /**
          * @return the amount being sent/received, in RAW
          */
         public BigInteger getAmount() {
             return amount;
         }
-    
+        
         /**
          * @return the address of the account which created the block
          */
         public String getBlockAccount() {
             return block_account;
         }
-    
+        
         /**
          * @return the hash of the block
          */
         public String getHash() {
             return hash;
         }
-    
+        
         /**
          * @return the local UNIX timestamp of when the transaction took place
          */
@@ -90,11 +89,15 @@ public class ResponseWalletHistory extends RpcResponse {
     
     
     public enum TransactionType {
-        /** Outbound transaction. */
-        @SerializedName("send")     SEND,
-    
-        /** Inbound transaction. */
-        @SerializedName("receive")  RECEIVE
+        /**
+         * Outbound transaction.
+         */
+        @SerializedName("send") SEND,
+        
+        /**
+         * Inbound transaction.
+         */
+        @SerializedName("receive") RECEIVE
     }
     
 }

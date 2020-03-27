@@ -41,6 +41,7 @@ public class ResponseAccountHistory extends RpcResponse {
     
     /**
      * @return the previous block hash, or null if traversing backwards
+     *
      * @see #getNextBlockHash()
      */
     public String getPreviousBlockHash() {
@@ -49,6 +50,7 @@ public class ResponseAccountHistory extends RpcResponse {
     
     /**
      * @return the next block hash, or null if traversing forwards
+     *
      * @see #getPreviousBlockHash()
      */
     public String getNextBlockHash() {

@@ -18,6 +18,7 @@ public class ResponseUnopened extends RpcResponse {
     
     /**
      * Map follows the structure {@code account address -> pending balance}.
+     *
      * @return a map of unopened accounts and their total pending balance in RAW
      */
     public Map<String, BigInteger> getAccounts() {

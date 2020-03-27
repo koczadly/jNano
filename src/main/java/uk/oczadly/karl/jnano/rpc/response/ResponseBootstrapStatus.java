@@ -8,7 +8,7 @@ import uk.oczadly.karl.jnano.rpc.RpcResponse;
  * This response class contains debug information about the current bootstrap attempt.
  */
 public class ResponseBootstrapStatus extends RpcResponse {
-
+    
     @Expose @SerializedName("count")
     private int clients;
     

@@ -144,7 +144,6 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
     }
     
     
-    
     public static class Builder {
         private BigInteger balance;
         private String representative;
@@ -156,10 +155,11 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
         private String destination;
         private String link;
         private String work;
-    
+        
         /**
          * Sets the parameters from the block data. Note that the private key and wallet parameters will not be
          * assigned.
+         *
          * @param block the state block
          */
         public Builder(StateBlock block) {
@@ -169,111 +169,111 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
             this.account = block.getAccountAddress();
             if (block.getSubType() == StateBlockSubType.SEND) {
                 this.destination = block.getLinkAsAccount();
-            } else if(block.getSubType() == StateBlockSubType.RECEIVE) {
+            } else if (block.getSubType() == StateBlockSubType.RECEIVE) {
                 this.sourceBlock = block.getLinkData();
             } else {
                 this.link = block.getLinkData();
             }
             this.work = block.getWorkSolution();
         }
-    
+        
         /**
-         * @param balance           the account's balance after the block
-         * @param representative    the representative address
-         * @param previous          the previous block's hash
+         * @param balance        the account's balance after the block
+         * @param representative the representative address
+         * @param previous       the previous block's hash
          */
         public Builder(BigInteger balance, String representative, String previous) {
             this.balance = balance;
             this.representative = representative;
             this.previous = previous;
         }
-    
+        
         
         public BigInteger getBalance() {
             return balance;
         }
-    
+        
         public Builder setBalance(BigInteger balance) {
             this.balance = balance;
             return this;
         }
-    
+        
         public String getRepresentative() {
             return representative;
         }
-    
+        
         public Builder setRepresentative(String representative) {
             this.representative = representative;
             return this;
         }
-    
+        
         public String getPrevious() {
             return previous;
         }
-    
+        
         public Builder setPrevious(String previous) {
             this.previous = previous;
             return this;
         }
-    
+        
         public String getWalletId() {
             return walletId;
         }
-    
+        
         public Builder setWalletId(String walletId) {
             this.walletId = walletId;
             return this;
         }
-    
+        
         public String getAccount() {
             return account;
         }
-    
+        
         public Builder setAccount(String account) {
             this.account = account;
             return this;
         }
-    
+        
         public String getPrivateKey() {
             return privKey;
         }
-    
+        
         public Builder setPrivateKey(String privKey) {
             this.privKey = privKey;
             return this;
         }
-    
+        
         public String getSourceBlock() {
             return sourceBlock;
         }
-    
+        
         public Builder setSourceBlock(String hash) {
             this.sourceBlock = hash;
             return this;
         }
-    
+        
         public String getDestination() {
             return destination;
         }
-    
+        
         public Builder setDestination(String destination) {
             this.destination = destination;
             return this;
         }
-    
+        
         public String getLink() {
             return link;
         }
-    
+        
         public Builder setLink(String link) {
             this.link = link;
             return this;
         }
-    
+        
         public String getWork() {
             return work;
         }
-    
+        
         public Builder setWork(String work) {
             this.work = work;
             return this;

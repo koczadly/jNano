@@ -8,7 +8,7 @@ import uk.oczadly.karl.jnano.rpc.RpcResponse;
  * This response class contains a single numerical count.
  */
 public class ResponseCount extends RpcResponse {
-
+    
     @Expose @SerializedName("count")
     private long count;
     

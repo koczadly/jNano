@@ -18,7 +18,7 @@ public class RequestAccountBlockCount extends RpcRequest<ResponseAccountBlockCou
     
     
     /**
-     * @param account   the account's address
+     * @param account the account's address
      */
     public RequestAccountBlockCount(String account) {
         super("account_block_count", ResponseAccountBlockCount.class);

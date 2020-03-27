@@ -10,7 +10,7 @@ import java.math.BigInteger;
  * This response class contains information about a single account.
  */
 public class ResponseAccountInfo extends RpcResponse {
-
+    
     @Expose @SerializedName("frontier")
     private String frontierBlockHash;
     

@@ -11,16 +11,16 @@ import java.util.Map;
 public enum StateBlockSubType {
     
     @SerializedName("send")
-    SEND                    ("send",    true),
+    SEND("send", true),
     
     @SerializedName("receive")
-    RECEIVE                 ("receive", true),
+    RECEIVE("receive", true),
     
     @SerializedName("change")
-    CHANGE_REPRESENTATIVE   ("change",  false),
+    CHANGE_REPRESENTATIVE("change", false),
     
     @SerializedName("epoch")
-    EPOCH                   ("epoch",   false);
+    EPOCH("epoch", false);
     
     
     static final Map<String, StateBlockSubType> nameLookupMap = new HashMap<>();

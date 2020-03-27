@@ -47,7 +47,7 @@ public class BlockCallbackServer {
     /**
      * Registers a new listener to be called when new blocks are processed.
      *
-     * @param listener  the listener instance to send updates to
+     * @param listener the listener instance to send updates to
      */
     public void registerListener(BlockCallbackListener listener) {
         this.listeners.add(listener);
@@ -56,7 +56,7 @@ public class BlockCallbackServer {
     /**
      * Removes a previously registered block listener.
      *
-     * @param listener  the listener instance to remove
+     * @param listener the listener instance to remove
      * @return whether the listener instance was previously registered
      */
     public boolean unregisterListener(BlockCallbackListener listener) {
@@ -85,7 +85,7 @@ public class BlockCallbackServer {
      * @throws IllegalStateException if the server is already running
      */
     public synchronized void start() {
-        if(this.isRunning())
+        if (this.isRunning())
             throw new IllegalStateException("Server is currently running");
         
         this.thread = new HttpServerThread(this.serverSocket, callbackListener, this.executorService);
@@ -98,13 +98,12 @@ public class BlockCallbackServer {
      * @throws IllegalStateException if the server is not currently running
      */
     public synchronized void stop() {
-        if(!this.isRunning())
+        if (!this.isRunning())
             throw new IllegalStateException("Server is not currently running");
         
         this.thread.interrupt();
         this.thread = null;
     }
-    
     
     
     private class HttpCallbackProcessor implements HttpCallback {

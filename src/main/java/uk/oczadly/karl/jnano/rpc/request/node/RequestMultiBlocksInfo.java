@@ -34,15 +34,15 @@ public class RequestMultiBlocksInfo extends RpcRequest<ResponseMultiBlockInfo> {
     
     
     /**
-     * @param blockHashes   the block hashes
+     * @param blockHashes the block hashes
      */
     public RequestMultiBlocksInfo(String... blockHashes) {
         this(null, blockHashes);
     }
     
     /**
-     * @param includeNotFound   (optional) whether blocks should be included if they aren't found in the ledger
-     * @param blockHashes       the block hashes
+     * @param includeNotFound (optional) whether blocks should be included if they aren't found in the ledger
+     * @param blockHashes     the block hashes
      */
     public RequestMultiBlocksInfo(Boolean includeNotFound, String... blockHashes) {
         super("blocks_info", ResponseMultiBlockInfo.class);

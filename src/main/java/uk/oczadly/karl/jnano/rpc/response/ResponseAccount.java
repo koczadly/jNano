@@ -8,7 +8,7 @@ import uk.oczadly.karl.jnano.rpc.RpcResponse;
  * This response class contains a single account address.
  */
 public class ResponseAccount extends RpcResponse {
-
+    
     @Expose @SerializedName(value = "account", alternate = {"representative"})
     private String address;
     

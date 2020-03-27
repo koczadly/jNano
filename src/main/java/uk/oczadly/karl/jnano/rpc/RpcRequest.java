@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
  * <p>Classes which extend this class need to specify parameters as private fields, and MUST be marked with Gson's
  * {@link Expose} annotation. The parameter name will be derived from the name of the field, unless specified otherwise
  * using the {@link SerializedName} annotation.</p>
+ *
  * @param <R> the expected response data class
  */
 public class RpcRequest<R extends RpcResponse> {

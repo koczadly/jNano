@@ -25,17 +25,17 @@ public class RequestAccountsCreate extends RpcRequest<ResponseAccounts> {
     
     
     /**
-     * @param walletId  the wallet ID
-     * @param count     the number of accounts to create
+     * @param walletId the wallet ID
+     * @param count    the number of accounts to create
      */
     public RequestAccountsCreate(String walletId, int count) {
         this(walletId, count, null);
     }
     
     /**
-     * @param walletId      the wallet ID
-     * @param count         the number of accounts to create
-     * @param generateWork  whether work should be pre-computed for each account
+     * @param walletId     the wallet ID
+     * @param count        the number of accounts to create
+     * @param generateWork whether work should be pre-computed for each account
      */
     public RequestAccountsCreate(String walletId, int count, Boolean generateWork) {
         super("accounts_create", ResponseAccounts.class);

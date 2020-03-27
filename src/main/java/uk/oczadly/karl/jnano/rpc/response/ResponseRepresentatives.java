@@ -19,6 +19,7 @@ public class ResponseRepresentatives extends RpcResponse {
     
     /**
      * Map follows the structure {@code address -> voting weight}.
+     *
      * @return a map of representatives
      */
     public Map<String, BigInteger> getRepresentatives() {

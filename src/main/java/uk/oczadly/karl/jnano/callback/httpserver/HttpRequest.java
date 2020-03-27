@@ -17,7 +17,6 @@ public class HttpRequest {
     }
     
     
-    
     public InetAddress getClientAddr() {
         return clientAddr;
     }

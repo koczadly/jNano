@@ -21,8 +21,8 @@ public class RequestWalletContains extends RpcRequest<ResponseExists> {
     
     
     /**
-     * @param walletId  the wallet's ID
-     * @param account   the account's address
+     * @param walletId the wallet's ID
+     * @param account  the account's address
      */
     public RequestWalletContains(String walletId, String account) {
         super("wallet_contains", ResponseExists.class);

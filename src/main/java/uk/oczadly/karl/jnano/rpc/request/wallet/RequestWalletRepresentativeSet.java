@@ -25,7 +25,7 @@ public class RequestWalletRepresentativeSet extends RpcRequest<ResponseSuccessfu
     
     
     /**
-     * @param walletId the wallet's ID
+     * @param walletId              the wallet's ID
      * @param representativeAccount the new representative's account address
      */
     public RequestWalletRepresentativeSet(String walletId, String representativeAccount) {
@@ -36,10 +36,10 @@ public class RequestWalletRepresentativeSet extends RpcRequest<ResponseSuccessfu
      * Constructs a new representative request. If {@code updateExistingAccounts} is set to true, then all existing
      * accounts will need to generate and broadcast new blocks, which may take a long time.
      *
-     * @param walletId                  the wallet's ID
-     * @param representativeAccount     the new representative's account address
-     * @param updateExistingAccounts    whether existing accounts should generate new blocks and change their
-     *                                  representative.
+     * @param walletId               the wallet's ID
+     * @param representativeAccount  the new representative's account address
+     * @param updateExistingAccounts whether existing accounts should generate new blocks and change their
+     *                               representative.
      */
     public RequestWalletRepresentativeSet(String walletId, String representativeAccount,
                                           Boolean updateExistingAccounts) {

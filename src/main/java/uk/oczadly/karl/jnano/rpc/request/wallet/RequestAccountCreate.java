@@ -24,24 +24,24 @@ public class RequestAccountCreate extends RpcRequest<ResponseAccount> {
     
     
     /**
-     * @param walletId  the wallet's ID
+     * @param walletId the wallet's ID
      */
     public RequestAccountCreate(String walletId) {
         this(walletId, null, null);
     }
     
     /**
-     * @param walletId  the wallet's ID
-     * @param index     (optional) the account index
+     * @param walletId the wallet's ID
+     * @param index    (optional) the account index
      */
     public RequestAccountCreate(String walletId, Integer index) {
         this(walletId, index, null);
     }
     
     /**
-     * @param walletId      the wallet's ID
-     * @param index         (optional) the account index
-     * @param generateWork  (optional) whether work should be generated
+     * @param walletId     the wallet's ID
+     * @param index        (optional) the account index
+     * @param generateWork (optional) whether work should be generated
      */
     public RequestAccountCreate(String walletId, Integer index, Boolean generateWork) {
         super("account_create", ResponseAccount.class);

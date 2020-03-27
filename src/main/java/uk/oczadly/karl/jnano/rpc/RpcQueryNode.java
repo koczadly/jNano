@@ -36,7 +36,7 @@ public class RpcQueryNode {
     /**
      * Constructs a new query node with the address {@code 127.0.0.1:7076} and specified authorization token.
      *
-     * @param authToken   the authorization token to be sent with queries
+     * @param authToken the authorization token to be sent with queries
      * @throws MalformedURLException if the address cannot be parsed
      */
     public RpcQueryNode(String authToken) throws MalformedURLException {
@@ -46,8 +46,8 @@ public class RpcQueryNode {
     /**
      * Constructs a new query node with the provided address and port.
      *
-     * @param address   the address of the node
-     * @param port      the port which the node is listening on
+     * @param address the address of the node
+     * @param port    the port which the node is listening on
      * @throws MalformedURLException if the address cannot be parsed
      */
     public RpcQueryNode(String address, int port) throws MalformedURLException {
@@ -68,7 +68,8 @@ public class RpcQueryNode {
     
     /**
      * Constructs a new query node with the given address (as a URL).
-     * @param address   the HTTP URL (address and port) which the node is listening on
+     *
+     * @param address the HTTP URL (address and port) which the node is listening on
      */
     public RpcQueryNode(URL address) {
         this(address, null);
@@ -76,6 +77,7 @@ public class RpcQueryNode {
     
     /**
      * Constructs a new query node with the given address (as a URL) and authorization token.
+     *
      * @param address   the HTTP URL (address and port) which the node is listening on
      * @param authToken the authorization token to be sent with queries
      */
@@ -83,7 +85,6 @@ public class RpcQueryNode {
         this.address = address;
         this.authToken = authToken;
     }
-    
     
     
     /**
@@ -116,8 +117,9 @@ public class RpcQueryNode {
      *
      * @param request the query request to send to the node
      * @return the successful reponse from the node
-     * @throws IOException    if an error occurs with the connection to the node
-     * @throws RpcException   if the node returns a non-successful response
+     *
+     * @throws IOException  if an error occurs with the connection to the node
+     * @throws RpcException if the node returns a non-successful response
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request)
             throws IOException, RpcException {
@@ -130,9 +132,9 @@ public class RpcQueryNode {
      * @param request the query request to send to the node
      * @param timeout the timeout for the request in milliseconds, or null for none
      * @return the successful reponse from the node
-     * @throws IOException    if an error occurs with the connection to the node
-     * @throws RpcException   if the node returns a non-successful response
      *
+     * @throws IOException  if an error occurs with the connection to the node
+     * @throws RpcException if the node returns a non-successful response
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#command-lookup-table">See the GitHub wiki
      * for a list of supported request operations.</a>
      */
@@ -151,7 +153,7 @@ public class RpcQueryNode {
     /**
      * Sends a query request to the node via RPC. The request will not timeout as long as the connection remains open.
      *
-     * @param request   the query request to send to the node
+     * @param request the query request to send to the node
      * @return a future instance representing the response data/exception
      *
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#command-lookup-table">See the GitHub wiki
@@ -164,8 +166,8 @@ public class RpcQueryNode {
     /**
      * Sends a query request to the node via RPC.
      *
-     * @param request   the query request to send to the node
-     * @param timeout   the timeout for the request in milliseconds, or null for none
+     * @param request the query request to send to the node
+     * @param timeout the timeout for the request in milliseconds, or null for none
      * @return a future instance representing the response data/exception
      *
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#command-lookup-table">See the GitHub wiki
@@ -179,24 +181,24 @@ public class RpcQueryNode {
     /**
      * Sends a query request to the node via RPC. The request will not timeout as long as the connection remains open.
      *
-     * @param request   the query request to send to the node
-     * @param callback  the callback to execute after the request has completed (or null for no callback)
+     * @param request  the query request to send to the node
+     * @param callback the callback to execute after the request has completed (or null for no callback)
      * @return a future instance representing the response data/exception
      *
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#command-lookup-table">See the GitHub wiki
      * for a list of supported request operations.</a>
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request,
-            QueryCallback<R> callback) {
+                                                                                          QueryCallback<R> callback) {
         return this.processRequestAsync(request, null, callback);
     }
     
     /**
      * Sends a query request to the node via RPC.
      *
-     * @param request   the query request to send to the node
-     * @param timeout   the timeout for the request in milliseconds, or null for none
-     * @param callback  the callback to execute after the request has completed (or null for no callback)
+     * @param request  the query request to send to the node
+     * @param timeout  the timeout for the request in milliseconds, or null for none
+     * @param callback the callback to execute after the request has completed (or null for no callback)
      * @return a future instance representing the response data/exception
      *
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#command-lookup-table">See the GitHub wiki
@@ -204,7 +206,7 @@ public class RpcQueryNode {
      */
     @SuppressWarnings("removal")
     public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request, Integer timeout,
-            QueryCallback<R> callback) {
+                                                                                          QueryCallback<R> callback) {
         if (request == null)
             throw new IllegalArgumentException("Request argument must not be null.");
         if (timeout != null && timeout < 0)
@@ -242,6 +244,7 @@ public class RpcQueryNode {
      * @param timeout       the connection timeout in milliseconds, or null to disable timeouts
      * @param responseClass the class to deserialize the response data into
      * @return the response received from the node, contained in an object of the specified class
+     *
      * @throws IOException  if an error occurs with the connection to the node
      * @throws RpcException if the node returns a non-successful response
      */
@@ -257,18 +260,19 @@ public class RpcQueryNode {
     /**
      * <p>Sends a raw JSON query to the RPC server, and then returns the raw JSON response.</p>
      * <p>Note that this method will not deserialize the resulting JSON, or parse it for errors reported by the node.
-     * You will need to implement this functionality yourself, or use the alternate
-     * {@link #processRequestRaw(String, Integer, Class)} method.</p>
+     * You will need to implement this functionality yourself, or use the alternate {@link #processRequestRaw(String,
+     * Integer, Class)} method.</p>
      *
-     * @param jsonRequest   the JSON query to send to the node
-     * @param timeout       the connection timeout in milliseconds, or null to disable timeouts
+     * @param jsonRequest the JSON query to send to the node
+     * @param timeout     the connection timeout in milliseconds, or null to disable timeouts
      * @return the JSON response received from the node
+     *
      * @throws IOException if an error occurs with the connection to the node
      */
     public String processRequestRaw(String jsonRequest, Integer timeout) throws IOException {
         if (jsonRequest == null)
             throw new IllegalArgumentException("JSON request string cannot be null.");
-    
+        
         // Open connection
         HttpURLConnection con = (HttpURLConnection)this.address.openConnection();
         
@@ -290,7 +294,7 @@ public class RpcQueryNode {
         OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
         writer.write(jsonRequest);
         writer.close();
-    
+        
         // Read response data
         InputStreamReader input = new InputStreamReader(con.getInputStream());
         BufferedReader inputReader = new BufferedReader(input);
@@ -301,7 +305,7 @@ public class RpcQueryNode {
             response.append(line);
         }
         inputReader.close();
-    
+        
         return response.toString();
     }
     
@@ -337,12 +341,12 @@ public class RpcQueryNode {
     /**
      * Parses a returned error string into the appropriate RpcException type.
      *
-     * @param message  the returned error message from the node
+     * @param message the returned error message from the node
      * @return the matching exception to be thrown
      */
     protected RpcException parseException(String message) {
         String msgLc = message.toLowerCase();
-    
+        
         switch (msgLc) {
             case "wallet is locked":
             case "wallet locked":
@@ -358,7 +362,7 @@ public class RpcQueryNode {
             case "unknown command":
                 return new RpcUnknownCommandException();                // Unknown command
         }
-    
+        
         if (msgLc.startsWith("bad") || msgLc.startsWith("invalid") || msgLc.endsWith("invalid")
                 || msgLc.endsWith("required")) {
             return new RpcInvalidArgumentException(message + ".");    // Invalid/bad argument
@@ -390,11 +394,12 @@ public class RpcQueryNode {
     
     /**
      * @return the Gson utility class used by this instance
+     *
      * @deprecated moved to use internal static utility
      */
     @Deprecated(forRemoval = true)
     public final Gson getGsonInstance() {
         return JNanoHelper.GSON;
     }
-
+    
 }

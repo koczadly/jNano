@@ -8,8 +8,8 @@ import uk.oczadly.karl.jnano.model.block.BlockType;
 import java.math.BigInteger;
 
 /**
- * This class encapsulates a variety of data relating to newly-processed blocks. Instances of this class
- * are generated and returned by a {@link BlockCallbackServer} as new blocks are received.
+ * This class encapsulates a variety of data relating to newly-processed blocks. Instances of this class are generated
+ * and returned by a {@link BlockCallbackServer} as new blocks are received.
  */
 @JsonAdapter(CallbackBlockTypeDeserializer.class)
 public class BlockData {

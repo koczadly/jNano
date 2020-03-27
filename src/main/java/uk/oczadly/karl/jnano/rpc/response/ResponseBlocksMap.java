@@ -18,6 +18,7 @@ public class ResponseBlocksMap extends RpcResponse {
     
     /**
      * Map follows the structure {@code hash -> block}.
+     *
      * @return a list of blocks
      */
     public Map<String, Block> getBlocks() {

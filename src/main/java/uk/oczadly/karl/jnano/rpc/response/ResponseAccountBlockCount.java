@@ -8,7 +8,7 @@ import uk.oczadly.karl.jnano.rpc.RpcResponse;
  * This response class contains a single block count.
  */
 public class ResponseAccountBlockCount extends RpcResponse {
-
+    
     @Expose @SerializedName("block_count")
     private long blockCount;
     

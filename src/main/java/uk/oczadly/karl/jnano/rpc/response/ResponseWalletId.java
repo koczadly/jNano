@@ -8,7 +8,7 @@ import uk.oczadly.karl.jnano.rpc.RpcResponse;
  * This response class contains a single wallet ID string.
  */
 public class ResponseWalletId extends RpcResponse {
-
+    
     @Expose @SerializedName("wallet")
     private String walletId;
     

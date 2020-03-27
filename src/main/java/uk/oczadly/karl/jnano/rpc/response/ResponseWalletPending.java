@@ -18,6 +18,7 @@ public class ResponseWalletPending extends RpcResponse {
     
     /**
      * Map follows the structure {@code account address -> block hash -> block details}.
+     *
      * @return a map of pending blocks
      */
     public Map<String, Map<String, PendingBlock>> getPendingBlocks() {
@@ -26,13 +27,13 @@ public class ResponseWalletPending extends RpcResponse {
     
     /**
      * Map follows the structure {@code block hash -> block details}.
+     *
      * @param accountAddress a local account's address
      * @return a map of pending blocks, or null if not present in the response
      */
     public Map<String, PendingBlock> getPendingBlocks(String accountAddress) {
         return this.blocks.get(accountAddress.toUpperCase());
     }
-    
     
     
     public static class PendingBlock {

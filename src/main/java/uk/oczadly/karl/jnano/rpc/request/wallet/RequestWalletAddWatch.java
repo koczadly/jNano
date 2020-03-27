@@ -21,8 +21,8 @@ public class RequestWalletAddWatch extends RpcRequest<ResponseSuccessful> {
     
     
     /**
-     * @param walletId  the wallet's ID
-     * @param accounts  the accounts' addresses
+     * @param walletId the wallet's ID
+     * @param accounts the accounts' addresses
      */
     public RequestWalletAddWatch(String walletId, String... accounts) {
         super("wallet_add_watch", ResponseSuccessful.class);

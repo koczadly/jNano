@@ -28,8 +28,8 @@ public class RequestWorkValidate extends RpcRequest<ResponseWorkValidation> {
     
     
     /**
-     * @param workSolution  the computed work value
-     * @param blockHash     the block's hash
+     * @param workSolution the computed work value
+     * @param blockHash    the block's hash
      */
     public RequestWorkValidate(String workSolution, String blockHash) {
         this(workSolution, blockHash, null, null);
@@ -37,9 +37,10 @@ public class RequestWorkValidate extends RpcRequest<ResponseWorkValidation> {
     
     /**
      * Constructs a work validation request with a specific difficulty value.
-     * @param workSolution  the computed work value
-     * @param blockHash     the block's hash
-     * @param difficulty    the difficulty value
+     *
+     * @param workSolution the computed work value
+     * @param blockHash    the block's hash
+     * @param difficulty   the difficulty value
      */
     public RequestWorkValidate(String workSolution, String blockHash, String difficulty) {
         this(workSolution, blockHash, difficulty, null);
@@ -47,9 +48,10 @@ public class RequestWorkValidate extends RpcRequest<ResponseWorkValidation> {
     
     /**
      * Constructs a work validation request with a specific difficulty multiplier.
-     * @param workSolution  the computed work value
-     * @param blockHash     the block's hash
-     * @param multiplier    the difficulty multiplier
+     *
+     * @param workSolution the computed work value
+     * @param blockHash    the block's hash
+     * @param multiplier   the difficulty multiplier
      */
     public RequestWorkValidate(String workSolution, String blockHash, Double multiplier) {
         this(workSolution, blockHash, null, multiplier);

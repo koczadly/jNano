@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Represents a {@code receive} block, and the associated data.
+ *
  * @deprecated Only state blocks ({@link StateBlock}) are supported by the Nano node.
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
@@ -29,7 +30,6 @@ public class ReceiveBlock extends Block {
         this.previousBlockHash = previousBlockHash;
         this.sourceBlockHash = sourceBlockHash;
     }
-    
     
     
     public final String getPreviousBlockHash() {

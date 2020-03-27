@@ -10,7 +10,7 @@ import java.math.BigInteger;
  * This response class contains both pocketed and pending balance amounts.
  */
 public class ResponseBalance extends RpcResponse {
-
+    
     @Expose @SerializedName("balance")
     private BigInteger pocketed;
     

@@ -25,8 +25,8 @@ public class RequestUnopened extends RpcRequest<ResponseUnopened> {
     }
     
     /**
-     * @param account   (optional) the starting account's address
-     * @param count     (optional) the result limit
+     * @param account (optional) the starting account's address
+     * @param count   (optional) the result limit
      */
     public RequestUnopened(String account, Integer count) {
         super("unopened", ResponseUnopened.class);

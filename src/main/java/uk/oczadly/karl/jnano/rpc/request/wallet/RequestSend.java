@@ -35,11 +35,10 @@ public class RequestSend extends RpcRequest<ResponseBlockHash> {
     
     
     /**
-     * @param walletId              the wallet's ID
-     * @param sourceAccount         the account's address to send from
-     * @param destinationAccount    the destination account's address (recipient)
-     * @param amount                the amount to send (in RAW)
-     *
+     * @param walletId           the wallet's ID
+     * @param sourceAccount      the account's address to send from
+     * @param destinationAccount the destination account's address (recipient)
+     * @param amount             the amount to send (in RAW)
      * @deprecated a unique ID should be supplied for idempotency
      */
     @Deprecated
@@ -48,11 +47,11 @@ public class RequestSend extends RpcRequest<ResponseBlockHash> {
     }
     
     /**
-     * @param walletId              the wallet's ID
-     * @param sourceAccount         the account's address to send from
-     * @param destinationAccount    the destination account's address (recipient)
-     * @param amount                the amount to send (in RAW)
-     * @param transactionId         a unique ID for idempotency
+     * @param walletId           the wallet's ID
+     * @param sourceAccount      the account's address to send from
+     * @param destinationAccount the destination account's address (recipient)
+     * @param amount             the amount to send (in RAW)
+     * @param transactionId      a unique ID for idempotency
      */
     public RequestSend(String walletId, String sourceAccount, String destinationAccount, BigInteger amount,
                        String transactionId) {
@@ -60,12 +59,12 @@ public class RequestSend extends RpcRequest<ResponseBlockHash> {
     }
     
     /**
-     * @param walletId              the wallet's ID
-     * @param sourceAccount         the account's address to send from
-     * @param destinationAccount    the destination account's address (recipient)
-     * @param amount                the amount to send (in RAW)
-     * @param transactionId         a unique ID for idempotency
-     * @param workSolution          a pre-computed work solution
+     * @param walletId           the wallet's ID
+     * @param sourceAccount      the account's address to send from
+     * @param destinationAccount the destination account's address (recipient)
+     * @param amount             the amount to send (in RAW)
+     * @param transactionId      a unique ID for idempotency
+     * @param workSolution       a pre-computed work solution
      */
     public RequestSend(String walletId, String sourceAccount, String destinationAccount, BigInteger amount,
                        String transactionId, String workSolution) {

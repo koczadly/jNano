@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Represents an {@code open} block, and the associated data.
+ *
  * @deprecated Only state blocks ({@link StateBlock}) are supported by the Nano node.
  */
 @SuppressWarnings("DeprecatedIsStillUsed")

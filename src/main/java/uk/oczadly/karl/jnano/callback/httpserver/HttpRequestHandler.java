@@ -25,22 +25,22 @@ public class HttpRequestHandler implements Runnable {
                     StandardCharsets.UTF_8));
             
             String[] request = reader.readLine().split(" ");
-            if(!request[0].equalsIgnoreCase("POST")) return; // Ignore non-post
+            if (!request[0].equalsIgnoreCase("POST")) return; // Ignore non-post
             
             int contentLength = -1;
             
             String s;
-            while((s = reader.readLine()) != null) {
-                if(s.equals("")) {
+            while ((s = reader.readLine()) != null) {
+                if (s.equals("")) {
                     break; // End of headers
-                } else if(contentLength == -1) {
+                } else if (contentLength == -1) {
                     String[] header = s.split(":", 2);
-                    if(header[0].trim().equalsIgnoreCase("content-length")) {
+                    if (header[0].trim().equalsIgnoreCase("content-length")) {
                         contentLength = Integer.parseInt(header[1].trim());
                     }
                 }
             }
-            if(contentLength == -1) return; // Couldn't read length
+            if (contentLength == -1) return; // Couldn't read length
             
             // Read request body
             char[] buffer = new char[contentLength];
@@ -65,8 +65,9 @@ public class HttpRequestHandler implements Runnable {
         } finally {
             // Close socket
             try {
-                if(!this.socket.isClosed()) this.socket.close();
-            } catch (IOException ignored) {}
+                if (!this.socket.isClosed()) this.socket.close();
+            } catch (IOException ignored) {
+            }
         }
     }
     

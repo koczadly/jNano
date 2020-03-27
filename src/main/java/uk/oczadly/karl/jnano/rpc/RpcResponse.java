@@ -23,7 +23,9 @@ public abstract class RpcResponse {
     }
     
     
-    /** Internal method for initializing */
+    /**
+     * Internal method for initializing
+     */
     final void initResponseObject(JsonObject rawJson) {
         if (this.rawJson != null)
             throw new IllegalStateException("Response is already initialized");

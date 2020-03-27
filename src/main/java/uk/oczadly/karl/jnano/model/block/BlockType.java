@@ -11,22 +11,22 @@ public enum BlockType {
     
     @SerializedName("open")
     @Deprecated
-    OPEN    (true),
+    OPEN(true),
     
     @SerializedName("change")
     @Deprecated
-    CHANGE  (false),
+    CHANGE(false),
     
     @SerializedName("send")
     @Deprecated
-    SEND    (true),
+    SEND(true),
     
     @SerializedName("receive")
     @Deprecated
-    RECEIVE (true),
+    RECEIVE(true),
     
     @SerializedName("state")
-    STATE   (true);
+    STATE(true);
     
     
     boolean isTransaction;

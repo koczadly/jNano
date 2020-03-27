@@ -35,8 +35,9 @@ public class RequestSign extends RpcRequest<ResponseSignature> {
     
     /**
      * Constructs a sign request using a private key.
-     * @param blockJson     the block's JSON contents
-     * @param privateKey    the private key of the account
+     *
+     * @param blockJson  the block's JSON contents
+     * @param privateKey the private key of the account
      */
     public RequestSign(String blockJson, String privateKey) {
         this(null, blockJson, privateKey, null, null);
@@ -44,6 +45,7 @@ public class RequestSign extends RpcRequest<ResponseSignature> {
     
     /**
      * Constructs a sign request using a wallet account.
+     *
      * @param blockJson the block's JSON contents
      * @param walletId  the local wallet ID of the account
      * @param account   the local account's address
@@ -54,6 +56,7 @@ public class RequestSign extends RpcRequest<ResponseSignature> {
     
     /**
      * I've got no idea what this does or how it works.
+     *
      * @param blockHash the block's hash
      */
     public RequestSign(String blockHash) { // TODO

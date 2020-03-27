@@ -24,16 +24,16 @@ public class RequestBootstrap extends RpcRequest<ResponseSuccessful> {
     
     
     /**
-     * @param peerAddress   the IP address of the remote node
-     * @param peerPort      the port of the remote node
+     * @param peerAddress the IP address of the remote node
+     * @param peerPort    the port of the remote node
      */
     public RequestBootstrap(String peerAddress, int peerPort) {
         this(peerAddress, peerPort, null);
     }
     
     /**
-     * @param peerAddress   the IP address of the remote node
-     * @param peerPort      the port of the remote node
+     * @param peerAddress                the IP address of the remote node
+     * @param peerPort                   the port of the remote node
      * @param bypassFrontierConfirmation (optional) whether frontier confirmation should not be performed
      */
     public RequestBootstrap(String peerAddress, int peerPort, Boolean bypassFrontierConfirmation) {

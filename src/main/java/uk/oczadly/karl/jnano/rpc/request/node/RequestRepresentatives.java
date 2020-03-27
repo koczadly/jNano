@@ -32,8 +32,8 @@ public class RequestRepresentatives extends RpcRequest<ResponseRepresentatives> 
     }
     
     /**
-     * @param sorting   (optional) whether the results should be sorted by voting weight (in descending order)
-     * @param count     (optional) the limit of representatives to list
+     * @param sorting (optional) whether the results should be sorted by voting weight (in descending order)
+     * @param count   (optional) the limit of representatives to list
      */
     public RequestRepresentatives(Boolean sorting, Integer count) {
         super("representatives", ResponseRepresentatives.class);

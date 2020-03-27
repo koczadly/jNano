@@ -40,20 +40,20 @@ public class RequestPending extends RpcRequest<ResponsePending> {
     
     
     /**
-     * @param account   the account's address
-     * @param count     the number of blocks to limit
+     * @param account the account's address
+     * @param count   the number of blocks to limit
      */
     public RequestPending(String account, int count) {
         this(account, count, null, null, null, null);
     }
     
     /**
-     * @param account               the account's address
-     * @param count                 the number of blocks to limit
-     * @param threshold             (optional) the minimum threshold amount in RAW
-     * @param includeActive         (optional) whether active blocks should be included
-     * @param sorting               (optional) whether the results should be sorted by their amounts in descending order
-     * @param includeOnlyConfirmed  (optional) whether only blocks undergoing height processing should be listed
+     * @param account              the account's address
+     * @param count                the number of blocks to limit
+     * @param threshold            (optional) the minimum threshold amount in RAW
+     * @param includeActive        (optional) whether active blocks should be included
+     * @param sorting              (optional) whether the results should be sorted by their amounts in descending order
+     * @param includeOnlyConfirmed (optional) whether only blocks undergoing height processing should be listed
      */
     public RequestPending(String account, int count, BigInteger threshold, Boolean includeActive, Boolean sorting,
                           Boolean includeOnlyConfirmed) {

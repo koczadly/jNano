@@ -8,7 +8,7 @@ import uk.oczadly.karl.jnano.rpc.RpcResponse;
  * This response class contains a single number of accounts that have been moved.
  */
 public class ResponseAccountsMoved extends RpcResponse {
-
+    
     @Expose @SerializedName("moved")
     private int accountsMoved;
     

@@ -61,9 +61,9 @@ public abstract class Block {
     
     public final JsonObject getJsonObject() {
         // Double-checked locking for initialization
-        if(jsonRepresentation == null) {
+        if (jsonRepresentation == null) {
             synchronized (this) {
-                if(jsonRepresentation == null) {
+                if (jsonRepresentation == null) {
                     jsonRepresentation = JNanoHelper.GSON.toJsonTree(this).getAsJsonObject();
                 }
             }

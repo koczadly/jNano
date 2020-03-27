@@ -24,9 +24,9 @@ public class RequestAccountsMove extends RpcRequest<ResponseAccountsMoved> {
     
     
     /**
-     * @param sourceWalletId        the source wallet ID
-     * @param destinationWalletId   the destination wallet ID
-     * @param accounts              an array of accounts' addresses to be moved
+     * @param sourceWalletId      the source wallet ID
+     * @param destinationWalletId the destination wallet ID
+     * @param accounts            an array of accounts' addresses to be moved
      */
     public RequestAccountsMove(String sourceWalletId, String destinationWalletId, String... accounts) {
         super("account_move", ResponseAccountsMoved.class);

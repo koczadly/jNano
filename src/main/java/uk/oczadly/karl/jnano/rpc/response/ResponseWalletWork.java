@@ -17,6 +17,7 @@ public class ResponseWalletWork extends RpcResponse {
     
     /**
      * Map follows the structure {@code account address -> work}.
+     *
      * @return a map of pre-computed work
      */
     public Map<String, String> getWork() {

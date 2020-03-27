@@ -15,17 +15,19 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
 
-/** This adapter has to be implemented as the Nano RPC client returns blank strings rather than an empty
- * arrays. This class will work for Arrays, Collections and Maps. */
+/**
+ * This adapter has to be implemented as the Nano RPC client returns blank strings rather than an empty arrays. This
+ * class will work for Arrays, Collections and Maps.
+ */
 public class ArrayTypeAdapterFactoryFix implements TypeAdapterFactory {
     
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> typeToken) {
         Type type = typeToken.getType();
         Class<?> rawType = typeToken.getRawType();
-    
+        
         TypeAdapter<T> delegateAdapter = gson.getDelegateAdapter(this, typeToken);
-        if(delegateAdapter != null) {
+        if (delegateAdapter != null) {
             if (type instanceof GenericArrayType || Collection.class.isAssignableFrom(rawType)
                     || Map.class.isAssignableFrom(rawType)) {
                 return new Adapter<>(delegateAdapter);

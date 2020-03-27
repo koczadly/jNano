@@ -14,7 +14,6 @@ import java.math.BigInteger;
  *
  * @see CurrencyDivisor
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#unit-conversion-rpcs">Official RPC documentation</a>
- *
  * @deprecated Use the native {@link CurrencyDivisor} utility class instead for efficiency
  */
 @Deprecated
@@ -27,16 +26,16 @@ public class RequestConvertUnits extends RpcRequest<ResponseAmount> {
     
     
     /**
-     * @param conversion    the units of currency to convert between
-     * @param amount        the quantity of the origin currency
+     * @param conversion the units of currency to convert between
+     * @param amount     the quantity of the origin currency
      */
     public RequestConvertUnits(Conversion conversion, long amount) {
         this(conversion, BigInteger.valueOf(amount));
     }
     
     /**
-     * @param conversion    the units of currency to convert between
-     * @param amount        the quantity of the origin currency
+     * @param conversion the units of currency to convert between
+     * @param amount     the quantity of the origin currency
      */
     public RequestConvertUnits(Conversion conversion, BigInteger amount) {
         super(conversion.name().toLowerCase(), ResponseAmount.class);
@@ -60,24 +59,35 @@ public class RequestConvertUnits extends RpcRequest<ResponseAmount> {
     }
     
     
-    
     public enum Conversion {
-        /** Divide a raw amount down by the Mrai ratio. */
+        /**
+         * Divide a raw amount down by the Mrai ratio.
+         */
         MRAI_FROM_RAW,
-    
-        /** Multiply an Mrai amount by the Mrai ratio. */
+        
+        /**
+         * Multiply an Mrai amount by the Mrai ratio.
+         */
         MRAI_TO_RAW,
-    
-        /** Divide a raw amount down by the krai ratio. */
+        
+        /**
+         * Divide a raw amount down by the krai ratio.
+         */
         KRAI_FROM_RAW,
-    
-        /** Multiply an krai amount by the krai ratio. */
+        
+        /**
+         * Multiply an krai amount by the krai ratio.
+         */
         KRAI_TO_RAW,
-    
-        /** Divide a raw amount down by the rai ratio. */
+        
+        /**
+         * Divide a raw amount down by the rai ratio.
+         */
         RAI_FROM_RAW,
-    
-        /** Multiply an rai amount by the rai ratio. */
+        
+        /**
+         * Multiply an rai amount by the rai ratio.
+         */
         RAI_TO_RAW
     }
     

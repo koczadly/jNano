@@ -10,7 +10,7 @@ import java.math.BigInteger;
  * This response class contains a single amount of Nano.
  */
 public class ResponseAmount extends RpcResponse {
-
+    
     @Expose @SerializedName(value = "amount", alternate = {"weight", "available"})
     private BigInteger amount;
     

@@ -8,6 +8,7 @@ import java.math.BigInteger;
 
 /**
  * Represents a {@code send} block, and the associated data.
+ *
  * @deprecated Only state blocks ({@link StateBlock}) are supported by the Nano node.
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
@@ -35,7 +36,6 @@ public class SendBlock extends Block {
         this.destinationAccount = destinationAccount;
         this.newBalance = newBalance;
     }
-    
     
     
     public final String getPreviousBlockHash() {

@@ -8,7 +8,6 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBootstrapStatus;
  * <br>Calls the RPC command {@code bootstrap_status}, and returns a {@link ResponseBootstrapStatus} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#bootstrap_status">Official RPC documentation</a>
- *
  * @deprecated This request is for debugging purposes only and is subject to change with each node revision.
  */
 @Deprecated

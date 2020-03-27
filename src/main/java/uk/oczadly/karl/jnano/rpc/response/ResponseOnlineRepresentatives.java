@@ -19,6 +19,7 @@ public class ResponseOnlineRepresentatives extends RpcResponse {
     
     /**
      * Map follows the structure {@code rep address -> information}.
+     *
      * @return a map of representatives
      */
     public Map<String, RepInfo> getRepresentatives() {
@@ -34,11 +35,10 @@ public class ResponseOnlineRepresentatives extends RpcResponse {
     }
     
     
-    
     public static class RepInfo {
         @Expose @SerializedName("weight")
         private BigInteger weight;
-    
+        
         
         /**
          * @return the delegated voting weight of this representative

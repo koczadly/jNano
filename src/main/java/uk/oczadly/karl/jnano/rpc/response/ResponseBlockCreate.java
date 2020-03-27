@@ -9,7 +9,7 @@ import uk.oczadly.karl.jnano.rpc.RpcResponse;
  * This response class contains a block hash and it's contents.
  */
 public class ResponseBlockCreate extends RpcResponse {
-
+    
     @Expose @SerializedName("hash")
     private String blockHash;
     

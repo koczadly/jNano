@@ -21,8 +21,8 @@ public class RequestPasswordChange extends RpcRequest<ResponseSuccessful> {
     
     
     /**
-     * @param walletId  the wallet's ID
-     * @param password  the new encryption password
+     * @param walletId the wallet's ID
+     * @param password the new encryption password
      */
     public RequestPasswordChange(String walletId, String password) {
         super("password_change", ResponseSuccessful.class);

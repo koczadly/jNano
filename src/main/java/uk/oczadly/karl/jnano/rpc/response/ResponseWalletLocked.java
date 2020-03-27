@@ -8,7 +8,7 @@ import uk.oczadly.karl.jnano.rpc.RpcResponse;
  * This response class contains a single boolean representing whether the wallet is locked.
  */
 public class ResponseWalletLocked extends RpcResponse {
-
+    
     @Expose @SerializedName("locked")
     private boolean isLocked;
     

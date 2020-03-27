@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Represents a {@code change} block, and the associated data.
+ *
  * @deprecated Only state blocks ({@link StateBlock}) are supported by the Nano node.
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
@@ -29,7 +30,6 @@ public class ChangeBlock extends Block {
         this.previousBlockHash = previousBlockHash;
         this.representativeAccount = representativeAccount;
     }
-    
     
     
     public final String getPreviousBlockHash() {

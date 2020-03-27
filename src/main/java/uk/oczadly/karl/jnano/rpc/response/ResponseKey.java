@@ -8,7 +8,7 @@ import uk.oczadly.karl.jnano.rpc.RpcResponse;
  * This response class contains a single String representing a key, either public or private.
  */
 public class ResponseKey extends RpcResponse {
-
+    
     @Expose @SerializedName("key")
     private String key;
     

@@ -21,8 +21,8 @@ public class RequestWorkPeerAdd extends RpcRequest<ResponseSuccessful> {
     
     
     /**
-     * @param peerAddress   the IP address of the remote work peer
-     * @param peerPort      the port of the remote work peer
+     * @param peerAddress the IP address of the remote work peer
+     * @param peerPort    the port of the remote work peer
      */
     public RequestWorkPeerAdd(String peerAddress, int peerPort) {
         super("work_peer_add", ResponseSuccessful.class);

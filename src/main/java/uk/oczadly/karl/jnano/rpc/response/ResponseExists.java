@@ -8,7 +8,7 @@ import uk.oczadly.karl.jnano.rpc.RpcResponse;
  * This response class contains a boolean which represents whether something exists.
  */
 public class ResponseExists extends RpcResponse {
-
+    
     @Expose @SerializedName("exists")
     private boolean exists;
     

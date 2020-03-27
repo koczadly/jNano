@@ -10,8 +10,8 @@ import java.util.Set;
  * This response class contains a series of block hashes.
  */
 public class ResponseBlockHashes extends RpcResponse {
-
-    @Expose @SerializedName(value="blocks", alternate={"hashes", "confirmations"})
+    
+    @Expose @SerializedName(value = "blocks", alternate = {"hashes", "confirmations"})
     private Set<String> blockHashes;
     
     

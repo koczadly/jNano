@@ -7,8 +7,8 @@ import java.math.BigInteger;
  * <p>This class represents the currency units and denominations used to represent an amount of Nano, and can be
  * used to natively convert between the different units.</p>
  * <p>If you are intending to parse or display an amount of Nano to the user, it is recommended that you use the
- * {@link #BASE_UNIT} constant, rather than explicitly specifying the unit. This constant represents the unit that
- * users of Nano will be most familiar with.</p>
+ * {@link #BASE_UNIT} constant, rather than explicitly specifying the unit. This constant represents the unit that users
+ * of Nano will be most familiar with.</p>
  * <p>Below are a few currency conversion examples:</p>
  * <pre>
  *   // Convert 1.337 knano (KILO) to the base unit (currently MEGA, or "Nano")
@@ -24,26 +24,40 @@ import java.math.BigInteger;
  */
 public enum CurrencyDivisor {
     
-    /** The largest divisor, equivalent to {@code 10^33} raw. */
-    GIGA    (33, "Gnano", "Gxrb"),
+    /**
+     * The largest divisor, equivalent to {@code 10^33} raw.
+     */
+    GIGA(33, "Gnano", "Gxrb"),
     
-    /** The 2nd largest divisor, equivalent to {@code 10^30} raw. */
-    MEGA    (30, "Nano",  "Mxrb"),
+    /**
+     * The 2nd largest divisor, equivalent to {@code 10^30} raw.
+     */
+    MEGA(30, "Nano", "Mxrb"),
     
-    /** The 3rd largest divisor, equivalent to {@code 10^27} raw. */
-    KILO    (27, "knano", "kxrb"),
+    /**
+     * The 3rd largest divisor, equivalent to {@code 10^27} raw.
+     */
+    KILO(27, "knano", "kxrb"),
     
-    /** The 4th largest divisor, equivalent to {@code 10^24} raw. */
-    XRB     (24, "nano",  "xrb"),
+    /**
+     * The 4th largest divisor, equivalent to {@code 10^24} raw.
+     */
+    XRB(24, "nano", "xrb"),
     
-    /** The 5th largest divisor, equivalent to {@code 10^21} raw. */
-    MILLI   (21, "mnano", "mxrb"),
+    /**
+     * The 5th largest divisor, equivalent to {@code 10^21} raw.
+     */
+    MILLI(21, "mnano", "mxrb"),
     
-    /** The 6th largest divisor, equivalent to {@code 10^18} raw. */
-    MICRO   (18, "μnano", "uxrb"),
+    /**
+     * The 6th largest divisor, equivalent to {@code 10^18} raw.
+     */
+    MICRO(18, "μnano", "uxrb"),
     
-    /** The smallest possible representable unit. */
-    RAW     (0,  "raw",   "raw");
+    /**
+     * The smallest possible representable unit.
+     */
+    RAW(0, "raw", "raw");
     
     
     /**
@@ -53,7 +67,6 @@ public enum CurrencyDivisor {
      * <p>As of this current version, this is equal to the {@link #MEGA} unit.</p>
      */
     public static final CurrencyDivisor BASE_UNIT = CurrencyDivisor.MEGA;
-    
     
     
     int exponent;
@@ -108,16 +121,16 @@ public enum CurrencyDivisor {
     }
     
     
-    
     /**
      * <p>Converts the specified unit and amount into this unit.</p>
      * <p>If you are converting from a smaller unit and fractional digits are lost, then an {@link ArithmeticException}
      * will be thrown. If you wish to bypass this, use {@link #convertFrom(CurrencyDivisor, BigInteger)} and transform
      * the retrieved value into a BigInteger using the {@link BigDecimal#toBigInteger()} method.</p>
      *
-     * @param sourceAmount  the source amount to convert from
-     * @param sourceUnit    the source unit to convert from
+     * @param sourceAmount the source amount to convert from
+     * @param sourceUnit   the source unit to convert from
      * @return the converted value in this unit
+     *
      * @throws ArithmeticException if the conversion would result in a loss of information
      */
     public BigInteger convertIntFrom(CurrencyDivisor sourceUnit, BigInteger sourceAmount) {
@@ -130,9 +143,10 @@ public enum CurrencyDivisor {
      * will be thrown. If you wish to bypass this, use {@link #convertFrom(CurrencyDivisor, BigDecimal)} and transform
      * the retrieved value into a BigInteger using the {@link BigDecimal#toBigInteger()} method.</p>
      *
-     * @param sourceAmount  the source amount to convert from
-     * @param sourceUnit    the source unit to convert from
+     * @param sourceAmount the source amount to convert from
+     * @param sourceUnit   the source unit to convert from
      * @return the converted value in this unit
+     *
      * @throws ArithmeticException if the conversion would result in a loss of information
      */
     public BigInteger convertIntFrom(CurrencyDivisor sourceUnit, BigDecimal sourceAmount) {
@@ -151,8 +165,8 @@ public enum CurrencyDivisor {
     /**
      * Converts the specified unit and amount into this unit.
      *
-     * @param sourceAmount  the source amount to convert from
-     * @param sourceUnit    the source unit to convert from
+     * @param sourceAmount the source amount to convert from
+     * @param sourceUnit   the source unit to convert from
      * @return the converted value in this unit
      */
     public BigDecimal convertFrom(CurrencyDivisor sourceUnit, BigInteger sourceAmount) {
@@ -162,23 +176,23 @@ public enum CurrencyDivisor {
     /**
      * Converts the specified unit and amount into this unit.
      *
-     * @param sourceAmount  the source amount to convert from
-     * @param sourceUnit    the source unit to convert from
+     * @param sourceAmount the source amount to convert from
+     * @param sourceUnit   the source unit to convert from
      * @return the converted value in this unit
      */
     public BigDecimal convertFrom(CurrencyDivisor sourceUnit, BigDecimal sourceAmount) {
         // Argument checks
-        if(sourceAmount == null)
+        if (sourceAmount == null)
             throw new IllegalArgumentException("Source amount cannot be null");
-        if(sourceUnit == null)
+        if (sourceUnit == null)
             throw new IllegalArgumentException("Source unit cannot be null");
-        if(sourceAmount.compareTo(BigDecimal.ZERO) < 0)
+        if (sourceAmount.compareTo(BigDecimal.ZERO) < 0)
             throw new IllegalArgumentException("Source amount cannot be negative");
         
-        if(sourceUnit == this)
+        if (sourceUnit == this)
             return sourceAmount; // Same unit
         
-        if(sourceUnit.exponent > this.exponent) { // Source is higher, multiply (shift right)
+        if (sourceUnit.exponent > this.exponent) { // Source is higher, multiply (shift right)
             return sourceAmount.movePointRight(sourceUnit.exponent - this.exponent).stripTrailingZeros();
         } else { // Source is lower, divide (shift left)
             return sourceAmount.movePointLeft(this.exponent - sourceUnit.exponent).stripTrailingZeros();
@@ -204,6 +218,7 @@ public enum CurrencyDivisor {
     
     /**
      * This method is potentially unsafe, as fractional values can be lost when converting to a larger unit.
+     *
      * @deprecated Method unsafe. Use {@link #convertFrom(CurrencyDivisor, BigInteger)} instead.
      */
     @Deprecated(forRemoval = true)
@@ -213,6 +228,7 @@ public enum CurrencyDivisor {
     
     /**
      * This method is potentially unsafe, as fractional values can be lost when converting to a larger unit.
+     *
      * @deprecated Method unsafe. Use {@link #convertFrom(CurrencyDivisor, BigInteger)} instead.
      */
     @Deprecated(forRemoval = true)

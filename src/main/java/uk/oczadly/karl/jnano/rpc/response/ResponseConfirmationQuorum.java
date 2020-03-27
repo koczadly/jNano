@@ -87,28 +87,28 @@ public class ResponseConfirmationQuorum extends RpcResponse {
     public static class PeerInfo {
         @Expose @SerializedName("account")
         private String account;
-    
+        
         @Expose @SerializedName("ip")
         private String ip;
-    
+        
         @Expose @SerializedName("weight")
         private BigInteger weight;
-    
-    
+        
+        
         /**
          * @return the address of the representative
          */
         public String getAccount() {
             return account;
         }
-    
+        
         /**
          * @return the IP address of the representative
          */
         public String getIp() {
             return ip;
         }
-    
+        
         /**
          * @return the voting weight of this representative
          */

@@ -8,7 +8,7 @@ import uk.oczadly.karl.jnano.rpc.RpcResponse;
  * This response class contains the number of blocks in the local ledger.
  */
 public class ResponseBlockCount extends RpcResponse {
-
+    
     @Expose @SerializedName("count")
     private long processed;
     

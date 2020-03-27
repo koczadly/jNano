@@ -8,7 +8,7 @@ import uk.oczadly.karl.jnano.rpc.RpcResponse;
  * This response class contains information about an account's keys.
  */
 public class ResponseKeyPair extends RpcResponse {
-
+    
     @Expose @SerializedName("private")
     private String privateKey;
     

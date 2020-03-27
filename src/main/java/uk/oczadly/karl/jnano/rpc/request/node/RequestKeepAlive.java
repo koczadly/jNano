@@ -21,8 +21,8 @@ public class RequestKeepAlive extends RpcRequest<ResponseSuccessful> {
     
     
     /**
-     * @param peerAddress   the remote peer's IP address
-     * @param peerPort      the remote peer's port
+     * @param peerAddress the remote peer's IP address
+     * @param peerPort    the remote peer's port
      */
     public RequestKeepAlive(String peerAddress, int peerPort) {
         super("keepalive", ResponseSuccessful.class);

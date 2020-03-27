@@ -18,6 +18,7 @@ public class ResponseMultiAccountBalances extends RpcResponse {
     
     /**
      * Map follows the structure {@code address -> balance}.
+     *
      * @return a map of account balances
      */
     public Map<String, AccountBalance> getBalances() {
@@ -36,25 +37,25 @@ public class ResponseMultiAccountBalances extends RpcResponse {
     public static class AccountBalance {
         @Expose @SerializedName("balance")
         private BigInteger pocketed;
-    
+        
         @Expose @SerializedName("pending")
         private BigInteger pending;
-    
-    
+        
+        
         /**
          * @return the pocketed balance of this account
          */
         public BigInteger getPocketed() {
             return pocketed;
         }
-    
+        
         /**
          * @return the pending (unreceived) balance of this account
          */
         public BigInteger getPending() {
             return pending;
         }
-    
+        
         /**
          * @return the total balance of this account
          */

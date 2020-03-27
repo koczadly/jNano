@@ -17,6 +17,7 @@ public final class BlockDeserializer {
      * <p>Converts a {@link JsonObject} into the appropriate {@link Block} object types.</p>
      * <p>Supported block types include: {@link StateBlock}, {@link SendBlock}, {@link ReceiveBlock}, {@link OpenBlock}
      * and {@link ChangeBlock}.</p>
+     *
      * @param jsonObj the JSON object
      * @return the deserialized block object
      */
@@ -83,5 +84,5 @@ public final class BlockDeserializer {
     private static <T> T nullableJsonObj(JsonElement obj, Function<JsonElement, T> func) {
         return obj != null ? func.apply(obj) : null;
     }
-
+    
 }

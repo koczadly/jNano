@@ -35,9 +35,10 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
     
     /**
      * Constructs a work generation request with a specified difficulty value.
-     * @param blockHash     the block's hash
-     * @param usePeers      (optional) whether work peers should be used
-     * @param difficulty    (optional) the absolute difficulty value
+     *
+     * @param blockHash  the block's hash
+     * @param usePeers   (optional) whether work peers should be used
+     * @param difficulty (optional) the absolute difficulty value
      */
     public RequestWorkGenerate(String blockHash, Boolean usePeers, String difficulty) {
         this(blockHash, usePeers, difficulty, null);
@@ -45,9 +46,10 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
     
     /**
      * Constructs a work generation request with a specified difficulty multiplier.
-     * @param blockHash     the block's hash
-     * @param usePeers      (optional) whether work peers should be used
-     * @param multiplier    (optional) the difficulty multiplier
+     *
+     * @param blockHash  the block's hash
+     * @param usePeers   (optional) whether work peers should be used
+     * @param multiplier (optional) the difficulty multiplier
      */
     public RequestWorkGenerate(String blockHash, Boolean usePeers, Double multiplier) {
         this(blockHash, usePeers, null, multiplier);

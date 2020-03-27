@@ -21,8 +21,8 @@ public class RequestPasswordEnter extends RpcRequest<ResponseValidation> {
     
     
     /**
-     * @param walletId  the wallet's ID
-     * @param password  the decryption password
+     * @param walletId the wallet's ID
+     * @param password the decryption password
      */
     public RequestPasswordEnter(String walletId, String password) {
         super("password_enter", ResponseValidation.class);

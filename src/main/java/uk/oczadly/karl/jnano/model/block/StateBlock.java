@@ -41,21 +41,19 @@ public final class StateBlock extends Block {
     /**
      * Constructs a new state block.
      *
-     * @param jsonRepresentation        the JSON representation if deserialized, or null
-     * @param hash                      the block's hash
-     * @param signature                 the block verification signature
-     * @param workSolution              the computed work solution
-     * @param accountAddress            the account's address
-     * @param previousBlockHash         the previous block's hash
-     * @param representativeAddress     the representative address of this account
-     * @param balance                   the (newly updated) balance, in raw
-     * @param linkData                  the link data for this transaction
-     * @param linkAccount               the link data for this transaction, specified in the account address format
-     *
-     * @deprecated Use of this constructor is not advised. Use the provided {@link StateBlockBuilder} to construct
-     * state blocks.
-     *
+     * @param jsonRepresentation    the JSON representation if deserialized, or null
+     * @param hash                  the block's hash
+     * @param signature             the block verification signature
+     * @param workSolution          the computed work solution
+     * @param accountAddress        the account's address
+     * @param previousBlockHash     the previous block's hash
+     * @param representativeAddress the representative address of this account
+     * @param balance               the (newly updated) balance, in raw
+     * @param linkData              the link data for this transaction
+     * @param linkAccount           the link data for this transaction, specified in the account address format
      * @see StateBlockBuilder
+     * @deprecated Use of this constructor is not advised. Use the provided {@link StateBlockBuilder} to construct state
+     * blocks.
      */
     @Deprecated(forRemoval = true)
     public StateBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
@@ -68,18 +66,17 @@ public final class StateBlock extends Block {
     /**
      * Constructs a new state block.
      *
-     * @param jsonRepresentation        the JSON representation if deserialized, or null
-     * @param subtype                   the block's action subtype
-     * @param hash                      the block's hash
-     * @param signature                 the block verification signature
-     * @param workSolution              the computed work solution
-     * @param accountAddress            the account's address
-     * @param previousBlockHash         the previous block's hash
-     * @param representativeAddress     the representative address of this account
-     * @param balance                   the (newly updated) balance, in raw
-     * @param linkData                  the link data for this transaction
-     * @param linkAccount               the link data for this transaction, specified in the account address format
-     *
+     * @param jsonRepresentation    the JSON representation if deserialized, or null
+     * @param subtype               the block's action subtype
+     * @param hash                  the block's hash
+     * @param signature             the block verification signature
+     * @param workSolution          the computed work solution
+     * @param accountAddress        the account's address
+     * @param previousBlockHash     the previous block's hash
+     * @param representativeAddress the representative address of this account
+     * @param balance               the (newly updated) balance, in raw
+     * @param linkData              the link data for this transaction
+     * @param linkAccount           the link data for this transaction, specified in the account address format
      * @see StateBlockBuilder
      */
     StateBlock(JsonObject jsonRepresentation, StateBlockSubType subtype, String hash, String signature,

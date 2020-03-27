@@ -38,27 +38,27 @@ public class RequestAccountHistory extends RpcRequest<ResponseAccountHistory> {
     
     
     /**
-     * @param account   the account's address
+     * @param account the account's address
      */
     public RequestAccountHistory(String account) {
         this(account, null);
     }
     
     /**
-     * @param account           the account's address
-     * @param transactionCount  (optional) the maximum number of transactions to fetch
+     * @param account          the account's address
+     * @param transactionCount (optional) the maximum number of transactions to fetch
      */
     public RequestAccountHistory(String account, Integer transactionCount) {
         this(account, transactionCount, null, null, null, null);
     }
     
     /**
-     * @param account           the account's address
-     * @param transactionCount  (optional) the maximum number of transactions to fetch
-     * @param head              (optional) the head block hash
-     * @param offset            (optional) how many blocks to skip after the head
-     * @param reverse           (optional) whether the list should list backwards from the head
-     * @param accountFilter     (optional) a list of accounts to filter by
+     * @param account          the account's address
+     * @param transactionCount (optional) the maximum number of transactions to fetch
+     * @param head             (optional) the head block hash
+     * @param offset           (optional) how many blocks to skip after the head
+     * @param reverse          (optional) whether the list should list backwards from the head
+     * @param accountFilter    (optional) a list of accounts to filter by
      */
     public RequestAccountHistory(String account, Integer transactionCount, String head, Integer offset, Boolean reverse,
                                  String[] accountFilter) {

@@ -18,6 +18,7 @@ public class ResponseDelegators extends RpcResponse {
     
     /**
      * Map follows the structure {@code delegator address -> delegated amount (in RAW)}.
+     *
      * @return a map of delegators
      */
     public Map<String, BigInteger> getDelegators() {

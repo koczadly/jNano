@@ -8,8 +8,8 @@ import uk.oczadly.karl.jnano.rpc.RpcResponse;
  * This response class contains a single block hash.
  */
 public class ResponseBlockHash extends RpcResponse {
-
-    @Expose @SerializedName(value="block", alternate={"hash"})
+    
+    @Expose @SerializedName(value = "block", alternate = {"hash"})
     private String blockHash;
     
     

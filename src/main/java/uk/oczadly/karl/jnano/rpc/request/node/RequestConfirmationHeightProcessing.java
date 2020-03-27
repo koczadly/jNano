@@ -9,8 +9,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHash;
  * data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#confirmation_height_currently_processing">
- *     Official RPC documentation</a>
- *
+ * Official RPC documentation</a>
  * @deprecated This request is for debugging purposes only and is subject to change with each node revision.
  */
 public class RequestConfirmationHeightProcessing extends RpcRequest<ResponseBlockHash> {

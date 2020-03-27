@@ -23,7 +23,7 @@ public class RequestWalletBalances extends RpcRequest<ResponseMultiAccountBalanc
     
     
     /**
-     * @param walletId  the wallet's ID
+     * @param walletId the wallet's ID
      */
     public RequestWalletBalances(String walletId) {
         this(walletId, null);

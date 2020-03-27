@@ -19,6 +19,7 @@ public class ResponsePending extends RpcResponse {
     
     /**
      * Map follows the structure {@code block hash -> block info}.
+     *
      * @return a map of representatives
      */
     public Map<String, PendingBlock> getPendingBlocks() {
@@ -32,7 +33,6 @@ public class ResponsePending extends RpcResponse {
     public PendingBlock getPendingBlock(String blockHash) {
         return this.blocks.get(blockHash.toUpperCase());
     }
-    
     
     
     public static class PendingBlock {

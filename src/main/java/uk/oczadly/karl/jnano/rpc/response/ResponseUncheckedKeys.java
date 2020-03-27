@@ -24,42 +24,41 @@ public class ResponseUncheckedKeys extends RpcResponse {
     }
     
     
-    
     public static class UncheckedBlock {
         @Expose @SerializedName("key")
         private String key;
-    
+        
         @Expose @SerializedName("hash")
         private String blockHash;
-    
+        
         @Expose @SerializedName("modified_timestamp")
         private int modifiedTimestamp;
-    
+        
         @Expose @SerializedName("contents")
         private Block block;
-    
-    
+        
+        
         /**
          * @return the key (hash)
          */
         public String getKey() {
             return key;
         }
-    
+        
         /**
          * @return the block's hash
          */
         public String getBlockHash() {
             return blockHash;
         }
-    
+        
         /**
          * @return the UNIX timestamp when this block was last modified/processed
          */
         public int getModifiedTimestamp() {
             return modifiedTimestamp;
         }
-    
+        
         /**
          * @return the block's contents
          */

@@ -21,8 +21,8 @@ public class RequestWalletRepublish extends RpcRequest<ResponseBlockHashes> {
     
     
     /**
-     * @param walletId  the wallet's ID
-     * @param count     how many blocks should be re-broadcast per account
+     * @param walletId the wallet's ID
+     * @param count    how many blocks should be re-broadcast per account
      */
     public RequestWalletRepublish(String walletId, int count) {
         super("wallet_republish", ResponseBlockHashes.class);

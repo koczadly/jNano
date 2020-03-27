@@ -10,7 +10,7 @@ import java.util.Set;
  * This response class contains a set of account addresses.
  */
 public class ResponseAccounts extends RpcResponse {
-
+    
     @Expose @SerializedName("accounts")
     private Set<String> accounts;
     
