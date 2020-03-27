@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * using the {@link SerializedName} annotation.</p>
  * @param <R> the expected response data class
  */
-public abstract class RpcRequest<R extends RpcResponse> {
+public class RpcRequest<R extends RpcResponse> {
     
     @Expose @SerializedName("action")
     private final String actionCommand;
