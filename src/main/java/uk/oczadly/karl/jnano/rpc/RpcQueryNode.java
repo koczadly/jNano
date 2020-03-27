@@ -344,9 +344,9 @@ public class RpcQueryNode {
      * @return the matching exception to be thrown
      */
     protected RpcException parseException(String message) {
-        String msgLower = message.toLowerCase();
+        String msgLc = message.toLowerCase();
     
-        switch (msgLower) {
+        switch (msgLc) {
             case "wallet is locked":
             case "wallet locked":
                 return new RpcWalletLockedException();                  // Wallet locked
@@ -355,21 +355,21 @@ public class RpcQueryNode {
             case "invalid authorization header":
                 return new RpcInvalidAuthTokenException();              // Invalid auth token
             case "rpc control is disabled":
-                return new RpcControlDisabledException();               // RPC disabled
+                return new RpcControlDisabledException();               // RPC control disabled
             case "unable to parse json":
                 return new RpcInvalidRequestJsonException();            // Invalid request body
             case "unknown command":
                 return new RpcUnknownCommandException();                // Unknown command
         }
     
-        if (msgLower.startsWith("bad") || msgLower.startsWith("invalid") || msgLower.endsWith("invalid")
-                || msgLower.endsWith("required")) {
+        if (msgLc.startsWith("bad") || msgLc.startsWith("invalid") || msgLc.endsWith("invalid")
+                || msgLc.endsWith("required")) {
             return new RpcInvalidArgumentException(message + ".");    // Invalid/bad argument
-        } else if (msgLower.contains("not found")) {
+        } else if (msgLc.contains("not found")) {
             return new RpcEntityNotFoundException(message + ".");     // Unknown referenced entity
-        } else if (msgLower.endsWith("is disabled")) {
+        } else if (msgLc.endsWith("is disabled")) {
             return new RpcFeatureDisabledException(message + ".");    // Feature is disabled
-        } else if (msgLower.startsWith("internal")) {
+        } else if (msgLc.startsWith("internal")) {
             return new RpcInternalException(message + ".");           // Internal server error
         }
         
