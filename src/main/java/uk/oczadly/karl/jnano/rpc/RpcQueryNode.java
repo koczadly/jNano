@@ -1,9 +1,6 @@
 package uk.oczadly.karl.jnano.rpc;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.rpc.exception.*;
 
@@ -320,7 +317,7 @@ public class RpcQueryNode {
             throws RpcException {
         JsonObject response;
         try {
-            response = JNanoHelper.JSON_PARSER.parse(responseJson).getAsJsonObject(); // Parse response
+            response = JsonParser.parseString(responseJson).getAsJsonObject(); // Parse response
         } catch (JsonSyntaxException ex) {
             throw new RpcInvalidResponseException(responseJson, ex); // If unable to parse
         }

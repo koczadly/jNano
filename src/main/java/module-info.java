@@ -15,6 +15,6 @@ module uk.oczadly.karl.jnano {
     exports uk.oczadly.karl.jnano.util;
     
     //Dependencies
-    requires gson;
-
+    requires com.google.gson;
+    
 }
