@@ -143,11 +143,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.21.0</version>
-                    <configuration>
-                        <groups>UtilTests.class,FunctionalityTests.class</groups>
-                        <excludedGroups>NodeTests.class</excludedGroups>
-                    </configuration>
+                    <version>2.22.2</version>
                 </plugin>
             </plugins>
         </pluginManagement>
