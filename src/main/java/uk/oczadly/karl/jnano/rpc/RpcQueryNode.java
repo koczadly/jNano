@@ -149,6 +149,8 @@ public class RpcQueryNode {
      *
      * @throws IOException  if an error occurs with the connection to the node
      * @throws RpcException if the node returns a non-successful response
+     * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#command-lookup-table">See the GitHub wiki
+     * for a list of supported request operations.</a>
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request)
             throws IOException, RpcException {

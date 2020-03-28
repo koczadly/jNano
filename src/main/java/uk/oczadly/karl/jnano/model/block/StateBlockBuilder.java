@@ -2,6 +2,12 @@ package uk.oczadly.karl.jnano.model.block;
 
 import java.math.BigInteger;
 
+/**
+ * <p>This class can be used to construct new State block ({@link StateBlock} instances.</p>
+ * <p>Simply call the constructor with the required parameters, then set the additional properties using the
+ * provided setter methods. Finally, call {@link #build()} to create the state block instance from the
+ * information supplied to this builder class.</p>
+ */
 public class StateBlockBuilder {
     
     private StateBlockSubType subtype;
@@ -124,6 +130,11 @@ public class StateBlockBuilder {
         return this;
     }
     
+    /**
+     * @param linkData the link data in the format specified
+     * @param format   the format of the link data
+     * @return this builder
+     */
     public StateBlockBuilder setLinkData(String linkData, LinkFormat format) {
         this.linkData = linkData;
         this.linkFormat = (format != null) ? format : LinkFormat.RAW_HEX;
@@ -140,7 +151,7 @@ public class StateBlockBuilder {
     
     
     /**
-     * @return a new instance of the {@link StateBlock} class using the configured parameters.
+     * @return a new instance of the {@link StateBlock} class using the configured parameters
      */
     public StateBlock build() {
         // Process link data
