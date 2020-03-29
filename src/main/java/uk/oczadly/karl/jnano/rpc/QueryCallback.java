@@ -24,7 +24,7 @@ public interface QueryCallback<R extends RpcResponse> {
      * {@link RpcException} and {@link IOException}.
      *
      * @param ex the exception thrown
-     * @deprecated use alternative methods {@link #onIoFailure(IOException)} and {@link #onRpcFailure(RpcException)} for
+     * @deprecated use alternative methods {@link #onFailure(IOException)} and {@link #onFailure(RpcException)} for
      * catching exceptions.
      */
     @SuppressWarnings("DeprecatedIsStillUsed")
@@ -38,7 +38,7 @@ public interface QueryCallback<R extends RpcResponse> {
      *
      * @param ex the exception thrown
      */
-    default void onIoFailure(IOException ex) {}
+    default void onFailure(IOException ex) {}
     
     /**
      * This method is called when there is an error with the request data, returned response data, or the node. View the
@@ -49,6 +49,6 @@ public interface QueryCallback<R extends RpcResponse> {
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#exceptions-table">Exceptions table on the
      * GitHub Wiki</a>
      */
-    default void onRpcFailure(RpcException ex) {}
+    default void onFailure(RpcException ex) {}
     
 }

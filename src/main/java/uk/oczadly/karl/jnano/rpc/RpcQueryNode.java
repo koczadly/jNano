@@ -262,14 +262,14 @@ public class RpcQueryNode {
                 return response;
             } catch (RpcException ex) {
                 if (callback != null) {
-                    callback.onRpcFailure(ex);
                     callback.onFailure(ex);
+                    callback.onFailure((Exception)ex); // Old deprecated method
                 }
                 throw ex; // Re-throw for Future object
             } catch (IOException ex) {
                 if (callback != null) {
-                    callback.onIoFailure(ex);
                     callback.onFailure(ex);
+                    callback.onFailure((Exception)ex); // Old deprecated method
                 }
                 throw ex; // Re-throw for Future object
             }
