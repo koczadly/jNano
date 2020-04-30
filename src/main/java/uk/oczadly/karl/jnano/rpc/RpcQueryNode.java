@@ -228,7 +228,7 @@ public class RpcQueryNode {
      * for a list of supported request operations.</a>
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request,
-                                                                                          QueryCallback<R> callback) {
+            QueryCallback<Q, R> callback) {
         return this.processRequestAsync(request, null, callback);
     }
     
@@ -245,9 +245,8 @@ public class RpcQueryNode {
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#command-lookup-table">See the GitHub wiki
      * for a list of supported request operations.</a>
      */
-    @SuppressWarnings("removal")
     public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request, Integer timeout,
-                                                                                          QueryCallback<R> callback) {
+            QueryCallback<Q, R> callback) {
         if (request == null)
             throw new IllegalArgumentException("Request argument must not be null.");
         if (timeout != null && timeout < 0)
@@ -256,21 +255,16 @@ public class RpcQueryNode {
         return RpcQueryNode.EXECUTOR_SERVICE.submit(() -> {
             try {
                 R response = RpcQueryNode.this.processRequest(request, timeout);
-                if (callback != null) {
-                    callback.onResponse(response);
-                }
-                return response;
+                if (callback != null)
+                    callback.onResponse(request, response);
+                return response; // Return for Future object
             } catch (RpcException ex) {
-                if (callback != null) {
-                    callback.onFailure(ex);
-                    callback.onFailure((Exception)ex); // Old deprecated method
-                }
+                if (callback != null)
+                    callback.onFailure(request, ex);
                 throw ex; // Re-throw for Future object
             } catch (IOException ex) {
-                if (callback != null) {
-                    callback.onFailure(ex);
-                    callback.onFailure((Exception)ex); // Old deprecated method
-                }
+                if (callback != null)
+                    callback.onFailure(request, ex);
                 throw ex; // Re-throw for Future object
             }
         });
