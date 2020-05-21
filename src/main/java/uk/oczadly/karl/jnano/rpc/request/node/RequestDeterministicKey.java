@@ -21,6 +21,15 @@ public class RequestDeterministicKey extends RpcRequest<ResponseKeyPair> {
     
     
     /**
+     * Expands an account from a given seed, using the first ({@code 0}) index.
+     * @param seed         the seed to generate private keys from
+     */
+    public RequestDeterministicKey(String seed) {
+        this(seed, 0);
+    }
+    
+    /**
+     * Expands an account from a given seed and index.
      * @param seed         the seed to generate private keys from
      * @param accountIndex the index of the account
      */
