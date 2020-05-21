@@ -86,7 +86,7 @@ public enum CurrencyDivisor {
     
     /**
      * <p>Returns the exponent of the unit as a power of 10.</p>
-     * <p>Example: {@code 10^x}, with {@code x} being the value returned by this method.</p>
+     * <p>For instance, 10<sup>x</sup>, with {@code x} being the value returned by this method.</p>
      */
     public int getExponent() {
         return exponent;
