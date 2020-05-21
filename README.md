@@ -39,7 +39,8 @@ Detailed examples can be found on the associated wiki pages linked below:
 - [Additional tools and utilities](https://github.com/koczadly/jNano/wiki/Utilities)
 
 #### Creating a node object
-The following will define a node on localhost:7076. Other addresses and ports can be specified within the constructor.
+The following will define a node on localhost:7076 (default for the empty constructor). Other addresses and ports
+ can be specified within the constructor.
 ```java
 RpcQueryNode node = new RpcQueryNode();
 ```
@@ -58,6 +59,7 @@ node.processRequestAsync(new RequestVersion(), new QueryCallback<>() {
     public void onResponse(ResponseVersion response) {
         System.out.println("Version: " + response.getNodeVendor());
     }
+    
     @Override
     public void onFailure(Exception ex) {
         ex.printStackTrace();
