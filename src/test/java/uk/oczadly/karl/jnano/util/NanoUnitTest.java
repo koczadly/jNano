@@ -65,24 +65,24 @@ public class NanoUnitTest {
     public void testLossyIntegerConversionToLargerUnit() {
         //Convert RAW to GIGA
         assertThrows(ArithmeticException.class, () ->
-                NanoUnit.GIGA.convertIntFrom(
+                NanoUnit.GIGA.convertFromInt(
                         NanoUnit.RAW, new BigInteger("25000000000000000000000000000000001")));
     
         //Convert RAW to GIGA
         assertThrows(ArithmeticException.class, () ->
-                NanoUnit.GIGA.convertIntFrom(
+                NanoUnit.GIGA.convertFromInt(
                         NanoUnit.RAW, new BigInteger("24999999999999999999999999999999999")));
     }
     
     @Test
     public void testIntegerConversionToLargerUnit() {
         //Convert RAW to GIGA
-        assertEquals("25", NanoUnit.GIGA.convertIntFrom(
+        assertEquals("25", NanoUnit.GIGA.convertFromInt(
                 NanoUnit.RAW, new BigInteger("25000000000000000000000000000000000"))
                 .toString());
         
         //Convert MILLI to XRB
-        assertEquals("2", NanoUnit.XRB.convertIntFrom(
+        assertEquals("2", NanoUnit.XRB.convertFromInt(
                 NanoUnit.MILLI, new BigInteger("2000"))
                 .toString());
     }
@@ -90,17 +90,17 @@ public class NanoUnitTest {
     @Test
     public void testIntegerConversionToSmallerUnit() {
         //Convert 25 GIGA to RAW
-        assertEquals("25000000000000000000000000000000000", NanoUnit.RAW.convertIntFrom(
+        assertEquals("25000000000000000000000000000000000", NanoUnit.RAW.convertFromInt(
                 NanoUnit.GIGA, BigInteger.valueOf(25))
                 .toString());
         
         //Convert 1 GIGA to MEGA
-        assertEquals("1000", NanoUnit.MEGA.convertIntFrom(
+        assertEquals("1000", NanoUnit.MEGA.convertFromInt(
                 NanoUnit.GIGA, BigInteger.ONE)
                 .toString());
         
         //Convert 1 GIGA to KILO
-        assertEquals("1000000", NanoUnit.KILO.convertIntFrom(
+        assertEquals("1000000", NanoUnit.KILO.convertFromInt(
                 NanoUnit.GIGA, BigInteger.ONE)
                 .toString());
     }
