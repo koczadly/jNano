@@ -20,7 +20,7 @@ import java.text.DecimalFormat;
  *
  *   // Convert 250 unano (MICRO) to raw (RAW)
  *   BigInteger conv2 = NanoUnit.RAW
- *          .convertIntFrom(NanoUnit.MICRO, BigInteger.valueOf(250));
+ *          .convertFromInt(NanoUnit.MICRO, BigInteger.valueOf(250));
  *   System.out.println("250 unano = " + conv2.toString() + " raw"); // Prints 250 unano = 250000000000000000000 raw
  * </pre>
  */
@@ -136,8 +136,8 @@ public enum NanoUnit {
      *
      * @throws ArithmeticException if the conversion would result in a loss of information
      */
-    public BigInteger convertIntFrom(NanoUnit sourceUnit, BigInteger sourceAmount) {
-        return convertIntFrom(sourceUnit, new BigDecimal(sourceAmount));
+    public BigInteger convertFromInt(NanoUnit sourceUnit, BigInteger sourceAmount) {
+        return convertFromInt(sourceUnit, new BigDecimal(sourceAmount));
     }
     
     /**
@@ -152,7 +152,7 @@ public enum NanoUnit {
      *
      * @throws ArithmeticException if the conversion would result in a loss of information
      */
-    public BigInteger convertIntFrom(NanoUnit sourceUnit, BigDecimal sourceAmount) {
+    public BigInteger convertFromInt(NanoUnit sourceUnit, BigDecimal sourceAmount) {
         try {
             return this.convertFrom(sourceUnit, sourceAmount).toBigIntegerExact();
         } catch (ArithmeticException e) {
