@@ -213,8 +213,23 @@ public enum NanoUnit {
      * @return a friendly string of a given currency amount
      */
     public static String toFriendlyString(BigInteger rawAmount) {
-        BigDecimal nanoAmount = BASE_UNIT.convertFrom(RAW, rawAmount)
-                .setScale(6, RoundingMode.CEILING);
+        return toFriendlyString(new BigDecimal(rawAmount), RAW);
+    }
+    
+    /**
+     * <p>Converts a given quantity of Nano to the current base unit ({@link #BASE_UNIT}), and formats the number to
+     * up to 6 decimal places (rounding up truncated digits), along with a suffix of the unit name. The value will
+     * also be formatted to contain separating commas for every 3 digits.</p>
+     * <p>For instance, a value of {@code 1234567000000000000000000000000001} {@link #RAW} will return {@code
+     * 1,234.567001 Nano}.</p>
+     * <p>This value should not be used for any computations, and should only be used for displaying quantities of
+     * the currency to a user.</p>
+     * @param amount     the amount to convert from
+     * @param sourceUnit the source unit of the amount to convert from
+     * @return a friendly string of a given currency amount
+     */
+    public static String toFriendlyString(BigDecimal amount, NanoUnit sourceUnit) {
+        BigDecimal nanoAmount = BASE_UNIT.convertFrom(sourceUnit, amount).setScale(6, RoundingMode.CEILING);
         return FRIENDLY_DECIMAL_FORMAT.format(nanoAmount) + " " + BASE_UNIT.getDisplayName();
     }
     
