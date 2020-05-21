@@ -2,6 +2,8 @@ package uk.oczadly.karl.jnano.util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 /**
  * <p>This class represents the currency units and denominations used to represent an amount of Nano, and can be
@@ -68,6 +70,7 @@ public enum CurrencyDivisor {
      */
     public static final CurrencyDivisor BASE_UNIT = CurrencyDivisor.MEGA;
     
+    private static final DecimalFormat FRIENDLY_DECIMAL_FORMAT = new DecimalFormat("#,##0.######");
     
     int exponent;
     BigInteger rawValue;
@@ -197,6 +200,22 @@ public enum CurrencyDivisor {
         } else { // Source is lower, divide (shift left)
             return sourceAmount.movePointLeft(this.exponent - sourceUnit.exponent).stripTrailingZeros();
         }
+    }
+    
+    /**
+     * <p>Converts a given value of <i>raw</i> to the current base unit ({@link #BASE_UNIT}), and formats the number to
+     * up to 6 decimal places (rounding up truncated digits), along with a suffix of the unit name. The value will
+     * also be formatted to contain separating commas for every 3 digits.</p>
+     * <p>For instance, a value of {@code 1234567000000000000000000000000001} will return {@code 1,234.567001 Nano}.</p>
+     * <p>This value should not be used for any computations, and should only be used for displaying quantities of
+     * the currency to a user.</p>
+     * @param rawAmount the amount of raw to convert from
+     * @return a friendly string of a given currency amount
+     */
+    public static String toFriendlyString(BigInteger rawAmount) {
+        BigDecimal nanoAmount = BASE_UNIT.convertFrom(RAW, rawAmount)
+                .setScale(6, RoundingMode.CEILING);
+        return FRIENDLY_DECIMAL_FORMAT.format(nanoAmount) + " " + BASE_UNIT.getDisplayName();
     }
     
     

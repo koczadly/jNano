@@ -105,4 +105,10 @@ public class CurrencyDivisorTest {
                 .toString());
     }
     
+    @Test
+    public void testFriendlyName() {
+        assertEquals("1,234.567001 Nano",
+                CurrencyDivisor.toFriendlyString(new BigInteger("1234567000000000000000000000000001")));
+    }
+    
 }
