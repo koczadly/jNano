@@ -14,17 +14,17 @@ import java.text.DecimalFormat;
  * <p>Below are a few currency conversion examples:</p>
  * <pre>
  *   // Convert 1.337 knano (KILO) to the base unit (currently MEGA, or "Nano")
- *   BigDecimal conv1 = CurrencyDivisor.BASE_UNIT
- *          .convertFrom(CurrencyDivisor.KILO, new BigDecimal("1.337"));
+ *   BigDecimal conv1 = NanoUnit.BASE_UNIT
+ *          .convertFrom(NanoUnit.KILO, new BigDecimal("1.337"));
  *   System.out.println("1337 knano = " + conv1.toPlainString() + " Nano"); // Prints 1337 knano = 0.001337 Nano
  *
  *   // Convert 250 unano (MICRO) to raw (RAW)
- *   BigInteger conv2 = CurrencyDivisor.RAW
- *          .convertIntFrom(CurrencyDivisor.MICRO, BigInteger.valueOf(250));
+ *   BigInteger conv2 = NanoUnit.RAW
+ *          .convertIntFrom(NanoUnit.MICRO, BigInteger.valueOf(250));
  *   System.out.println("250 unano = " + conv2.toString() + " raw"); // Prints 250 unano = 250000000000000000000 raw
  * </pre>
  */
-public enum CurrencyDivisor {
+public enum NanoUnit {
     
     /**
      * The largest divisor, equivalent to {@code 10^33} raw.
@@ -68,7 +68,7 @@ public enum CurrencyDivisor {
      * your application can be automatically updated should the units system ever change.</p>
      * <p>As of this current version, this is equal to the {@link #MEGA} unit.</p>
      */
-    public static final CurrencyDivisor BASE_UNIT = CurrencyDivisor.MEGA;
+    public static final NanoUnit BASE_UNIT = NanoUnit.MEGA;
     
     private static final DecimalFormat FRIENDLY_DECIMAL_FORMAT = new DecimalFormat("#,##0.######");
     
@@ -76,7 +76,7 @@ public enum CurrencyDivisor {
     BigInteger rawValue;
     String displayName, classicName;
     
-    CurrencyDivisor(int exponent, String displayName, String classicName) {
+    NanoUnit(int exponent, String displayName, String classicName) {
         this.exponent = exponent;
         this.rawValue = BigInteger.TEN.pow(exponent);
         this.displayName = displayName;
@@ -127,7 +127,7 @@ public enum CurrencyDivisor {
     /**
      * <p>Converts the specified unit and amount into this unit.</p>
      * <p>If you are converting from a smaller unit and fractional digits are lost, then an {@link ArithmeticException}
-     * will be thrown. If you wish to bypass this, use {@link #convertFrom(CurrencyDivisor, BigInteger)} and transform
+     * will be thrown. If you wish to bypass this, use {@link #convertFrom(NanoUnit, BigInteger)} and transform
      * the retrieved value into a BigInteger using the {@link BigDecimal#toBigInteger()} method.</p>
      *
      * @param sourceAmount the source amount to convert from
@@ -136,14 +136,14 @@ public enum CurrencyDivisor {
      *
      * @throws ArithmeticException if the conversion would result in a loss of information
      */
-    public BigInteger convertIntFrom(CurrencyDivisor sourceUnit, BigInteger sourceAmount) {
+    public BigInteger convertIntFrom(NanoUnit sourceUnit, BigInteger sourceAmount) {
         return convertIntFrom(sourceUnit, new BigDecimal(sourceAmount));
     }
     
     /**
      * <p>Converts the specified unit and amount into this unit.</p>
      * <p>If you are converting from a smaller unit and fractional digits are lost, then an {@link ArithmeticException}
-     * will be thrown. If you wish to bypass this, use {@link #convertFrom(CurrencyDivisor, BigDecimal)} and transform
+     * will be thrown. If you wish to bypass this, use {@link #convertFrom(NanoUnit, BigDecimal)} and transform
      * the retrieved value into a BigInteger using the {@link BigDecimal#toBigInteger()} method.</p>
      *
      * @param sourceAmount the source amount to convert from
@@ -152,7 +152,7 @@ public enum CurrencyDivisor {
      *
      * @throws ArithmeticException if the conversion would result in a loss of information
      */
-    public BigInteger convertIntFrom(CurrencyDivisor sourceUnit, BigDecimal sourceAmount) {
+    public BigInteger convertIntFrom(NanoUnit sourceUnit, BigDecimal sourceAmount) {
         try {
             return this.convertFrom(sourceUnit, sourceAmount).toBigIntegerExact();
         } catch (ArithmeticException e) {
@@ -172,7 +172,7 @@ public enum CurrencyDivisor {
      * @param sourceUnit   the source unit to convert from
      * @return the converted value in this unit
      */
-    public BigDecimal convertFrom(CurrencyDivisor sourceUnit, BigInteger sourceAmount) {
+    public BigDecimal convertFrom(NanoUnit sourceUnit, BigInteger sourceAmount) {
         return this.convertFrom(sourceUnit, new BigDecimal(sourceAmount));
     }
     
@@ -183,7 +183,7 @@ public enum CurrencyDivisor {
      * @param sourceUnit   the source unit to convert from
      * @return the converted value in this unit
      */
-    public BigDecimal convertFrom(CurrencyDivisor sourceUnit, BigDecimal sourceAmount) {
+    public BigDecimal convertFrom(NanoUnit sourceUnit, BigDecimal sourceAmount) {
         // Argument checks
         if (sourceAmount == null)
             throw new IllegalArgumentException("Source amount cannot be null");
@@ -216,43 +216,6 @@ public enum CurrencyDivisor {
         BigDecimal nanoAmount = BASE_UNIT.convertFrom(RAW, rawAmount)
                 .setScale(6, RoundingMode.CEILING);
         return FRIENDLY_DECIMAL_FORMAT.format(nanoAmount) + " " + BASE_UNIT.getDisplayName();
-    }
-    
-    
-    /**
-     * @deprecated Method renamed. Use {@link #convertFrom(CurrencyDivisor, BigDecimal)} instead.
-     */
-    @Deprecated(forRemoval = true)
-    public BigDecimal convert(BigDecimal sourceAmount, CurrencyDivisor sourceUnit) {
-        return convertFrom(sourceUnit, sourceAmount);
-    }
-    
-    /**
-     * @deprecated Method renamed. Use {@link #convertFrom(CurrencyDivisor, BigInteger)} instead.
-     */
-    @Deprecated(forRemoval = true)
-    public BigDecimal convert(BigInteger sourceAmount, CurrencyDivisor sourceUnit) {
-        return convertFrom(sourceUnit, sourceAmount);
-    }
-    
-    /**
-     * This method is potentially unsafe, as fractional values can be lost when converting to a larger unit.
-     *
-     * @deprecated Method unsafe. Use {@link #convertFrom(CurrencyDivisor, BigInteger)} instead.
-     */
-    @Deprecated(forRemoval = true)
-    public BigInteger convertInt(BigDecimal sourceAmount, CurrencyDivisor sourceUnit) {
-        return this.convertFrom(sourceUnit, sourceAmount).toBigInteger();
-    }
-    
-    /**
-     * This method is potentially unsafe, as fractional values can be lost when converting to a larger unit.
-     *
-     * @deprecated Method unsafe. Use {@link #convertFrom(CurrencyDivisor, BigInteger)} instead.
-     */
-    @Deprecated(forRemoval = true)
-    public BigInteger convertInt(BigInteger sourceAmount, CurrencyDivisor sourceUnit) {
-        return this.convertFrom(sourceUnit, sourceAmount).toBigInteger();
     }
     
 }

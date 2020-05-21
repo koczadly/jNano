@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseAmount;
-import uk.oczadly.karl.jnano.util.CurrencyDivisor;
+import uk.oczadly.karl.jnano.util.NanoUnit;
 
 import java.math.BigInteger;
 
@@ -12,9 +12,9 @@ import java.math.BigInteger;
  * This request class is used to convert between the various currency units.
  * <br>Calls the appropriate RPC command, and returns a {@link ResponseAmount} data object.
  *
- * @see CurrencyDivisor
+ * @see NanoUnit
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#unit-conversion-rpcs">Official RPC documentation</a>
- * @deprecated Use the native {@link CurrencyDivisor} utility class instead for efficiency
+ * @deprecated Use the native {@link NanoUnit} utility class instead for efficiency
  */
 @Deprecated
 public class RequestConvertUnits extends RpcRequest<ResponseAmount> {
