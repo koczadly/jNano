@@ -155,14 +155,14 @@ public class RpcQueryNode {
      */
     public final void setDefaultTimeout(int defaultTimeout) {
         if (defaultTimeout < 0)
-            throw new IllegalArgumentException("Default timeout value must be positive or zero.");
+            throw new IllegalArgumentException("Default timeout value must be positive, zero or null.");
         
         this.defaultTimeout = defaultTimeout;
     }
     
     
     /**
-     * Sends a query request to the node via RPC with an indefinite timeout.
+     * Sends a query request to the node via RPC with the default timeout.
      *
      * @param request the query request to send to the node
      * @param <Q>     the request type
@@ -177,14 +177,14 @@ public class RpcQueryNode {
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request)
             throws IOException, RpcException {
-        return this.processRequest(request, 0);
+        return this.processRequest(request, null);
     }
     
     /**
      * Sends a query request to the node via RPC with the specified timeout.
      *
      * @param request the query request to send to the node
-     * @param timeout the timeout for the request in milliseconds, or {@code 0} for none
+     * @param timeout the timeout for the request in milliseconds, {@code 0} for none, or {@code null} for default
      * @param <Q>     the request type
      * @param <R>     the response type
      * @return the successful reponse from the node
@@ -195,12 +195,12 @@ public class RpcQueryNode {
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#command-lookup-table">See the GitHub wiki
      * for a list of supported request operations.</a>
      */
-    public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request, int timeout)
+    public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request, Integer timeout)
             throws IOException, RpcException {
         if (request == null)
             throw new IllegalArgumentException("Request argument must not be null.");
-        if (timeout < 0)
-            throw new IllegalArgumentException("Timeout period must be positive or zero.");
+        if (timeout != null && timeout < 0)
+            throw new IllegalArgumentException("Timeout period must be positive, zero or null.");
         
         String requestJsonStr = this.serializeRequestToJSON(request); // Serialise the request into JSON
         return this.processRequestRaw(requestJsonStr, timeout, request.getResponseClass());
@@ -208,7 +208,7 @@ public class RpcQueryNode {
     
     
     /**
-     * Sends an asynchronous query request to the node via RPC with an indefinite timeout. This method is non-blocking,
+     * Sends an asynchronous query request to the node via RPC with the default timeout. This method is non-blocking,
      * and will queue the request up to be processed in a separate worker thread. The returned {@link Future} object
      * should be used to retrieve the status or result of the request at a later time, and will encapsulate any
      * {@link IOException} or {@link RpcException} exceptions thrown during the process.
@@ -232,7 +232,7 @@ public class RpcQueryNode {
      * {@link IOException} or {@link RpcException} exceptions thrown during the process.
      *
      * @param request the query request to send to the node
-     * @param timeout the timeout for the request in milliseconds, or {@code 0} for none
+     * @param timeout the timeout for the request in milliseconds, {@code 0} for none, or {@code null} for default
      * @param <Q>     the request type
      * @param <R>     the response type
      * @return a future instance representing the response data/exception
@@ -240,13 +240,13 @@ public class RpcQueryNode {
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#command-lookup-table">See the GitHub wiki
      * for a list of supported request operations.</a>
      */
-    public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request, int timeout) {
+    public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request, Integer timeout) {
         return this.processRequestAsync(request, timeout, null);
     }
     
     
     /**
-     * Sends an asynchronous query request to the node via RPC with an indefinite timeout. This method is non-blocking,
+     * Sends an asynchronous query request to the node via RPC with the default timeout. This method is non-blocking,
      * and will queue the request up to be processed in a separate worker thread. In conjunction with the
      * receiving callback instance, the returned {@link Future} object may be used to retrieve the status or result of
      * the request at a later time, and will encapsulate any {@link IOException} or {@link RpcException} exceptions
@@ -274,7 +274,7 @@ public class RpcQueryNode {
      * thrown during the process.
      *
      * @param request  the query request to send to the node
-     * @param timeout  the timeout for the request in milliseconds, or null for none
+     * @param timeout  the timeout for the request in milliseconds, {@code 0} for none, or {@code null} for default
      * @param callback the callback to execute after the request has completed (or null for no callback)
      * @param <Q>      the request type
      * @param <R>      the response type
@@ -288,7 +288,7 @@ public class RpcQueryNode {
         if (request == null)
             throw new IllegalArgumentException("Request argument must not be null.");
         if (timeout != null && timeout < 0)
-            throw new IllegalArgumentException("Timeout period must be positive or null.");
+            throw new IllegalArgumentException("Timeout period must be positive, zero or null.");
         
         return RpcQueryNode.EXECUTOR_SERVICE.submit(() -> {
             try {
@@ -346,6 +346,8 @@ public class RpcQueryNode {
     public String processRequestRaw(String jsonRequest, Integer timeout) throws IOException {
         if (jsonRequest == null)
             throw new IllegalArgumentException("JSON request string cannot be null.");
+        if (timeout != null && timeout < 0)
+            throw new IllegalArgumentException("Timeout period must be positive, zero or null.");
         
         // Open connection
         HttpURLConnection con = (HttpURLConnection)this.address.openConnection();
