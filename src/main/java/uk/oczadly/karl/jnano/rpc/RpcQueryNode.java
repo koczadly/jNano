@@ -49,6 +49,7 @@ public class RpcQueryNode {
     private final URL address;
     
     private volatile String authToken;
+    private volatile int defaultTimeout;
     
     
     /**
@@ -111,6 +112,7 @@ public class RpcQueryNode {
     public RpcQueryNode(URL address, String authToken) {
         this.address = address;
         this.authToken = authToken;
+        this.defaultTimeout = 0;
     }
     
     
@@ -138,9 +140,29 @@ public class RpcQueryNode {
         this.authToken = authToken;
     }
     
+    /**
+     * @return the default timeout period in milliseconds, or {@code 0} if timeouts are disabled
+     */
+    public final int getDefaultTimeout() {
+        return this.defaultTimeout;
+    }
     
     /**
-     * Sends a query request to the node via RPC. This method will not timeout as long as the connection remains open.
+     * Sets the default timeout period when unspecified for requests. Setting this value will not affect queries
+     * already being processed, and will only apply to new queries.
+     *
+     * @param defaultTimeout the timeout period in milliseconds, or {@code 0} to disable timeouts
+     */
+    public final void setDefaultTimeout(int defaultTimeout) {
+        if (defaultTimeout < 0)
+            throw new IllegalArgumentException("Default timeout value must be positive or zero.");
+        
+        this.defaultTimeout = defaultTimeout;
+    }
+    
+    
+    /**
+     * Sends a query request to the node via RPC with an indefinite timeout.
      *
      * @param request the query request to send to the node
      * @param <Q>     the request type
@@ -149,34 +171,36 @@ public class RpcQueryNode {
      *
      * @throws IOException  if an error occurs with the connection to the node
      * @throws RpcException if the node returns a non-successful response
+     *
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#command-lookup-table">See the GitHub wiki
      * for a list of supported request operations.</a>
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request)
             throws IOException, RpcException {
-        return this.processRequest(request, null);
+        return this.processRequest(request, 0);
     }
     
     /**
-     * Sends a query request to the node via RPC.
+     * Sends a query request to the node via RPC with the specified timeout.
      *
      * @param request the query request to send to the node
-     * @param timeout the timeout for the request in milliseconds, or null for none
+     * @param timeout the timeout for the request in milliseconds, or {@code 0} for none
      * @param <Q>     the request type
      * @param <R>     the response type
      * @return the successful reponse from the node
      *
      * @throws IOException  if an error occurs with the connection to the node
      * @throws RpcException if the node returns a non-successful response
+     *
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#command-lookup-table">See the GitHub wiki
      * for a list of supported request operations.</a>
      */
-    public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request, Integer timeout)
+    public <Q extends RpcRequest<R>, R extends RpcResponse> R processRequest(Q request, int timeout)
             throws IOException, RpcException {
         if (request == null)
             throw new IllegalArgumentException("Request argument must not be null.");
-        if (timeout != null && timeout < 0)
-            throw new IllegalArgumentException("Timeout period must be positive or null.");
+        if (timeout < 0)
+            throw new IllegalArgumentException("Timeout period must be positive or zero.");
         
         String requestJsonStr = this.serializeRequestToJSON(request); // Serialise the request into JSON
         return this.processRequestRaw(requestJsonStr, timeout, request.getResponseClass());
@@ -184,7 +208,10 @@ public class RpcQueryNode {
     
     
     /**
-     * Sends a query request to the node via RPC. The request will not timeout as long as the connection remains open.
+     * Sends an asynchronous query request to the node via RPC with an indefinite timeout. This method is non-blocking,
+     * and will queue the request up to be processed in a separate worker thread. The returned {@link Future} object
+     * should be used to retrieve the status or result of the request at a later time, and will encapsulate any
+     * {@link IOException} or {@link RpcException} exceptions thrown during the process.
      *
      * @param request the query request to send to the node
      * @param <Q>     the request type
@@ -199,10 +226,13 @@ public class RpcQueryNode {
     }
     
     /**
-     * Sends a query request to the node via RPC.
+     * Sends an asynchronous query request to the node via RPC with the specified timeout. This method is non-blocking,
+     * and will queue the request up to be processed in a separate worker thread. The returned {@link Future} object
+     * should be used to retrieve the status or result of the request at a later time, and will encapsulate any
+     * {@link IOException} or {@link RpcException} exceptions thrown during the process.
      *
      * @param request the query request to send to the node
-     * @param timeout the timeout for the request in milliseconds, or null for none
+     * @param timeout the timeout for the request in milliseconds, or {@code 0} for none
      * @param <Q>     the request type
      * @param <R>     the response type
      * @return a future instance representing the response data/exception
@@ -210,13 +240,17 @@ public class RpcQueryNode {
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#command-lookup-table">See the GitHub wiki
      * for a list of supported request operations.</a>
      */
-    public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request, Integer timeout) {
+    public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request, int timeout) {
         return this.processRequestAsync(request, timeout, null);
     }
     
     
     /**
-     * Sends a query request to the node via RPC. The request will not timeout as long as the connection remains open.
+     * Sends an asynchronous query request to the node via RPC with an indefinite timeout. This method is non-blocking,
+     * and will queue the request up to be processed in a separate worker thread. In conjunction with the
+     * receiving callback instance, the returned {@link Future} object may be used to retrieve the status or result of
+     * the request at a later time, and will encapsulate any {@link IOException} or {@link RpcException} exceptions
+     * thrown during the process.
      *
      * @param request  the query request to send to the node
      * @param callback the callback to execute after the request has completed (or null for no callback)
@@ -233,7 +267,11 @@ public class RpcQueryNode {
     }
     
     /**
-     * Sends a query request to the node via RPC.
+     * Sends an asynchronous query request to the node via RPC with the specified timeout. This method is non-blocking,
+     * and will queue the request up to be processed in a separate worker thread. In conjunction with the
+     * receiving callback instance, the returned {@link Future} object may be used to retrieve the status or result of
+     * the request at a later time, and will encapsulate any {@link IOException} or {@link RpcException} exceptions
+     * thrown during the process.
      *
      * @param request  the query request to send to the node
      * @param timeout  the timeout for the request in milliseconds, or null for none
@@ -313,10 +351,9 @@ public class RpcQueryNode {
         HttpURLConnection con = (HttpURLConnection)this.address.openConnection();
         
         // Configure connection
-        if (timeout != null) { // Set timeouts
-            con.setConnectTimeout(timeout);
-            con.setReadTimeout(timeout);
-        }
+        con.setConnectTimeout(timeout != null ? timeout : this.defaultTimeout);
+        con.setReadTimeout(timeout != null ? timeout : this.defaultTimeout);
+        
         con.setDoOutput(true);
         con.setDoInput(true);
         con.setRequestMethod("POST");
