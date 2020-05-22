@@ -19,4 +19,9 @@ public class RpcInvalidResponseException extends RpcException {
         return response;
     }
     
+    @Override
+    public synchronized JsonSyntaxException getCause() {
+        return (JsonSyntaxException)super.getCause();
+    }
+    
 }
