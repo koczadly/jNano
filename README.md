@@ -86,7 +86,7 @@ server.start();
 
 ## Dependencies
 The following dependencies are required, and are handled automatically through Maven:
-- [Gson 2.8.2](https://github.com/google/gson)
+- [Gson 2.8.6](https://github.com/google/gson)
 
 ---
 
