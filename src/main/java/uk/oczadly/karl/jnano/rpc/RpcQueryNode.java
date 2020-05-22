@@ -1,14 +1,8 @@
 package uk.oczadly.karl.jnano.rpc;
 
-import com.google.gson.*;
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
-import uk.oczadly.karl.jnano.rpc.exception.*;
+import uk.oczadly.karl.jnano.rpc.exception.RpcException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
@@ -50,6 +44,10 @@ public class RpcQueryNode {
     
     private volatile String authToken;
     private volatile int defaultTimeout;
+    
+    private final RpcRequestSerializer requestSerializer = new RpcRequestSerializer();
+    private final RpcResponseDeserializer responseDeserializer = new RpcResponseDeserializer();
+    private final RpcRequestSubmitter requestSubmitter = new RpcRequestSubmitter();
     
     
     /**
@@ -160,6 +158,27 @@ public class RpcQueryNode {
         this.defaultTimeout = defaultTimeout;
     }
     
+    /**
+     * @return the object responsible for serializing requests
+     */
+    public final RpcRequestSerializer getRequestSerializer() {
+        return requestSerializer;
+    }
+    
+    /**
+     * @return the object responsible for deserializing and parsing errors of responses
+     */
+    public final RpcResponseDeserializer getResponseDeserializer() {
+        return responseDeserializer;
+    }
+    
+    /**
+     * @return the object responsible for submitting requests to the node
+     */
+    public final RpcRequestSubmitter getRequestSubmitter() {
+        return requestSubmitter;
+    }
+    
     
     /**
      * Sends a query request to the node via RPC with the default timeout.
@@ -202,7 +221,7 @@ public class RpcQueryNode {
         if (timeout != null && timeout < 0)
             throw new IllegalArgumentException("Timeout period must be positive, zero or null.");
         
-        String requestJsonStr = this.serializeRequestToJSON(request); // Serialise the request into JSON
+        String requestJsonStr = this.requestSerializer.serialize(request); // Serialise the request into JSON
         return this.processRequestRaw(requestJsonStr, timeout, request.getResponseClass());
     }
     
@@ -298,9 +317,9 @@ public class RpcQueryNode {
                 return response; // Return for Future object
             } catch (RpcException ex) {
                 if (callback != null)
-                    callback.onFailure(ex, request);
+                    callback.onRpcFailure(ex, request);
                 throw ex; // Re-throw for Future object
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 if (callback != null)
                     callback.onFailure(ex, request);
                 throw ex; // Re-throw for Future object
@@ -328,7 +347,7 @@ public class RpcQueryNode {
             throw new IllegalArgumentException("Response class argument cannot be null.");
         
         String responseJson = this.processRequestRaw(jsonRequest, timeout); // Send the request to the node
-        return this.deserializeResponseFromJSON(responseJson, responseClass);
+        return this.responseDeserializer.deserialize(responseJson, responseClass);
     }
     
     /**
@@ -344,140 +363,13 @@ public class RpcQueryNode {
      * @throws IOException if an error occurs with the connection to the node
      */
     public String processRequestRaw(String jsonRequest, Integer timeout) throws IOException {
-        if (jsonRequest == null)
-            throw new IllegalArgumentException("JSON request string cannot be null.");
-        if (timeout != null && timeout < 0)
+        if (timeout == null) {
+            timeout = 0;
+        } else if (timeout < 0) {
             throw new IllegalArgumentException("Timeout period must be positive, zero or null.");
-        
-        // Open connection
-        HttpURLConnection con = (HttpURLConnection)this.address.openConnection();
-        
-        // Configure connection
-        con.setConnectTimeout(timeout != null ? timeout : this.defaultTimeout);
-        con.setReadTimeout(timeout != null ? timeout : this.defaultTimeout);
-        
-        con.setDoOutput(true);
-        con.setDoInput(true);
-        con.setRequestMethod("POST");
-        
-        // Set authorization token header (if set)
-        if (this.authToken != null) {
-            con.setRequestProperty("Authorization", "Bearer " + this.authToken);
         }
         
-        // Write request data
-        OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
-        writer.write(jsonRequest);
-        writer.close();
-        
-        // Read response data
-        InputStreamReader input = new InputStreamReader(con.getInputStream());
-        BufferedReader inputReader = new BufferedReader(input);
-        
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = inputReader.readLine()) != null) {
-            response.append(line);
-        }
-        inputReader.close();
-        
-        return response.toString();
-    }
-    
-    
-    /**
-     * Converts a pure JSON string into a response instance.
-     *
-     * @param responseJson  the JSON to deserialize
-     * @param responseClass the response class to deserialize into
-     * @param <R>           the response type
-     * @return the deserialized response instance
-     *
-     * @throws RpcException if the node returns a non-successful response
-     */
-    protected <R extends RpcResponse> R deserializeResponseFromJSON(String responseJson, Class<R> responseClass)
-            throws RpcException {
-        JsonObject response;
-        try {
-            response = JsonParser.parseString(responseJson).getAsJsonObject(); // Parse response
-        } catch (JsonSyntaxException ex) {
-            throw new RpcInvalidResponseException(responseJson, ex); // If unable to parse
-        }
-        
-        // Check for returned RPC error
-        JsonElement responseError = response.get("error");
-        if (responseError != null)
-            throw this.parseException(responseError.getAsString());
-        
-        // Deserialize response
-        R responseObj = JNanoHelper.GSON.fromJson(responseJson, responseClass); // Deserialize from JSON
-        responseObj.initResponseObject(response); // Initialise raw parameters
-        return responseObj;
-    }
-    
-    
-    /**
-     * Parses a returned error string into the appropriate RpcException type.
-     *
-     * @param message the returned error message from the node
-     * @return the matching exception to be thrown
-     */
-    protected RpcException parseException(String message) {
-        String msgLc = message.toLowerCase();
-        
-        switch (msgLc) {
-            case "wallet is locked":
-            case "wallet locked":
-                return new RpcWalletLockedException();                  // Wallet locked
-            case "insufficient balance":
-                return new RpcInvalidArgumentException(message + ".");  // Invalid/bad argument
-            case "invalid authorization header":
-                return new RpcInvalidAuthTokenException();              // Invalid auth token
-            case "rpc control is disabled":
-                return new RpcControlDisabledException();               // RPC control disabled
-            case "unable to parse json":
-                return new RpcInvalidRequestJsonException();            // Invalid request body
-            case "unknown command":
-                return new RpcUnknownCommandException();                // Unknown command
-        }
-        
-        if (msgLc.startsWith("bad") || msgLc.startsWith("invalid") || msgLc.endsWith("invalid")
-                || msgLc.endsWith("required")) {
-            return new RpcInvalidArgumentException(message + ".");    // Invalid/bad argument
-        } else if (msgLc.contains("not found")) {
-            return new RpcEntityNotFoundException(message + ".");     // Unknown referenced entity
-        } else if (msgLc.endsWith("is disabled")) {
-            return new RpcFeatureDisabledException(message + ".");    // Feature is disabled
-        } else if (msgLc.startsWith("internal")) {
-            return new RpcInternalException(message + ".");           // Internal server error
-        }
-        
-        return new RpcException(message.isEmpty() ? null : (message + ".")); // Default to base exception
-    }
-    
-    
-    /**
-     * Converts a request instance into a pure JSON string.
-     *
-     * @param req the request to serialize
-     * @return the serialized JSON command
-     */
-    public String serializeRequestToJSON(RpcRequest<?> req) {
-        if (req == null)
-            throw new IllegalArgumentException("Query request argument cannot be null.");
-        
-        return JNanoHelper.GSON.toJson(req);
-    }
-    
-    
-    /**
-     * @return the Gson utility class used by this instance
-     *
-     * @deprecated moved to use internal static utility
-     */
-    @Deprecated(forRemoval = true)
-    public final Gson getGsonInstance() {
-        return JNanoHelper.GSON;
+        return requestSubmitter.submit(address, authToken, jsonRequest, timeout);
     }
     
 }
