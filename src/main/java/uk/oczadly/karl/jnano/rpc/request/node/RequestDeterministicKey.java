@@ -17,7 +17,7 @@ public class RequestDeterministicKey extends RpcRequest<ResponseKeyPair> {
     private final String seed;
     
     @Expose @SerializedName("index")
-    private final int accountIndex;
+    private final long accountIndex;
     
     
     /**
@@ -25,7 +25,7 @@ public class RequestDeterministicKey extends RpcRequest<ResponseKeyPair> {
      * @param seed         the seed to generate private keys from
      */
     public RequestDeterministicKey(String seed) {
-        this(seed, 0);
+        this(seed, 0L);
     }
     
     /**
@@ -33,7 +33,7 @@ public class RequestDeterministicKey extends RpcRequest<ResponseKeyPair> {
      * @param seed         the seed to generate private keys from
      * @param accountIndex the index of the account
      */
-    public RequestDeterministicKey(String seed, int accountIndex) {
+    public RequestDeterministicKey(String seed, long accountIndex) {
         super("deterministic_key", ResponseKeyPair.class);
         this.seed = seed;
         this.accountIndex = accountIndex;
@@ -50,7 +50,7 @@ public class RequestDeterministicKey extends RpcRequest<ResponseKeyPair> {
     /**
      * @return the requested index
      */
-    public int getAccountIndex() {
+    public long getAccountIndex() {
         return accountIndex;
     }
     
