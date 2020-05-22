@@ -294,15 +294,15 @@ public class RpcQueryNode {
             try {
                 R response = RpcQueryNode.this.processRequest(request, timeout);
                 if (callback != null)
-                    callback.onResponse(request, response);
+                    callback.onResponse(response, request);
                 return response; // Return for Future object
             } catch (RpcException ex) {
                 if (callback != null)
-                    callback.onFailure(request, ex);
+                    callback.onFailure(ex, request);
                 throw ex; // Re-throw for Future object
             } catch (IOException ex) {
                 if (callback != null)
-                    callback.onFailure(request, ex);
+                    callback.onFailure(ex, request);
                 throw ex; // Re-throw for Future object
             }
         });
