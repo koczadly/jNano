@@ -56,12 +56,17 @@ This example will print the node version to the console.
 ```java
 node.processRequestAsync(new RequestVersion(), new QueryCallback<>() {
     @Override
-    public void onResponse(ResponseVersion response) {
+    public void onResponse(RequestVersion request, ResponseVersion response) {
         System.out.println("Version: " + response.getNodeVendor());
     }
     
     @Override
-    public void onFailure(Exception ex) {
+    public void onFailure(RequestVersion request, IOException ex) {
+        ex.printStackTrace();
+    }
+    
+    @Override
+    public void onFailure(RequestVersion request, RpcException ex) {
         ex.printStackTrace();
     }
 });
