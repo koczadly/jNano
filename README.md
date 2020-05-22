@@ -17,7 +17,7 @@ This project is hosted on [Maven Central](https://search.maven.org/artifact/uk.o
 <dependency>
     <groupId>uk.oczadly.karl</groupId>
     <artifactId>jnano</artifactId>
-    <version>2.2.0-V20</version>
+    <version>2.3.0-V20</version>
 </dependency>
 ```
 
@@ -49,6 +49,7 @@ This example will print an account's balance to the console using a synchronous 
 ```java
 RequestAccountBalance request = new RequestAccountBalance("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz");
 ResponseBalance balance = node.processRequest(request);
+
 System.out.println("Account balance: " + balance.getTotal());
 ```
 #### Executing asynchronous requests
@@ -56,17 +57,17 @@ This example will print the node version to the console.
 ```java
 node.processRequestAsync(new RequestVersion(), new QueryCallback<>() {
     @Override
-    public void onResponse(RequestVersion request, ResponseVersion response) {
+    public void onResponse(ResponseVersion response, RequestVersion request) {
         System.out.println("Version: " + response.getNodeVendor());
     }
     
     @Override
-    public void onFailure(RequestVersion request, IOException ex) {
+    public void onRpcFailure(RpcException ex, RequestVersion request) {
         ex.printStackTrace();
     }
     
     @Override
-    public void onFailure(RequestVersion request, RpcException ex) {
+    public void onFailure(Exception ex, RequestVersion request) {
         ex.printStackTrace();
     }
 });
