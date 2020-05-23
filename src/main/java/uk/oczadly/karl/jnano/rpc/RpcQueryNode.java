@@ -135,9 +135,11 @@ public class RpcQueryNode {
      * Sets the authorization token to be used with future requests.
      *
      * @param authToken the new token to be used for queries, or null to remove
+     * @return this instance
      */
-    public final void setAuthToken(String authToken) {
+    public final RpcQueryNode setAuthToken(String authToken) {
         this.authToken = authToken;
+        return this;
     }
     
     /**
