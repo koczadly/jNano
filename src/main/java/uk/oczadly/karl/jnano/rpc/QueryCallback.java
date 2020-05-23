@@ -2,6 +2,8 @@ package uk.oczadly.karl.jnano.rpc;
 
 import uk.oczadly.karl.jnano.rpc.exception.RpcException;
 
+import java.io.IOException;
+
 /**
  * This class is used for handling asynchronous RPC queries. The appropriate methods are automatically invoked from a
  * separate worker thread on the completion or failure of an RPC request submitted along with this callback instance.
@@ -30,15 +32,14 @@ public interface QueryCallback<Q extends RpcRequest<R>, R extends RpcResponse> {
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#exceptions-table">Exceptions table on the
      * GitHub Wiki</a>
      */
-    void onRpcFailure(RpcException ex, Q request);
+    void onFailure(RpcException ex, Q request);
     
     /**
-     * This method is called when any non-rpc exception occurs, including {@link java.io.IOException} and
-     * {@link InterruptedException}.
+     * This method is called when an exception occurs with the connection to the node.
      *
      * @param ex      the exception thrown
      * @param request the attempted request which triggered this exception
      */
-    void onFailure(Exception ex, Q request);
+    void onFailure(IOException ex, Q request);
     
 }

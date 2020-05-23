@@ -9,9 +9,9 @@ import java.net.URL;
 
 public class RpcRequestSubmitter {
     
-    public String submit(URL address, String authToken, String jsonRequest, int timeout) throws IOException {
-        if (jsonRequest == null)
-            throw new IllegalArgumentException("JSON request string cannot be null.");
+    public String submit(URL address, String authToken, String request, int timeout) throws IOException {
+        if (request == null)
+            throw new IllegalArgumentException("Request body cannot be null.");
         if (timeout < 0)
             throw new IllegalArgumentException("Timeout period must be positive or zero.");
         
@@ -33,7 +33,7 @@ public class RpcRequestSubmitter {
     
         // Write request data
         OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
-        writer.write(jsonRequest);
+        writer.write(request);
         writer.close();
     
         // Read response data

@@ -38,16 +38,14 @@ import java.util.concurrent.Future;
  */
 public class RpcQueryNode {
     
-    protected static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
-    
     private final URL address;
     
     private volatile String authToken;
-    private volatile int defaultTimeout;
-    
-    private final RpcRequestSerializer requestSerializer = new RpcRequestSerializer();
-    private final RpcResponseDeserializer responseDeserializer = new RpcResponseDeserializer();
-    private final RpcRequestSubmitter requestSubmitter = new RpcRequestSubmitter();
+    private volatile int defaultTimeout = 0;
+    private volatile RpcRequestSerializer requestSerializer = new RpcRequestSerializer();
+    private volatile RpcResponseDeserializer responseDeserializer = new RpcResponseDeserializer();
+    private volatile RpcRequestSubmitter requestSubmitter = new RpcRequestSubmitter();
+    private volatile ExecutorService executorService = Executors.newFixedThreadPool(100);
     
     
     /**
@@ -90,6 +88,9 @@ public class RpcQueryNode {
      */
     public RpcQueryNode(String address, int port, String authToken) throws MalformedURLException {
         this(new URL("HTTP", address, port, ""), authToken);
+        
+        if (address == null)
+            throw new IllegalArgumentException("Address argument cannot be null.");
     }
     
     /**
@@ -108,9 +109,10 @@ public class RpcQueryNode {
      * @param authToken the authorization token to be sent with queries
      */
     public RpcQueryNode(URL address, String authToken) {
+        if (address == null)
+            throw new IllegalArgumentException("Address argument cannot be null.");
         this.address = address;
         this.authToken = authToken;
-        this.defaultTimeout = 0;
     }
     
     
@@ -151,11 +153,12 @@ public class RpcQueryNode {
      *
      * @param defaultTimeout the timeout period in milliseconds, or {@code 0} to disable timeouts
      */
-    public final void setDefaultTimeout(int defaultTimeout) {
+    public final RpcQueryNode setDefaultTimeout(int defaultTimeout) {
         if (defaultTimeout < 0)
             throw new IllegalArgumentException("Default timeout value must be positive, zero or null.");
         
         this.defaultTimeout = defaultTimeout;
+        return this;
     }
     
     /**
@@ -166,10 +169,37 @@ public class RpcQueryNode {
     }
     
     /**
+     * Sets the serializer object used to convert request instances into string form, which is then sent to the node
+     * for processing.
+     * @param requestSerializer the serializer object
+     * @return this instance
+     */
+    public final RpcQueryNode setRequestSerializer(RpcRequestSerializer requestSerializer) {
+        if (requestSerializer == null)
+            throw new IllegalArgumentException("RpcRequestSerializer argument cannot be null.");
+        
+        this.requestSerializer = requestSerializer;
+        return this;
+    }
+    
+    /**
      * @return the object responsible for deserializing and parsing errors of responses
      */
     public final RpcResponseDeserializer getResponseDeserializer() {
         return responseDeserializer;
+    }
+    
+    /**
+     * Sets the deserializer object used to convert the string response into a response class.
+     * @param responseDeserializer the deserializer object
+     * @return this instance
+     */
+    public final RpcQueryNode setResponseDeserializer(RpcResponseDeserializer responseDeserializer) {
+        if (responseDeserializer == null)
+            throw new IllegalArgumentException("RpcResponseDeserializer argument cannot be null.");
+        
+        this.responseDeserializer = responseDeserializer;
+        return this;
     }
     
     /**
@@ -179,6 +209,38 @@ public class RpcQueryNode {
         return requestSubmitter;
     }
     
+    /**
+     * Sets the submitter object used to submit requests to the remote node.
+     * @param requestSubmitter the submitter object
+     * @return this instance
+     */
+    public final RpcQueryNode setRequestSubmitter(RpcRequestSubmitter requestSubmitter) {
+        if (requestSubmitter == null)
+            throw new IllegalArgumentException("RpcRequestSubmitter argument cannot be null.");
+        
+        this.requestSubmitter = requestSubmitter;
+        return this;
+    }
+    
+    /**
+     * @return the executor service used to process asynchronous queries
+     */
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+    
+    /**
+     * Sets the executor service used to process asynchronous queries.
+     * @param executorService the executor service
+     * @return this instance
+     */
+    public RpcQueryNode setExecutorService(ExecutorService executorService) {
+        if (executorService == null)
+            throw new IllegalArgumentException("ExecutorService argument cannot be null.");
+        
+        this.executorService = executorService;
+        return this;
+    }
     
     /**
      * Sends a query request to the node via RPC with the default timeout.
@@ -203,7 +265,7 @@ public class RpcQueryNode {
      * Sends a query request to the node via RPC with the specified timeout.
      *
      * @param request the query request to send to the node
-     * @param timeout the timeout for the request in milliseconds, {@code 0} for none, or {@code null} for default
+     * @param timeout the timeout for the request in milliseconds, zero for infinite, or null for default
      * @param <Q>     the request type
      * @param <R>     the response type
      * @return the successful reponse from the node
@@ -251,7 +313,7 @@ public class RpcQueryNode {
      * {@link IOException} or {@link RpcException} exceptions thrown during the process.
      *
      * @param request the query request to send to the node
-     * @param timeout the timeout for the request in milliseconds, {@code 0} for none, or {@code null} for default
+     * @param timeout the timeout for the request in milliseconds, zero for infinite, or null for default
      * @param <Q>     the request type
      * @param <R>     the response type
      * @return a future instance representing the response data/exception
@@ -293,7 +355,7 @@ public class RpcQueryNode {
      * thrown during the process.
      *
      * @param request  the query request to send to the node
-     * @param timeout  the timeout for the request in milliseconds, {@code 0} for none, or {@code null} for default
+     * @param timeout  the timeout for the request in milliseconds, zero for infinite, or null for default
      * @param callback the callback to execute after the request has completed (or null for no callback)
      * @param <Q>      the request type
      * @param <R>      the response type
@@ -309,7 +371,7 @@ public class RpcQueryNode {
         if (timeout != null && timeout < 0)
             throw new IllegalArgumentException("Timeout period must be positive, zero or null.");
         
-        return RpcQueryNode.EXECUTOR_SERVICE.submit(() -> {
+        return this.executorService.submit(() -> {
             try {
                 R response = RpcQueryNode.this.processRequest(request, timeout);
                 if (callback != null)
@@ -317,12 +379,15 @@ public class RpcQueryNode {
                 return response; // Return for Future object
             } catch (RpcException ex) {
                 if (callback != null)
-                    callback.onRpcFailure(ex, request);
+                    callback.onFailure(ex, request);
                 throw ex; // Re-throw for Future object
-            } catch (Exception ex) {
+            } catch (IOException ex) {
                 if (callback != null)
                     callback.onFailure(ex, request);
                 throw ex; // Re-throw for Future object
+            } catch (Exception ex) { // Shouldn't happen!
+                ex.printStackTrace();
+                throw ex;
             }
         });
     }
@@ -333,7 +398,7 @@ public class RpcQueryNode {
      * deserialized response data.
      *
      * @param jsonRequest   the JSON query to send to the node
-     * @param timeout       the connection timeout in milliseconds, or null to disable timeouts
+     * @param timeout       the timeout for the request in milliseconds, zero for infinite, or null for default
      * @param responseClass the class to deserialize the response data into
      * @param <R>           the response type
      * @return the response received from the node, contained in an object of the specified class
@@ -357,7 +422,7 @@ public class RpcQueryNode {
      * Integer, Class)} method.</p>
      *
      * @param jsonRequest the JSON query to send to the node
-     * @param timeout     the connection timeout in milliseconds, or null to disable timeouts
+     * @param timeout     the timeout for the request in milliseconds, zero for infinite, or null for default
      * @return the JSON response received from the node
      *
      * @throws IOException if an error occurs with the connection to the node

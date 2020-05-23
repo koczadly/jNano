@@ -17,7 +17,7 @@ This project is hosted on [Maven Central](https://search.maven.org/artifact/uk.o
 <dependency>
     <groupId>uk.oczadly.karl</groupId>
     <artifactId>jnano</artifactId>
-    <version>2.3.0-V20</version>
+    <version>2.4.0-V20</version>
 </dependency>
 ```
 
@@ -62,12 +62,12 @@ node.processRequestAsync(new RequestVersion(), new QueryCallback<>() {
     }
     
     @Override
-    public void onRpcFailure(RpcException ex, RequestVersion request) {
+    public void onFailure(RpcException ex, RequestVersion request) {
         ex.printStackTrace();
     }
     
     @Override
-    public void onFailure(Exception ex, RequestVersion request) {
+    public void onFailure(IOException ex, RequestVersion request) {
         ex.printStackTrace();
     }
 });
