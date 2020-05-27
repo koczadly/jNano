@@ -1,6 +1,9 @@
 # Introduction to jNano
-jNano is a Java library used to interface with the official Nano node via RPC requests.
-It also includes many native utilities and tools so that a node isn't always necessary.
+jNano is a Java library used to interface with the official [Nano node](https://github.com/nanocurrency/nano-node)
+ via RPC requests. It also includes many native utilities and tools so that a node isn't always necessary.
+ 
+Nano is a crypto-currency which aims to offer instantaneous feeless transactions. For more information, visit
+[https://nano.org](https://nano.org).
 
 WebSocket support is currently in development, and will be made publicly available shortly.
 ## Features
