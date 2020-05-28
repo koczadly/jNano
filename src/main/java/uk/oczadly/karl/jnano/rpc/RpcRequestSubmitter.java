@@ -30,17 +30,17 @@ public class RpcRequestSubmitter {
         if (authToken != null) {
             con.setRequestProperty("Authorization", "Bearer " + authToken);
         }
-    
+        
         // Write request data
         OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
         writer.write(request);
         writer.close();
-    
+        
         // Read response data
         InputStreamReader input = new InputStreamReader(con.getInputStream());
         BufferedReader inputReader = new BufferedReader(input);
-    
-        StringBuilder response = new StringBuilder();
+        
+        StringBuilder response = new StringBuilder(con.getContentLength() >= 0 ? con.getContentLength() : 32);
         String line;
         while ((line = inputReader.readLine()) != null) {
             response.append(line);
