@@ -2,6 +2,10 @@ package uk.oczadly.karl.jnano.rpc;
 
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 
+/**
+ * Classes which implement this interface are responsible for serializing {@link RpcRequest} objects into string
+ * values (typically JSON).
+ */
 public interface RpcRequestSerializer {
     
     /**

@@ -3,6 +3,10 @@ package uk.oczadly.karl.jnano.rpc;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * Classes which implement this interface are responsible for submitting requests and retrieving the responses from an
+ * external Nano node.
+ */
 public interface RpcRequestSubmitter {
     
     /**

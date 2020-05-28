@@ -4,8 +4,8 @@ import uk.oczadly.karl.jnano.rpc.exception.RpcException;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 
 /**
- * This class is responsible for converting the response from the node into the {@link RpcResponse} class, as well as
- * parsing the appropriate {@link RpcException}.
+ * Classes which implement this interface are responsible for converting the response from the node into the
+ * {@link RpcResponse} class, as well as parsing the appropriate {@link RpcException}.
  */
 public interface RpcResponseDeserializer {
     
