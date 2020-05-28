@@ -44,9 +44,9 @@ public class RpcQueryNode {
     
     private volatile String authToken;
     private volatile int defaultTimeout = 0;
-    private volatile RpcRequestSerializer requestSerializer = new RpcRequestSerializer();
-    private volatile RpcResponseDeserializer responseDeserializer = new RpcResponseDeserializer();
-    private volatile RpcRequestSubmitter requestSubmitter = new RpcRequestSubmitter();
+    private volatile RpcRequestSerializer requestSerializer = new RpcRequestSerializerImpl();
+    private volatile RpcResponseDeserializer responseDeserializer = new RpcResponseDeserializerImpl();
+    private volatile RpcRequestSubmitter requestSubmitter = new RpcRequestSubmitterImpl();
     private volatile ExecutorService executorService = Executors.newFixedThreadPool(100);
     
     

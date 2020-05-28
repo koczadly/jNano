@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 
 public class RpcRequestSerializerTest {
     
-    RpcRequestSerializer serializer = new RpcRequestSerializer();
+    RpcRequestSerializer serializer = new RpcRequestSerializerImpl();
     
     
     @Test

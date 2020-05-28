@@ -12,7 +12,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class RpcResponseDeserializerTest {
 
-    RpcResponseDeserializer deserializer = new RpcResponseDeserializer();
+    RpcResponseDeserializer deserializer = new RpcResponseDeserializerImpl();
     
     
     @Test(expected = RpcException.class)
