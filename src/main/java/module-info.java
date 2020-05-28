@@ -7,6 +7,7 @@ module uk.oczadly.karl.jnano {
     //RPC
     exports uk.oczadly.karl.jnano.rpc;
     exports uk.oczadly.karl.jnano.rpc.exception;
+    exports uk.oczadly.karl.jnano.rpc.request;
     exports uk.oczadly.karl.jnano.rpc.request.conversion;
     exports uk.oczadly.karl.jnano.rpc.request.node;
     exports uk.oczadly.karl.jnano.rpc.request.wallet;
