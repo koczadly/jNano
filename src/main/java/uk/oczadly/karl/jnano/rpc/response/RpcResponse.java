@@ -1,4 +1,4 @@
-package uk.oczadly.karl.jnano.rpc;
+package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
@@ -26,17 +26,6 @@ public abstract class RpcResponse {
     @Override
     public String toString() {
         return getRawResponseJson().toString();
-    }
-    
-    
-    /**
-     * Internal method for initializing
-     */
-    final void initResponseObject(JsonObject rawJson) {
-        if (this.rawJson != null)
-            throw new IllegalStateException("Response is already initialized");
-        
-        this.rawJson = rawJson;
     }
     
 }

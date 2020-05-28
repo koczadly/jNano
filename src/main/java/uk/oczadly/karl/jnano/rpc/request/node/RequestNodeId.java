@@ -1,6 +1,6 @@
 package uk.oczadly.karl.jnano.rpc.request.node;
 
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseNodeId;
 
 /**

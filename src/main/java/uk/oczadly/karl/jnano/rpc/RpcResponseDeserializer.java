@@ -6,8 +6,23 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.rpc.exception.*;
+import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
+
+import java.lang.reflect.Field;
 
 public class RpcResponseDeserializer {
+    
+    private static volatile Field RESPONSE_JSON_FIELD;
+    
+    static {
+        try {
+            RESPONSE_JSON_FIELD = RpcResponse.class.getDeclaredField("rawJson");
+            RESPONSE_JSON_FIELD.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }
+    
     
     public <R extends RpcResponse> R deserialize(String response, Class<R> responseClass) throws RpcException {
         JsonObject responseJson;
@@ -24,7 +39,10 @@ public class RpcResponseDeserializer {
         
         // Deserialize response
         R responseObj = JNanoHelper.GSON.fromJson(responseJson, responseClass); // Deserialize from JSON
-        responseObj.initResponseObject(responseJson); // Initialise raw parameters
+        
+        // Populate original json object
+        populateJsonField(responseObj, responseJson);
+        
         return responseObj;
     }
     
@@ -61,6 +79,17 @@ public class RpcResponseDeserializer {
         }
         
         return new RpcException(msg.isEmpty() ? null : (msg + ".")); // Default to base exception
+    }
+    
+    
+    private void populateJsonField(RpcResponse response, JsonObject json) {
+        if (RESPONSE_JSON_FIELD != null) {
+            try {
+                RESPONSE_JSON_FIELD.set(response, json);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

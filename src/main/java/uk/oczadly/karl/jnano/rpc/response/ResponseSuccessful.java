@@ -2,7 +2,6 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
-import uk.oczadly.karl.jnano.rpc.RpcResponse;
 
 import java.lang.reflect.Type;
 

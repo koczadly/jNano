@@ -1,7 +1,8 @@
-package uk.oczadly.karl.jnano.rpc;
+package uk.oczadly.karl.jnano.rpc.request;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 
 /**
  * <p>This class represents an RPC request, enclosing the request's name, response class and parameters.</p>
