@@ -63,9 +63,13 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
             case "rpc control is disabled":
                 return new RpcControlDisabledException();          // RPC control disabled
             case "unable to parse json":
-                return new RpcInvalidRequestJsonException();       // Invalid request body
+                return new RpcInvalidRequestJsonException(         // Invalid request body
+                        "The RPC server was unable to parse the JSON request.");
             case "unknown command":
                 return new RpcUnknownCommandException();           // Unknown command
+            case "invalid header: body limit exceeded":
+                return new RpcInvalidRequestJsonException(         // JSON too long
+                        "The request JSON exceeded the configured maximum length.");
         }
         
         if (msgLc.startsWith("bad") || msgLc.startsWith("invalid") || msgLc.endsWith("invalid")

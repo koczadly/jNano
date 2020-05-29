@@ -6,10 +6,6 @@ package uk.oczadly.karl.jnano.rpc.exception;
  */
 public class RpcInvalidRequestJsonException extends RpcException {
     
-    public RpcInvalidRequestJsonException() {
-        this("The RPC server was unable to parse the JSON request.");
-    }
-    
     public RpcInvalidRequestJsonException(String message) {
         super(message);
     }
