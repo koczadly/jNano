@@ -41,7 +41,8 @@ public class RpcRequestSubmitterImpl implements RpcRequestSubmitter {
         InputStreamReader input = new InputStreamReader(con.getInputStream());
         BufferedReader inputReader = new BufferedReader(input);
         
-        StringBuilder response = new StringBuilder(con.getContentLength() >= 0 ? con.getContentLength() : 32);
+        int expectedLength = con.getContentLength();
+        StringBuilder response = new StringBuilder(expectedLength >= 0 ? expectedLength : 32);
         String line;
         while ((line = inputReader.readLine()) != null) {
             response.append(line);
