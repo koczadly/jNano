@@ -23,6 +23,9 @@ public abstract class RpcResponse {
         return this.rawJson;
     }
     
+    /**
+     * @return the JSON-encoded response string sent from the server
+     */
     @Override
     public String toString() {
         return getRawResponseJson().toString();
