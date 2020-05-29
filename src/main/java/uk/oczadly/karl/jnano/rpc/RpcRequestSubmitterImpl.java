@@ -10,7 +10,7 @@ import java.net.URL;
 public class RpcRequestSubmitterImpl implements RpcRequestSubmitter {
     
     @Override
-    public String submit(URL address, String authToken, String request, int timeout) throws IOException {
+    public String submit(URL address, String request, int timeout) throws IOException {
         if (request == null)
             throw new IllegalArgumentException("Request body cannot be null.");
         if (timeout < 0)
@@ -26,11 +26,6 @@ public class RpcRequestSubmitterImpl implements RpcRequestSubmitter {
         con.setDoOutput(true);
         con.setDoInput(true);
         con.setRequestMethod("POST");
-    
-        // Set authorization token header (if set)
-        if (authToken != null) {
-            con.setRequestProperty("Authorization", "Bearer " + authToken);
-        }
         
         // Write request data
         OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());

@@ -58,8 +58,6 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
                 return new RpcWalletLockedException();             // Wallet locked
             case "insufficient balance":
                 return new RpcInvalidArgumentException(msg + "."); // Invalid/bad argument
-            case "invalid authorization header":
-                return new RpcInvalidAuthTokenException();         // Invalid auth token
             case "rpc control is disabled":
                 return new RpcControlDisabledException();          // RPC control disabled
             case "unable to parse json":

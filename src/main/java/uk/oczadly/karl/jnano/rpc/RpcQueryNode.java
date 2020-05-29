@@ -14,10 +14,10 @@ import java.util.concurrent.Future;
 /**
  * <p>This class represents a connection to a specified Nano node endpoint, with the main purpose of sending and
  * queuing RPC requests.</p>
- * <p>To use this class, set the endpoint address, port and authorization token (if configured) in the constructor,
- * and then pass request arguments to one of the {@code processRequest()} methods. Asynchronous requests can also be
- * accomplished using one of the {@code processRequestAsync} methods, which can take a callback, as well as returning a
- * future object representing the response.</p>
+ * <p>To use this class, set the endpoint address andport in the constructor, and then pass request arguments to one of
+ * the {@code processRequest()} methods. Asynchronous requests can also be accomplished using one of the
+ * {@code processRequestAsync} methods, which can take a callback, as well as returning a future object representing the
+ * response.</p>
  * <p>Below is an example of a synchronous query which creates a new account from a provided wallet ID:</p>
  * <pre>
  *  try {
@@ -42,7 +42,6 @@ public class RpcQueryNode {
     
     private final URL address;
     
-    private volatile String authToken;
     private volatile int defaultTimeout = 0;
     private volatile RpcRequestSerializer requestSerializer = new RpcRequestSerializerImpl();
     private volatile RpcResponseDeserializer responseDeserializer = new RpcResponseDeserializerImpl();
@@ -56,40 +55,18 @@ public class RpcQueryNode {
      * @throws MalformedURLException if the address cannot be parsed
      */
     public RpcQueryNode() throws MalformedURLException {
-        this((String)null);
+        this("127.0.0.1", 7076);
     }
     
     /**
-     * Constructs a new query node with the address {@code 127.0.0.1:7076} and specified authorization token.
-     *
-     * @param authToken the authorization token to be sent with queries
-     * @throws MalformedURLException if the address cannot be parsed
-     */
-    public RpcQueryNode(String authToken) throws MalformedURLException {
-        this("::1", 7076, authToken); // Local address and default port
-    }
-    
-    /**
-     * Constructs a new query node with the provided address and port.
-     *
-     * @param address the address of the node
-     * @param port    the port which the node is listening on
-     * @throws MalformedURLException if the address cannot be parsed
-     */
-    public RpcQueryNode(String address, int port) throws MalformedURLException {
-        this(address, port, null);
-    }
-    
-    /**
-     * Constructs a new query node with the given address, port and authorization token.
+     * Constructs a new query node with the given address and port number.
      *
      * @param address   the address of the node
      * @param port      the port which the node is listening on
-     * @param authToken the authorization token to be sent with queries
      * @throws MalformedURLException if the address cannot be parsed
      */
-    public RpcQueryNode(String address, int port, String authToken) throws MalformedURLException {
-        this(new URL("HTTP", address, port, ""), authToken);
+    public RpcQueryNode(String address, int port) throws MalformedURLException {
+        this(new URL("HTTP", address, port, ""));
         
         if (address == null)
             throw new IllegalArgumentException("Address argument cannot be null.");
@@ -98,23 +75,12 @@ public class RpcQueryNode {
     /**
      * Constructs a new query node with the given address (as a URL).
      *
-     * @param address the HTTP URL (address and port) which the node is listening on
+     * @param address   the HTTP URL (address and port) which the node is listening on
      */
     public RpcQueryNode(URL address) {
-        this(address, null);
-    }
-    
-    /**
-     * Constructs a new query node with the given address (as a URL) and authorization token.
-     *
-     * @param address   the HTTP URL (address and port) which the node is listening on
-     * @param authToken the authorization token to be sent with queries
-     */
-    public RpcQueryNode(URL address, String authToken) {
         if (address == null)
             throw new IllegalArgumentException("Address argument cannot be null.");
         this.address = address;
-        this.authToken = authToken;
     }
     
     
@@ -125,24 +91,6 @@ public class RpcQueryNode {
         return this.address;
     }
     
-    
-    /**
-     * @return the authorization token to be sent to the RPC server, or null if not configured
-     */
-    public final String getAuthToken() {
-        return this.authToken;
-    }
-    
-    /**
-     * Sets the authorization token to be used with future requests.
-     *
-     * @param authToken the new token to be used for queries, or null to remove
-     * @return this instance
-     */
-    public final RpcQueryNode setAuthToken(String authToken) {
-        this.authToken = authToken;
-        return this;
-    }
     
     /**
      * @return the default timeout period in milliseconds, or {@code 0} if timeouts are disabled
@@ -438,7 +386,7 @@ public class RpcQueryNode {
             throw new IllegalArgumentException("Timeout period must be positive, zero or null.");
         }
         
-        return requestSubmitter.submit(address, authToken, jsonRequest, timeout);
+        return requestSubmitter.submit(address, jsonRequest, timeout);
     }
     
 }
