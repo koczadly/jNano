@@ -14,7 +14,7 @@ import java.util.concurrent.Future;
 /**
  * <p>This class represents a connection to a specified Nano node endpoint, with the main purpose of sending and
  * queuing RPC requests.</p>
- * <p>To use this class, set the endpoint address andport in the constructor, and then pass request arguments to one of
+ * <p>To use this class, set the endpoint address and port in the constructor, and then pass request arguments to one of
  * the {@code processRequest()} methods. Asynchronous requests can also be accomplished using one of the
  * {@code processRequestAsync} methods, which can take a callback, as well as returning a future object representing the
  * response.</p>
