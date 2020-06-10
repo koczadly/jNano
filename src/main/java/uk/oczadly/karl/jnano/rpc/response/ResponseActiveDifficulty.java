@@ -2,6 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.WorkDifficulty;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,10 +13,10 @@ import java.util.List;
 public class ResponseActiveDifficulty extends RpcResponse {
     
     @Expose @SerializedName("network_minimum")
-    private String networkMinimum;
+    private WorkDifficulty networkMinimum;
     
     @Expose @SerializedName("network_current")
-    private String networkCurrent;
+    private WorkDifficulty networkCurrent;
     
     @Expose @SerializedName("multiplier")
     private BigDecimal multiplier;
@@ -27,19 +28,19 @@ public class ResponseActiveDifficulty extends RpcResponse {
     /**
      * @return the minimum work value required
      */
-    public String getNetworkMinimum() {
+    public WorkDifficulty getNetworkMinimum() {
         return networkMinimum;
     }
     
     /**
      * @return the current average work value
      */
-    public String getNetworkCurrent() {
+    public WorkDifficulty getNetworkCurrent() {
         return networkCurrent;
     }
     
     /**
-     * @return the current average multiplier
+     * @return the current suggested difficulty multiplier
      */
     public BigDecimal getMultiplier() {
         return multiplier;

@@ -37,6 +37,12 @@ public class ResponseAccountInfo extends RpcResponse {
     @Expose @SerializedName("pending")
     private BigInteger balancePending;
     
+    @Expose @SerializedName("confirmation_height")
+    private int confirmationHeight;
+    
+    @Expose @SerializedName("confirmation_height_frontier")
+    private String confirmationHeightFrontier;
+    
     
     /**
      * @return the frontier (head) block hash
@@ -101,4 +107,17 @@ public class ResponseAccountInfo extends RpcResponse {
         return balancePending;
     }
     
+    /**
+     * @return the current confirmation height for this account
+     */
+    public int getConfirmationHeight() {
+        return confirmationHeight;
+    }
+    
+    /**
+     * @return the current confirmation height block hash for this account
+     */
+    public String getConfirmationHeightFrontier() {
+        return confirmationHeightFrontier;
+    }
 }

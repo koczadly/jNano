@@ -2,6 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.block.BlockType;
 import uk.oczadly.karl.jnano.model.block.StateBlock;
 import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
@@ -55,10 +56,13 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
     @Expose @SerializedName("work")
     private final String work;
     
+    @Expose @SerializedName("difficulty")
+    private final WorkDifficulty workDifficulty;
+    
     
     private RequestBlockCreate(BigInteger balance, String representative, String previous, String walletId,
                                String account, String privateKey, String sourceBlock, String destination,
-                               String linkData, String work) {
+                               String linkData, String work, WorkDifficulty workDifficulty) {
         super("block_create", ResponseBlockCreate.class);
         this.balance = balance;
         this.representative = representative;
@@ -70,6 +74,7 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
         this.destination = destination;
         this.linkData = linkData;
         this.work = work;
+        this.workDifficulty = workDifficulty;
     }
     
     
@@ -143,6 +148,13 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
         return work;
     }
     
+    /**
+     * @return the requested generated work difficulty
+     */
+    public WorkDifficulty getWorkDifficulty() {
+        return workDifficulty;
+    }
+    
     
     public static class Builder {
         private BigInteger balance;
@@ -155,6 +167,7 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
         private String destination;
         private String link;
         private String work;
+        private WorkDifficulty workDifficulty;
         
         /**
          * Sets the parameters from the block data. Note that the private key and wallet parameters will not be
@@ -278,16 +291,25 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
             this.work = work;
             return this;
         }
+    
+        public WorkDifficulty getWorkDifficulty() {
+            return workDifficulty;
+        }
+    
+        public Builder setWorkDifficulty(WorkDifficulty workDifficulty) {
+            this.workDifficulty = workDifficulty;
+            return this;
+        }
         
-        
+    
         public RequestBlockCreate buildRequest() {
             if (link != null && (sourceBlock != null || destination != null)
                     || sourceBlock != null && destination != null)
                 throw new IllegalStateException("Only one of the link/source/destination arguments may be set.");
-            
             if (privKey != null && walletId != null)
                 throw new IllegalStateException("Private key and wallet ID cannot be assigned at the same time.");
-            
+            if (work != null && workDifficulty != null)
+                throw new IllegalStateException("Work and work difficulty values cannot both be assigned.");
             if (balance == null)
                 throw new IllegalStateException("No balance argument is assigned.");
             if (representative == null)
@@ -299,7 +321,7 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
             
             return new RequestBlockCreate(balance, representative, previous, walletId,
                     (privKey == null) ? account : null,
-                    privKey, sourceBlock, destination, link, work);
+                    privKey, sourceBlock, destination, link, work, workDifficulty);
         }
         
     }

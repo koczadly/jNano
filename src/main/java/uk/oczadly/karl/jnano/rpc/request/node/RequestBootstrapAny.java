@@ -16,6 +16,10 @@ public class RequestBootstrapAny extends RpcRequest<ResponseSuccessful> {
     @Expose @SerializedName("force")
     private Boolean forceClose;
     
+    @Expose @SerializedName("id")
+    private String trackingId;
+    
+    
     public RequestBootstrapAny() {
         this(null);
     }
@@ -24,8 +28,17 @@ public class RequestBootstrapAny extends RpcRequest<ResponseSuccessful> {
      * @param forceClose (optional) whether current bootstraps should be force-closed
      */
     public RequestBootstrapAny(Boolean forceClose) {
+        this(forceClose, null);
+    }
+    
+    /**
+     * @param forceClose (optional) whether current bootstraps should be force-closed
+     * @param trackingId (optional) the tracking ID for this request
+     */
+    public RequestBootstrapAny(Boolean forceClose, String trackingId) {
         super("bootstrap_any", ResponseSuccessful.class);
         this.forceClose = forceClose;
+        this.trackingId = trackingId;
     }
     
     
@@ -34,6 +47,13 @@ public class RequestBootstrapAny extends RpcRequest<ResponseSuccessful> {
      */
     public Boolean getForceClose() {
         return forceClose;
+    }
+    
+    /**
+     * @return the tracking identifier for this request
+     */
+    public String getTrackingId() {
+        return trackingId;
     }
     
 }

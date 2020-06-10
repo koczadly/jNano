@@ -2,6 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.WorkDifficulty;
 
 /**
  * This response class contains a computed work solution.
@@ -12,7 +13,7 @@ public class ResponseWork extends RpcResponse {
     private String workSolution;
     
     @Expose @SerializedName("difficulty")
-    private String difficulty;
+    private WorkDifficulty difficulty;
     
     @Expose @SerializedName("multiplier")
     private double multiplier;
@@ -28,7 +29,7 @@ public class ResponseWork extends RpcResponse {
     /**
      * @return the absolute value of this difficulty
      */
-    public String getDifficulty() {
+    public WorkDifficulty getDifficulty() {
         return difficulty;
     }
     

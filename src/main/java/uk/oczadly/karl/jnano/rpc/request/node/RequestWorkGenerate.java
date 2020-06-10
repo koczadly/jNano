@@ -2,6 +2,8 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.WorkDifficulty;
+import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseWork;
 
@@ -13,6 +15,10 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseWork;
  */
 public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
     
+    @Expose @SerializedName("json_block")
+    private final boolean jsonBlock = true;
+    
+    
     @Expose @SerializedName("hash")
     private final String blockHash;
     
@@ -20,17 +26,27 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
     private final Boolean usePeers;
     
     @Expose @SerializedName("difficulty")
-    private final String difficulty;
+    private final WorkDifficulty difficulty;
     
     @Expose @SerializedName("multiplier")
     private final Double multiplier;
+    
+    @Expose @SerializedName("block")
+    private final Block block;
     
     
     /**
      * @param blockHash the block's hash
      */
     public RequestWorkGenerate(String blockHash) {
-        this(blockHash, null, null, null);
+        this(blockHash, null, null, null, null);
+    }
+    
+    /**
+     * @param block the block to generate work for
+     */
+    public RequestWorkGenerate(Block block) {
+        this(null, null, null, null, block);
     }
     
     /**
@@ -40,8 +56,19 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
      * @param usePeers   (optional) whether work peers should be used
      * @param difficulty (optional) the absolute difficulty value
      */
-    public RequestWorkGenerate(String blockHash, Boolean usePeers, String difficulty) {
-        this(blockHash, usePeers, difficulty, null);
+    public RequestWorkGenerate(String blockHash, Boolean usePeers, WorkDifficulty difficulty) {
+        this(blockHash, usePeers, difficulty, null, null);
+    }
+    
+    /**
+     * Constructs a work generation request with a specified difficulty value.
+     *
+     * @param block      the block to generate work for
+     * @param usePeers   (optional) whether work peers should be used
+     * @param difficulty (optional) the absolute difficulty value
+     */
+    public RequestWorkGenerate(Block block, Boolean usePeers, WorkDifficulty difficulty) {
+        this(null, usePeers, difficulty, null, block);
     }
     
     /**
@@ -52,15 +79,28 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
      * @param multiplier (optional) the difficulty multiplier
      */
     public RequestWorkGenerate(String blockHash, Boolean usePeers, Double multiplier) {
-        this(blockHash, usePeers, null, multiplier);
+        this(blockHash, usePeers, null, multiplier, null);
     }
     
-    private RequestWorkGenerate(String blockHash, Boolean usePeers, String difficulty, Double multiplier) {
+    /**
+     * Constructs a work generation request with a specified difficulty multiplier.
+     *
+     * @param block      the block to generate work for
+     * @param usePeers   (optional) whether work peers should be used
+     * @param multiplier (optional) the difficulty multiplier
+     */
+    public RequestWorkGenerate(Block block, Boolean usePeers, Double multiplier) {
+        this(null, usePeers, null, multiplier, block);
+    }
+    
+    private RequestWorkGenerate(String blockHash, Boolean usePeers, WorkDifficulty difficulty, Double multiplier,
+                                Block block) {
         super("work_generate", ResponseWork.class);
-        this.blockHash = blockHash;
+        this.blockHash = (blockHash == null && block != null) ? block.getHash() : blockHash;
         this.usePeers = usePeers;
         this.difficulty = difficulty;
         this.multiplier = multiplier;
+        this.block = block;
     }
     
     
@@ -81,7 +121,7 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
     /**
      * @return the request difficulty value
      */
-    public String getDifficulty() {
+    public WorkDifficulty getDifficulty() {
         return difficulty;
     }
     
@@ -90,6 +130,13 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
      */
     public Double getMultiplier() {
         return multiplier;
+    }
+    
+    /**
+     * @return the block to generate work for
+     */
+    public Block getBlock() {
+        return block;
     }
     
 }

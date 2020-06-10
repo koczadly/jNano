@@ -22,6 +22,9 @@ public class RequestBootstrap extends RpcRequest<ResponseSuccessful> {
     @Expose @SerializedName("bypass_frontier_confirmation")
     private Boolean bypassFrontierConfirmation;
     
+    @Expose @SerializedName("id")
+    private String trackingId;
+    
     
     /**
      * @param peerAddress the IP address of the remote node
@@ -37,10 +40,21 @@ public class RequestBootstrap extends RpcRequest<ResponseSuccessful> {
      * @param bypassFrontierConfirmation (optional) whether frontier confirmation should not be performed
      */
     public RequestBootstrap(String peerAddress, int peerPort, Boolean bypassFrontierConfirmation) {
+        this(peerAddress, peerPort, bypassFrontierConfirmation, null);
+    }
+    
+    /**
+     * @param peerAddress                the IP address of the remote node
+     * @param peerPort                   the port of the remote node
+     * @param bypassFrontierConfirmation (optional) whether frontier confirmation should not be performed
+     * @param trackingId                 (optional) the tracking ID for this request
+     */
+    public RequestBootstrap(String peerAddress, int peerPort, Boolean bypassFrontierConfirmation, String trackingId) {
         super("bootstrap", ResponseSuccessful.class);
         this.peerAddress = peerAddress;
         this.peerPort = peerPort;
         this.bypassFrontierConfirmation = bypassFrontierConfirmation;
+        this.trackingId = trackingId;
     }
     
     
@@ -64,4 +78,12 @@ public class RequestBootstrap extends RpcRequest<ResponseSuccessful> {
     public Boolean getBypassFrontierConfirmation() {
         return bypassFrontierConfirmation;
     }
+    
+    /**
+     * @return the tracking identifier for this request
+     */
+    public String getTrackingId() {
+        return trackingId;
+    }
+    
 }

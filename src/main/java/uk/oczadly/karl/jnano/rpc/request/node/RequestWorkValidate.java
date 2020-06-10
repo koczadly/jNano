@@ -2,6 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.WorkDifficulty;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseWorkValidation;
 
@@ -21,7 +22,7 @@ public class RequestWorkValidate extends RpcRequest<ResponseWorkValidation> {
     
     
     @Expose @SerializedName("difficulty")
-    private final String difficulty;
+    private final WorkDifficulty difficulty;
     
     @Expose @SerializedName("multiplier")
     private final Double multiplier;
@@ -41,8 +42,22 @@ public class RequestWorkValidate extends RpcRequest<ResponseWorkValidation> {
      * @param workSolution the computed work value
      * @param blockHash    the block's hash
      * @param difficulty   the difficulty value
+     *                     
+     * @deprecated use {@link #RequestWorkValidate(String, String, WorkDifficulty)}
      */
+    @Deprecated(forRemoval = true)
     public RequestWorkValidate(String workSolution, String blockHash, String difficulty) {
+        this(workSolution, blockHash, new WorkDifficulty(difficulty));
+    }
+    
+    /**
+     * Constructs a work validation request with a specific difficulty value.
+     *
+     * @param workSolution the computed work value
+     * @param blockHash    the block's hash
+     * @param difficulty   the difficulty value
+     */
+    public RequestWorkValidate(String workSolution, String blockHash, WorkDifficulty difficulty) {
         this(workSolution, blockHash, difficulty, null);
     }
     
@@ -57,7 +72,7 @@ public class RequestWorkValidate extends RpcRequest<ResponseWorkValidation> {
         this(workSolution, blockHash, null, multiplier);
     }
     
-    private RequestWorkValidate(String workSolution, String blockHash, String difficulty, Double multiplier) {
+    private RequestWorkValidate(String workSolution, String blockHash, WorkDifficulty difficulty, Double multiplier) {
         super("work_validate", ResponseWorkValidation.class);
         this.workSolution = workSolution;
         this.blockHash = blockHash;
@@ -83,7 +98,7 @@ public class RequestWorkValidate extends RpcRequest<ResponseWorkValidation> {
     /**
      * @return the requested work difficulty
      */
-    public String getDifficulty() {
+    public WorkDifficulty getDifficulty() {
         return difficulty;
     }
     
