@@ -1,6 +1,7 @@
 module uk.oczadly.karl.jnano {
     
     //Models
+    exports uk.oczadly.karl.jnano.model;
     exports uk.oczadly.karl.jnano.model.block;
     //Callback
     exports uk.oczadly.karl.jnano.callback;
