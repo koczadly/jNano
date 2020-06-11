@@ -50,7 +50,7 @@ public class RpcQueryNode {
     
     
     /**
-     * Constructs a new query node with the address {@code 127.0.0.1:7076}.
+     * Constructs a new query node with the local loopback address with port 7076 ({@code ::1:7076}).
      *
      * @throws MalformedURLException if the address cannot be parsed
      */
@@ -59,13 +59,13 @@ public class RpcQueryNode {
     }
     
     /**
-     * Constructs a new query node with the address {@code 127.0.0.1} and the specified port.
+     * Constructs a new query node with the local loopback address {@code ::1} and the specified port.
      *
      * @param port the port which the node is listening on
      * @throws MalformedURLException if the address cannot be parsed
      */
     public RpcQueryNode(int port) throws MalformedURLException {
-        this("127.0.0.1", port);
+        this("::1", port);
     }
     
     /**
