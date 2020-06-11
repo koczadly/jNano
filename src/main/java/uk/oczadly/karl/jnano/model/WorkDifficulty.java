@@ -4,9 +4,6 @@ import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.Objects;
 
 /**
@@ -15,53 +12,52 @@ import java.util.Objects;
 @JsonAdapter(WorkDifficulty.WorkDifficultyJsonAdapter.class)
 public final class WorkDifficulty implements Comparable<WorkDifficulty> {
     
-    private static final BigInteger BIGINT_2_64 = new BigInteger("18446744073709551616"); // 2^64, used for calcs
-    
-    
     /**
      * The maximum possible work difficulty, represented as {@code ffffffffffffffff}.
      */
-    public static final WorkDifficulty MAX_VALUE = new WorkDifficulty("ffffffffffffffff");
+    public static final WorkDifficulty MAX_VALUE = new WorkDifficulty(-1);
     
     /**
      * The minimum possible work difficulty (no work), represented as {@code 0000000000000000}.
      */
-    public static final WorkDifficulty MIN_VALUE = new WorkDifficulty(BigInteger.ZERO);
+    public static final WorkDifficulty MIN_VALUE = new WorkDifficulty(0);
     
     
-    private final BigInteger intVal;
+    private final long longVal;
     private final String hexVal;
     
     /**
-     * @param hexVal the hexadecimal absolute work difficulty value
+     * @param hexVal the absolute work difficulty value, encoded as a hexadecimal string
      */
     public WorkDifficulty(String hexVal) {
-        this(new BigInteger(hexVal, 16));
+        this(Long.parseUnsignedLong(hexVal.startsWith("0x") ? hexVal.substring(2) : hexVal, 16));
     }
     
     /**
-     * @param intVal the absolute work difficulty value as an integer
+     * @param longVal the absolute work difficulty value, encoded as an unsigned long
      */
-    public WorkDifficulty(BigInteger intVal) {
-        if (intVal.compareTo(BigInteger.ZERO) < 0)
-            throw new IllegalArgumentException("Absolute work difficulty value cannot be negative.");
-        if (MAX_VALUE != null && intVal.compareTo(MAX_VALUE.intVal) > 0)
-            throw new IllegalArgumentException("Absolute work difficulty value is above the maximum possible value.");
+    public WorkDifficulty(long longVal) {
+        this.longVal = longVal;
         
-        this.intVal = intVal;
-        this.hexVal = intVal.toString(16);
+        // Convert hex to 16 char length
+        String hex = Long.toHexString(longVal);
+        StringBuilder sb = new StringBuilder(16);
+        for (int i=0; i<(16-hex.length()); i++)
+            sb.append('0');
+        sb.append(hex);
+        this.hexVal = sb.toString();
     }
     
     
     /**
-     * @return the difficulty as an integer representation
+     * @return the absolute difficulty value, encoded as an unsigned long
      */
-    public BigInteger getAsInteger() {
-        return intVal;
+    public long getAsLong() {
+        return longVal;
     }
     
     /**
-     * @return the difficulty as a hexadecimal string
+     * @return the absolute difficulty value in hexadecimal format
      */
     public String getAsHexadecimal() {
         return hexVal;
@@ -77,12 +73,12 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         WorkDifficulty that = (WorkDifficulty)o;
-        return Objects.equals(intVal, that.intVal);
+        return Objects.equals(longVal, that.longVal);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(intVal);
+        return Objects.hash(longVal);
     }
     
     /**
@@ -91,7 +87,7 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
      */
     @Override
     public int compareTo(WorkDifficulty val) {
-        return intVal.compareTo(val.intVal);
+        return Long.compareUnsigned(longVal, val.longVal);
     }
     
     
@@ -102,47 +98,25 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
      */
     public double calculateMultiplier(WorkDifficulty baseDifficulty) {
         if (baseDifficulty == null)
-            throw new IllegalArgumentException("Minimum difficulty argument cannot be null.");
+            throw new IllegalArgumentException("Base difficulty cannot be null.");
         
-        return new BigDecimal(BIGINT_2_64.subtract(baseDifficulty.intVal))
-                .divide(new BigDecimal(BIGINT_2_64.subtract(this.intVal)), 12, RoundingMode.HALF_UP)
-                .doubleValue();
+        if (longVal == baseDifficulty.longVal) return 1;
+        return (double)(~baseDifficulty.longVal) / (~longVal);
     }
     
-    
     /**
-     * Multiplies the difficulty by the given multiplier, or returns {@link #MAX_VALUE} if the value overflows.
+     * Multiplies this difficulty by the given multiplier.
      * @param multiplier the value to multiply the difficulty by
      * @return the calculated absolute difficulty
      */
     public WorkDifficulty multiply(double multiplier) {
-        return multiply(new BigDecimal(multiplier));
-    }
-    
-    /**
-     * Multiplies the difficulty by the given multiplier, or returns {@link #MAX_VALUE} if the value overflows.
-     * @param multiplier the value to multiply the difficulty by
-     * @return the calculated absolute difficulty
-     */
-    public WorkDifficulty multiply(BigDecimal multiplier) {
-        if (multiplier == null)
-            throw new IllegalArgumentException("Multiplier argument cannot be null.");
-        if (multiplier.compareTo(BigDecimal.ZERO) < 0)
-            throw new IllegalArgumentException("Multiplier argument cannot be negative.");
-    
-        if (multiplier.equals(BigDecimal.ZERO))
-            return new WorkDifficulty(BigInteger.ZERO);
-        if (multiplier.equals(BigDecimal.ONE))
-            return this;
+        if (multiplier < 0)
+            throw new IllegalArgumentException("Difficulty multiplier cannot be negative.");
         
-        BigInteger newDiff = BIGINT_2_64.subtract(
-                new BigDecimal(BIGINT_2_64.subtract(this.intVal))
-                .divide(multiplier, 0, RoundingMode.FLOOR)
-                .toBigInteger());
-        
-        return newDiff.compareTo(MAX_VALUE.intVal) >= 0 ? MAX_VALUE : new WorkDifficulty(newDiff);
+        if (multiplier == 0) return MIN_VALUE;
+        if (multiplier == 1) return this;
+        return new WorkDifficulty(~((long)((~longVal) / multiplier)));
     }
-    
     
     
     static class WorkDifficultyJsonAdapter implements JsonSerializer<WorkDifficulty>,

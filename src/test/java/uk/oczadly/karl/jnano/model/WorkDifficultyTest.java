@@ -4,15 +4,13 @@ import com.google.gson.JsonParser;
 import org.junit.Test;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 
-import java.math.BigInteger;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class WorkDifficultyTest {
     
     static final String TEST_WORK_1 = "fffffe0000000000";
-    static final BigInteger TEST_WORK_1_INT = new BigInteger("18446741874686296064");
+    static final long TEST_WORK_1_INT = Long.parseUnsignedLong(TEST_WORK_1, 16);
     static final String TEST_WORK_2 = "fffffff800000000";
     
     
@@ -23,14 +21,14 @@ public class WorkDifficultyTest {
     
         assertEquals(TEST_WORK_1, obj1.getAsHexadecimal());
         assertEquals(TEST_WORK_1, obj2.getAsHexadecimal());
-        assertEquals(TEST_WORK_1_INT, obj1.getAsInteger());
-        assertEquals(TEST_WORK_1_INT, obj2.getAsInteger());
+        assertEquals(TEST_WORK_1_INT, obj1.getAsLong());
+        assertEquals(TEST_WORK_1_INT, obj2.getAsLong());
     }
     
     @Test
     public void testMultiplyCalculation() {
         double multiplier = new WorkDifficulty(TEST_WORK_2).calculateMultiplier(new WorkDifficulty(TEST_WORK_1));
-        assertEquals(64, multiplier, 1e-9);
+        assertEquals(64, multiplier, 1e-6);
     }
     
     @Test
