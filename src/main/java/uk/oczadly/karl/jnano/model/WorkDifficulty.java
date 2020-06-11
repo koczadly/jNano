@@ -129,9 +129,11 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
             throw new IllegalArgumentException("Multiplier argument cannot be null.");
         if (multiplier.compareTo(BigDecimal.ZERO) < 0)
             throw new IllegalArgumentException("Multiplier argument cannot be negative.");
-        
+    
         if (multiplier.equals(BigDecimal.ZERO))
             return new WorkDifficulty(BigInteger.ZERO);
+        if (multiplier.equals(BigDecimal.ONE))
+            return this;
         
         BigInteger newDiff = BIGINT_2_64.subtract(
                 new BigDecimal(BIGINT_2_64.subtract(this.intVal))
