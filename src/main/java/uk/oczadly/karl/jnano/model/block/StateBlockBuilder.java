@@ -135,7 +135,7 @@ public class StateBlockBuilder {
      * @param format   the format of the link data
      * @return this builder
      */
-    public StateBlockBuilder setLinkData(String linkData, LinkFormat format) {
+    public StateBlockBuilder setLink(String linkData, LinkFormat format) {
         this.linkData = linkData;
         this.linkFormat = (format != null) ? format : LinkFormat.RAW_HEX;
         return this;

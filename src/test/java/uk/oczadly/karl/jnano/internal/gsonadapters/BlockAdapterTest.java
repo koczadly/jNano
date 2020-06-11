@@ -8,7 +8,7 @@ import uk.oczadly.karl.jnano.model.block.*;
 import static org.junit.Assert.*;
 
 @SuppressWarnings("deprecation")
-public class BlockTypeDeserializerTest {
+public class BlockAdapterTest {
     
     private Gson gson = new GsonBuilder().create();
     

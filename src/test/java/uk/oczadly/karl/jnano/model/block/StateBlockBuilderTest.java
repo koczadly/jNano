@@ -36,7 +36,7 @@ public class StateBlockBuilderTest {
     public void testAllValues() {
         StateBlock block = newBuilder()
                 .setHash("HASH")
-                .setLinkData("LINK", StateBlockBuilder.LinkFormat.RAW_HEX)
+                .setLink("LINK", StateBlockBuilder.LinkFormat.RAW_HEX)
                 .setSignature("SIG")
                 .setWorkSolution("WORK")
                 .build();
@@ -62,19 +62,19 @@ public class StateBlockBuilderTest {
     public void testLinkFormats() {
         // Hex format
         assertEquals("LINK", newBuilder()
-                .setLinkData("LINK", StateBlockBuilder.LinkFormat.RAW_HEX)
+                .setLink("LINK", StateBlockBuilder.LinkFormat.RAW_HEX)
                 .build().getLinkData());
-        assertEquals("LINK", newBuilder().setLinkData("LINK", null).build().getLinkData());
+        assertEquals("LINK", newBuilder().setLink("LINK", null).build().getLinkData());
         
         // Account format
         assertEquals("LINK", newBuilder()
-                .setLinkData("LINK", StateBlockBuilder.LinkFormat.ACCOUNT)
+                .setLink("LINK", StateBlockBuilder.LinkFormat.ACCOUNT)
                 .build().getLinkAsAccount());
         
         // Null should default to 000000...
         assertEquals(NULL_ZERO_STRING, newBuilder().build().getLinkData());
         assertEquals(NULL_ZERO_STRING, newBuilder()
-                .setLinkData(null, null).build().getLinkData());
+                .setLink(null, null).build().getLinkData());
     }
     
 }
