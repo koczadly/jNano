@@ -14,7 +14,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponsePeers;
 public class RequestPeers extends RpcRequest<ResponsePeers> {
     
     @Expose @SerializedName("peer_details")
-    private final boolean peerDetails = false;
+    private final boolean peerDetails = true;
     
     
     public RequestPeers() {
