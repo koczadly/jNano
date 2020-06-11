@@ -2,8 +2,8 @@ package uk.oczadly.karl.jnano.rpc;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.rpc.exception.*;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
@@ -42,7 +42,7 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
             populateJsonField(responseObj, responseJson);
     
             return responseObj;
-        } catch (JsonSyntaxException ex) {
+        } catch (JsonParseException ex) {
             throw new RpcInvalidResponseException(response, ex); // If unable to parse
         }
     }
