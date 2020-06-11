@@ -15,8 +15,11 @@ import java.util.Objects;
 @JsonAdapter(WorkDifficulty.WorkDifficultyJsonAdapter.class)
 public final class WorkDifficulty implements Comparable<WorkDifficulty> {
     
-    private static final BigInteger BIGINT_2_64 = new BigInteger("18446744073709551616"); // 2^64
+    private static final BigInteger BIGINT_2_64 = new BigInteger("18446744073709551616"); // 2^64, used for calcs
     
+    /**
+     * The maximum possible work difficulty.
+     */
     public static final WorkDifficulty MAX_VALUE = new WorkDifficulty("ffffffffffffffff");
     
     private final BigInteger intVal;
@@ -43,10 +46,16 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
     }
     
     
+    /**
+     * @return the difficulty as an integer representation
+     */
     public BigInteger getAsInteger() {
         return intVal;
     }
     
+    /**
+     * @return the difficulty as a hexadecimal string
+     */
     public String getAsHexadecimal() {
         return hexVal;
     }
@@ -78,6 +87,7 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
         return intVal.compareTo(val.intVal);
     }
     
+    
     /**
      * Calculates the difficulty multiplier between the given base difficulty value and this difficulty.
      * @param baseDifficulty the base difficulty value to calculate from
@@ -92,9 +102,10 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
                 .doubleValue();
     }
     
+    
     /**
-     * Multiplies the difficulty by the given multiplier, or returns the {@link #MAX_VALUE} if the value overflows.
-     * @param multiplier the multiplier
+     * Multiplies the difficulty by the given multiplier, or returns {@link #MAX_VALUE} if the value overflows.
+     * @param multiplier the value to multiply the difficulty by
      * @return the calculated absolute difficulty
      */
     public WorkDifficulty multiply(double multiplier) {
@@ -102,8 +113,8 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
     }
     
     /**
-     * Multiplies the difficulty by the given multiplier, or returns the {@link #MAX_VALUE} if the value overflows.
-     * @param multiplier the multiplier
+     * Multiplies the difficulty by the given multiplier, or returns {@link #MAX_VALUE} if the value overflows.
+     * @param multiplier the value to multiply the difficulty by
      * @return the calculated absolute difficulty
      */
     public WorkDifficulty multiply(BigDecimal multiplier) {
