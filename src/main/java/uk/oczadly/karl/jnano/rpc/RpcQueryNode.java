@@ -55,7 +55,17 @@ public class RpcQueryNode {
      * @throws MalformedURLException if the address cannot be parsed
      */
     public RpcQueryNode() throws MalformedURLException {
-        this("127.0.0.1", 7076);
+        this(7076);
+    }
+    
+    /**
+     * Constructs a new query node with the address {@code 127.0.0.1} and the specified port.
+     *
+     * @param port the port which the node is listening on
+     * @throws MalformedURLException if the address cannot be parsed
+     */
+    public RpcQueryNode(int port) throws MalformedURLException {
+        this("127.0.0.1", port);
     }
     
     /**
