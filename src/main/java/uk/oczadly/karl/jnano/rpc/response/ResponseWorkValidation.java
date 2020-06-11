@@ -29,7 +29,7 @@ public class ResponseWorkValidation extends RpcResponse {
      * @return whether the work is valid for the given difficulty, or matches the requirements for all block types
      * @deprecated changed in V21, use appropriate replacement getter method
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated
     public boolean isValid() {
         return isValidDifficulty != null ? isValidDifficulty : isValidAll;
     }
