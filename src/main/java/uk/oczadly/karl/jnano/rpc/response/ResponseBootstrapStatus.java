@@ -22,7 +22,7 @@ public class ResponseBootstrapStatus extends RpcResponse {
     @Expose @SerializedName("connections")
     private Connections connections;
     
-    @Expose @SerializedName("connections")
+    @Expose @SerializedName("attempts")
     private List<Attempt> attempts;
     
     
