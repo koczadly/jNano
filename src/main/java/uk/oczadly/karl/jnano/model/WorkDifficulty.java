@@ -17,10 +17,17 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
     
     private static final BigInteger BIGINT_2_64 = new BigInteger("18446744073709551616"); // 2^64, used for calcs
     
+    
     /**
-     * The maximum possible work difficulty.
+     * The maximum possible work difficulty, represented as {@code ffffffffffffffff}.
      */
     public static final WorkDifficulty MAX_VALUE = new WorkDifficulty("ffffffffffffffff");
+    
+    /**
+     * The minimum possible work difficulty (no work), represented as {@code 0000000000000000}.
+     */
+    public static final WorkDifficulty MIN_VALUE = new WorkDifficulty(BigInteger.ZERO);
+    
     
     private final BigInteger intVal;
     private final String hexVal;
