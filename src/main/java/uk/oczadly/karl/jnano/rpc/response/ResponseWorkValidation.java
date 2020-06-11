@@ -35,9 +35,10 @@ public class ResponseWorkValidation extends RpcResponse {
     }
     
     /**
-     * @return true if the given work is valid for the given difficulty
+     * @return true if the given work is valid for the given difficulty, or null if no comparative difficulty was
+     * sent with the request.
      */
-    public boolean isValidDifficulty() {
+    public Boolean isValidDifficulty() {
         return isValidDifficulty;
     }
     
