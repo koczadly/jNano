@@ -29,22 +29,22 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
         JsonObject responseJson;
         try {
             responseJson = JsonParser.parseString(response).getAsJsonObject(); // Parse response
+    
+            // Check for returned RPC error
+            JsonElement errorElement = responseJson.get("error");
+            if (errorElement != null)
+                throw parseException(errorElement.getAsString());
+    
+            // Deserialize response
+            R responseObj = JNanoHelper.GSON.fromJson(responseJson, responseClass); // Deserialize from JSON
+    
+            // Populate original json object
+            populateJsonField(responseObj, responseJson);
+    
+            return responseObj;
         } catch (JsonSyntaxException ex) {
             throw new RpcInvalidResponseException(response, ex); // If unable to parse
         }
-    
-        // Check for returned RPC error
-        JsonElement errorElement = responseJson.get("error");
-        if (errorElement != null)
-            throw parseException(errorElement.getAsString());
-        
-        // Deserialize response
-        R responseObj = JNanoHelper.GSON.fromJson(responseJson, responseClass); // Deserialize from JSON
-        
-        // Populate original json object
-        populateJsonField(responseObj, responseJson);
-        
-        return responseObj;
     }
     
     
