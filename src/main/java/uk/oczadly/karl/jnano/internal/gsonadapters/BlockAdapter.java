@@ -6,10 +6,15 @@ import uk.oczadly.karl.jnano.model.block.BlockDeserializer;
 
 import java.lang.reflect.Type;
 
-public class BlockTypeDeserializer implements JsonDeserializer<Block> {
+public class BlockAdapter implements JsonSerializer<Block>, JsonDeserializer<Block> {
     
     private static final BlockDeserializer blockDeserializer = new BlockDeserializer();
     
+    
+    @Override
+    public JsonElement serialize(Block src, Type typeOfSrc, JsonSerializationContext context) {
+        return src.getJsonObject();
+    }
     
     @Override
     public Block deserialize(JsonElement element, Type type, JsonDeserializationContext context)

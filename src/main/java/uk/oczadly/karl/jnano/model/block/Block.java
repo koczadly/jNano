@@ -5,9 +5,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
-import uk.oczadly.karl.jnano.internal.gsonadapters.BlockTypeDeserializer;
+import uk.oczadly.karl.jnano.internal.gsonadapters.BlockAdapter;
 
-@JsonAdapter(BlockTypeDeserializer.class)
+@JsonAdapter(BlockAdapter.class)
 public abstract class Block {
     
     @Expose @SerializedName("hash")
