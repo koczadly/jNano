@@ -47,6 +47,31 @@ public class AccountAddressTest {
     }
     
     @Test
+    public void testClone() {
+        AccountAddress addr1 = AccountAddress.parseAddress(ACC_1_ADDR);
+        AccountAddress addr2 = new AccountAddress(addr1);
+        
+        assertEquals(addr1.getPrefix(), addr2.getPrefix());
+        assertArrayEquals(addr1.getPublicKeyBytes(), addr2.getPublicKeyBytes());
+        assertArrayEquals(addr1.getChecksumBytes(), addr2.getChecksumBytes());
+        assertEquals(addr1.getAsAddress(), addr2.getAsAddress());
+        assertEquals(addr1.getAddressSegment(), addr2.getAddressSegment());
+        assertEquals(addr1.getAddressChecksumSegment(), addr2.getAddressChecksumSegment());
+        assertEquals(addr1.getAsPublicKey(), addr2.getAsPublicKey());
+        assertEquals(addr1, addr2);
+    }
+    
+    @Test
+    public void testCloneWithPrefix() {
+        AccountAddress addr1 = AccountAddress.parseAddress(ACC_1_ADDR);
+        addr1.getAsAddress(); // Preload value
+        AccountAddress addr2 = new AccountAddress(addr1, "slug");
+        
+        assertEquals("slug", addr2.getPrefix());
+        assertEquals("slug_" + ACC_1_ADDRSEG + ACC_1_CHECKSUM, addr2.getAsAddress());
+    }
+    
+    @Test
     public void testValidityChecks() {
         assertTrue(AccountAddress.isValid(ACC_1_ADDR)); // No prefix specified
         assertTrue(AccountAddress.isValid(ACC_1_ADDR, ACC_1_PREFIX)); // Right prefix

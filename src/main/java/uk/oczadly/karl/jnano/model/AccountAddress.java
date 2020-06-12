@@ -53,7 +53,7 @@ public final class AccountAddress {
      * @param newPrefix the prefix to assign
      */
     public AccountAddress(AccountAddress address, String newPrefix) {
-        this(newPrefix, address.keyBytes, address.checksumBytes, address.cachedAddress, address.publicKeyHex,
+        this(newPrefix, address.keyBytes, address.checksumBytes, null, address.publicKeyHex,
                 address.segAddress, address.segChecksum);
     }
     
