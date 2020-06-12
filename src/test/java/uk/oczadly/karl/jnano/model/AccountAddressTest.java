@@ -40,9 +40,9 @@ public class AccountAddressTest {
                         .getAsPublicKey());
         
         // Test invalid checksums
-        assertThrows(AccountAddress.AccountAddressFormatException.class,
+        assertThrows(AccountAddress.AddressFormatException.class,
                 () -> AccountAddress.parseAddress(INVALID_ADDR));
-        assertThrows(AccountAddress.AccountAddressFormatException.class,
+        assertThrows(AccountAddress.AddressFormatException.class,
                 () -> AccountAddress.parseAddressSegment(ACC_1_ADDRSEG, ACC_1_PREFIX, INVALID_CHECKSUM));
     }
     

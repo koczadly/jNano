@@ -188,7 +188,7 @@ public final class AccountAddress {
      * @return the created address object
      */
     public static AccountAddress parseAddress(String address) {
-        if (address.length() < 60) throw new AccountAddressFormatException("Address string is too short.");
+        if (address.length() < 60) throw new AddressFormatException("Address string is too short.");
         
         int separatorIndex = address.indexOf(PREFIX_SEPARATOR_CHAR);
         return parseAddressSegment(
@@ -227,14 +227,14 @@ public final class AccountAddress {
      * @param prefix   the protocol identifier prefix to use (without separator), or null for no prefix
      * @param checksum the checksum to compare, or null for no comparison
      * @return the created address object
-     * @throws AccountAddressFormatException if the address does not meet the required format criteria
+     * @throws AddressFormatException if the address does not meet the required format criteria
      */
     public static AccountAddress parseAddressSegment(String address, String prefix, String checksum) {
         if (address == null) throw new IllegalArgumentException("Address argument cannot be null.");
         if (address.length() != 52)
-            throw new AccountAddressFormatException("Address string must be 52 characters long.");
+            throw new AddressFormatException("Address string must be 52 characters long.");
         if (checksum != null && checksum.length() != 8)
-            throw new AccountAddressFormatException("Expected checksum string must be 8 characters long.");
+            throw new AddressFormatException("Expected checksum string must be 8 characters long.");
         
         // Preprocess
         address = address.toLowerCase();
@@ -248,7 +248,7 @@ public final class AccountAddress {
         
         // Verify checksum (if provided)
         if (checksum != null && !checksum.equals(createdAddr.getAddressChecksumSegment()))
-            throw new AccountAddressFormatException("Provided checksum did not match the computed checksum.");
+            throw new AddressFormatException("Provided checksum did not match the computed checksum.");
         
         return createdAddr;
     }
@@ -258,7 +258,7 @@ public final class AccountAddress {
      * 64-character hexadecimal string (eg. {@code 8AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97}).
      * @param key the public key of the account, encoded in hexadecimal
      * @return the created address object
-     * @throws AccountAddressFormatException if the address does not meet the required format criteria
+     * @throws AddressFormatException if the address does not meet the required format criteria
      */
     public static AccountAddress parsePublicKey(String key) {
         return parsePublicKey(key, DEFAULT_PREFIX);
@@ -270,11 +270,11 @@ public final class AccountAddress {
      * @param key    the public key of the account, encoded in hexadecimal
      * @param prefix the protocol identifier prefix to use (without separator), or null for no prefix
      * @return the created address object
-     * @throws AccountAddressFormatException if the address does not meet the required format criteria
+     * @throws AddressFormatException if the address does not meet the required format criteria
      */
     public static AccountAddress parsePublicKey(String key, String prefix) {
         if (key == null) throw new IllegalArgumentException("Public key argument cannot be null.");
-        if (key.length() != 64) throw new AccountAddressFormatException("Key string must be 64 characters long.");
+        if (key.length() != 64) throw new AddressFormatException("Key string must be 64 characters long.");
         
         // Preprocess
         key = key.toUpperCase();
@@ -308,7 +308,7 @@ public final class AccountAddress {
         try {
             AccountAddress addr = parseAddress(address);
             return prefix == null || prefix.equalsIgnoreCase(addr.getPrefix());
-        } catch (AccountAddressFormatException e) {
+        } catch (AddressFormatException e) {
             return false;
         }
     }
@@ -323,7 +323,7 @@ public final class AccountAddress {
         try {
             parseAddressSegment(addressSegment, null, checksum);
             return true;
-        } catch (AccountAddressFormatException e) {
+        } catch (AddressFormatException e) {
             return false;
         }
     }
@@ -351,10 +351,10 @@ public final class AccountAddress {
         try {
             keyBytes = decoder.decode(str);
         } catch (IllegalArgumentException e) { // Catch illegal characters
-            throw new AccountAddressFormatException(e);
+            throw new AddressFormatException(e);
         }
         if (keyBytes.length != 32)
-            throw new AccountAddressFormatException("Address/key bytes could not be decoded.");
+            throw new AddressFormatException("Address/key bytes could not be decoded.");
         return keyBytes;
     }
     
@@ -378,16 +378,16 @@ public final class AccountAddress {
         }
     }
     
-    public static class AccountAddressFormatException extends IllegalArgumentException {
-        public AccountAddressFormatException() {
+    public static class AddressFormatException extends IllegalArgumentException {
+        public AddressFormatException() {
             super();
         }
     
-        public AccountAddressFormatException(String msg) {
+        public AddressFormatException(String msg) {
             super(msg);
         }
     
-        public AccountAddressFormatException(Throwable cause) {
+        public AddressFormatException(Throwable cause) {
             super(cause);
         }
     }
