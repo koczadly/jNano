@@ -93,7 +93,7 @@ public final class AccountAddress {
         if (checksumBytes == null) {
             synchronized (this) {
                 if (checksumBytes == null)
-                    checksumBytes = generateChecksumBytes(keyBytes);
+                    checksumBytes = calculateChecksumBytes(keyBytes);
             }
         }
         return Arrays.copyOf(checksumBytes, checksumBytes.length);
@@ -193,7 +193,7 @@ public final class AccountAddress {
         int separatorIndex = address.indexOf(PREFIX_SEPARATOR_CHAR);
         return parseAddressSegment(
                 address.substring(address.length() - 60, address.length() - 8),
-                separatorIndex <=0 ? null : address.substring(0, separatorIndex),
+                separatorIndex <= 0 ? null : address.substring(0, separatorIndex),
                 address.substring(address.length() - 8));
     }
     
@@ -243,7 +243,7 @@ public final class AccountAddress {
         // Create object
         AccountAddress createdAddr = new AccountAddress(
                 prefix,
-                generateKeyBytes(address, JNanoHelper.ENCODER_NANO_B32),
+                calculateKeyBytes(address, JNanoHelper.ENCODER_NANO_B32),
                 address, null);
         
         // Verify checksum (if provided)
@@ -282,7 +282,7 @@ public final class AccountAddress {
         // Create and return
         return new AccountAddress(
                 prefix,
-                generateKeyBytes(key, JNanoHelper.ENCODER_HEX),
+                calculateKeyBytes(key, JNanoHelper.ENCODER_HEX),
                 null, key);
     }
     
@@ -329,8 +329,8 @@ public final class AccountAddress {
     }
     
     
-    /** Helper method to generate checksum bytes from a public key. */
-    private static byte[] generateChecksumBytes(byte[] keyBytes) {
+    /** Helper method to calculate checksum bytes from a public key. */
+    private static byte[] calculateChecksumBytes(byte[] keyBytes) {
         //Digest
         Blake2b digest = new Blake2b(null, 5, null, null); //Blake2b algorithm, 5 bytes length
         digest.update(keyBytes, 0, keyBytes.length);
@@ -345,7 +345,8 @@ public final class AccountAddress {
         return rev;
     }
     
-    private static byte[] generateKeyBytes(String str, BaseEncoder decoder) {
+    /** Helper method to calculate bytes from an encoded address. */
+    private static byte[] calculateKeyBytes(String str, BaseEncoder decoder) {
         byte[] keyBytes;
         try {
             keyBytes = decoder.decode(str);
