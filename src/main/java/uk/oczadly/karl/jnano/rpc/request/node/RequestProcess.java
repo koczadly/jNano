@@ -61,7 +61,7 @@ public class RequestProcess extends RpcRequest<ResponseBlockHash> {
     /**
      * @param blockJson the block's JSON contents
      * @param force     (optional) whether fork resolution should be forced
-     * @param watchWork (optional) the subtype of the block
+     * @param watchWork (optional) whether the block should be placed on watch for confirmation
      * @param subtype   (optional) the subtype of the block
      */
     public RequestProcess(String blockJson, Boolean force, Boolean watchWork, String subtype) {
