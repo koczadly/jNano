@@ -2,6 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.AccountAddress;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseValidation;
 
@@ -10,7 +11,10 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseValidation;
  * <br>Calls the RPC command {@code validate_account_number}, and returns a {@link ResponseValidation} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#validate_account_number">Official RPC documentation</a>
+ *
+ * @deprecated Use of {@link AccountAddress} class is preferred, and provides native checksum validation.
  */
+@Deprecated
 public class RequestValidateAccount extends RpcRequest<ResponseValidation> {
     
     @Expose @SerializedName("account")
