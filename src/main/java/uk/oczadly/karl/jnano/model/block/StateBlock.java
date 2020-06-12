@@ -3,6 +3,7 @@ package uk.oczadly.karl.jnano.model.block;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.AccountAddress;
 
 import java.math.BigInteger;
 
@@ -13,13 +14,13 @@ import java.math.BigInteger;
 public final class StateBlock extends Block {
     
     @Expose @SerializedName("account")
-    private String accountAddress;
+    private AccountAddress accountAddress;
     
     @Expose @SerializedName("previous")
     private String previousBlockHash;
     
     @Expose @SerializedName("representative")
-    private String representativeAddress;
+    private AccountAddress representativeAddress;
     
     @Expose @SerializedName("balance")
     private BigInteger balance;
@@ -28,7 +29,7 @@ public final class StateBlock extends Block {
     private String linkData;
     
     @Expose @SerializedName("link_as_account")
-    private String linkAccount;
+    private AccountAddress linkAccount;
     
     @Expose @SerializedName("subtype")
     private StateBlockSubType subType;
@@ -36,31 +37,6 @@ public final class StateBlock extends Block {
     
     StateBlock() {
         super(BlockType.STATE);
-    }
-    
-    /**
-     * Constructs a new state block.
-     *
-     * @param jsonRepresentation    the JSON representation if deserialized, or null
-     * @param hash                  the block's hash
-     * @param signature             the block verification signature
-     * @param workSolution          the computed work solution
-     * @param accountAddress        the account's address
-     * @param previousBlockHash     the previous block's hash
-     * @param representativeAddress the representative address of this account
-     * @param balance               the (newly updated) balance, in raw
-     * @param linkData              the link data for this transaction
-     * @param linkAccount           the link data for this transaction, specified in the account address format
-     * @see StateBlockBuilder
-     * @deprecated Use of this constructor is not advised. Use the provided {@link StateBlockBuilder} to construct state
-     * blocks.
-     */
-    @Deprecated(forRemoval = true)
-    public StateBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
-                      String accountAddress, String previousBlockHash, String representativeAddress, BigInteger balance,
-                      String linkData, String linkAccount) {
-        this(jsonRepresentation, null, hash, signature, workSolution, accountAddress, previousBlockHash,
-                representativeAddress, balance, linkData, linkAccount);
     }
     
     /**
@@ -80,8 +56,8 @@ public final class StateBlock extends Block {
      * @see StateBlockBuilder
      */
     StateBlock(JsonObject jsonRepresentation, StateBlockSubType subtype, String hash, String signature,
-               String workSolution, String accountAddress, String previousBlockHash, String representativeAddress,
-               BigInteger balance, String linkData, String linkAccount) {
+               String workSolution, AccountAddress accountAddress, String previousBlockHash,
+               AccountAddress representativeAddress, BigInteger balance, String linkData, AccountAddress linkAccount) {
         super(BlockType.STATE, hash, jsonRepresentation, signature, workSolution);
         this.subType = subtype;
         this.accountAddress = accountAddress;
@@ -93,7 +69,7 @@ public final class StateBlock extends Block {
     }
     
     
-    public String getAccountAddress() {
+    public AccountAddress getAccountAddress() {
         return accountAddress;
     }
     
@@ -101,7 +77,7 @@ public final class StateBlock extends Block {
         return previousBlockHash;
     }
     
-    public String getRepresentativeAddress() {
+    public AccountAddress getRepresentativeAddress() {
         return representativeAddress;
     }
     
@@ -113,7 +89,7 @@ public final class StateBlock extends Block {
         return linkData;
     }
     
-    public String getLinkAsAccount() {
+    public AccountAddress getLinkAsAccount() {
         return linkAccount;
     }
     

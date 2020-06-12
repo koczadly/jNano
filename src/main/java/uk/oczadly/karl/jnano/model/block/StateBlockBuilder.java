@@ -1,5 +1,7 @@
 package uk.oczadly.karl.jnano.model.block;
 
+import uk.oczadly.karl.jnano.model.AccountAddress;
+
 import java.math.BigInteger;
 
 /**
@@ -10,12 +12,14 @@ import java.math.BigInteger;
  */
 public class StateBlockBuilder {
     
+    private static final String NULL_DATA = "0000000000000000000000000000000000000000000000000000000000000000";
+    
     private StateBlockSubType subtype;
-    private String accountAddress;
+    private AccountAddress accountAddress;
     private String previousBlockHash;
-    private String representativeAddress;
+    private AccountAddress representativeAddress;
     private BigInteger balance;
-    private LinkFormat linkFormat;
+    private AccountAddress linkAccount;
     private String linkData;
     private String hash;
     private String signature;
@@ -31,8 +35,8 @@ public class StateBlockBuilder {
      * @param representativeAddress the representative for this account
      * @param balance               the (newly updated) balance of this account
      */
-    public StateBlockBuilder(StateBlockSubType subtype, String accountAddress, String previousBlockHash,
-                             String representativeAddress, BigInteger balance) {
+    public StateBlockBuilder(StateBlockSubType subtype, AccountAddress accountAddress, String previousBlockHash,
+                             AccountAddress representativeAddress, BigInteger balance) {
         setSubtype(subtype);
         setAccountAddress(accountAddress);
         setPreviousBlockHash(previousBlockHash);
@@ -80,11 +84,11 @@ public class StateBlockBuilder {
         return this;
     }
     
-    public String getAccountAddress() {
+    public AccountAddress getAccountAddress() {
         return accountAddress;
     }
     
-    public StateBlockBuilder setAccountAddress(String accountAddress) {
+    public StateBlockBuilder setAccountAddress(AccountAddress accountAddress) {
         if (accountAddress == null)
             throw new IllegalArgumentException("Account address argument cannot be null.");
         
@@ -104,11 +108,11 @@ public class StateBlockBuilder {
         return this;
     }
     
-    public String getRepresentativeAddress() {
+    public AccountAddress getRepresentativeAddress() {
         return representativeAddress;
     }
     
-    public StateBlockBuilder setRepresentativeAddress(String representativeAddress) {
+    public StateBlockBuilder setRepresentativeAddress(AccountAddress representativeAddress) {
         if (representativeAddress == null)
             throw new IllegalArgumentException("Representative address argument cannot be null.");
         
@@ -131,13 +135,12 @@ public class StateBlockBuilder {
     }
     
     /**
-     * @param linkData the link data in the format specified
-     * @param format   the format of the link data
+     * @param linkData the link data, in hexadecimal format
      * @return this builder
      */
-    public StateBlockBuilder setLink(String linkData, LinkFormat format) {
+    public StateBlockBuilder setLinkData(String linkData) {
         this.linkData = linkData;
-        this.linkFormat = (format != null) ? format : LinkFormat.RAW_HEX;
+        this.linkAccount = null;
         return this;
     }
     
@@ -145,8 +148,18 @@ public class StateBlockBuilder {
         return linkData;
     }
     
-    public LinkFormat getLinkFormat() {
-        return linkFormat;
+    /**
+     * @param linkAccount the link data, as an account
+     * @return this builder
+     */
+    public StateBlockBuilder setLinkAccount(AccountAddress linkAccount) {
+        this.linkAccount = linkAccount;
+        this.linkData = null;
+        return this;
+    }
+    
+    public AccountAddress getLinkAccount() {
+        return linkAccount;
     }
     
     
@@ -154,35 +167,11 @@ public class StateBlockBuilder {
      * @return a new instance of the {@link StateBlock} class using the configured parameters
      */
     public StateBlock build() {
-        // Process link data
-        String processedLinkData = linkData;
-        LinkFormat processedLinkFormat = linkFormat;
-        if (linkData == null) {
-            processedLinkData = "0000000000000000000000000000000000000000000000000000000000000000";
-            processedLinkFormat = LinkFormat.RAW_HEX;
-        }
-        
         // Construct
         return new StateBlock(null, subtype, hash, signature, workSolution, accountAddress,
                 previousBlockHash, representativeAddress, balance,
-                (processedLinkFormat == LinkFormat.RAW_HEX) ? processedLinkData : null,
-                (processedLinkFormat == LinkFormat.ACCOUNT) ? processedLinkData : null);
-    }
-    
-    
-    /**
-     * The format of the specified link data.
-     */
-    public enum LinkFormat {
-        /**
-         * Raw hexadecimal format.
-         */
-        RAW_HEX,
-        
-        /**
-         * Account address format, including address prefix.
-         */
-        ACCOUNT
+                (linkAccount == null && linkData == null) ? NULL_DATA : linkData,
+                linkAccount);
     }
     
 }

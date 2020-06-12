@@ -2,6 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.AccountAddress;
 import uk.oczadly.karl.jnano.model.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.block.BlockType;
 import uk.oczadly.karl.jnano.model.block.StateBlock;
@@ -30,7 +31,7 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
     private final BigInteger balance;
     
     @Expose @SerializedName("representative")
-    private final String representative;
+    private final AccountAddress representative;
     
     @Expose @SerializedName("previous")
     private final String previous;
@@ -39,7 +40,7 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
     private final String walletId;
     
     @Expose @SerializedName("account")
-    private final String account;
+    private final AccountAddress account;
     
     @Expose @SerializedName("key")
     private final String privateKey;
@@ -48,7 +49,7 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
     private final String sourceBlock;
     
     @Expose @SerializedName("destination")
-    private final String destination;
+    private final AccountAddress destination;
     
     @Expose @SerializedName("link")
     private final String linkData;
@@ -60,9 +61,10 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
     private final WorkDifficulty workDifficulty;
     
     
-    private RequestBlockCreate(BigInteger balance, String representative, String previous, String walletId,
-                               String account, String privateKey, String sourceBlock, String destination,
-                               String linkData, String work, WorkDifficulty workDifficulty) {
+    private RequestBlockCreate(BigInteger balance, AccountAddress representative, String previous, String walletId,
+                               AccountAddress account, String privateKey, String sourceBlock,
+                               AccountAddress destination, String linkData, String work,
+                               WorkDifficulty workDifficulty) {
         super("block_create", ResponseBlockCreate.class);
         this.balance = balance;
         this.representative = representative;
@@ -88,7 +90,7 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
     /**
      * @return the requested block's representative field
      */
-    public String getRepresentative() {
+    public AccountAddress getRepresentative() {
         return representative;
     }
     
@@ -109,7 +111,7 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
     /**
      * @return the requested account to sign the block
      */
-    public String getAccount() {
+    public AccountAddress getAccount() {
         return account;
     }
     
@@ -130,7 +132,7 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
     /**
      * @return the requested block's destination field
      */
-    public String getDestination() {
+    public AccountAddress getDestination() {
         return destination;
     }
     
@@ -158,13 +160,13 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
     
     public static class Builder {
         private BigInteger balance;
-        private String representative;
+        private AccountAddress representative;
         private String previous;
         private String walletId;
-        private String account;
+        private AccountAddress account;
         private String privKey;
         private String sourceBlock;
-        private String destination;
+        private AccountAddress destination;
         private String link;
         private String work;
         private WorkDifficulty workDifficulty;
@@ -195,7 +197,7 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
          * @param representative the representative address
          * @param previous       the previous block's hash
          */
-        public Builder(BigInteger balance, String representative, String previous) {
+        public Builder(BigInteger balance, AccountAddress representative, String previous) {
             this.balance = balance;
             this.representative = representative;
             this.previous = previous;
@@ -211,11 +213,11 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
             return this;
         }
         
-        public String getRepresentative() {
+        public AccountAddress getRepresentative() {
             return representative;
         }
         
-        public Builder setRepresentative(String representative) {
+        public Builder setRepresentative(AccountAddress representative) {
             this.representative = representative;
             return this;
         }
@@ -238,11 +240,11 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
             return this;
         }
         
-        public String getAccount() {
+        public AccountAddress getAccount() {
             return account;
         }
         
-        public Builder setAccount(String account) {
+        public Builder setAccount(AccountAddress account) {
             this.account = account;
             return this;
         }
@@ -265,11 +267,11 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
             return this;
         }
         
-        public String getDestination() {
+        public AccountAddress getDestination() {
             return destination;
         }
         
-        public Builder setDestination(String destination) {
+        public Builder setDestination(AccountAddress destination) {
             this.destination = destination;
             return this;
         }
