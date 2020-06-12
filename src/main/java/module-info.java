@@ -18,5 +18,6 @@ module uk.oczadly.karl.jnano {
     
     //Dependencies
     requires com.google.gson;
+    requires blake2b;
     
 }
