@@ -1,10 +1,11 @@
 package uk.oczadly.karl.jnano.util;
 
+import uk.oczadly.karl.jnano.internal.JNanoHelper;
+
 import java.security.SecureRandom;
 
-public class WalletUtil {
-    
-    private static final char[] HEX_CHARS_UC = "0123456789ABCDEF".toCharArray();
+public final class WalletUtil {
+    private WalletUtil() {}
     
     
     /**
@@ -24,8 +25,8 @@ public class WalletUtil {
      */
     public static String generateRandomSeed(SecureRandom random) {
         StringBuilder seed = new StringBuilder(64);
-        for (int i = 0; i < 64; i++)
-            seed.append(HEX_CHARS_UC[random.nextInt(16)]);
+        for (int i=0; i<64; i++)
+            seed.append(JNanoHelper.HEX_CHARS_UC[random.nextInt(16)]);
         return seed.toString();
     }
     
