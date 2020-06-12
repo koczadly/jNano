@@ -1,5 +1,7 @@
 package uk.oczadly.karl.jnano.util;
 
+import uk.oczadly.karl.jnano.model.AccountAddress;
+
 public final class NanoConstants {
     private NanoConstants() {}
     
@@ -7,13 +9,14 @@ public final class NanoConstants {
     /**
      * The genesis account's address on the live Nano network.
      */
-    public static final String ADDRESS_GENESIS_LIVE =
-            "nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3";
+    public static final AccountAddress ADDRESS_GENESIS_LIVE =
+            AccountAddress.parseAddress("nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3");
     
     /**
      * The official designated burn address. Funds sent to this address will be permanently irretrievable.
      */
-    public static final String ADDRESS_BURN = "nano_1111111111111111111111111111111111111111111111111111hifc8npp";
+    public static final AccountAddress ADDRESS_BURN =
+            AccountAddress.parseAddress("nano_1111111111111111111111111111111111111111111111111111hifc8npp");
     
     
     /**
