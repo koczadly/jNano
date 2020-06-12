@@ -2,6 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.AccountAddress;
 
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
@@ -12,7 +13,7 @@ import java.util.LinkedHashMap;
 public class ResponseLedger extends RpcResponse {
     
     @Expose @SerializedName("accounts")
-    private LinkedHashMap<String, AccountInfo> accounts;
+    private LinkedHashMap<AccountAddress, AccountInfo> accounts;
     
     
     /**
@@ -20,7 +21,7 @@ public class ResponseLedger extends RpcResponse {
      *
      * @return a map of accounts and their details
      */
-    public LinkedHashMap<String, AccountInfo> getAccounts() {
+    public LinkedHashMap<AccountAddress, AccountInfo> getAccounts() {
         return accounts;
     }
     
@@ -28,8 +29,8 @@ public class ResponseLedger extends RpcResponse {
      * @param account an account's address
      * @return the account's details
      */
-    public AccountInfo getAccount(String account) {
-        return accounts.get(account.toLowerCase());
+    public AccountInfo getAccount(AccountAddress account) {
+        return accounts.get(account);
     }
     
     

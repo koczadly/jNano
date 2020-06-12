@@ -2,6 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.AccountAddress;
 
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
@@ -14,7 +15,7 @@ import java.util.Set;
 public class ResponseMultiAccountsPending extends RpcResponse {
     
     @Expose @SerializedName("blocks")
-    private Map<String, LinkedHashMap<String, PendingBlock>> blocks;
+    private Map<AccountAddress, LinkedHashMap<String, PendingBlock>> blocks;
     
     
     /**
@@ -22,7 +23,7 @@ public class ResponseMultiAccountsPending extends RpcResponse {
      *
      * @return a map of pending blocks
      */
-    public Map<String, LinkedHashMap<String, PendingBlock>> getPendingBlocks() {
+    public Map<AccountAddress, LinkedHashMap<String, PendingBlock>> getPendingBlocks() {
         return blocks;
     }
     
@@ -32,15 +33,15 @@ public class ResponseMultiAccountsPending extends RpcResponse {
      * @param accountAddress an account's address
      * @return a map of pending blocks for the specified account, or null if not present in the response
      */
-    public Map<String, PendingBlock> getPendingBlocks(String accountAddress) {
-        return blocks.get(accountAddress.toLowerCase());
+    public Map<String, PendingBlock> getPendingBlocks(AccountAddress accountAddress) {
+        return blocks.get(accountAddress);
     }
     
     /**
      * @param accountAddress an account's address
      * @return a set of pending block hashes for the specified account, or null if not present in the response
      */
-    public Set<String> getPendingBlockHashes(String accountAddress) {
+    public Set<String> getPendingBlockHashes(AccountAddress accountAddress) {
         Map<String, PendingBlock> accountBlocks = this.getPendingBlocks(accountAddress);
         return accountBlocks != null ? accountBlocks.keySet() : null;
     }
