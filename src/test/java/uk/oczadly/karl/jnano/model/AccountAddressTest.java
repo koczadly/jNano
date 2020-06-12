@@ -68,16 +68,6 @@ public class AccountAddressTest {
     }
     
     @Test
-    public void testChangePrefix() {
-        AccountAddress addr = AccountAddress.parsePublicKey(ACC_1_PUBKEY, ACC_1_PREFIX);
-        assertEquals(ACC_1_PREFIX, addr.getPrefix());
-        assertEquals(ACC_1_ADDR, addr.getAsAddress());
-        addr.setPrefix("ban");
-        assertEquals("ban", addr.getPrefix());
-        assertTrue(addr.getAsAddress().startsWith("ban_"));
-    }
-    
-    @Test
     public void testEquality() {
         AccountAddress addr1 = AccountAddress.parsePublicKey(ACC_1_PUBKEY);
         AccountAddress addr2 = AccountAddress.parsePublicKey(ACC_1_PUBKEY);

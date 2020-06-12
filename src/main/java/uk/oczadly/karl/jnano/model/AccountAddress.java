@@ -11,8 +11,8 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * <p>This class represents a Nano account address string. A wide range of native utilities are provided through the
- * methods of this class, without needing to configure or connect to an external node.</p>
+ * <p>This class represents an immutable Nano account address string. A wide range of native utilities are provided
+ * through the methods of this class, without needing to configure or connect to an external node.</p>
  * <p>To instantiate this class, use the provided static methods (eg. {@link #parseAddress(String)}), or use the
  * constructor to clone an existing object.</p>
  */
@@ -31,7 +31,7 @@ public final class AccountAddress {
     public static final char PREFIX_SEPARATOR_CHAR = '_';
     
     
-    private String prefix;
+    private final String prefix;
     private final byte[] keyBytes;
     
     // Values below may be initialized lazily
@@ -39,11 +39,21 @@ public final class AccountAddress {
     private volatile String cachedAddress, publicKeyHex, segAddress, segChecksum;
     
     /**
-     * Clones an {@link AccountAddress} object.
+     * Clones an existing {@link AccountAddress} object.
      * @param address the address to clone
      */
     public AccountAddress(AccountAddress address) {
         this(address.prefix, address.keyBytes, address.checksumBytes, address.cachedAddress, address.publicKeyHex,
+                address.segAddress, address.segChecksum);
+    }
+    
+    /**
+     * Clones an existing {@link AccountAddress} object, but using a different prefix.
+     * @param address   the address to clone
+     * @param newPrefix the prefix to assign
+     */
+    public AccountAddress(AccountAddress address, String newPrefix) {
+        this(newPrefix, address.keyBytes, address.checksumBytes, address.cachedAddress, address.publicKeyHex,
                 address.segAddress, address.segChecksum);
     }
     
@@ -68,15 +78,6 @@ public final class AccountAddress {
      */
     public String getPrefix() {
         return prefix;
-    }
-    
-    /**
-     * Sets the prefix of this address.
-     * @param prefix the prefix to use, without the separator
-     */
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-        this.cachedAddress = null; // Clear cache
     }
     
     /**
