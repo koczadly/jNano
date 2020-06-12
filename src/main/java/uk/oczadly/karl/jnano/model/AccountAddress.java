@@ -202,7 +202,7 @@ public final class AccountAddress {
      * Creates a new {@link AccountAddress} from a given address segment, using the default prefix. The segment
      * excludes the initial prefix and checksum (the last 8 characters), (eg.
      * {@code 34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6q}).
-     * @param address the account address segment
+     * @param address the 52-character account address segment
      * @return the created address object
      */
     public static AccountAddress parseAddressSegment(String address) {
@@ -212,7 +212,7 @@ public final class AccountAddress {
     /**
      * Creates a new {@link AccountAddress} from a given address segment and prefix. The segment excludes the initial
      * prefix and checksum (the last 8 characters), (eg. {@code 34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6q}).
-     * @param address the account address segment
+     * @param address the 52-character account address segment
      * @param prefix  the protocol identifier prefix to use (without separator), or null for no prefix
      * @return the created address object
      */
@@ -224,9 +224,9 @@ public final class AccountAddress {
      * Creates a new {@link AccountAddress} from a given address segment and prefix, and validates the checksum. The
      * segment excludes the initial prefix and checksum (the last 8 characters), (eg.
      * {@code 34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6q}).
-     * @param address  the account address segment
+     * @param address  the 52-character account address segment
      * @param prefix   the protocol identifier prefix to use (without separator), or null for no prefix
-     * @param checksum the checksum to compare, or null for no comparison
+     * @param checksum the 8-character checksum to compare, or null for no comparison
      * @return the created address object
      * @throws AddressFormatException if the address does not meet the required format criteria
      */
