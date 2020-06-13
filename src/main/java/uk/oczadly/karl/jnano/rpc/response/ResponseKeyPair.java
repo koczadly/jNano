@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.model.AccountAddress;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 /**
  * This response class contains information about an account's keys.
@@ -45,10 +45,10 @@ public class ResponseKeyPair extends RpcResponse {
     }
     
     /**
-     * @return an {@link AccountAddress} object representing the account returned
+     * @return an {@link NanoAccount} object representing the account returned
      */
-    public AccountAddress getAddress() {
-        return AccountAddress.parse(getAccountAddress());
+    public NanoAccount getAddress() {
+        return NanoAccount.parse(getAccountAddress());
     }
     
 }

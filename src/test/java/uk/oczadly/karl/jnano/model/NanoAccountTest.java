@@ -6,7 +6,7 @@ import uk.oczadly.karl.jnano.internal.JNanoHelper;
 
 import static org.junit.Assert.*;
 
-public class AccountAddressTest {
+public class NanoAccountTest {
     
     static final String ACC_1_PREFIX = "ban";
     static final String ACC_1_ADDR = "ban_38qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qwax3wk9c";
@@ -26,31 +26,31 @@ public class AccountAddressTest {
     public void testParsing() {
         // Test valid parses
         assertEquals(ACC_1_ADDR,
-                AccountAddress.parsePublicKey(ACC_1_PUBKEY, ACC_1_PREFIX).toAddress());
+                NanoAccount.parsePublicKey(ACC_1_PUBKEY, ACC_1_PREFIX).toAddress());
         
-        AccountAddress addr = AccountAddress.parse(ACC_1_ADDR);
+        NanoAccount addr = NanoAccount.parse(ACC_1_ADDR);
         assertEquals(ACC_1_ADDR, addr.toAddress());
         assertEquals(ACC_1_PREFIX, addr.getPrefix());
     
         assertEquals(ACC_1_PUBKEY,
-                AccountAddress.parseSegment(ACC_1_ADDRSEG, ACC_1_PREFIX).toPublicKey());
+                NanoAccount.parseSegment(ACC_1_ADDRSEG, ACC_1_PREFIX).toPublicKey());
     
         assertEquals(ACC_1_PUBKEY,
-                AccountAddress.parseSegment(ACC_1_ADDRSEG, ACC_1_PREFIX, ACC_1_CHECKSUM)
+                NanoAccount.parseSegment(ACC_1_ADDRSEG, ACC_1_PREFIX, ACC_1_CHECKSUM)
                         .toPublicKey());
         
         // Test invalid checksums
-        assertThrows(AccountAddress.AddressFormatException.class,
-                () -> AccountAddress.parse(INVALID_ADDR));
-        assertThrows(AccountAddress.AddressFormatException.class,
-                () -> AccountAddress.parseSegment(ACC_1_ADDRSEG, ACC_1_PREFIX, INVALID_CHECKSUM));
+        assertThrows(NanoAccount.AddressFormatException.class,
+                () -> NanoAccount.parse(INVALID_ADDR));
+        assertThrows(NanoAccount.AddressFormatException.class,
+                () -> NanoAccount.parseSegment(ACC_1_ADDRSEG, ACC_1_PREFIX, INVALID_CHECKSUM));
     }
     
     @Test
     public void testCloneWithPrefix() {
-        AccountAddress addr1 = AccountAddress.parse(ACC_1_ADDR);
+        NanoAccount addr1 = NanoAccount.parse(ACC_1_ADDR);
         addr1.toAddress(); // Preload value
-        AccountAddress addr2 = new AccountAddress(addr1, "slug");
+        NanoAccount addr2 = new NanoAccount(addr1, "slug");
         
         assertEquals("slug", addr2.getPrefix());
         assertEquals("slug_" + ACC_1_ADDRSEG + ACC_1_CHECKSUM, addr2.toAddress());
@@ -58,16 +58,16 @@ public class AccountAddressTest {
     
     @Test
     public void testValidityChecks() {
-        assertTrue(AccountAddress.isValid(ACC_1_ADDR)); // No prefix specified
-        assertTrue(AccountAddress.isValid(ACC_1_ADDR, ACC_1_PREFIX)); // Right prefix
-        assertFalse(AccountAddress.isValid(ACC_1_ADDR, "nano")); // Wrong prefix
-        assertTrue(AccountAddress.isSegmentValid(ACC_1_ADDRSEG, ACC_1_CHECKSUM));
-        assertFalse(AccountAddress.isSegmentValid(ACC_1_ADDR, INVALID_CHECKSUM));
+        assertTrue(NanoAccount.isValid(ACC_1_ADDR)); // No prefix specified
+        assertTrue(NanoAccount.isValid(ACC_1_ADDR, ACC_1_PREFIX)); // Right prefix
+        assertFalse(NanoAccount.isValid(ACC_1_ADDR, "nano")); // Wrong prefix
+        assertTrue(NanoAccount.isSegmentValid(ACC_1_ADDRSEG, ACC_1_CHECKSUM));
+        assertFalse(NanoAccount.isSegmentValid(ACC_1_ADDR, INVALID_CHECKSUM));
     }
     
     @Test
     public void testGetters() {
-        AccountAddress addr = AccountAddress.parsePublicKey(ACC_1_PUBKEY, ACC_1_PREFIX);
+        NanoAccount addr = NanoAccount.parsePublicKey(ACC_1_PUBKEY, ACC_1_PREFIX);
         assertEquals(32, addr.getPublicKeyBytes().length);
         assertEquals(5, addr.getChecksumBytes().length);
         assertEquals(ACC_1_PREFIX, addr.getPrefix());
@@ -79,9 +79,9 @@ public class AccountAddressTest {
     
     @Test
     public void testEquality() {
-        AccountAddress addr1 = AccountAddress.parsePublicKey(ACC_1_PUBKEY);
-        AccountAddress addr2 = AccountAddress.parsePublicKey(ACC_1_PUBKEY);
-        AccountAddress addr3 = AccountAddress.parsePublicKey(ACC_2_PUBKEY);
+        NanoAccount addr1 = NanoAccount.parsePublicKey(ACC_1_PUBKEY);
+        NanoAccount addr2 = NanoAccount.parsePublicKey(ACC_1_PUBKEY);
+        NanoAccount addr3 = NanoAccount.parsePublicKey(ACC_2_PUBKEY);
     
         assertEquals(addr1, addr2);
         assertEquals(addr1.hashCode(), addr2.hashCode());
@@ -90,15 +90,15 @@ public class AccountAddressTest {
     
     @Test
     public void testJsonDeserializer() {
-        AccountAddress addr1 = JNanoHelper.GSON.fromJson("\"" + ACC_2_ADDR + "\"", AccountAddress.class);
-        AccountAddress addr2 = JNanoHelper.GSON.fromJson("\"" + ACC_2_PUBKEY + "\"", AccountAddress.class);
+        NanoAccount addr1 = JNanoHelper.GSON.fromJson("\"" + ACC_2_ADDR + "\"", NanoAccount.class);
+        NanoAccount addr2 = JNanoHelper.GSON.fromJson("\"" + ACC_2_PUBKEY + "\"", NanoAccount.class);
         assertEquals(ACC_2_ADDR, addr1.toAddress());
         assertEquals(ACC_2_ADDR, addr2.toAddress());
     }
     
     @Test
     public void testJsonSerializer() {
-        AccountAddress addr1 = AccountAddress.parse(ACC_1_ADDR);
+        NanoAccount addr1 = NanoAccount.parse(ACC_1_ADDR);
         assertEquals(JsonParser.parseString("\"" + ACC_1_ADDR + "\""),
                 JNanoHelper.GSON.toJsonTree(addr1));
     }

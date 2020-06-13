@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.model.AccountAddress;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
 
 import java.math.BigInteger;
@@ -13,7 +13,7 @@ import java.math.BigInteger;
 public class ResponseBlockInfo extends RpcResponse {
     
     @Expose @SerializedName("block_account")
-    private AccountAddress account;
+    private NanoAccount account;
     
     @Expose @SerializedName("amount")
     private BigInteger amount;
@@ -40,7 +40,7 @@ public class ResponseBlockInfo extends RpcResponse {
     /**
      * @return the account who created this block
      */
-    public AccountAddress getAccount() {
+    public NanoAccount getAccount() {
         return account;
     }
     

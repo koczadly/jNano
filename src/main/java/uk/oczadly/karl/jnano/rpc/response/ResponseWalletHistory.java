@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.model.AccountAddress;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -29,7 +29,7 @@ public class ResponseWalletHistory extends RpcResponse {
         private TransactionType type;
         
         @Expose @SerializedName("account")
-        private AccountAddress account;
+        private NanoAccount account;
         
         @Expose @SerializedName("amount")
         private BigInteger amount;
@@ -54,7 +54,7 @@ public class ResponseWalletHistory extends RpcResponse {
         /**
          * @return the address of the account
          */
-        public AccountAddress getAccount() {
+        public NanoAccount getAccount() {
             return account;
         }
         

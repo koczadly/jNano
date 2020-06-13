@@ -3,7 +3,7 @@ package uk.oczadly.karl.jnano.model.block;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.model.AccountAddress;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.math.BigInteger;
 
@@ -14,13 +14,13 @@ import java.math.BigInteger;
 public final class StateBlock extends Block {
     
     @Expose @SerializedName("account")
-    private AccountAddress accountAddress;
+    private NanoAccount accountAddress;
     
     @Expose @SerializedName("previous")
     private String previousBlockHash;
     
     @Expose @SerializedName("representative")
-    private AccountAddress representativeAddress;
+    private NanoAccount representativeAddress;
     
     @Expose @SerializedName("balance")
     private BigInteger balance;
@@ -29,7 +29,7 @@ public final class StateBlock extends Block {
     private String linkData;
     
     @Expose @SerializedName("link_as_account")
-    private AccountAddress linkAccount;
+    private NanoAccount linkAccount;
     
     @Expose @SerializedName("subtype")
     private StateBlockSubType subType;
@@ -56,8 +56,8 @@ public final class StateBlock extends Block {
      * @see StateBlockBuilder
      */
     StateBlock(JsonObject jsonRepresentation, StateBlockSubType subtype, String hash, String signature,
-               String workSolution, AccountAddress accountAddress, String previousBlockHash,
-               AccountAddress representativeAddress, BigInteger balance, String linkData, AccountAddress linkAccount) {
+               String workSolution, NanoAccount accountAddress, String previousBlockHash,
+               NanoAccount representativeAddress, BigInteger balance, String linkData, NanoAccount linkAccount) {
         super(BlockType.STATE, hash, jsonRepresentation, signature, workSolution);
         this.subType = subtype;
         this.accountAddress = accountAddress;
@@ -69,7 +69,7 @@ public final class StateBlock extends Block {
     }
     
     
-    public AccountAddress getAccountAddress() {
+    public NanoAccount getAccountAddress() {
         return accountAddress;
     }
     
@@ -77,7 +77,7 @@ public final class StateBlock extends Block {
         return previousBlockHash;
     }
     
-    public AccountAddress getRepresentativeAddress() {
+    public NanoAccount getRepresentativeAddress() {
         return representativeAddress;
     }
     
@@ -89,7 +89,7 @@ public final class StateBlock extends Block {
         return linkData;
     }
     
-    public AccountAddress getLinkAsAccount() {
+    public NanoAccount getLinkAsAccount() {
         return linkAccount;
     }
     

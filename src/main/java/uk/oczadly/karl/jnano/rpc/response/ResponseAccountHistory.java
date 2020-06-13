@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.model.AccountAddress;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 public class ResponseAccountHistory extends RpcResponse {
     
     @Expose @SerializedName("account")
-    private AccountAddress account;
+    private NanoAccount account;
     
     @Expose @SerializedName("history")
     private List<Block> history;
@@ -28,7 +28,7 @@ public class ResponseAccountHistory extends RpcResponse {
     /**
      * @return the account's address
      */
-    public AccountAddress getAccount() {
+    public NanoAccount getAccount() {
         return account;
     }
     

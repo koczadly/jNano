@@ -3,7 +3,7 @@ package uk.oczadly.karl.jnano.model.block;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import uk.oczadly.karl.jnano.model.AccountAddress;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.math.BigInteger;
 import java.util.function.Function;
@@ -36,13 +36,13 @@ public final class BlockDeserializer {
                         hash,
                         jsonObj.get("signature").getAsString(),
                         jsonObj.get("work").getAsString(),
-                        AccountAddress.parse(jsonObj.get("account").getAsString()),
+                        NanoAccount.parse(jsonObj.get("account").getAsString()),
                         jsonObj.get("previous").getAsString(),
-                        AccountAddress.parse(jsonObj.get("representative").getAsString()),
+                        NanoAccount.parse(jsonObj.get("representative").getAsString()),
                         jsonObj.get("balance").getAsBigInteger(),
                         nullableJsonObj(jsonObj.get("link"), JsonElement::getAsString),
                         nullableJsonObj(jsonObj.get("link_as_account"),
-                                o -> AccountAddress.parse(o.getAsString())));
+                                o -> NanoAccount.parse(o.getAsString())));
             case "OPEN":
                 return new OpenBlock(
                         jsonObj,

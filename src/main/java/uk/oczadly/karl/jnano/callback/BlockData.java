@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.callback;
 
 import com.google.gson.annotations.JsonAdapter;
 import uk.oczadly.karl.jnano.internal.gsonadapters.CallbackBlockTypeDeserializer;
-import uk.oczadly.karl.jnano.model.AccountAddress;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.BlockType;
 
@@ -16,13 +16,13 @@ import java.math.BigInteger;
 public class BlockData {
     
     private final String rawJson, blockHash;
-    private final AccountAddress account;
+    private final NanoAccount account;
     private final Block block;
     private final BlockType subtype;
     private final boolean isSend;
     private final BigInteger amount;
     
-    public BlockData(String rawJson, AccountAddress account, String blockHash, Block block, BlockType subtype,
+    public BlockData(String rawJson, NanoAccount account, String blockHash, Block block, BlockType subtype,
                      boolean isSend, BigInteger amount) {
         this.rawJson = rawJson;
         this.account = account;
@@ -45,7 +45,7 @@ public class BlockData {
     /**
      * @return the account who the block belongs to
      */
-    public AccountAddress getAccountAddress() {
+    public NanoAccount getAccountAddress() {
         return account;
     }
     

@@ -1,6 +1,6 @@
 package uk.oczadly.karl.jnano.model.block;
 
-import uk.oczadly.karl.jnano.model.AccountAddress;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.math.BigInteger;
 
@@ -15,11 +15,11 @@ public class StateBlockBuilder {
     private static final String NULL_DATA = "0000000000000000000000000000000000000000000000000000000000000000";
     
     private StateBlockSubType subtype;
-    private AccountAddress accountAddress;
+    private NanoAccount accountAddress;
     private String previousBlockHash;
-    private AccountAddress representativeAddress;
+    private NanoAccount representativeAddress;
     private BigInteger balance;
-    private AccountAddress linkAccount;
+    private NanoAccount linkAccount;
     private String linkData;
     private String hash;
     private String signature;
@@ -35,8 +35,8 @@ public class StateBlockBuilder {
      * @param representativeAddress the representative for this account
      * @param balance               the (newly updated) balance of this account
      */
-    public StateBlockBuilder(StateBlockSubType subtype, AccountAddress accountAddress, String previousBlockHash,
-                             AccountAddress representativeAddress, BigInteger balance) {
+    public StateBlockBuilder(StateBlockSubType subtype, NanoAccount accountAddress, String previousBlockHash,
+                             NanoAccount representativeAddress, BigInteger balance) {
         setSubtype(subtype);
         setAccountAddress(accountAddress);
         setPreviousBlockHash(previousBlockHash);
@@ -84,11 +84,11 @@ public class StateBlockBuilder {
         return this;
     }
     
-    public AccountAddress getAccountAddress() {
+    public NanoAccount getAccountAddress() {
         return accountAddress;
     }
     
-    public StateBlockBuilder setAccountAddress(AccountAddress accountAddress) {
+    public StateBlockBuilder setAccountAddress(NanoAccount accountAddress) {
         if (accountAddress == null)
             throw new IllegalArgumentException("Account address argument cannot be null.");
         
@@ -108,11 +108,11 @@ public class StateBlockBuilder {
         return this;
     }
     
-    public AccountAddress getRepresentativeAddress() {
+    public NanoAccount getRepresentativeAddress() {
         return representativeAddress;
     }
     
-    public StateBlockBuilder setRepresentativeAddress(AccountAddress representativeAddress) {
+    public StateBlockBuilder setRepresentativeAddress(NanoAccount representativeAddress) {
         if (representativeAddress == null)
             throw new IllegalArgumentException("Representative address argument cannot be null.");
         
@@ -152,13 +152,13 @@ public class StateBlockBuilder {
      * @param linkAccount the link data, as an account
      * @return this builder
      */
-    public StateBlockBuilder setLinkAccount(AccountAddress linkAccount) {
+    public StateBlockBuilder setLinkAccount(NanoAccount linkAccount) {
         this.linkAccount = linkAccount;
         this.linkData = null;
         return this;
     }
     
-    public AccountAddress getLinkAccount() {
+    public NanoAccount getLinkAccount() {
         return linkAccount;
     }
     

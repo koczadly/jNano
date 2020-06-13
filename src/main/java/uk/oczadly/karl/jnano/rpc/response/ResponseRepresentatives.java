@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.model.AccountAddress;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
@@ -14,7 +14,7 @@ import java.util.Map;
 public class ResponseRepresentatives extends RpcResponse {
     
     @Expose @SerializedName("representatives")
-    private LinkedHashMap<AccountAddress, BigInteger> representatives;
+    private LinkedHashMap<NanoAccount, BigInteger> representatives;
     
     
     /**
@@ -22,7 +22,7 @@ public class ResponseRepresentatives extends RpcResponse {
      *
      * @return a map of representatives
      */
-    public Map<AccountAddress, BigInteger> getRepresentatives() {
+    public Map<NanoAccount, BigInteger> getRepresentatives() {
         return representatives;
     }
     
@@ -30,7 +30,7 @@ public class ResponseRepresentatives extends RpcResponse {
      * @param accountAddress a representative's address
      * @return the voting weight of the specified representative, or null if not present in the response
      */
-    public BigInteger getVotingWeight(AccountAddress accountAddress) {
+    public BigInteger getVotingWeight(NanoAccount accountAddress) {
         return representatives.get(accountAddress);
     }
     

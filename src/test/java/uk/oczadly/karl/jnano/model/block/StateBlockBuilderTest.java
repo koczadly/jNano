@@ -1,7 +1,7 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import org.junit.Test;
-import uk.oczadly.karl.jnano.model.AccountAddress;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.math.BigInteger;
 
@@ -11,8 +11,8 @@ public class StateBlockBuilderTest {
     
     private static final String NULL_ZERO_STRING = "0000000000000000000000000000000000000000000000000000000000000000";
     private static final String DATA = "0000000000000000000000000000000000000000000000000000000000000069";
-    private static final AccountAddress ACCOUNT =
-            AccountAddress.parse("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz");
+    private static final NanoAccount ACCOUNT =
+            NanoAccount.parse("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz");
     
     public static StateBlockBuilder newBuilder() {
         return new StateBlockBuilder(

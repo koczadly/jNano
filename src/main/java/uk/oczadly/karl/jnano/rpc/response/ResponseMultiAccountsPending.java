@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.model.AccountAddress;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
@@ -15,7 +15,7 @@ import java.util.Set;
 public class ResponseMultiAccountsPending extends RpcResponse {
     
     @Expose @SerializedName("blocks")
-    private Map<AccountAddress, LinkedHashMap<String, PendingBlock>> blocks;
+    private Map<NanoAccount, LinkedHashMap<String, PendingBlock>> blocks;
     
     
     /**
@@ -23,7 +23,7 @@ public class ResponseMultiAccountsPending extends RpcResponse {
      *
      * @return a map of pending blocks
      */
-    public Map<AccountAddress, LinkedHashMap<String, PendingBlock>> getPendingBlocks() {
+    public Map<NanoAccount, LinkedHashMap<String, PendingBlock>> getPendingBlocks() {
         return blocks;
     }
     
@@ -33,7 +33,7 @@ public class ResponseMultiAccountsPending extends RpcResponse {
      * @param accountAddress an account's address
      * @return a map of pending blocks for the specified account, or null if not present in the response
      */
-    public Map<String, PendingBlock> getPendingBlocks(AccountAddress accountAddress) {
+    public Map<String, PendingBlock> getPendingBlocks(NanoAccount accountAddress) {
         return blocks.get(accountAddress);
     }
     
@@ -41,7 +41,7 @@ public class ResponseMultiAccountsPending extends RpcResponse {
      * @param accountAddress an account's address
      * @return a set of pending block hashes for the specified account, or null if not present in the response
      */
-    public Set<String> getPendingBlockHashes(AccountAddress accountAddress) {
+    public Set<String> getPendingBlockHashes(NanoAccount accountAddress) {
         Map<String, PendingBlock> accountBlocks = this.getPendingBlocks(accountAddress);
         return accountBlocks != null ? accountBlocks.keySet() : null;
     }

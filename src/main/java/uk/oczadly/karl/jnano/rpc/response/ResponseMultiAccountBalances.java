@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.model.AccountAddress;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.math.BigInteger;
 import java.util.Map;
@@ -13,7 +13,7 @@ import java.util.Map;
 public class ResponseMultiAccountBalances extends RpcResponse {
     
     @Expose @SerializedName("balances")
-    private Map<AccountAddress, AccountBalance> balances;
+    private Map<NanoAccount, AccountBalance> balances;
     
     
     /**
@@ -21,7 +21,7 @@ public class ResponseMultiAccountBalances extends RpcResponse {
      *
      * @return a map of account balances
      */
-    public Map<AccountAddress, AccountBalance> getBalances() {
+    public Map<NanoAccount, AccountBalance> getBalances() {
         return balances;
     }
     
@@ -29,7 +29,7 @@ public class ResponseMultiAccountBalances extends RpcResponse {
      * @param account the account's address
      * @return the balance of the specified account, or null if not present in the response
      */
-    public AccountBalance getBalance(AccountAddress account) {
+    public AccountBalance getBalance(NanoAccount account) {
         return balances.get(account);
     }
     

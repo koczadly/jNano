@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.internal.gsonadapters;
 
 import com.google.gson.*;
 import uk.oczadly.karl.jnano.callback.BlockData;
-import uk.oczadly.karl.jnano.model.AccountAddress;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.BlockType;
 
@@ -22,7 +22,7 @@ public class CallbackBlockTypeDeserializer implements JsonDeserializer<BlockData
         // Construct and return
         return new BlockData(
                 element.toString(),
-                AccountAddress.parse(json.get("account").getAsString()),
+                NanoAccount.parse(json.get("account").getAsString()),
                 json.get("hash").getAsString(),
                 block,
                 context.deserialize(json.get("subtype"), BlockType.class),

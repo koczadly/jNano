@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.model.AccountAddress;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.math.BigInteger;
 import java.util.Map;
@@ -13,7 +13,7 @@ import java.util.Map;
 public class ResponseWalletPending extends RpcResponse {
     
     @Expose @SerializedName("blocks")
-    private Map<AccountAddress, Map<String, PendingBlock>> blocks;
+    private Map<NanoAccount, Map<String, PendingBlock>> blocks;
     
     
     /**
@@ -21,7 +21,7 @@ public class ResponseWalletPending extends RpcResponse {
      *
      * @return a map of pending blocks
      */
-    public Map<AccountAddress, Map<String, PendingBlock>> getPendingBlocks() {
+    public Map<NanoAccount, Map<String, PendingBlock>> getPendingBlocks() {
         return blocks;
     }
     
@@ -31,7 +31,7 @@ public class ResponseWalletPending extends RpcResponse {
      * @param accountAddress a local account's address
      * @return a map of pending blocks, or null if not present in the response
      */
-    public Map<String, PendingBlock> getPendingBlocks(AccountAddress accountAddress) {
+    public Map<String, PendingBlock> getPendingBlocks(NanoAccount accountAddress) {
         return this.blocks.get(accountAddress);
     }
     
@@ -41,7 +41,7 @@ public class ResponseWalletPending extends RpcResponse {
         private BigInteger amount;
         
         @Expose @SerializedName("source")
-        private AccountAddress sourceAccount;
+        private NanoAccount sourceAccount;
         
         
         /**
@@ -54,7 +54,7 @@ public class ResponseWalletPending extends RpcResponse {
         /**
          * @return the address of the sending account of this block
          */
-        public AccountAddress getSourceAccount() {
+        public NanoAccount getSourceAccount() {
             return sourceAccount;
         }
         

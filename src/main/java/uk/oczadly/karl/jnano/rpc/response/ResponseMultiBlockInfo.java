@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.model.AccountAddress;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
 
 import java.math.BigInteger;
@@ -14,7 +14,7 @@ import java.util.Map;
 public class ResponseMultiBlockInfo extends RpcResponse {
     
     @Expose @SerializedName("blocks")
-    private Map<AccountAddress, BlockInfo> blocks;
+    private Map<NanoAccount, BlockInfo> blocks;
     
     
     /**
@@ -22,14 +22,14 @@ public class ResponseMultiBlockInfo extends RpcResponse {
      *
      * @return a map of block hashes and information, or null if not present in the response
      */
-    public Map<AccountAddress, BlockInfo> getBlocks() {
+    public Map<NanoAccount, BlockInfo> getBlocks() {
         return blocks;
     }
     
     
     public static class BlockInfo {
         @Expose @SerializedName("block_account")
-        private AccountAddress account;
+        private NanoAccount account;
         
         @Expose @SerializedName("amount")
         private BigInteger amount;
@@ -56,7 +56,7 @@ public class ResponseMultiBlockInfo extends RpcResponse {
         /**
          * @return the account who created this block
          */
-        public AccountAddress getAccount() {
+        public NanoAccount getAccount() {
             return account;
         }
         
