@@ -10,13 +10,13 @@ public final class NanoConstants {
      * The genesis account's address on the live Nano network.
      */
     public static final AccountAddress ADDRESS_GENESIS_LIVE =
-            AccountAddress.parseAddress("nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3");
+            AccountAddress.parseAddressSegment("3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xt");
     
     /**
      * The official designated burn address. Funds sent to this address will be permanently irretrievable.
      */
     public static final AccountAddress ADDRESS_BURN =
-            AccountAddress.parseAddress("nano_1111111111111111111111111111111111111111111111111111hifc8npp");
+            AccountAddress.parseAddressSegment("1111111111111111111111111111111111111111111111111111");
     
     
     /**
