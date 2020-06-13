@@ -207,6 +207,11 @@ public final class NanoAccount {
         if (address.length() < 60) throw new AddressFormatException("Address string is too short.");
         
         int separatorIndex = address.indexOf(PREFIX_SEPARATOR_CHAR);
+        
+        if ((separatorIndex == -1 && address.length() != 60)
+                || (separatorIndex != -1 && (address.length() - separatorIndex - 1) != 60))
+            throw new AddressFormatException("Address/checksum segment is not the right length.");
+        
         return parseSegment(
                 address.substring(address.length() - 60, address.length() - 8),
                 separatorIndex <= 0 ? null : address.substring(0, separatorIndex),
