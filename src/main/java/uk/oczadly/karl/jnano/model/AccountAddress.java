@@ -191,6 +191,7 @@ public final class AccountAddress {
      * @return the created address object
      */
     public static AccountAddress parse(String address) {
+        if (address == null) throw new IllegalArgumentException("Address argument cannot be null.");
         if (address.length() < 60) throw new AddressFormatException("Address string is too short.");
         
         int separatorIndex = address.indexOf(PREFIX_SEPARATOR_CHAR);
@@ -246,10 +247,8 @@ public final class AccountAddress {
         checksum = checksum != null ? checksum.toLowerCase() : null;
         
         // Create object
-        AccountAddress createdAddr = new AccountAddress(
-                prefix,
-                calculateKeyBytes(address, JNanoHelper.ENCODER_NANO_B32),
-                address, null);
+        AccountAddress createdAddr = new AccountAddress(prefix,
+                calculateKeyBytes(address, JNanoHelper.ENCODER_NANO_B32), address, null);
         
         // Verify checksum (if provided)
         if (checksum != null && !checksum.equals(createdAddr.getAddressChecksumSegment()))
@@ -285,10 +284,7 @@ public final class AccountAddress {
         key = key.toUpperCase();
         
         // Create and return
-        return new AccountAddress(
-                prefix,
-                calculateKeyBytes(key, JNanoHelper.ENCODER_HEX),
-                null, key);
+        return new AccountAddress(prefix, calculateKeyBytes(key, JNanoHelper.ENCODER_HEX), null, key);
     }
     
     
