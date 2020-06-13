@@ -63,6 +63,11 @@ public class NanoAccountTest {
         assertFalse(NanoAccount.isValid(ACC_1_ADDR, "nano")); // Wrong prefix
         assertTrue(NanoAccount.isSegmentValid(ACC_1_ADDRSEG, ACC_1_CHECKSUM));
         assertFalse(NanoAccount.isSegmentValid(ACC_1_ADDR, INVALID_CHECKSUM));
+        
+        // Nano prefix
+        assertTrue(NanoAccount.isValidNano(new NanoAccount(NanoAccount.parse(ACC_1_ADDR), "xrb").toAddress()));
+        assertTrue(NanoAccount.isValidNano(ACC_2_ADDR));
+        assertFalse(NanoAccount.isValidNano(ACC_1_ADDR));
     }
     
     @Test

@@ -25,6 +25,8 @@ public final class NanoAccount {
      */
     public static final String DEFAULT_PREFIX = "nano";
     
+    private static final String[] DEFAULT_ALLOWED_PREFIXES = {DEFAULT_PREFIX, "xrb"};
+    
     /**
      * The character which separates the prefix from the address string.
      */
@@ -197,15 +199,16 @@ public final class NanoAccount {
     
     
     /**
-     * Creates a new {@link NanoAccount} from a given address. The address should an encoded public key and checksum,
-     * along with an optional prefix (eg. {@code nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz}).
+     * Creates a new {@link NanoAccount} from a given address. The address should contain an encoded public key and
+     * checksum, along with an optional prefix (eg.
+     * {@code nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz}).
      * @param address the account address string
      * @return the created address object
      */
     public static NanoAccount parse(String address) {
         if (address == null) throw new IllegalArgumentException("Address argument cannot be null.");
         if (address.length() < 60) throw new AddressFormatException("Address string is too short.");
-        
+    
         int separatorIndex = address.indexOf(PREFIX_SEPARATOR_CHAR);
         
         if ((separatorIndex == -1 && address.length() != 60)
@@ -214,13 +217,13 @@ public final class NanoAccount {
         
         return parseSegment(
                 address.substring(address.length() - 60, address.length() - 8),
-                separatorIndex <= 0 ? null : address.substring(0, separatorIndex),
+                (separatorIndex <= 0 ? null : address.substring(0, separatorIndex)),
                 address.substring(address.length() - 8));
     }
     
     /**
-     * Creates a new {@link NanoAccount} from a given address segment, using the default prefix. The segment
-     * excludes the initial prefix and checksum (the last 8 characters), (eg.
+     * Creates a new {@link NanoAccount} from a given address segment, using the default prefix. The segment excludes
+     * the initial prefix and checksum (the last 8 characters), (eg.
      * {@code 34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6q}).
      * @param address the 52-character account address segment
      * @return the created address object
@@ -306,6 +309,21 @@ public final class NanoAccount {
     
     
     /**
+     * Checks whether a given address string is a valid Nano address. For an address to be considered valid, the format
+     * must be of an appropriate length, contain an approved prefix, and have a matching checksum value.
+     * @param address the account address string
+     * @return whether the given address string is valid
+     */
+    public static boolean isValidNano(String address) {
+        try {
+            NanoAccount addr = parse(address);
+            return Arrays.stream(DEFAULT_ALLOWED_PREFIXES).anyMatch(e -> e.equalsIgnoreCase(addr.getPrefix()));
+        } catch (AddressFormatException e) {
+            return false;
+        }
+    }
+    
+    /**
      * Checks whether a given address string is valid. For an address to be considered valid, the format must be of
      * an appropriate length, contain a prefix, and have a matching checksum value.
      * @param address the account address string
@@ -345,6 +363,8 @@ public final class NanoAccount {
             return false;
         }
     }
+    
+    
     
     
     /** Helper method to calculate checksum bytes from a public key. */
