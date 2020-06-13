@@ -39,17 +39,7 @@ public final class AccountAddress {
     private volatile String cachedAddress, publicKeyHex, segAddress, segChecksum;
     
     /**
-     * Clones an existing {@link AccountAddress} object.
-     * @param address the address to clone
-     * @see #parse(String) 
-     */
-    public AccountAddress(AccountAddress address) {
-        this(address.prefix, address.keyBytes, address.checksumBytes, address.cachedAddress, address.publicKeyHex,
-                address.segAddress, address.segChecksum);
-    }
-    
-    /**
-     * Clones an existing {@link AccountAddress} object, but using a different prefix.
+     * Copies an existing {@link AccountAddress} object, but using a different protocol prefix.
      * @param address   the address to clone
      * @param newPrefix the prefix to assign, or null for no prefix
      * @see #parse(String)

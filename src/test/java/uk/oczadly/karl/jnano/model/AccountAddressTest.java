@@ -47,21 +47,6 @@ public class AccountAddressTest {
     }
     
     @Test
-    public void testClone() {
-        AccountAddress addr1 = AccountAddress.parse(ACC_1_ADDR);
-        AccountAddress addr2 = new AccountAddress(addr1);
-        
-        assertEquals(addr1.getPrefix(), addr2.getPrefix());
-        assertArrayEquals(addr1.getPublicKeyBytes(), addr2.getPublicKeyBytes());
-        assertArrayEquals(addr1.getChecksumBytes(), addr2.getChecksumBytes());
-        assertEquals(addr1.getAsAddress(), addr2.getAsAddress());
-        assertEquals(addr1.getAddressSegment(), addr2.getAddressSegment());
-        assertEquals(addr1.getAddressChecksumSegment(), addr2.getAddressChecksumSegment());
-        assertEquals(addr1.getAsPublicKey(), addr2.getAsPublicKey());
-        assertEquals(addr1, addr2);
-    }
-    
-    @Test
     public void testCloneWithPrefix() {
         AccountAddress addr1 = AccountAddress.parse(ACC_1_ADDR);
         addr1.getAsAddress(); // Preload value
