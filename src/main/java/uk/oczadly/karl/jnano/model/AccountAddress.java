@@ -51,12 +51,31 @@ public final class AccountAddress {
     /**
      * Clones an existing {@link AccountAddress} object, but using a different prefix.
      * @param address   the address to clone
-     * @param newPrefix the prefix to assign
+     * @param newPrefix the prefix to assign, or null for no prefix
      * @see #parse(String)
      */
     public AccountAddress(AccountAddress address, String newPrefix) {
         this(newPrefix, address.keyBytes, address.checksumBytes, null, address.publicKeyHex,
                 address.segAddress, address.segChecksum);
+    }
+    
+    /**
+     * Constructs an AccountAddress instance from an array of key bytes, using the default prefix.
+     * @param keyBytes an array of 32 bytes representing the key
+     * @see #parse(String)
+     */
+    public AccountAddress(byte[] keyBytes) {
+        this(keyBytes, DEFAULT_PREFIX);
+    }
+    
+    /**
+     * Constructs an AccountAddress instance from an array of key bytes, using the specified prefix.
+     * @param keyBytes an array of 32 bytes representing the key
+     * @param prefix   the prefix to assign, or null for no prefix
+     * @see #parse(String)
+     */
+    public AccountAddress(byte[] keyBytes, String prefix) {
+        this(prefix, Arrays.copyOf(keyBytes, keyBytes.length), null, null);
     }
     
     private AccountAddress(String prefix, byte[] keyBytes, String segAddress, String publicKeyHex) {
@@ -65,6 +84,9 @@ public final class AccountAddress {
     
     private AccountAddress(String prefix, byte[] keyBytes, byte[] checksumBytes, String cachedAddress,
                            String publicKeyHex, String segAddress, String segChecksum) {
+        if (keyBytes == null) throw new IllegalArgumentException("Key byte array cannot be null.");
+        if (keyBytes.length != 32) throw new IllegalArgumentException("Key byte array must have a length of 32.");
+        
         this.prefix = (prefix != null && !prefix.isEmpty()) ? prefix : null;
         this.keyBytes = keyBytes;
         this.checksumBytes = checksumBytes;
