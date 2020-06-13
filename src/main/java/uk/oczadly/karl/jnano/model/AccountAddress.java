@@ -117,7 +117,7 @@ public final class AccountAddress {
     /**
      * @return this address, represented by a 64-character hexadecimal string
      */
-    public String getAsPublicKey() {
+    public String toPublicKey() {
         if (publicKeyHex == null) {
             synchronized (this) {
                 if (publicKeyHex == null)
@@ -130,7 +130,7 @@ public final class AccountAddress {
     /**
      * @return this address, complete with prefix and checksum
      */
-    public synchronized String getAsAddress() {
+    public synchronized String toAddress() {
         if (cachedAddress == null) {
             synchronized (this) {
                 if (cachedAddress == null) {
@@ -176,7 +176,7 @@ public final class AccountAddress {
     
     @Override
     public String toString() {
-        return getAsAddress();
+        return toAddress();
     }
     
     @Override
@@ -387,7 +387,7 @@ public final class AccountAddress {
         
         @Override
         public JsonElement serialize(AccountAddress src, Type typeOfSrc, JsonSerializationContext context) {
-            return new JsonPrimitive(src.getAsAddress());
+            return new JsonPrimitive(src.toAddress());
         }
     }
     

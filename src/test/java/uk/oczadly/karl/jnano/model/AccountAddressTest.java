@@ -26,18 +26,18 @@ public class AccountAddressTest {
     public void testParsing() {
         // Test valid parses
         assertEquals(ACC_1_ADDR,
-                AccountAddress.parsePublicKey(ACC_1_PUBKEY, ACC_1_PREFIX).getAsAddress());
+                AccountAddress.parsePublicKey(ACC_1_PUBKEY, ACC_1_PREFIX).toAddress());
         
         AccountAddress addr = AccountAddress.parse(ACC_1_ADDR);
-        assertEquals(ACC_1_ADDR, addr.getAsAddress());
+        assertEquals(ACC_1_ADDR, addr.toAddress());
         assertEquals(ACC_1_PREFIX, addr.getPrefix());
     
         assertEquals(ACC_1_PUBKEY,
-                AccountAddress.parseSegment(ACC_1_ADDRSEG, ACC_1_PREFIX).getAsPublicKey());
+                AccountAddress.parseSegment(ACC_1_ADDRSEG, ACC_1_PREFIX).toPublicKey());
     
         assertEquals(ACC_1_PUBKEY,
                 AccountAddress.parseSegment(ACC_1_ADDRSEG, ACC_1_PREFIX, ACC_1_CHECKSUM)
-                        .getAsPublicKey());
+                        .toPublicKey());
         
         // Test invalid checksums
         assertThrows(AccountAddress.AddressFormatException.class,
@@ -49,11 +49,11 @@ public class AccountAddressTest {
     @Test
     public void testCloneWithPrefix() {
         AccountAddress addr1 = AccountAddress.parse(ACC_1_ADDR);
-        addr1.getAsAddress(); // Preload value
+        addr1.toAddress(); // Preload value
         AccountAddress addr2 = new AccountAddress(addr1, "slug");
         
         assertEquals("slug", addr2.getPrefix());
-        assertEquals("slug_" + ACC_1_ADDRSEG + ACC_1_CHECKSUM, addr2.getAsAddress());
+        assertEquals("slug_" + ACC_1_ADDRSEG + ACC_1_CHECKSUM, addr2.toAddress());
     }
     
     @Test
@@ -73,8 +73,8 @@ public class AccountAddressTest {
         assertEquals(ACC_1_PREFIX, addr.getPrefix());
         assertEquals(ACC_1_ADDRSEG, addr.getAddressSegment());
         assertEquals(ACC_1_CHECKSUM, addr.getAddressChecksumSegment());
-        assertEquals(ACC_1_PUBKEY, addr.getAsPublicKey());
-        assertEquals(ACC_1_ADDR, addr.getAsAddress());
+        assertEquals(ACC_1_PUBKEY, addr.toPublicKey());
+        assertEquals(ACC_1_ADDR, addr.toAddress());
     }
     
     @Test
@@ -92,8 +92,8 @@ public class AccountAddressTest {
     public void testJsonDeserializer() {
         AccountAddress addr1 = JNanoHelper.GSON.fromJson("\"" + ACC_2_ADDR + "\"", AccountAddress.class);
         AccountAddress addr2 = JNanoHelper.GSON.fromJson("\"" + ACC_2_PUBKEY + "\"", AccountAddress.class);
-        assertEquals(ACC_2_ADDR, addr1.getAsAddress());
-        assertEquals(ACC_2_ADDR, addr2.getAsAddress());
+        assertEquals(ACC_2_ADDR, addr1.toAddress());
+        assertEquals(ACC_2_ADDR, addr2.toAddress());
     }
     
     @Test
