@@ -36,13 +36,13 @@ public final class BlockDeserializer {
                         hash,
                         jsonObj.get("signature").getAsString(),
                         jsonObj.get("work").getAsString(),
-                        AccountAddress.parseAddress(jsonObj.get("account").getAsString()),
+                        AccountAddress.parse(jsonObj.get("account").getAsString()),
                         jsonObj.get("previous").getAsString(),
-                        AccountAddress.parseAddress(jsonObj.get("representative").getAsString()),
+                        AccountAddress.parse(jsonObj.get("representative").getAsString()),
                         jsonObj.get("balance").getAsBigInteger(),
                         nullableJsonObj(jsonObj.get("link"), JsonElement::getAsString),
                         nullableJsonObj(jsonObj.get("link_as_account"),
-                                o -> AccountAddress.parseAddress(o.getAsString())));
+                                o -> AccountAddress.parse(o.getAsString())));
             case "OPEN":
                 return new OpenBlock(
                         jsonObj,

@@ -48,7 +48,7 @@ public class ResponseKeyPair extends RpcResponse {
      * @return an {@link AccountAddress} object representing the account returned
      */
     public AccountAddress getAddress() {
-        return AccountAddress.parseAddress(getAccountAddress());
+        return AccountAddress.parse(getAccountAddress());
     }
     
 }

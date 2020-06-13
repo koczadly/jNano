@@ -22,7 +22,7 @@ public class CallbackBlockTypeDeserializer implements JsonDeserializer<BlockData
         // Construct and return
         return new BlockData(
                 element.toString(),
-                AccountAddress.parseAddress(json.get("account").getAsString()),
+                AccountAddress.parse(json.get("account").getAsString()),
                 json.get("hash").getAsString(),
                 block,
                 context.deserialize(json.get("subtype"), BlockType.class),

@@ -28,27 +28,27 @@ public class AccountAddressTest {
         assertEquals(ACC_1_ADDR,
                 AccountAddress.parsePublicKey(ACC_1_PUBKEY, ACC_1_PREFIX).getAsAddress());
         
-        AccountAddress addr = AccountAddress.parseAddress(ACC_1_ADDR);
+        AccountAddress addr = AccountAddress.parse(ACC_1_ADDR);
         assertEquals(ACC_1_ADDR, addr.getAsAddress());
         assertEquals(ACC_1_PREFIX, addr.getPrefix());
     
         assertEquals(ACC_1_PUBKEY,
-                AccountAddress.parseAddressSegment(ACC_1_ADDRSEG, ACC_1_PREFIX).getAsPublicKey());
+                AccountAddress.parseSegment(ACC_1_ADDRSEG, ACC_1_PREFIX).getAsPublicKey());
     
         assertEquals(ACC_1_PUBKEY,
-                AccountAddress.parseAddressSegment(ACC_1_ADDRSEG, ACC_1_PREFIX, ACC_1_CHECKSUM)
+                AccountAddress.parseSegment(ACC_1_ADDRSEG, ACC_1_PREFIX, ACC_1_CHECKSUM)
                         .getAsPublicKey());
         
         // Test invalid checksums
         assertThrows(AccountAddress.AddressFormatException.class,
-                () -> AccountAddress.parseAddress(INVALID_ADDR));
+                () -> AccountAddress.parse(INVALID_ADDR));
         assertThrows(AccountAddress.AddressFormatException.class,
-                () -> AccountAddress.parseAddressSegment(ACC_1_ADDRSEG, ACC_1_PREFIX, INVALID_CHECKSUM));
+                () -> AccountAddress.parseSegment(ACC_1_ADDRSEG, ACC_1_PREFIX, INVALID_CHECKSUM));
     }
     
     @Test
     public void testClone() {
-        AccountAddress addr1 = AccountAddress.parseAddress(ACC_1_ADDR);
+        AccountAddress addr1 = AccountAddress.parse(ACC_1_ADDR);
         AccountAddress addr2 = new AccountAddress(addr1);
         
         assertEquals(addr1.getPrefix(), addr2.getPrefix());
@@ -63,7 +63,7 @@ public class AccountAddressTest {
     
     @Test
     public void testCloneWithPrefix() {
-        AccountAddress addr1 = AccountAddress.parseAddress(ACC_1_ADDR);
+        AccountAddress addr1 = AccountAddress.parse(ACC_1_ADDR);
         addr1.getAsAddress(); // Preload value
         AccountAddress addr2 = new AccountAddress(addr1, "slug");
         
@@ -113,7 +113,7 @@ public class AccountAddressTest {
     
     @Test
     public void testJsonSerializer() {
-        AccountAddress addr1 = AccountAddress.parseAddress(ACC_1_ADDR);
+        AccountAddress addr1 = AccountAddress.parse(ACC_1_ADDR);
         assertEquals(JsonParser.parseString("\"" + ACC_1_ADDR + "\""),
                 JNanoHelper.GSON.toJsonTree(addr1));
     }

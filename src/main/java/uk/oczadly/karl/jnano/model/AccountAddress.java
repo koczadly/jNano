@@ -13,7 +13,7 @@ import java.util.Objects;
 /**
  * <p>This class represents an immutable Nano account address string. A wide range of native utilities are provided
  * through the methods of this class, without needing to configure or connect to an external node.</p>
- * <p>To instantiate this class, use the provided static methods (eg. {@link #parseAddress(String)}), or use the
+ * <p>To instantiate this class, use the provided static methods (eg. {@link #parse(String)}), or use the
  * constructor to clone an existing object.</p>
  */
 @JsonAdapter(AccountAddress.Adapter.class)
@@ -188,11 +188,11 @@ public final class AccountAddress {
      * @param address the account address string
      * @return the created address object
      */
-    public static AccountAddress parseAddress(String address) {
+    public static AccountAddress parse(String address) {
         if (address.length() < 60) throw new AddressFormatException("Address string is too short.");
         
         int separatorIndex = address.indexOf(PREFIX_SEPARATOR_CHAR);
-        return parseAddressSegment(
+        return parseSegment(
                 address.substring(address.length() - 60, address.length() - 8),
                 separatorIndex <= 0 ? null : address.substring(0, separatorIndex),
                 address.substring(address.length() - 8));
@@ -205,8 +205,8 @@ public final class AccountAddress {
      * @param address the 52-character account address segment
      * @return the created address object
      */
-    public static AccountAddress parseAddressSegment(String address) {
-        return parseAddressSegment(address, DEFAULT_PREFIX);
+    public static AccountAddress parseSegment(String address) {
+        return parseSegment(address, DEFAULT_PREFIX);
     }
     
     /**
@@ -216,8 +216,8 @@ public final class AccountAddress {
      * @param prefix  the protocol identifier prefix to use (without separator), or null for no prefix
      * @return the created address object
      */
-    public static AccountAddress parseAddressSegment(String address, String prefix) {
-        return parseAddressSegment(address, prefix, null);
+    public static AccountAddress parseSegment(String address, String prefix) {
+        return parseSegment(address, prefix, null);
     }
     
     /**
@@ -230,7 +230,7 @@ public final class AccountAddress {
      * @return the created address object
      * @throws AddressFormatException if the address does not meet the required format criteria
      */
-    public static AccountAddress parseAddressSegment(String address, String prefix, String checksum) {
+    public static AccountAddress parseSegment(String address, String prefix, String checksum) {
         if (address == null) throw new IllegalArgumentException("Address argument cannot be null.");
         if (address.length() != 52)
             throw new AddressFormatException("Address string must be 52 characters long.");
@@ -307,7 +307,7 @@ public final class AccountAddress {
      */
     public static boolean isValid(String address, String prefix) {
         try {
-            AccountAddress addr = parseAddress(address);
+            AccountAddress addr = parse(address);
             return prefix == null || prefix.equalsIgnoreCase(addr.getPrefix());
         } catch (AddressFormatException e) {
             return false;
@@ -322,7 +322,7 @@ public final class AccountAddress {
      */
     public static boolean isSegmentValid(String addressSegment, String checksum) {
         try {
-            parseAddressSegment(addressSegment, null, checksum);
+            parseSegment(addressSegment, null, checksum);
             return true;
         } catch (AddressFormatException e) {
             return false;
@@ -369,7 +369,7 @@ public final class AccountAddress {
             if (str.length() == 64 && str.indexOf(PREFIX_SEPARATOR_CHAR) == -1) {
                 return parsePublicKey(str); // Hex
             } else {
-                return parseAddress(str); // Address
+                return parse(str); // Address
             }
         }
         
