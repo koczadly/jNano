@@ -33,8 +33,8 @@ public final class NanoAccount {
     public static final char PREFIX_SEPARATOR_CHAR = '_';
     
     
-    private final String prefix;
     private final byte[] keyBytes;
+    private final String prefix;
     
     // Values below may be initialized lazily
     private volatile byte[] checksumBytes;
@@ -78,9 +78,8 @@ public final class NanoAccount {
                         String publicKeyHex, String segAddress, String segChecksum) {
         if (keyBytes == null) throw new IllegalArgumentException("Key byte array cannot be null.");
         if (keyBytes.length != 32) throw new IllegalArgumentException("Key byte array must have a length of 32.");
-        
-        this.prefix = (prefix != null && !prefix.isEmpty()) ? prefix : null;
         this.keyBytes = keyBytes;
+        this.prefix = (prefix != null && !prefix.isEmpty()) ? prefix : null;
         this.checksumBytes = checksumBytes;
         this.cachedAddress = cachedAddress;
         this.publicKeyHex = publicKeyHex;
@@ -255,8 +254,7 @@ public final class NanoAccount {
      */
     public static NanoAccount parseSegment(String address, String prefix, String checksum) {
         if (address == null) throw new IllegalArgumentException("Address argument cannot be null.");
-        if (address.length() != 52)
-            throw new AddressFormatException("Address string must be 52 characters long.");
+        if (address.length() != 52) throw new AddressFormatException("Address string must be 52 characters long.");
         if (address.charAt(0) != '1' && address.charAt(0) != '3')
             throw new AddressFormatException("Addresses may only begin with characters 1 or 3.");
         if (checksum != null && checksum.length() != 8)
@@ -300,10 +298,7 @@ public final class NanoAccount {
         if (key == null) throw new IllegalArgumentException("Public key argument cannot be null.");
         if (key.length() != 64) throw new AddressFormatException("Key string must be 64 characters long.");
         
-        // Preprocess
         key = key.toUpperCase();
-        
-        // Create and return
         return new NanoAccount(prefix, calculateKeyBytes(key, JNanoHelper.ENCODER_HEX), null, key);
     }
     
@@ -365,8 +360,6 @@ public final class NanoAccount {
     }
     
     
-    
-    
     /** Helper method to calculate checksum bytes from a public key. */
     private static byte[] calculateChecksumBytes(byte[] keyBytes) {
         //Digest
@@ -395,7 +388,6 @@ public final class NanoAccount {
             throw new AddressFormatException("Address/key bytes could not be decoded.");
         return keyBytes;
     }
-    
     
     
     static class Adapter implements JsonSerializer<NanoAccount>, JsonDeserializer<NanoAccount> {
