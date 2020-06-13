@@ -17,7 +17,7 @@ module uk.oczadly.karl.jnano {
     exports uk.oczadly.karl.jnano.util;
     
     //Dependencies
-    requires com.google.gson;
+    requires transitive com.google.gson;
     requires blake2b;
     
 }
