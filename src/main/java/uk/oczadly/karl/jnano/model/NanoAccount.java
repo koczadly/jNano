@@ -265,7 +265,8 @@ public final class NanoAccount {
         checksum = checksum != null ? checksum.toLowerCase() : null;
         
         // Create object
-        NanoAccount createdAddr = new NanoAccount(prefix,
+        NanoAccount createdAddr = new NanoAccount(
+                prefix != null ? prefix.replace(Character.toString(PREFIX_SEPARATOR_CHAR), "") : null,
                 calculateKeyBytes(address, JNanoHelper.ENCODER_NANO_B32), address, null);
         
         // Verify checksum (if provided)
@@ -299,7 +300,9 @@ public final class NanoAccount {
         if (key.length() != 64) throw new AddressFormatException("Key string must be 64 characters long.");
         
         key = key.toUpperCase();
-        return new NanoAccount(prefix, calculateKeyBytes(key, JNanoHelper.ENCODER_HEX), null, key);
+        return new NanoAccount(
+                prefix.replace(Character.toString(PREFIX_SEPARATOR_CHAR), ""),
+                calculateKeyBytes(key, JNanoHelper.ENCODER_HEX), null, key);
     }
     
     
@@ -338,7 +341,8 @@ public final class NanoAccount {
     public static boolean isValid(String address, String prefix) {
         try {
             NanoAccount addr = parse(address);
-            return prefix == null || prefix.equalsIgnoreCase(addr.getPrefix());
+            return prefix == null || prefix.replace(Character.toString(PREFIX_SEPARATOR_CHAR), "")
+                    .equalsIgnoreCase(addr.getPrefix());
         } catch (AddressFormatException e) {
             return false;
         }
