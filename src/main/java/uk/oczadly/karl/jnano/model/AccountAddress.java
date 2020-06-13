@@ -236,6 +236,8 @@ public final class AccountAddress {
         if (address == null) throw new IllegalArgumentException("Address argument cannot be null.");
         if (address.length() != 52)
             throw new AddressFormatException("Address string must be 52 characters long.");
+        if (address.charAt(0) != '1' && address.charAt(0) != '3')
+            throw new AddressFormatException("Addresses may only begin with characters 1 or 3.");
         if (checksum != null && checksum.length() != 8)
             throw new AddressFormatException("Expected checksum string must be 8 characters long.");
         
