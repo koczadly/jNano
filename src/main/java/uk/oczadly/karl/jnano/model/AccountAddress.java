@@ -41,6 +41,7 @@ public final class AccountAddress {
     /**
      * Clones an existing {@link AccountAddress} object.
      * @param address the address to clone
+     * @see #parse(String) 
      */
     public AccountAddress(AccountAddress address) {
         this(address.prefix, address.keyBytes, address.checksumBytes, address.cachedAddress, address.publicKeyHex,
@@ -51,6 +52,7 @@ public final class AccountAddress {
      * Clones an existing {@link AccountAddress} object, but using a different prefix.
      * @param address   the address to clone
      * @param newPrefix the prefix to assign
+     * @see #parse(String)
      */
     public AccountAddress(AccountAddress address, String newPrefix) {
         this(newPrefix, address.keyBytes, address.checksumBytes, null, address.publicKeyHex,
