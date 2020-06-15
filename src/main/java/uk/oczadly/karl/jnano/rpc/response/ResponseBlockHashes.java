@@ -1,16 +1,18 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.JsonAdapter;
+import uk.oczadly.karl.jnano.internal.gsonadapters.SingleValueJsonAdapter;
 
 import java.util.Set;
 
 /**
  * This response class contains a series of block hashes.
  */
+@JsonAdapter(SingleValueJsonAdapter.class)
 public class ResponseBlockHashes extends RpcResponse {
     
-    @Expose @SerializedName(value = "blocks", alternate = {"hashes", "confirmations"})
+    @Expose
     private Set<String> blockHashes;
     
     
