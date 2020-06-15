@@ -59,13 +59,15 @@ public final class StateBlock extends Block {
                String workSolution, NanoAccount accountAddress, String previousBlockHash,
                NanoAccount representativeAddress, BigInteger balance, String linkData, NanoAccount linkAccount) {
         super(BlockType.STATE, hash, jsonRepresentation, signature, workSolution);
+        if (linkAccount == null && linkData == null)
+            throw new IllegalArgumentException("State block must have at least 1 link field populated.");
         this.subType = subtype;
         this.accountAddress = accountAddress;
         this.previousBlockHash = previousBlockHash;
         this.representativeAddress = representativeAddress;
         this.balance = balance;
-        this.linkData = linkData;
-        this.linkAccount = linkAccount;
+        this.linkData = linkData != null ? linkData : linkAccount.toPublicKey();
+        this.linkAccount = linkAccount != null ? linkAccount : NanoAccount.parsePublicKey(linkData);
     }
     
     
