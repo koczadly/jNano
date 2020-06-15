@@ -1,6 +1,7 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
@@ -9,6 +10,8 @@ import uk.oczadly.karl.jnano.internal.gsonadapters.BlockAdapter;
 
 @JsonAdapter(BlockAdapter.class)
 public abstract class Block {
+    
+    private static final BlockDeserializer BLOCK_DESERIALIZER = new BlockDeserializer();
     
     @Expose @SerializedName("hash")
     private String hash;
@@ -76,6 +79,16 @@ public abstract class Block {
     @Override
     public String toString() {
         return this.getJsonString();
+    }
+    
+    
+    /**
+     * Parses a block from a given JSON string.
+     * @param json the json to parse from
+     * @return a block object derived from the provided JSON
+     */
+    public static Block parse(String json) {
+        return BLOCK_DESERIALIZER.deserialize(JsonParser.parseString(json).getAsJsonObject());
     }
     
 }
