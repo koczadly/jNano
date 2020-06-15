@@ -5,13 +5,17 @@ import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.internal.gsonadapters.BlockAdapter;
+
+import java.util.Objects;
 
 @JsonAdapter(BlockAdapter.class)
 public abstract class Block {
     
     private static final BlockDeserializer BLOCK_DESERIALIZER = new BlockDeserializer();
+    
     
     @Expose @SerializedName("hash")
     private String hash;
@@ -41,7 +45,19 @@ public abstract class Block {
     }
     
     
+    /**
+     * Returns the block hash, or attempts to calculate it if the hash value was not present.
+     * @return the block hash
+     */
     public final String getHash() {
+        if (hash == null) {
+            synchronized (this) {
+                if (hash == null) {
+                    hash = calculateHash();
+                    return hash;
+                }
+            }
+        }
         return hash;
     }
     
@@ -55,6 +71,23 @@ public abstract class Block {
     
     public final String getWorkSolution() {
         return workSolution;
+    }
+    
+    
+    protected abstract byte[][] generateHashables();
+    
+    protected final String calculateHash() {
+        byte[][] hashables = generateHashables();
+        if (hashables == null)
+            return null;
+    
+        Blake2b digest = new Blake2b(null, 32, null, null);
+        for (byte[] ba : hashables)
+            digest.update(ba, 0, ba.length);
+        byte[] hashBytes = new byte[32];
+        digest.digest(hashBytes, 0);
+        
+        return JNanoHelper.ENCODER_HEX.encode(hashBytes);
     }
     
     
@@ -81,6 +114,18 @@ public abstract class Block {
         return this.getJsonString();
     }
     
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Block)) return false;
+        Block block = (Block)o;
+        return Objects.equals(getHash(), block.getHash());
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(getHash());
+    }
     
     /**
      * Parses a block from a given JSON string.

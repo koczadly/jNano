@@ -50,8 +50,8 @@ public final class BlockDeserializer {
                         jsonObj.get("signature").getAsString(),
                         jsonObj.get("work").getAsString(),
                         jsonObj.get("source").getAsString(),
-                        jsonObj.get("account").getAsString(),
-                        jsonObj.get("representative").getAsString());
+                        NanoAccount.parse(jsonObj.get("account").getAsString()),
+                                NanoAccount.parse(jsonObj.get("representative").getAsString()));
             case "RECEIVE":
                 return new ReceiveBlock(
                         jsonObj,
@@ -67,7 +67,7 @@ public final class BlockDeserializer {
                         jsonObj.get("signature").getAsString(),
                         jsonObj.get("work").getAsString(),
                         jsonObj.get("previous").getAsString(),
-                        jsonObj.get("destination").getAsString(),
+                        NanoAccount.parse(jsonObj.get("destination").getAsString()),
                         new BigInteger(jsonObj.get("balance").getAsString(), 16)); // Hex encoded value
             case "CHANGE":
                 return new ChangeBlock(
@@ -76,7 +76,7 @@ public final class BlockDeserializer {
                         jsonObj.get("signature").getAsString(),
                         jsonObj.get("work").getAsString(),
                         jsonObj.get("previous").getAsString(),
-                        jsonObj.get("representative").getAsString());
+                        NanoAccount.parse(jsonObj.get("representative").getAsString()));
             default:
                 throw new JsonParseException("Block type " + blockType + " is invalid");
         }

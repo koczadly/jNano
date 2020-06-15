@@ -3,6 +3,7 @@ package uk.oczadly.karl.jnano.model.block;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.internal.JNanoHelper;
 
 /**
  * Represents a {@code receive} block, and the associated data.
@@ -38,6 +39,15 @@ public class ReceiveBlock extends Block {
     
     public final String getSourceBlockHash() {
         return sourceBlockHash;
+    }
+    
+    
+    @Override
+    protected byte[][] generateHashables() {
+        return new byte[][] {
+                JNanoHelper.ENCODER_HEX.decode(getPreviousBlockHash()),
+                JNanoHelper.ENCODER_HEX.decode(getSourceBlockHash())
+        };
     }
     
 }

@@ -3,6 +3,8 @@ package uk.oczadly.karl.jnano.model.block;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 /**
  * Represents an {@code open} block, and the associated data.
@@ -17,10 +19,10 @@ public class OpenBlock extends Block {
     private String sourceBlockHash;
     
     @Expose @SerializedName("account")
-    private String accountAddress;
+    private NanoAccount accountAddress;
     
     @Expose @SerializedName("representative")
-    private String representativeAccount;
+    private NanoAccount representativeAccount;
     
     
     OpenBlock() {
@@ -28,7 +30,7 @@ public class OpenBlock extends Block {
     }
     
     public OpenBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
-                     String sourceBlockHash, String accountAddress, String representativeAccount) {
+                     String sourceBlockHash, NanoAccount accountAddress, NanoAccount representativeAccount) {
         super(BlockType.OPEN, hash, jsonRepresentation, signature, workSolution);
         this.sourceBlockHash = sourceBlockHash;
         this.accountAddress = accountAddress;
@@ -40,12 +42,22 @@ public class OpenBlock extends Block {
         return sourceBlockHash;
     }
     
-    public final String getAccountAddress() {
+    public final NanoAccount getAccountAddress() {
         return accountAddress;
     }
     
-    public final String getRepresentativeAccount() {
+    public final NanoAccount getRepresentativeAccount() {
         return representativeAccount;
+    }
+    
+    
+    @Override
+    protected byte[][] generateHashables() {
+        return new byte[][] {
+                JNanoHelper.ENCODER_HEX.decode(getSourceBlockHash()),
+                getRepresentativeAccount().getPublicKeyBytes(),
+                getAccountAddress().getPublicKeyBytes()
+        };
     }
     
 }

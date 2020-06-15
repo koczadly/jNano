@@ -25,7 +25,7 @@ public class BlockAdapterTest {
         String json = "{\"type\":\"send\",\n" +
                 "  " +
                 "\"previous\":\"700DC6DF005DF78706A2C721D3EAA3755CC5209151D4BBD7EEB1D6FF77A068F8\",\n" +
-                "  \"destination\":\"xrb_3deo53mkqduhn6gu55nf4jnmx8dorugsrjfnteywbedcswpsit3zz4u5urg3\",\n" +
+                "  \"destination\":\"nano_3deo53mkqduhn6gu55nf4jnmx8dorugsrjfnteywbedcswpsit3zz4u5urg3\",\n" +
                 "  \"balance\": \"0000003196C882D0CC90B344BEB82FC0\",  \n" +
                 "  \"work\": \"6440a18c6061b71d\",  \n" +
                 "  \"signature\": \"7DFEE7769F8BC0A72428E7898FDFDF0660A6E234559B3B284A63B14611783AEC0706FE79368C2816B" +
@@ -48,8 +48,8 @@ public class BlockAdapterTest {
         
         assertEquals("700DC6DF005DF78706A2C721D3EAA3755CC5209151D4BBD7EEB1D6FF77A068F8",
                 block.getPreviousBlockHash());
-        assertEquals("xrb_3deo53mkqduhn6gu55nf4jnmx8dorugsrjfnteywbedcswpsit3zz4u5urg3",
-                block.getDestinationAccount());
+        assertEquals("nano_3deo53mkqduhn6gu55nf4jnmx8dorugsrjfnteywbedcswpsit3zz4u5urg3",
+                block.getDestinationAccount().toAddress());
         assertEquals("3928845117595383247300999000000", block.getNewBalance().toString());
     }
     
@@ -89,8 +89,8 @@ public class BlockAdapterTest {
     @Test
     public void testOpen() {
         String json = "{\n    \"type\": \"open\",\n    \"source\": \"78B334ADAD96EE142061121A6C40CE7FC2271257BF114" +
-                "63E18ABE5989E219748\",\n    \"representative\": \"xrb_3dmtrrws3pocycmbqwawk6xs7446qxa36fcncush4s1pe" +
-                "jk16ksbmakis78m\",\n    \"account\": \"xrb_3jybgajxebuj9kby3xusmn4sqiomzu15trmkwb1xyrynnc7axss3qp1yn" +
+                "63E18ABE5989E219748\",\n    \"representative\": \"nano_3dmtrrws3pocycmbqwawk6xs7446qxa36fcncush4s1pe" +
+                "jk16ksbmakis78m\",\n    \"account\": \"nano_3jybgajxebuj9kby3xusmn4sqiomzu15trmkwb1xyrynnc7axss3qp1yn" +
                 "679\",\n    \"work\": \"a7cf03e595499531\",\n    \"signature\": \"0F323D7FEF67152289B288AFD9EE9CD3CD" +
                 "224A3874FA8833E5E2FE60ACC500DADDADE8F37D452088B584C7DB358CA7C79B79A77A3C764ADA964B33DBF34DAB09\"\n}";
         
@@ -110,10 +110,10 @@ public class BlockAdapterTest {
         
         assertEquals("78B334ADAD96EE142061121A6C40CE7FC2271257BF11463E18ABE5989E219748",
                 block.getSourceBlockHash());
-        assertEquals("xrb_3jybgajxebuj9kby3xusmn4sqiomzu15trmkwb1xyrynnc7axss3qp1yn679",
-                block.getAccountAddress());
-        assertEquals("xrb_3dmtrrws3pocycmbqwawk6xs7446qxa36fcncush4s1pejk16ksbmakis78m",
-                block.getRepresentativeAccount());
+        assertEquals("nano_3jybgajxebuj9kby3xusmn4sqiomzu15trmkwb1xyrynnc7axss3qp1yn679",
+                block.getAccountAddress().toAddress());
+        assertEquals("nano_3dmtrrws3pocycmbqwawk6xs7446qxa36fcncush4s1pejk16ksbmakis78m",
+                block.getRepresentativeAccount().toAddress());
     }
     
     
@@ -121,7 +121,7 @@ public class BlockAdapterTest {
     @Test
     public void testChange() {
         String json = "{\n    \"type\": \"change\",\n    \"previous\": \"D8D494F97BB0519B45B5386157DA7E736381E912A647" +
-                "27522695463040371C25\",\n    \"representative\": \"xrb_3pczxuorp48td8645bs3m6c3xotxd3idskrenmi65rbr" +
+                "27522695463040371C25\",\n    \"representative\": \"nano_3pczxuorp48td8645bs3m6c3xotxd3idskrenmi65rbr" +
                 "ga5zmkemzhwkaznh\",\n    \"work\": \"727335966a97f67d\",\n    \"signature\": \"F9490F5C09A2B5B99EBD" +
                 "4D5F50C8095229ACFF7CD823155F14FAA6D17BC87C3EBD8B427A8F2882189D3488640BDA5221A91ED00FB7B72D089037ACA" +
                 "80D30E001\"\n}";
@@ -143,8 +143,8 @@ public class BlockAdapterTest {
         
         assertEquals("D8D494F97BB0519B45B5386157DA7E736381E912A64727522695463040371C25",
                 block.getPreviousBlockHash());
-        assertEquals("xrb_3pczxuorp48td8645bs3m6c3xotxd3idskrenmi65rbrga5zmkemzhwkaznh",
-                block.getRepresentativeAccount());
+        assertEquals("nano_3pczxuorp48td8645bs3m6c3xotxd3idskrenmi65rbrga5zmkemzhwkaznh",
+                block.getRepresentativeAccount().toAddress());
     }
     
 }

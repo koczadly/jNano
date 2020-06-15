@@ -21,4 +21,14 @@ public class JNanoHelper {
             .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer())  // Boolean deserializer
             .create();
     
+    
+    public static byte[] padByteArray(byte[] bytes, int len) {
+        if (bytes.length > len)
+            throw new IllegalArgumentException("Provided byte array was longer than the max padding length.");
+        
+        byte[] newArr = new byte[len];
+        System.arraycopy(bytes, 0, newArr, len - bytes.length, bytes.length);
+        return newArr;
+    }
+    
 }

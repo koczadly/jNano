@@ -3,6 +3,7 @@ package uk.oczadly.karl.jnano.model.block;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.math.BigInteger;
@@ -12,6 +13,10 @@ import java.math.BigInteger;
  * <p>To construct a new state block, use the {@link StateBlockBuilder} provided.</p>
  */
 public final class StateBlock extends Block {
+    
+    private static byte[] HASH_PREAMBLE_BYTES = JNanoHelper.ENCODER_HEX.decode(
+            "0000000000000000000000000000000000000000000000000000000000000006");
+    
     
     @Expose @SerializedName("account")
     private NanoAccount accountAddress;
@@ -97,6 +102,19 @@ public final class StateBlock extends Block {
     
     public StateBlockSubType getSubType() {
         return subType;
+    }
+    
+    
+    @Override
+    protected byte[][] generateHashables() {
+        return new byte[][] {
+                HASH_PREAMBLE_BYTES,
+                getAccountAddress().getPublicKeyBytes(),
+                JNanoHelper.ENCODER_HEX.decode(getPreviousBlockHash()),
+                getRepresentativeAddress().getPublicKeyBytes(),
+                JNanoHelper.padByteArray(getBalance().toByteArray(), 16),
+                JNanoHelper.ENCODER_HEX.decode(getLinkData())
+        };
     }
     
 }
