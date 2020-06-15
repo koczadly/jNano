@@ -18,22 +18,22 @@ public abstract class Block {
     
     
     @Expose @SerializedName("hash")
-    private String hash;
+    private volatile String hash;
     
     @Expose @SerializedName("type")
-    private BlockType type;
+    private final BlockType type;
     
     @Expose @SerializedName("signature")
-    private String signature;
+    private final String signature;
     
     @Expose @SerializedName("work")
-    private String workSolution;
+    private final String workSolution;
     
     private volatile JsonObject jsonRepresentation;
     
     
     protected Block(BlockType type) {
-        this.type = type;
+        this(type, null, null, null, null);
     }
     
     public Block(BlockType type, String hash, JsonObject jsonRepresentation, String signature, String workSolution) {
