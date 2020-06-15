@@ -29,15 +29,13 @@ public class StateBlockBuilder {
     /**
      * Constructs a new {@link StateBlockBuilder} with the non-optional parameters.
      *
-     * @param subtype               the context of the state block's action
      * @param accountAddress        the account which owns this block
      * @param previousBlockHash     the hash of the previous (or latest) block for the account
      * @param representativeAddress the representative for this account
      * @param balance               the (newly updated) balance of this account
      */
-    public StateBlockBuilder(StateBlockSubType subtype, NanoAccount accountAddress, String previousBlockHash,
+    public StateBlockBuilder(NanoAccount accountAddress, String previousBlockHash,
                              NanoAccount representativeAddress, BigInteger balance) {
-        setSubtype(subtype);
         setAccountAddress(accountAddress);
         setPreviousBlockHash(previousBlockHash);
         setRepresentativeAddress(representativeAddress);
@@ -77,9 +75,6 @@ public class StateBlockBuilder {
     }
     
     public StateBlockBuilder setSubtype(StateBlockSubType subtype) {
-        if (subtype == null)
-            throw new IllegalArgumentException("Block subtype cannot be null.");
-        
         this.subtype = subtype;
         return this;
     }
