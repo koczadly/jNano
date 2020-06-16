@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 /**
  * Represents a {@code change} block, and the associated data.
@@ -26,12 +27,12 @@ public class ChangeBlock extends Block {
         super(BlockType.CHANGE);
     }
     
-    public ChangeBlock(String signature, String workSolution, String previousBlockHash,
+    public ChangeBlock(String signature, WorkSolution workSolution, String previousBlockHash,
                        NanoAccount representativeAccount) {
         this(null, null, signature, workSolution, previousBlockHash, representativeAccount);
     }
     
-    protected ChangeBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
+    protected ChangeBlock(JsonObject jsonRepresentation, String hash, String signature, WorkSolution workSolution,
                        String previousBlockHash, NanoAccount representativeAccount) {
         super(BlockType.CHANGE, hash, jsonRepresentation, signature, workSolution);
     

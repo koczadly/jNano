@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 /**
  * Represents a {@code receive} block, and the associated data.
@@ -25,13 +26,13 @@ public class ReceiveBlock extends Block {
         super(BlockType.RECEIVE);
     }
     
-    public ReceiveBlock(String signature, String workSolution, String previousBlockHash, String sourceBlockHash) {
-        this(null, null, signature, workSolution, previousBlockHash, sourceBlockHash);
+    public ReceiveBlock(String signature, WorkSolution work, String previousBlockHash, String sourceBlockHash) {
+        this(null, null, signature, work, previousBlockHash, sourceBlockHash);
     }
     
-    protected ReceiveBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
+    protected ReceiveBlock(JsonObject jsonRepresentation, String hash, String signature, WorkSolution work,
                         String previousBlockHash, String sourceBlockHash) {
-        super(BlockType.RECEIVE, hash, jsonRepresentation, signature, workSolution);
+        super(BlockType.RECEIVE, hash, jsonRepresentation, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
         if (!JNanoHelper.isValidHex(previousBlockHash, 64))

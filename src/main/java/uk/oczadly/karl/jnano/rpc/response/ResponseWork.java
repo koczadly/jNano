@@ -3,6 +3,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
+import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 /**
  * This response class contains a computed work solution.
@@ -10,7 +11,7 @@ import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 public class ResponseWork extends RpcResponse {
     
     @Expose @SerializedName("work")
-    private String workSolution;
+    private WorkSolution workSolution;
     
     @Expose @SerializedName("difficulty")
     private WorkDifficulty difficulty;
@@ -22,7 +23,7 @@ public class ResponseWork extends RpcResponse {
     /**
      * @return the generated work solution
      */
-    public String getWorkSolution() {
+    public WorkSolution getWorkSolution() {
         return workSolution;
     }
     

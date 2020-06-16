@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
 import java.util.function.Function;
@@ -35,7 +36,7 @@ public final class BlockDeserializer {
                         nullableJsonObj(jsonObj.get("subtype"), o -> StateBlockSubType.getFromName(o.getAsString())),
                         hash,
                         jsonObj.get("signature").getAsString(),
-                        jsonObj.get("work").getAsString(),
+                        new WorkSolution(jsonObj.get("work").getAsString()),
                         NanoAccount.parse(jsonObj.get("account").getAsString()),
                         jsonObj.get("previous").getAsString(),
                         NanoAccount.parse(jsonObj.get("representative").getAsString()),
@@ -48,7 +49,7 @@ public final class BlockDeserializer {
                         jsonObj,
                         hash,
                         jsonObj.get("signature").getAsString(),
-                        jsonObj.get("work").getAsString(),
+                        new WorkSolution(jsonObj.get("work").getAsString()),
                         jsonObj.get("source").getAsString(),
                         NanoAccount.parse(jsonObj.get("account").getAsString()),
                                 NanoAccount.parse(jsonObj.get("representative").getAsString()));
@@ -57,7 +58,7 @@ public final class BlockDeserializer {
                         jsonObj,
                         hash,
                         jsonObj.get("signature").getAsString(),
-                        jsonObj.get("work").getAsString(),
+                        new WorkSolution(jsonObj.get("work").getAsString()),
                         jsonObj.get("previous").getAsString(),
                         jsonObj.get("source").getAsString());
             case "SEND":
@@ -65,7 +66,7 @@ public final class BlockDeserializer {
                         jsonObj,
                         hash,
                         jsonObj.get("signature").getAsString(),
-                        jsonObj.get("work").getAsString(),
+                        new WorkSolution(jsonObj.get("work").getAsString()),
                         jsonObj.get("previous").getAsString(),
                         NanoAccount.parse(jsonObj.get("destination").getAsString()),
                         new BigInteger(jsonObj.get("balance").getAsString(), 16)); // Hex encoded value
@@ -74,7 +75,7 @@ public final class BlockDeserializer {
                         jsonObj,
                         hash,
                         jsonObj.get("signature").getAsString(),
-                        jsonObj.get("work").getAsString(),
+                        new WorkSolution(jsonObj.get("work").getAsString()),
                         jsonObj.get("previous").getAsString(),
                         NanoAccount.parse(jsonObj.get("representative").getAsString()));
             default:

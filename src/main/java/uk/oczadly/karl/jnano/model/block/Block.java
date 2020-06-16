@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.internal.gsonadapters.BlockAdapter;
+import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.util.Objects;
 
@@ -27,7 +28,7 @@ public abstract class Block {
     private final String signature;
     
     @Expose @SerializedName("work")
-    private final String workSolution;
+    private final WorkSolution workSolution;
     
     private volatile JsonObject jsonRepresentation;
     
@@ -36,15 +37,13 @@ public abstract class Block {
         this(type, null, null, null, null);
     }
     
-    public Block(BlockType type, String hash, JsonObject jsonRepresentation, String signature, String workSolution) {
+    public Block(BlockType type, String hash, JsonObject jsonRepresentation, String signature,
+                 WorkSolution workSolution) {
         if (type == null) throw new IllegalArgumentException("Block type cannot be null.");
-        if (signature == null) throw new IllegalArgumentException("Block signature cannot be null.");
         if (hash != null && !JNanoHelper.isValidHex(hash, 64))
             throw new IllegalArgumentException("Hash string is invalid.");
         if (!JNanoHelper.isValidHex(signature, 128))
             throw new IllegalArgumentException("Block signature is invalid.");
-        if (!JNanoHelper.isValidHex(workSolution, 16))
-            throw new IllegalArgumentException("Work value is invalid.");
         
         this.type = type;
         this.hash = hash != null ? hash.toUpperCase() : null;
@@ -78,16 +77,16 @@ public abstract class Block {
     }
     
     /**
-     * @return the signature which verifies and authorizes this block
+     * @return the signature which verifies and authorizes this block (may be null)
      */
     public final String getSignature() {
         return signature;
     }
     
     /**
-     * @return the work solution
+     * @return the work solution (may be null)
      */
-    public final String getWorkSolution() {
+    public final WorkSolution getWorkSolution() {
         return workSolution;
     }
     

@@ -2,6 +2,7 @@ package uk.oczadly.karl.jnano.model.block;
 
 import org.junit.Test;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
 
@@ -17,7 +18,7 @@ public class StateBlockBuilderTest {
     public static StateBlockBuilder newBuilder() {
         return new StateBlockBuilder(
                 ACCOUNT,
-                "PREVHASH",
+                "1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97",
                 ACCOUNT,
                 new BigInteger("1337"))
                 .setSubtype(StateBlockSubType.EPOCH);
@@ -39,23 +40,25 @@ public class StateBlockBuilderTest {
     @Test
     public void testAllValues() {
         StateBlock block = newBuilder()
-                .setHash("HASH")
+                .setHash("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97")
                 .setLinkData(DATA)
-                .setSignature("SIG")
-                .setWorkSolution("WORK")
+                .setSignature("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC9734F1B28DA06C9CA246615" +
+                        "9428733B971068BF154DBA2AB10372510D52E86CC97")
+                .setWorkSolution(new WorkSolution("009d175747abbc9e"))
                 .build();
     
         assertEquals(BlockType.STATE, block.getType());
     
         assertEquals(new BigInteger("1337"), block.getBalance());
         assertEquals(StateBlockSubType.EPOCH, block.getSubType());
-        assertEquals("HASH", block.getHash());
+        assertEquals("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97", block.getHash());
         assertEquals(ACCOUNT, block.getAccountAddress());
-        assertEquals("PREVHASH", block.getPreviousBlockHash());
+        assertEquals("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97", block.getPreviousBlockHash());
         assertEquals(ACCOUNT, block.getRepresentativeAddress());
         assertEquals(DATA, block.getLinkData());
-        assertEquals("SIG", block.getSignature());
-        assertEquals("WORK", block.getWorkSolution());
+        assertEquals("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC9734F1B28DA06C9CA24661594" +
+                "28733B971068BF154DBA2AB10372510D52E86CC97", block.getSignature());
+        assertEquals(new WorkSolution("009d175747abbc9e"), block.getWorkSolution());
         
         //TODO test JSON
         assertNotNull(block.getJsonObject());

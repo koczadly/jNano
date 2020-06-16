@@ -78,4 +78,13 @@ public class StateBlockTest {
         assertEquals(block1.hashCode(), block2.hashCode());
     }
     
+    @Test
+    public void testHashing() {
+        StateBlock b = builder
+                .setLinkData("62204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488")
+                .build();
+        
+        assertEquals("3D49EFB46E7716220B5E83A7830F543CC4A3EE50E53183D1E3BE81B2A50B5EFE", b.getHash());
+    }
+    
 }

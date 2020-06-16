@@ -1,6 +1,7 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
 
@@ -23,7 +24,7 @@ public class StateBlockBuilder {
     private String linkData;
     private String hash;
     private String signature;
-    private String workSolution;
+    private WorkSolution work;
     
     
     /**
@@ -61,13 +62,18 @@ public class StateBlockBuilder {
         return this;
     }
     
-    public String getWorkSolution() {
-        return workSolution;
+    public WorkSolution getWorkSolution() {
+        return work;
     }
     
-    public StateBlockBuilder setWorkSolution(String workSolution) {
-        this.workSolution = workSolution;
+    public StateBlockBuilder setWorkSolution(WorkSolution work) {
+        this.work = work;
         return this;
+    }
+    
+    @Deprecated
+    public StateBlockBuilder setWorkSolution(String work) {
+        return setWorkSolution(new WorkSolution(work));
     }
     
     public StateBlockSubType getSubtype() {
@@ -163,7 +169,7 @@ public class StateBlockBuilder {
      */
     public StateBlock build() {
         // Construct
-        return new StateBlock(null, subtype, hash, signature, workSolution, accountAddress,
+        return new StateBlock(null, subtype, hash, signature, work, accountAddress,
                 previousBlockHash, representativeAddress, balance,
                 (linkAccount == null && linkData == null) ? NULL_DATA : linkData,
                 linkAccount);

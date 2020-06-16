@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 /**
  * Represents an {@code open} block, and the associated data.
@@ -29,14 +30,14 @@ public class OpenBlock extends Block {
         super(BlockType.OPEN);
     }
     
-    public OpenBlock(String signature, String workSolution, String sourceBlockHash, NanoAccount accountAddress,
+    public OpenBlock(String signature, WorkSolution work, String sourceBlockHash, NanoAccount accountAddress,
                      NanoAccount representativeAccount) {
-        this(null, null, signature, workSolution, sourceBlockHash, accountAddress, representativeAccount);
+        this(null, null, signature, work, sourceBlockHash, accountAddress, representativeAccount);
     }
     
-    protected OpenBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
+    protected OpenBlock(JsonObject jsonRepresentation, String hash, String signature, WorkSolution work,
                      String sourceBlockHash, NanoAccount accountAddress, NanoAccount representativeAccount) {
-        super(BlockType.OPEN, hash, jsonRepresentation, signature, workSolution);
+        super(BlockType.OPEN, hash, jsonRepresentation, signature, work);
     
         if (sourceBlockHash == null) throw new IllegalArgumentException("Source block hash cannot be null.");
         if (!JNanoHelper.isValidHex(sourceBlockHash, 64))

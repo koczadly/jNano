@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
 
@@ -31,14 +32,14 @@ public class SendBlock extends Block {
         super(BlockType.SEND);
     }
     
-    public SendBlock(String signature, String workSolution, String previousBlockHash, NanoAccount destinationAccount,
+    public SendBlock(String signature, WorkSolution work, String previousBlockHash, NanoAccount destinationAccount,
                      BigInteger newBalance) {
-        this(null, null, signature, workSolution, previousBlockHash, destinationAccount, newBalance);
+        this(null, null, signature, work, previousBlockHash, destinationAccount, newBalance);
     }
     
-    protected SendBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
+    protected SendBlock(JsonObject jsonRepresentation, String hash, String signature, WorkSolution work,
                      String previousBlockHash, NanoAccount destinationAccount, BigInteger newBalance) {
-        super(BlockType.SEND, hash, jsonRepresentation, signature, workSolution);
+        super(BlockType.SEND, hash, jsonRepresentation, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
         if (!JNanoHelper.isValidHex(previousBlockHash, 64))

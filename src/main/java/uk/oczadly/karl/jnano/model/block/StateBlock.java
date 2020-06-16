@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
 
@@ -49,7 +50,7 @@ public final class StateBlock extends Block {
      *
      * @param subtype               the block's subtype
      * @param signature             the block verification signature
-     * @param workSolution          the computed work solution
+     * @param work                  the computed work solution
      * @param accountAddress        the account's address
      * @param previousBlockHash     the previous block's hash
      * @param representativeAddress the representative address of this account
@@ -57,9 +58,9 @@ public final class StateBlock extends Block {
      * @param link                  the link data for this transaction, encoded as an account
      * @see StateBlockBuilder
      */
-    public StateBlock(StateBlockSubType subtype, String signature, String workSolution, NanoAccount accountAddress,
+    public StateBlock(StateBlockSubType subtype, String signature, WorkSolution work, NanoAccount accountAddress,
                       String previousBlockHash, NanoAccount representativeAddress, BigInteger balance, NanoAccount link) {
-        this(null, subtype, null, signature, workSolution, accountAddress, previousBlockHash, representativeAddress,
+        this(null, subtype, null, signature, work, accountAddress, previousBlockHash, representativeAddress,
                 balance, null, link);
     }
     
@@ -68,7 +69,7 @@ public final class StateBlock extends Block {
      *
      * @param subtype               the block's subtype
      * @param signature             the block verification signature
-     * @param workSolution          the computed work solution
+     * @param work                  the computed work solution
      * @param accountAddress        the account's address
      * @param previousBlockHash     the previous block's hash
      * @param representativeAddress the representative address of this account
@@ -76,16 +77,16 @@ public final class StateBlock extends Block {
      * @param link                  the link data for this transaction, encoded as a hexadecimal string
      * @see StateBlockBuilder
      */
-    public StateBlock(StateBlockSubType subtype, String signature, String workSolution, NanoAccount accountAddress,
+    public StateBlock(StateBlockSubType subtype, String signature, WorkSolution work, NanoAccount accountAddress,
                       String previousBlockHash, NanoAccount representativeAddress, BigInteger balance, String link) {
-        this(null, subtype, null, signature, workSolution, accountAddress, previousBlockHash, representativeAddress,
+        this(null, subtype, null, signature, work, accountAddress, previousBlockHash, representativeAddress,
                 balance, link, null);
     }
     
     StateBlock(JsonObject jsonRepresentation, StateBlockSubType subtype, String hash, String signature,
-               String workSolution, NanoAccount accountAddress, String previousBlockHash,
+               WorkSolution work, NanoAccount accountAddress, String previousBlockHash,
                NanoAccount representativeAddress, BigInteger balance, String linkData, NanoAccount linkAccount) {
-        super(BlockType.STATE, hash, jsonRepresentation, signature, workSolution);
+        super(BlockType.STATE, hash, jsonRepresentation, signature, work);
         
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
         if (!JNanoHelper.isValidHex(previousBlockHash, 64))
