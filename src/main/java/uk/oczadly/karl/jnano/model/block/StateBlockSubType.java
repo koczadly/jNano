@@ -16,6 +16,9 @@ public enum StateBlockSubType {
     @SerializedName("receive")
     RECEIVE("receive", true),
     
+    @SerializedName("open")
+    OPEN("open", true),
+    
     @SerializedName("change")
     CHANGE_REP("change", false),
     
