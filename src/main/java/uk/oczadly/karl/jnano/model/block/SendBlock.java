@@ -5,6 +5,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlockBalance;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlockLink;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
@@ -16,8 +19,7 @@ import java.math.BigInteger;
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
 @Deprecated
-public class SendBlock extends Block implements BlockInterfaces.Previous, BlockInterfaces.Link,
-        BlockInterfaces.Balance {
+public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlockBalance {
     
     @Expose @SerializedName("previous")
     private String previousBlockHash;
@@ -26,7 +28,7 @@ public class SendBlock extends Block implements BlockInterfaces.Previous, BlockI
     private NanoAccount destinationAccount;
     
     @Expose @SerializedName("balance")
-    private BigInteger newBalance;
+    private BigInteger balance;
     
     
     SendBlock() {
@@ -34,25 +36,25 @@ public class SendBlock extends Block implements BlockInterfaces.Previous, BlockI
     }
     
     public SendBlock(String signature, WorkSolution work, String previousBlockHash, NanoAccount destinationAccount,
-                     BigInteger newBalance) {
-        this(null, null, signature, work, previousBlockHash, destinationAccount, newBalance);
+                     BigInteger balance) {
+        this(null, null, signature, work, previousBlockHash, destinationAccount, balance);
     }
     
     protected SendBlock(JsonObject jsonRepresentation, String hash, String signature, WorkSolution work,
-                     String previousBlockHash, NanoAccount destinationAccount, BigInteger newBalance) {
+                     String previousBlockHash, NanoAccount destinationAccount, BigInteger balance) {
         super(BlockType.SEND, hash, jsonRepresentation, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
         if (!JNanoHelper.isValidHex(previousBlockHash, 64))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (destinationAccount == null) throw new IllegalArgumentException("Block destination account cannot be null.");
-        if (newBalance == null) throw new IllegalArgumentException("Account balance cannot be null.");
-        if (!JNanoHelper.isBalanceValid(newBalance))
+        if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");
+        if (!JNanoHelper.isBalanceValid(balance))
             throw new IllegalArgumentException("Account balance is an invalid amount.");
         
         this.previousBlockHash = previousBlockHash;
         this.destinationAccount = destinationAccount;
-        this.newBalance = newBalance;
+        this.balance = balance;
     }
     
     
@@ -70,7 +72,7 @@ public class SendBlock extends Block implements BlockInterfaces.Previous, BlockI
     
     @Override
     public final BigInteger getBalance() {
-        return newBalance;
+        return balance;
     }
     
     

@@ -5,6 +5,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlockRepresentative;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 /**
@@ -14,7 +16,7 @@ import uk.oczadly.karl.jnano.model.work.WorkSolution;
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
 @Deprecated
-public class ChangeBlock extends Block implements BlockInterfaces.Previous, BlockInterfaces.Representative {
+public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresentative {
     
     @Expose @SerializedName("previous")
     private String previousBlockHash;

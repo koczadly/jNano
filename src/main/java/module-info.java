@@ -3,6 +3,7 @@ module uk.oczadly.karl.jnano {
     //Models
     exports uk.oczadly.karl.jnano.model;
     exports uk.oczadly.karl.jnano.model.block;
+    exports uk.oczadly.karl.jnano.model.block.interfaces;
     exports uk.oczadly.karl.jnano.model.work;
     //Callback
     exports uk.oczadly.karl.jnano.callback;

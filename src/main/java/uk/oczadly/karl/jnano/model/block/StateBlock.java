@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.block.interfaces.*;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
@@ -13,8 +14,8 @@ import java.math.BigInteger;
  * <p>Represents a state block, and the associated data.</p>
  * <p>To construct a new state block, use the {@link StateBlockBuilder} provided.</p>
  */
-public final class StateBlock extends Block implements BlockInterfaces.Link, BlockInterfaces.Balance,
-        BlockInterfaces.Previous, BlockInterfaces.Representative, BlockInterfaces.Account {
+public final class StateBlock extends Block implements IBlockLink, IBlockBalance, IBlockPrevious, IBlockRepresentative,
+        IBlockAccount {
     
     private static byte[] HASH_PREAMBLE_BYTES = JNanoHelper.ENCODER_HEX.decode(
             "0000000000000000000000000000000000000000000000000000000000000006");

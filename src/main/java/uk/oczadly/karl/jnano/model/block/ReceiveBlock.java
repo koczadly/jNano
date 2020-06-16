@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlockSource;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 /**
@@ -13,7 +15,7 @@ import uk.oczadly.karl.jnano.model.work.WorkSolution;
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
 @Deprecated
-public class ReceiveBlock extends Block implements BlockInterfaces.Previous, BlockInterfaces.Source {
+public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource {
     
     @Expose @SerializedName("previous")
     private String previousBlockHash;

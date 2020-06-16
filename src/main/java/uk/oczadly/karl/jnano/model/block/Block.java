@@ -8,12 +8,13 @@ import com.google.gson.annotations.SerializedName;
 import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.internal.gsonadapters.BlockAdapter;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlock;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.util.Objects;
 
 @JsonAdapter(BlockAdapter.class)
-public abstract class Block {
+public abstract class Block implements IBlock {
     
     private static final BlockDeserializer BLOCK_DESERIALIZER = new BlockDeserializer();
     
@@ -54,9 +55,10 @@ public abstract class Block {
     
     
     /**
+     * {@inheritDoc}
      * Returns the block hash, or attempts to calculate it if the hash value was not present.
-     * @return the block hash
      */
+    @Override
     public final String getHash() {
         if (hash == null) {
             synchronized (this) {
@@ -69,23 +71,17 @@ public abstract class Block {
         return hash;
     }
     
-    /**
-     * @return the block type
-     */
+    @Override
     public final BlockType getType() {
         return type;
     }
     
-    /**
-     * @return the signature which verifies and authorizes this block (may be null)
-     */
+    @Override
     public final String getSignature() {
         return signature;
     }
     
-    /**
-     * @return the work solution (may be null)
-     */
+    @Override
     public final WorkSolution getWorkSolution() {
         return workSolution;
     }
