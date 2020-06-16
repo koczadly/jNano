@@ -25,7 +25,7 @@ public enum AccountEpoch {
             NanoAccount.parseSegment("3qb6o6i1tkzr6jwr5s7eehfxwg9x6eemitdinbpi7u8bjjwsgqfj"));
     
     
-    public static final AccountEpoch LATEST_EPOCH = V2;
+    public static final AccountEpoch LATEST_EPOCH = values()[values().length - 1];
     
     private static final Map<Integer, AccountEpoch> VER_MAP = new HashMap<>();
     private static final Map<String, AccountEpoch> ID_MAP = new HashMap<>();
