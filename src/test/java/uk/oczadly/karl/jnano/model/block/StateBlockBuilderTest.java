@@ -59,7 +59,7 @@ public class StateBlockBuilderTest {
         
         //TODO test JSON
         assertNotNull(block.getJsonObject());
-        assertNotNull(block.getJsonString());
+        assertNotNull(block.toJsonString());
     }
     
     @Test

@@ -29,23 +29,44 @@ public class OpenBlock extends Block {
         super(BlockType.OPEN);
     }
     
-    public OpenBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
+    public OpenBlock(String signature, String workSolution, String sourceBlockHash, NanoAccount accountAddress,
+                     NanoAccount representativeAccount) {
+        this(null, null, signature, workSolution, sourceBlockHash, accountAddress, representativeAccount);
+    }
+    
+    protected OpenBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
                      String sourceBlockHash, NanoAccount accountAddress, NanoAccount representativeAccount) {
         super(BlockType.OPEN, hash, jsonRepresentation, signature, workSolution);
+    
+        if (sourceBlockHash == null) throw new IllegalArgumentException("Source block hash cannot be null.");
+        if (!JNanoHelper.isValidHex(sourceBlockHash, 64))
+            throw new IllegalArgumentException("Previous block hash is invalid.");
+        if (accountAddress == null) throw new IllegalArgumentException("Block account cannot be null.");
+        if (representativeAccount == null) throw new IllegalArgumentException("Block representative cannot be null.");
+        
         this.sourceBlockHash = sourceBlockHash;
         this.accountAddress = accountAddress;
         this.representativeAccount = representativeAccount;
     }
     
     
+    /**
+     * @return the hash of the corresponding send block
+     */
     public final String getSourceBlockHash() {
         return sourceBlockHash;
     }
     
+    /**
+     * @return the account which this block belongs to
+     */
     public final NanoAccount getAccountAddress() {
         return accountAddress;
     }
     
+    /**
+     * @return the representative address for this account
+     */
     public final NanoAccount getRepresentativeAccount() {
         return representativeAccount;
     }

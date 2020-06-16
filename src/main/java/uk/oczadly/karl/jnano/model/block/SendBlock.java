@@ -31,23 +31,46 @@ public class SendBlock extends Block {
         super(BlockType.SEND);
     }
     
-    public SendBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
+    public SendBlock(String signature, String workSolution, String previousBlockHash, NanoAccount destinationAccount,
+                     BigInteger newBalance) {
+        this(null, null, signature, workSolution, previousBlockHash, destinationAccount, newBalance);
+    }
+    
+    protected SendBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
                      String previousBlockHash, NanoAccount destinationAccount, BigInteger newBalance) {
         super(BlockType.SEND, hash, jsonRepresentation, signature, workSolution);
+    
+        if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
+        if (!JNanoHelper.isValidHex(previousBlockHash, 64))
+            throw new IllegalArgumentException("Previous block hash is invalid.");
+        if (destinationAccount == null) throw new IllegalArgumentException("Block destination account cannot be null.");
+        if (newBalance == null) throw new IllegalArgumentException("Account balance cannot be null.");
+        if (!JNanoHelper.isBalanceValid(newBalance))
+            throw new IllegalArgumentException("Account balance is an invalid amount.");
+        
         this.previousBlockHash = previousBlockHash;
         this.destinationAccount = destinationAccount;
         this.newBalance = newBalance;
     }
     
     
+    /**
+     * @return the previous block hash in this account's blockchain
+     */
     public final String getPreviousBlockHash() {
         return previousBlockHash;
     }
     
+    /**
+     * @return the destination account which the funds will be sent to
+     */
     public final NanoAccount getDestinationAccount() {
         return destinationAccount;
     }
     
+    /**
+     * @return the balance of the account after this transaction
+     */
     public final BigInteger getNewBalance() {
         return newBalance;
     }

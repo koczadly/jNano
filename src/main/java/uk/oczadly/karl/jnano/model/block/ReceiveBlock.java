@@ -25,18 +25,36 @@ public class ReceiveBlock extends Block {
         super(BlockType.RECEIVE);
     }
     
-    public ReceiveBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
+    public ReceiveBlock(String signature, String workSolution, String previousBlockHash, String sourceBlockHash) {
+        this(null, null, signature, workSolution, previousBlockHash, sourceBlockHash);
+    }
+    
+    protected ReceiveBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
                         String previousBlockHash, String sourceBlockHash) {
         super(BlockType.RECEIVE, hash, jsonRepresentation, signature, workSolution);
+    
+        if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
+        if (!JNanoHelper.isValidHex(previousBlockHash, 64))
+            throw new IllegalArgumentException("Previous block hash is invalid.");
+        if (sourceBlockHash == null) throw new IllegalArgumentException("Source block hash cannot be null.");
+        if (!JNanoHelper.isValidHex(sourceBlockHash, 64))
+            throw new IllegalArgumentException("Source block hash is invalid.");
+        
         this.previousBlockHash = previousBlockHash;
         this.sourceBlockHash = sourceBlockHash;
     }
     
     
+    /**
+     * @return the previous block hash in this account's blockchain
+     */
     public final String getPreviousBlockHash() {
         return previousBlockHash;
     }
     
+    /**
+     * @return the hash of the corresponding send block
+     */
     public final String getSourceBlockHash() {
         return sourceBlockHash;
     }

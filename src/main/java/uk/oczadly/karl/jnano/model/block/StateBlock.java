@@ -47,59 +47,118 @@ public final class StateBlock extends Block {
     /**
      * Constructs a new state block.
      *
-     * @param jsonRepresentation    the JSON representation if deserialized, or null
-     * @param subtype               the block's action subtype
-     * @param hash                  the block's hash
+     * @param subtype               the block's subtype
      * @param signature             the block verification signature
      * @param workSolution          the computed work solution
      * @param accountAddress        the account's address
      * @param previousBlockHash     the previous block's hash
      * @param representativeAddress the representative address of this account
-     * @param balance               the (newly updated) balance, in raw
-     * @param linkData              the link data for this transaction
-     * @param linkAccount           the link data for this transaction, specified in the account address format
+     * @param balance               the balance of the account after this transaction, in raw
+     * @param link                  the link data for this transaction, encoded as an account
      * @see StateBlockBuilder
      */
+    public StateBlock(StateBlockSubType subtype, String signature, String workSolution, NanoAccount accountAddress,
+                      String previousBlockHash, NanoAccount representativeAddress, BigInteger balance, NanoAccount link) {
+        this(null, subtype, null, signature, workSolution, accountAddress, previousBlockHash, representativeAddress,
+                balance, null, link);
+    }
+    
+    /**
+     * Constructs a new state block.
+     *
+     * @param subtype               the block's subtype
+     * @param signature             the block verification signature
+     * @param workSolution          the computed work solution
+     * @param accountAddress        the account's address
+     * @param previousBlockHash     the previous block's hash
+     * @param representativeAddress the representative address of this account
+     * @param balance               the balance of the account after this transaction, in raw
+     * @param link                  the link data for this transaction, encoded as a hexadecimal string
+     * @see StateBlockBuilder
+     */
+    public StateBlock(StateBlockSubType subtype, String signature, String workSolution, NanoAccount accountAddress,
+                      String previousBlockHash, NanoAccount representativeAddress, BigInteger balance, String link) {
+        this(null, subtype, null, signature, workSolution, accountAddress, previousBlockHash, representativeAddress,
+                balance, link, null);
+    }
+    
     StateBlock(JsonObject jsonRepresentation, StateBlockSubType subtype, String hash, String signature,
                String workSolution, NanoAccount accountAddress, String previousBlockHash,
                NanoAccount representativeAddress, BigInteger balance, String linkData, NanoAccount linkAccount) {
         super(BlockType.STATE, hash, jsonRepresentation, signature, workSolution);
-        if (linkAccount == null && linkData == null)
-            throw new IllegalArgumentException("State block must have at least 1 link field populated.");
+        
+        if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
+        if (!JNanoHelper.isValidHex(previousBlockHash, 64))
+            throw new IllegalArgumentException("Previous block hash is invalid.");
+        if (representativeAddress == null) throw new IllegalArgumentException("Block representative cannot be null.");
+        if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");
+        if (!JNanoHelper.isBalanceValid(balance))
+            throw new IllegalArgumentException("Account balance is an invalid amount.");
+        if (accountAddress == null) throw new IllegalArgumentException("Block account cannot be null.");
+        if (linkData != null && !JNanoHelper.isValidHex(linkData, 64))
+            throw new IllegalArgumentException("Link data is invalid.");
+        
         this.subType = subtype;
         this.accountAddress = accountAddress;
-        this.previousBlockHash = previousBlockHash;
+        this.previousBlockHash = previousBlockHash != null ? previousBlockHash.toUpperCase() : JNanoHelper.EMPTY_HEX_64;
         this.representativeAddress = representativeAddress;
         this.balance = balance;
-        this.linkData = linkData != null ? linkData : linkAccount.toPublicKey();
+        if (linkAccount == null && linkData == null) // If no data field is specified
+            linkData = JNanoHelper.EMPTY_HEX_64;
+        this.linkData = linkData != null ? linkData.toUpperCase() : linkAccount.toPublicKey();
         this.linkAccount = linkAccount != null ? linkAccount : NanoAccount.parsePublicKey(linkData);
     }
     
     
+    /**
+     * @return the account which this block belongs to
+     */
     public NanoAccount getAccountAddress() {
         return accountAddress;
     }
     
+    /**
+     * @return the previous block hash in this account's blockchain
+     */
     public final String getPreviousBlockHash() {
         return previousBlockHash;
     }
     
+    /**
+     * @return the representative address for this account
+     */
     public NanoAccount getRepresentativeAddress() {
         return representativeAddress;
     }
     
+    /**
+     * @return the balance of the account after this transaction
+     */
     public final BigInteger getBalance() {
         return balance;
     }
     
+    /**
+     * Returns the link data field, as a 64-character hexadecimal string. For blocks which aren't initialized with this
+     * field, the value will be computed.
+     * @return the link data, encoded as a Nano account
+     */
     public String getLinkData() {
         return linkData;
     }
     
+    /**
+     * Returns the link data field, encoded as a Nano account. For blocks which aren't initialized with this field,
+     * the value will be computed.
+     * @return the link data, encoded as a Nano account
+     */
     public NanoAccount getLinkAsAccount() {
         return linkAccount;
     }
     
+    /**
+     * @return the subtype of the block (may be null)
+     */
     public StateBlockSubType getSubType() {
         return subType;
     }

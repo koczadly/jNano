@@ -37,8 +37,17 @@ public abstract class Block {
     }
     
     public Block(BlockType type, String hash, JsonObject jsonRepresentation, String signature, String workSolution) {
+        if (type == null) throw new IllegalArgumentException("Block type cannot be null.");
+        if (signature == null) throw new IllegalArgumentException("Block signature cannot be null.");
+        if (hash != null && !JNanoHelper.isValidHex(hash, 64))
+            throw new IllegalArgumentException("Hash string is invalid.");
+        if (!JNanoHelper.isValidHex(signature, 128))
+            throw new IllegalArgumentException("Block signature is invalid.");
+        if (!JNanoHelper.isValidHex(workSolution, 16))
+            throw new IllegalArgumentException("Work value is invalid.");
+        
         this.type = type;
-        this.hash = hash;
+        this.hash = hash != null ? hash.toUpperCase() : null;
         this.jsonRepresentation = jsonRepresentation;
         this.signature = signature;
         this.workSolution = workSolution;
@@ -61,14 +70,23 @@ public abstract class Block {
         return hash;
     }
     
+    /**
+     * @return the block type
+     */
     public final BlockType getType() {
         return type;
     }
     
+    /**
+     * @return the signature which verifies and authorizes this block
+     */
     public final String getSignature() {
         return signature;
     }
     
+    /**
+     * @return the work solution
+     */
     public final String getWorkSolution() {
         return workSolution;
     }
@@ -91,10 +109,16 @@ public abstract class Block {
     }
     
     
-    public final String getJsonString() {
+    /**
+     * @return a JSON representation of this block
+     */
+    public final String toJsonString() {
         return getJsonObject().toString();
     }
     
+    /**
+     * @return a JSON representation of this block, as a Gson {@link JsonObject}
+     */
     public final JsonObject getJsonObject() {
         // Double-checked locking for initialization
         if (jsonRepresentation == null) {
@@ -111,7 +135,7 @@ public abstract class Block {
     
     @Override
     public String toString() {
-        return this.getJsonString();
+        return this.toJsonString();
     }
     
     @Override
@@ -127,6 +151,7 @@ public abstract class Block {
     public int hashCode() {
         return Objects.hash(getHash());
     }
+    
     
     /**
      * Parses a block from a given JSON string.

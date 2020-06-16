@@ -37,7 +37,7 @@ public class RequestProcess extends RpcRequest<ResponseBlockHash> {
      * @param force (optional) whether fork resolution should be forced
      */
     public RequestProcess(Block block, Boolean force) {
-        this(block.getJsonString(), force, null, null);
+        this(block.toJsonString(), force, null, null);
     }
     
     /**

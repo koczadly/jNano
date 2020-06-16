@@ -26,18 +26,35 @@ public class ChangeBlock extends Block {
         super(BlockType.CHANGE);
     }
     
-    public ChangeBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
+    public ChangeBlock(String signature, String workSolution, String previousBlockHash,
+                       NanoAccount representativeAccount) {
+        this(null, null, signature, workSolution, previousBlockHash, representativeAccount);
+    }
+    
+    protected ChangeBlock(JsonObject jsonRepresentation, String hash, String signature, String workSolution,
                        String previousBlockHash, NanoAccount representativeAccount) {
         super(BlockType.CHANGE, hash, jsonRepresentation, signature, workSolution);
+    
+        if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
+        if (!JNanoHelper.isValidHex(previousBlockHash, 64))
+            throw new IllegalArgumentException("Previous block hash is invalid.");
+        if (representativeAccount == null) throw new IllegalArgumentException("Block representative cannot be null.");
+        
         this.previousBlockHash = previousBlockHash;
         this.representativeAccount = representativeAccount;
     }
     
     
+    /**
+     * @return the previous block hash in this account's blockchain
+     */
     public final String getPreviousBlockHash() {
         return previousBlockHash;
     }
     
+    /**
+     * @return the representative address for this account
+     */
     public final NanoAccount getRepresentativeAccount() {
         return representativeAccount;
     }

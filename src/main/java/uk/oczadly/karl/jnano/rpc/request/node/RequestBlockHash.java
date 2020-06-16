@@ -29,7 +29,7 @@ public class RequestBlockHash extends RpcRequest<ResponseBlockHash> {
      * @param block the block's data
      */
     public RequestBlockHash(Block block) {
-        this(block.getJsonString());
+        this(block.toJsonString());
     }
     
     /**
