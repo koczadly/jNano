@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.model.WorkDifficulty;
+import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 
 import java.math.BigDecimal;
 import java.util.List;

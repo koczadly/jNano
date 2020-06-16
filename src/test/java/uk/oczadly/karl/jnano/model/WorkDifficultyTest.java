@@ -3,6 +3,7 @@ package uk.oczadly.karl.jnano.model;
 import com.google.gson.JsonParser;
 import org.junit.Test;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;

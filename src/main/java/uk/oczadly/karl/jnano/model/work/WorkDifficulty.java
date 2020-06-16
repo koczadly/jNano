@@ -1,4 +1,4 @@
-package uk.oczadly.karl.jnano.model;
+package uk.oczadly.karl.jnano.model.work;
 
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
