@@ -20,7 +20,7 @@ This project is hosted on [Maven Central](https://search.maven.org/artifact/uk.o
 <dependency>
     <groupId>uk.oczadly.karl</groupId>
     <artifactId>jnano</artifactId>
-    <version>2.4.2-V20</version>
+    <version>2.5.0-V21</version>
 </dependency>
 ```
 
@@ -91,6 +91,7 @@ server.start();
 ## Dependencies
 The following dependencies are required, and are handled automatically through Maven:
 - [Gson 2.8.6](https://github.com/google/gson)
+- [blake2b 1.0.0](https://github.com/rfksystems/blake2b)
 
 ---
 
