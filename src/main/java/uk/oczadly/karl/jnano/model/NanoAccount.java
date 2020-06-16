@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * <p>This class represents an immutable Nano account address string. A wide range of native utilities are provided
+ * <p>This class represents an immutable Nano account address string. A wide range of Java-based utilities are provided
  * through the methods of this class, without needing to configure or connect to an external node.</p>
  * <p>To instantiate this class, use the provided static methods (eg. {@link #parse(String)}), or use the
  * constructor to clone an existing object.</p>

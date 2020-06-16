@@ -7,7 +7,7 @@ import java.text.DecimalFormat;
 
 /**
  * <p>This class represents the currency units and denominations used to represent an amount of Nano, and can be
- * used to natively convert between the different units.</p>
+ * used to locally convert between the different units.</p>
  * <p>If you are intending to parse or display an amount of Nano to the user, it is recommended that you use the
  * {@link #BASE_UNIT} constant, rather than explicitly specifying the unit. This constant represents the unit that users
  * of Nano will be most familiar with.</p>

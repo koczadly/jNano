@@ -11,7 +11,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHash;
  * <br>Calls the RPC command {@code block_hash}, and returns a {@link ResponseBlockHash} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#block_hash">Official RPC documentation</a>
- * @deprecated Use of {@link Block#getHash()} method is preferred, which will natively calculate the hash without the
+ * @deprecated Use of {@link Block#getHash()} method is preferred, which will locally calculate the hash without the
  * need of an external node.
  */
 @Deprecated

@@ -14,7 +14,7 @@ import java.math.BigInteger;
  *
  * @see NanoUnit
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#unit-conversion-rpcs">Official RPC documentation</a>
- * @deprecated Use the native {@link NanoUnit} utility class instead for efficiency
+ * @deprecated Use the Java-based {@link NanoUnit} utility class instead for efficiency
  */
 @Deprecated
 public class RequestConvertUnits extends RpcRequest<ResponseAmount> {
