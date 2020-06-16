@@ -9,8 +9,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class AccountEpochTest {
     
@@ -32,6 +31,19 @@ public class AccountEpochTest {
                 AccountEpoch.fromIdentifier("65706F636820763120626C6F636B000000000000000000000000000000000000"));
         assertEquals(AccountEpoch.V2,
                 AccountEpoch.fromIdentifier("65706F636820763220626C6F636B000000000000000000000000000000000000"));
+    }
+    
+    @Test
+    public void testFromBlock() {
+        // Not epoch
+        assertNull(AccountEpoch.fromEpochBlock(new OpenBlock(null, new WorkSolution(TestConstants.hex(16)), TestConstants.hex(64),
+                TestConstants.account(0), TestConstants.account(0))));
+        
+        // Epoch V2
+        assertEquals(AccountEpoch.V2,AccountEpoch.fromEpochBlock(
+                new StateBlock(StateBlockSubType.EPOCH, null, new WorkSolution(TestConstants.hex(16)),
+                        TestConstants.account(0), TestConstants.hex(64), TestConstants.account(0),
+                        BigInteger.TEN, AccountEpoch.V2.getIdentifier())));
     }
 
     @Test

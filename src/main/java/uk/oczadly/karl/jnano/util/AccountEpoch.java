@@ -88,6 +88,24 @@ public enum AccountEpoch {
         return ID_MAP.get(id.toUpperCase());
     }
     
+    /**
+     * Retrieves the corresponding {@link AccountEpoch} from a given epoch block. In cases where the given block is
+     * not an epoch block, this method will return null.
+     * @param block the epoch block
+     * @return the epoch version which this block represents, or null if the block isn't an epoch block
+     */
+    public static AccountEpoch fromEpochBlock(Block block) {
+        if (block instanceof StateBlock) {
+            StateBlock sb = (StateBlock)block;
+            if (sb.getSubType() == null || sb.getSubType() == StateBlockSubType.EPOCH) {
+                AccountEpoch epoch = fromIdentifier(sb.getLinkData());
+                if (epoch == null)
+                    throw new IllegalArgumentException("Unknown epoch identifier " + sb.getLinkData() + ".");
+                return epoch;
+            }
+        }
+        return null;
+    }
     
     /**
      * Calculates the account version from a given set of blocks. This method will ignore all non-epoch blocks, and
@@ -97,19 +115,17 @@ public enum AccountEpoch {
      * @return the latest epoch block in the list, or the latest epoch if none are found
      */
     public static AccountEpoch calculateAccountVersion(Collection<Block> blocks) {
-        AccountEpoch highest = null;
+        AccountEpoch latestEpoch = null;
         for (Block b : blocks) {
-            if (!(b instanceof StateBlock)) continue;
-            StateBlock sb = (StateBlock)b;
-            if (sb.getSubType() != null && sb.getSubType() == StateBlockSubType.EPOCH) {
-                AccountEpoch epoch = fromIdentifier(sb.getLinkData());
-                if (epoch == null)
-                    throw new IllegalArgumentException("Unknown epoch identifier " + sb.getLinkData() + ".");
-                if (highest == null || epoch.compareTo(highest) > 0)
-                    highest = epoch;
-            }
+            // Manual checks
+            if (latestEpoch == null && b instanceof StateBlock) latestEpoch = V1; // Upgrade to state blocks
+            
+            // Check if b is an epoch block
+            AccountEpoch epoch = fromEpochBlock(b);
+            if (epoch != null && (latestEpoch == null || epoch.compareTo(latestEpoch) > 0))
+                latestEpoch = epoch;
         }
-        return highest != null ? highest : LATEST_EPOCH;
+        return latestEpoch != null ? latestEpoch : LATEST_EPOCH;
     }
     
 }
