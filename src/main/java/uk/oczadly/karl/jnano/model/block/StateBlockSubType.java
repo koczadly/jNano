@@ -17,7 +17,7 @@ public enum StateBlockSubType {
     RECEIVE("receive", true),
     
     @SerializedName("change")
-    CHANGE_REPRESENTATIVE("change", false),
+    CHANGE_REP("change", false),
     
     @SerializedName("epoch")
     EPOCH("epoch", false);
@@ -76,7 +76,7 @@ public enum StateBlockSubType {
             case OPEN:
                 return RECEIVE;
             case CHANGE:
-                return CHANGE_REPRESENTATIVE;
+                return CHANGE_REP;
         }
         return null;
     }
