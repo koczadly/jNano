@@ -74,7 +74,7 @@ public class AccountEpochTest {
                 TestConstants.account(0), TestConstants.hex(64), TestConstants.account(0),
                 BigInteger.TEN, AccountEpoch.V1.getIdentifier())); // EPOCH V1, but not epoch block
         
-        assertEquals(AccountEpoch.LATEST_EPOCH, AccountEpoch.calculateAccountVersion(blocks));
+        assertEquals(null, AccountEpoch.calculateAccountVersion(blocks));
     }
     
 }

@@ -109,23 +109,22 @@ public enum AccountEpoch {
     
     /**
      * Calculates the account version from a given set of blocks. This method will ignore all non-epoch blocks, and
-     * return the largest one found in the list. In cases where no epoch block is present, the latest epoch block
-     * will be returned.
+     * return the latest upgrade found in the list. In cases where no epoch blocks are present, this method will
+     * return null.
      * @param blocks a set of blocks within a certain account
-     * @return the latest epoch block in the list, or the latest epoch if none are found
+     * @return the latest epoch block in the list, or null if no epoch blocks are declared
      */
     public static AccountEpoch calculateAccountVersion(Collection<Block> blocks) {
+        if (blocks == null)
+            throw new IllegalArgumentException("Blocks collection cannot be null.");
+        
         AccountEpoch latestEpoch = null;
         for (Block b : blocks) {
-            // Manual checks
-            if (latestEpoch == null && b instanceof StateBlock) latestEpoch = V1; // Upgrade to state blocks
-            
-            // Check if b is an epoch block
             AccountEpoch epoch = fromEpochBlock(b);
             if (epoch != null && (latestEpoch == null || epoch.compareTo(latestEpoch) > 0))
                 latestEpoch = epoch;
         }
-        return latestEpoch != null ? latestEpoch : LATEST_EPOCH;
+        return latestEpoch;
     }
     
 }
