@@ -310,15 +310,25 @@ public final class NanoAccount {
      * Checks whether a given address string is a valid Nano address. For an address to be considered valid, the format
      * must be of an appropriate length, contain an approved prefix, and have a matching checksum value.
      * @param address the account address string
-     * @return whether the given address string is valid
+     * @return whether the given address string is a valid Nano account
      */
     public static boolean isValidNano(String address) {
         try {
             NanoAccount addr = parse(address);
-            return Arrays.stream(DEFAULT_ALLOWED_PREFIXES).anyMatch(e -> e.equalsIgnoreCase(addr.getPrefix()));
+            return isValidNano(addr);
         } catch (AddressFormatException e) {
             return false;
         }
+    }
+    
+    /**
+     * Checks whether a given address string is a valid Nano address. For an address to be considered valid, the
+     * prefix must match one of the pre-defined Nano prefix strings.
+     * @param address the account address
+     * @return whether the given address is a valid Nano account
+     */
+    public static boolean isValidNano(NanoAccount address) {
+        return Arrays.stream(DEFAULT_ALLOWED_PREFIXES).anyMatch(e -> e.equalsIgnoreCase(address.getPrefix()));
     }
     
     /**
