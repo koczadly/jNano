@@ -119,7 +119,8 @@ public abstract class Block {
         if (this == o) return true;
         if (!(o instanceof Block)) return false;
         Block block = (Block)o;
-        return Objects.equals(getHash(), block.getHash());
+        return Objects.equals(getHash(), block.getHash()) &&
+                type == block.type;
     }
     
     @Override
