@@ -208,7 +208,7 @@ public final class NanoAccount {
         if (address == null) throw new IllegalArgumentException("Address argument cannot be null.");
         if (address.length() < 60) throw new AddressFormatException("Address string is too short.");
     
-        int separatorIndex = address.indexOf(PREFIX_SEPARATOR_CHAR);
+        int separatorIndex = address.lastIndexOf(PREFIX_SEPARATOR_CHAR);
         
         if ((separatorIndex == -1 && address.length() != 60)
                 || (separatorIndex != -1 && (address.length() - separatorIndex - 1) != 60))
@@ -265,9 +265,8 @@ public final class NanoAccount {
         checksum = checksum != null ? checksum.toLowerCase() : null;
         
         // Create object
-        NanoAccount createdAddr = new NanoAccount(
-                prefix != null ? prefix.replace(Character.toString(PREFIX_SEPARATOR_CHAR), "") : null,
-                calculateKeyBytes(address, JNanoHelper.ENCODER_NANO_B32), address, null);
+        NanoAccount createdAddr = new NanoAccount(prefix, calculateKeyBytes(address, JNanoHelper.ENCODER_NANO_B32),
+                address, null);
         
         // Verify checksum (if provided)
         if (checksum != null && !checksum.equals(createdAddr.getAddressChecksumSegment()))
@@ -300,9 +299,7 @@ public final class NanoAccount {
         if (key.length() != 64) throw new AddressFormatException("Key string must be 64 characters long.");
         
         key = key.toUpperCase();
-        return new NanoAccount(
-                prefix.replace(Character.toString(PREFIX_SEPARATOR_CHAR), ""),
-                calculateKeyBytes(key, JNanoHelper.ENCODER_HEX), null, key);
+        return new NanoAccount(prefix, calculateKeyBytes(key, JNanoHelper.ENCODER_HEX), null, key);
     }
     
     
@@ -351,8 +348,7 @@ public final class NanoAccount {
     public static boolean isValid(String address, String prefix) {
         try {
             NanoAccount addr = parse(address);
-            return prefix == null || prefix.replace(Character.toString(PREFIX_SEPARATOR_CHAR), "")
-                    .equalsIgnoreCase(addr.getPrefix());
+            return prefix == null || prefix.equalsIgnoreCase(addr.getPrefix());
         } catch (AddressFormatException e) {
             return false;
         }
