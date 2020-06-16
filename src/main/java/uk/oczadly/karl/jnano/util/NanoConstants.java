@@ -24,16 +24,5 @@ public final class NanoConstants {
      * all Nano units were initially introduced to the network.
      */
     public static final String BLOCK_HASH_GENESIS = "991CF190094C00F0B68E2E5F75F6BEE95A2E0BD93CEAA4A6734DB9F19B728948";
-    
-    /**
-     * The {@code link} data value for V1 epoch blocks. This epoch represents the transition from legacy
-     * blocks (send/receive/open/change) to UTX state blocks.
-     */
-    public static final String EPOCH_IDENTIFIER_V1 = "65706F636820763120626C6F636B000000000000000000000000000000000000";
-    
-    /**
-     * The {@code link} data value for V2 epoch blocks. This epoch represents the change in required work difficulties.
-     */
-    public static final String EPOCH_IDENTIFIER_V2 = "65706F636820763220626C6F636B000000000000000000000000000000000000";
 
 }
