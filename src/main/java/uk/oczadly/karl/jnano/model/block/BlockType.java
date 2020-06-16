@@ -38,7 +38,9 @@ public enum BlockType {
     
     /**
      * @return whether the block type represents a transfer of funds
+     * @deprecated Certain block types require contextual information to determine the action.
      */
+    @Deprecated
     public boolean isTransaction() {
         return isTransaction;
     }
