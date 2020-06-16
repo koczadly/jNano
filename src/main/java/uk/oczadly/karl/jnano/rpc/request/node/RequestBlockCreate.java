@@ -179,9 +179,9 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
          */
         public Builder(StateBlock block) {
             this.balance = block.getBalance();
-            this.representative = block.getRepresentativeAddress();
+            this.representative = block.getRepresentative();
             this.previous = block.getPreviousBlockHash();
-            this.account = block.getAccountAddress();
+            this.account = block.getAccount();
             if (block.getSubType() == StateBlockSubType.SEND) {
                 this.destination = block.getLinkAsAccount();
             } else if (block.getSubType() == StateBlockSubType.RECEIVE) {

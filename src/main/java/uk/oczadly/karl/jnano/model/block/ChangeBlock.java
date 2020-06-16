@@ -14,7 +14,7 @@ import uk.oczadly.karl.jnano.model.work.WorkSolution;
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
 @Deprecated
-public class ChangeBlock extends Block {
+public class ChangeBlock extends Block implements BlockInterfaces.Previous, BlockInterfaces.Representative {
     
     @Expose @SerializedName("previous")
     private String previousBlockHash;
@@ -46,17 +46,13 @@ public class ChangeBlock extends Block {
     }
     
     
-    /**
-     * @return the previous block hash in this account's blockchain
-     */
+    @Override
     public final String getPreviousBlockHash() {
         return previousBlockHash;
     }
     
-    /**
-     * @return the representative address for this account
-     */
-    public final NanoAccount getRepresentativeAccount() {
+    @Override
+    public final NanoAccount getRepresentative() {
         return representativeAccount;
     }
     
@@ -65,7 +61,7 @@ public class ChangeBlock extends Block {
     protected byte[][] generateHashables() {
         return new byte[][] {
                 JNanoHelper.ENCODER_HEX.decode(getPreviousBlockHash()),
-                getRepresentativeAccount().getPublicKeyBytes()
+                getRepresentative().getPublicKeyBytes()
         };
     }
     

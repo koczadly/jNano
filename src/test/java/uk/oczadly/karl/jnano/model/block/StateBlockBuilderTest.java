@@ -52,9 +52,9 @@ public class StateBlockBuilderTest {
         assertEquals(new BigInteger("1337"), block.getBalance());
         assertEquals(StateBlockSubType.EPOCH, block.getSubType());
         assertEquals("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97", block.getHash());
-        assertEquals(ACCOUNT, block.getAccountAddress());
+        assertEquals(ACCOUNT, block.getAccount());
         assertEquals("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97", block.getPreviousBlockHash());
-        assertEquals(ACCOUNT, block.getRepresentativeAddress());
+        assertEquals(ACCOUNT, block.getRepresentative());
         assertEquals(DATA, block.getLinkData());
         assertEquals("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC9734F1B28DA06C9CA24661594" +
                 "28733B971068BF154DBA2AB10372510D52E86CC97", block.getSignature());

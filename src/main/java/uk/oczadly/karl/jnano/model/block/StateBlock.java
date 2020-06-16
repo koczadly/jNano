@@ -13,7 +13,8 @@ import java.math.BigInteger;
  * <p>Represents a state block, and the associated data.</p>
  * <p>To construct a new state block, use the {@link StateBlockBuilder} provided.</p>
  */
-public final class StateBlock extends Block {
+public final class StateBlock extends Block implements BlockInterfaces.Link, BlockInterfaces.Balance,
+        BlockInterfaces.Previous, BlockInterfaces.Representative, BlockInterfaces.Account {
     
     private static byte[] HASH_PREAMBLE_BYTES = JNanoHelper.ENCODER_HEX.decode(
             "0000000000000000000000000000000000000000000000000000000000000006");
@@ -112,29 +113,28 @@ public final class StateBlock extends Block {
     
     
     /**
-     * @return the account which this block belongs to
+     * @return the subtype of the block (may be null)
      */
-    public NanoAccount getAccountAddress() {
+    public StateBlockSubType getSubType() {
+        return subType;
+    }
+    
+    @Override
+    public NanoAccount getAccount() {
         return accountAddress;
     }
     
-    /**
-     * @return the previous block hash in this account's blockchain
-     */
+    @Override
     public final String getPreviousBlockHash() {
         return previousBlockHash;
     }
     
-    /**
-     * @return the representative address for this account
-     */
-    public NanoAccount getRepresentativeAddress() {
+    @Override
+    public NanoAccount getRepresentative() {
         return representativeAddress;
     }
     
-    /**
-     * @return the balance of the account after this transaction
-     */
+    @Override
     public final BigInteger getBalance() {
         return balance;
     }
@@ -142,8 +142,9 @@ public final class StateBlock extends Block {
     /**
      * Returns the link data field, as a 64-character hexadecimal string. For blocks which aren't initialized with this
      * field, the value will be computed.
-     * @return the link data, encoded as a Nano account
+     * @return the link data, encoded as a hexadecimal string
      */
+    @Override
     public String getLinkData() {
         return linkData;
     }
@@ -153,15 +154,9 @@ public final class StateBlock extends Block {
      * the value will be computed.
      * @return the link data, encoded as a Nano account
      */
+    @Override
     public NanoAccount getLinkAsAccount() {
         return linkAccount;
-    }
-    
-    /**
-     * @return the subtype of the block (may be null)
-     */
-    public StateBlockSubType getSubType() {
-        return subType;
     }
     
     
@@ -169,9 +164,9 @@ public final class StateBlock extends Block {
     protected byte[][] generateHashables() {
         return new byte[][] {
                 HASH_PREAMBLE_BYTES,
-                getAccountAddress().getPublicKeyBytes(),
+                getAccount().getPublicKeyBytes(),
                 JNanoHelper.ENCODER_HEX.decode(getPreviousBlockHash()),
-                getRepresentativeAddress().getPublicKeyBytes(),
+                getRepresentative().getPublicKeyBytes(),
                 JNanoHelper.padByteArray(getBalance().toByteArray(), 16),
                 JNanoHelper.ENCODER_HEX.decode(getLinkData())
         };

@@ -91,6 +91,9 @@ public abstract class Block {
     }
     
     
+    /**
+     * @return an array of hashable byte arrays in the correct sequence, or null if not supported
+     */
     protected abstract byte[][] generateHashables();
     
     protected final String calculateHash() {

@@ -14,7 +14,8 @@ import uk.oczadly.karl.jnano.model.work.WorkSolution;
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
 @Deprecated
-public class OpenBlock extends Block {
+public class OpenBlock extends Block implements BlockInterfaces.Source, BlockInterfaces.Account,
+        BlockInterfaces.Representative {
     
     @Expose @SerializedName("source")
     private String sourceBlockHash;
@@ -51,24 +52,18 @@ public class OpenBlock extends Block {
     }
     
     
-    /**
-     * @return the hash of the corresponding send block
-     */
+    @Override
     public final String getSourceBlockHash() {
         return sourceBlockHash;
     }
     
-    /**
-     * @return the account which this block belongs to
-     */
-    public final NanoAccount getAccountAddress() {
+    @Override
+    public final NanoAccount getAccount() {
         return accountAddress;
     }
     
-    /**
-     * @return the representative address for this account
-     */
-    public final NanoAccount getRepresentativeAccount() {
+    @Override
+    public final NanoAccount getRepresentative() {
         return representativeAccount;
     }
     
@@ -77,8 +72,8 @@ public class OpenBlock extends Block {
     protected byte[][] generateHashables() {
         return new byte[][] {
                 JNanoHelper.ENCODER_HEX.decode(getSourceBlockHash()),
-                getRepresentativeAccount().getPublicKeyBytes(),
-                getAccountAddress().getPublicKeyBytes()
+                getRepresentative().getPublicKeyBytes(),
+                getAccount().getPublicKeyBytes()
         };
     }
     

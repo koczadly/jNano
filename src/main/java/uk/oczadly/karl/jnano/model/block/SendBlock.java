@@ -16,7 +16,8 @@ import java.math.BigInteger;
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
 @Deprecated
-public class SendBlock extends Block {
+public class SendBlock extends Block implements BlockInterfaces.Previous, BlockInterfaces.Link,
+        BlockInterfaces.Balance {
     
     @Expose @SerializedName("previous")
     private String previousBlockHash;
@@ -55,9 +56,7 @@ public class SendBlock extends Block {
     }
     
     
-    /**
-     * @return the previous block hash in this account's blockchain
-     */
+    @Override
     public final String getPreviousBlockHash() {
         return previousBlockHash;
     }
@@ -69,11 +68,20 @@ public class SendBlock extends Block {
         return destinationAccount;
     }
     
-    /**
-     * @return the balance of the account after this transaction
-     */
-    public final BigInteger getNewBalance() {
+    @Override
+    public final BigInteger getBalance() {
         return newBalance;
+    }
+    
+    
+    @Override
+    public final String getLinkData() {
+        return getDestinationAccount().toPublicKey();
+    }
+    
+    @Override
+    public final NanoAccount getLinkAsAccount() {
+        return getDestinationAccount();
     }
     
     
@@ -82,7 +90,7 @@ public class SendBlock extends Block {
         return new byte[][] {
                 JNanoHelper.ENCODER_HEX.decode(getPreviousBlockHash()),
                 getDestinationAccount().getPublicKeyBytes(),
-                JNanoHelper.padByteArray(getNewBalance().toByteArray(), 16)
+                JNanoHelper.padByteArray(getBalance().toByteArray(), 16)
         };
     }
     

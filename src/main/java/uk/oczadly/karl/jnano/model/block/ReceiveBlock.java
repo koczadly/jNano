@@ -13,7 +13,7 @@ import uk.oczadly.karl.jnano.model.work.WorkSolution;
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
 @Deprecated
-public class ReceiveBlock extends Block {
+public class ReceiveBlock extends Block implements BlockInterfaces.Previous, BlockInterfaces.Source {
     
     @Expose @SerializedName("previous")
     private String previousBlockHash;
@@ -46,16 +46,12 @@ public class ReceiveBlock extends Block {
     }
     
     
-    /**
-     * @return the previous block hash in this account's blockchain
-     */
+    @Override
     public final String getPreviousBlockHash() {
         return previousBlockHash;
     }
     
-    /**
-     * @return the hash of the corresponding send block
-     */
+    @Override
     public final String getSourceBlockHash() {
         return sourceBlockHash;
     }

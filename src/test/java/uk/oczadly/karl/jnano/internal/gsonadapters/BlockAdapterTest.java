@@ -51,7 +51,7 @@ public class BlockAdapterTest {
                 block.getPreviousBlockHash());
         assertEquals("nano_3deo53mkqduhn6gu55nf4jnmx8dorugsrjfnteywbedcswpsit3zz4u5urg3",
                 block.getDestinationAccount().toAddress());
-        assertEquals("3928845117595383247300999000000", block.getNewBalance().toString());
+        assertEquals("3928845117595383247300999000000", block.getBalance().toString());
     }
     
     
@@ -112,9 +112,9 @@ public class BlockAdapterTest {
         assertEquals("78B334ADAD96EE142061121A6C40CE7FC2271257BF11463E18ABE5989E219748",
                 block.getSourceBlockHash());
         assertEquals("nano_3jybgajxebuj9kby3xusmn4sqiomzu15trmkwb1xyrynnc7axss3qp1yn679",
-                block.getAccountAddress().toAddress());
+                block.getAccount().toAddress());
         assertEquals("nano_3dmtrrws3pocycmbqwawk6xs7446qxa36fcncush4s1pejk16ksbmakis78m",
-                block.getRepresentativeAccount().toAddress());
+                block.getRepresentative().toAddress());
     }
     
     
@@ -145,7 +145,7 @@ public class BlockAdapterTest {
         assertEquals("D8D494F97BB0519B45B5386157DA7E736381E912A64727522695463040371C25",
                 block.getPreviousBlockHash());
         assertEquals("nano_3pczxuorp48td8645bs3m6c3xotxd3idskrenmi65rbrga5zmkemzhwkaznh",
-                block.getRepresentativeAccount().toAddress());
+                block.getRepresentative().toAddress());
     }
     
 }
