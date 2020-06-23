@@ -1,5 +1,6 @@
 package uk.oczadly.karl.jnano.model.block;
 
+import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
@@ -12,8 +13,6 @@ import java.math.BigInteger;
  * information supplied to this builder class.</p>
  */
 public class StateBlockBuilder {
-    
-    private static final String NULL_DATA = "0000000000000000000000000000000000000000000000000000000000000000";
     
     private StateBlockSubType subtype;
     private NanoAccount accountAddress;
@@ -171,7 +170,7 @@ public class StateBlockBuilder {
         // Construct
         return new StateBlock(null, subtype, hash, signature, work, accountAddress,
                 previousBlockHash, representativeAddress, balance,
-                (linkAccount == null && linkData == null) ? NULL_DATA : linkData,
+                (linkAccount == null && linkData == null) ? JNanoHelper.EMPTY_HEX_64 : linkData,
                 linkAccount);
     }
     
