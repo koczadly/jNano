@@ -1,9 +1,6 @@
 package uk.oczadly.karl.jnano.rpc;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.rpc.exception.*;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
@@ -23,6 +20,21 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
         }
     }
     
+    private Gson gson;
+    
+    public RpcResponseDeserializerImpl() {
+        this(JNanoHelper.GSON);
+    }
+    
+    public RpcResponseDeserializerImpl(Gson gson) {
+        this.gson = gson;
+    }
+    
+    
+    public Gson getGsonInstance() {
+        return gson;
+    }
+    
     
     @Override
     public <R extends RpcResponse> R deserialize(String response, Class<R> responseClass) throws RpcException {
@@ -36,7 +48,7 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
                 throw parseException(errorElement.getAsString());
     
             // Deserialize response
-            R responseObj = JNanoHelper.GSON.fromJson(responseJson, responseClass); // Deserialize from JSON
+            R responseObj = gson.fromJson(responseJson, responseClass); // Deserialize from JSON
     
             // Populate original json object
             populateJsonField(responseObj, responseJson);
