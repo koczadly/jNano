@@ -20,12 +20,13 @@ public class JNanoHelper {
     private static final BigInteger MAX_BALANCE_VAL = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16);
     
     
-    public static final Gson GSON = new GsonBuilder()
+    public static final GsonBuilder GSON_BUILDER = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
             .registerTypeAdapterFactory(new ArrayTypeAdapterFactoryFix())       // Empty array hotfix
             .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer())  // Boolean deserializer
-            .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer())  // Boolean deserializer
-            .create();
+            .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer()); // Boolean deserializer
+    
+    public static final Gson GSON = GSON_BUILDER.create();
     
     
     /**
