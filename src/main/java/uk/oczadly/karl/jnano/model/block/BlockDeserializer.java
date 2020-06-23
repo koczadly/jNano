@@ -16,22 +16,23 @@ import java.util.function.Function;
  */
 public final class BlockDeserializer {
     
-    private Map<String, Function<JsonObject, ? extends Block>> deserializers = new ConcurrentHashMap<>();
+    private final Map<String, Function<JsonObject, ? extends Block>> deserializers = new ConcurrentHashMap<>();
     
+    @SuppressWarnings("deprecation")
     public BlockDeserializer() {
         // STATE
         Function<JsonObject, Block> stateDeserializer = json -> new StateBlock(
                 json,
-                nullableJsonObj(json.get("subtype"), o -> StateBlockSubType.getFromName(o.getAsString())),
-                nullableJsonObj(json.get("hash"), JsonElement::getAsString),
+                nullable(json.get("subtype"), o -> StateBlockSubType.getFromName(o.getAsString())),
+                nullable(json.get("hash"), JsonElement::getAsString),
                 json.get("signature").getAsString(),
-                nullableJsonObj(json.get("work"), o -> new WorkSolution(o.getAsString())),
+                nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
                 NanoAccount.parse(json.get("account").getAsString()),
                 json.get("previous").getAsString(),
                 NanoAccount.parse(json.get("representative").getAsString()),
                 json.get("balance").getAsBigInteger(),
-                nullableJsonObj(json.get("link"), JsonElement::getAsString),
-                nullableJsonObj(json.get("link_as_account"), o -> NanoAccount.parse(o.getAsString()))
+                nullable(json.get("link"), JsonElement::getAsString),
+                nullable(json.get("link_as_account"), o -> NanoAccount.parse(o.getAsString()))
         );
         registerDeserializer("state", stateDeserializer);
         registerDeserializer("utx", stateDeserializer);
@@ -39,9 +40,9 @@ public final class BlockDeserializer {
         // CHANGE
         registerDeserializer("change", json -> new ChangeBlock(
                 json,
-                nullableJsonObj(json.get("hash"), JsonElement::getAsString),
+                nullable(json.get("hash"), JsonElement::getAsString),
                 json.get("signature").getAsString(),
-                nullableJsonObj(json.get("work"), o -> new WorkSolution(o.getAsString())),
+                nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
                 json.get("previous").getAsString(),
                 NanoAccount.parse(json.get("representative").getAsString())
         ));
@@ -49,9 +50,9 @@ public final class BlockDeserializer {
         // OPEN
         registerDeserializer("open", json -> new OpenBlock(
                 json,
-                nullableJsonObj(json.get("hash"), JsonElement::getAsString),
+                nullable(json.get("hash"), JsonElement::getAsString),
                 json.get("signature").getAsString(),
-                nullableJsonObj(json.get("work"), o -> new WorkSolution(o.getAsString())),
+                nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
                 json.get("source").getAsString(),
                 NanoAccount.parse(json.get("account").getAsString()),
                 NanoAccount.parse(json.get("representative").getAsString())
@@ -60,9 +61,9 @@ public final class BlockDeserializer {
         // RECEIVE
         registerDeserializer("receive", json -> new ReceiveBlock(
                 json,
-                nullableJsonObj(json.get("hash"), JsonElement::getAsString),
+                nullable(json.get("hash"), JsonElement::getAsString),
                 json.get("signature").getAsString(),
-                nullableJsonObj(json.get("work"), o -> new WorkSolution(o.getAsString())),
+                nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
                 json.get("previous").getAsString(),
                 json.get("source").getAsString())
         );
@@ -70,7 +71,7 @@ public final class BlockDeserializer {
         // SEND
         registerDeserializer("send", json -> new SendBlock(
                 json,
-                nullableJsonObj(json.get("hash"), JsonElement::getAsString),
+                nullable(json.get("hash"), JsonElement::getAsString),
                 json.get("signature").getAsString(),
                 new WorkSolution(json.get("work").getAsString()),
                 json.get("previous").getAsString(),
@@ -94,9 +95,8 @@ public final class BlockDeserializer {
     
     
     /**
-     * <p>Converts a {@link JsonObject} into the appropriate {@link Block} object types.</p>
-     * <p>Supported block types include: {@link StateBlock}, {@link SendBlock}, {@link ReceiveBlock}, {@link OpenBlock}
-     * and {@link ChangeBlock}.</p>
+     * <p>Converts a {@link JsonObject} into the appropriate {@link Block} object types, based on the internal
+     * registry. To support additional block types, use {@link #registerDeserializer(String, Function)}.</p>
      *
      * @param jsonObj the JSON object
      * @return the deserialized block object
@@ -104,14 +104,16 @@ public final class BlockDeserializer {
     @SuppressWarnings("deprecation")
     public Block deserialize(JsonObject jsonObj) {
         String blockType = jsonObj.get("type").getAsString();
+        
         Function<JsonObject, ? extends Block> deserializer = getDeserializer(blockType);
-        if (deserializer == null)
-            throw new JsonParseException("Block type " + blockType + " is invalid");
-        return deserializer.apply(jsonObj);
+        if (deserializer != null)
+            return deserializer.apply(jsonObj);
+        
+        throw new JsonParseException("Block type " + blockType + " is invalid");
     }
     
     
-    private static <T> T nullableJsonObj(JsonElement obj, Function<JsonElement, T> func) {
+    private static <T, U> T nullable(U obj, Function<U, T> func) {
         return obj != null ? func.apply(obj) : null;
     }
     
