@@ -42,6 +42,19 @@ public class JNanoHelper {
     }
     
     /**
+     * Reverses a given array.
+     */
+    public static byte[] reverseArray(byte[] arr) {
+        if (arr == null) return null;
+        for (int i=0; i<(arr.length/2); i++) {
+            byte tmp = arr[arr.length - i - 1];
+            arr[arr.length - i - 1] = arr[i];
+            arr[i] = tmp;
+        }
+        return arr;
+    }
+    
+    /**
      * @return true if the string is null or matches hex format
      */
     public static boolean isValidHex(String str, int len) {

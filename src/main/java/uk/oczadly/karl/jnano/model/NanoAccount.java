@@ -377,13 +377,7 @@ public final class NanoAccount {
         digest.update(keyBytes, 0, keyBytes.length);
         byte[] out = new byte[5];
         digest.digest(out, 0);
-        
-        //Reverse byte array
-        byte[] rev = new byte[out.length];
-        for(int i=0; i<out.length; i++) {
-            rev[i] = out[out.length - i - 1];
-        }
-        return rev;
+        return JNanoHelper.reverseArray(out);
     }
     
     /** Helper method to calculate bytes from an encoded address. */
