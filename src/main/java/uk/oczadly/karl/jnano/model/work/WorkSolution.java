@@ -23,7 +23,7 @@ public class WorkSolution {
         this.longVal = longVal;
     
         // Convert hex to 16 char length
-        String hex = Long.toHexString(longVal).toLowerCase();
+        String hex = Long.toHexString(longVal);
         StringBuilder sb = new StringBuilder(16);
         for (int i=0; i<(16-hex.length()); i++)
             sb.append('0');
