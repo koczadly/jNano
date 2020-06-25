@@ -43,7 +43,6 @@ public abstract class Block implements IBlock {
     
     public Block(BlockType type, String hash, JsonObject jsonRepresentation, String signature,
                  WorkSolution workSolution) {
-        if (type == null) throw new IllegalArgumentException("Block type cannot be null.");
         if (hash != null && !JNanoHelper.isValidHex(hash, 64))
             throw new IllegalArgumentException("Hash string is invalid.");
         if (!JNanoHelper.isValidHex(signature, 128))
