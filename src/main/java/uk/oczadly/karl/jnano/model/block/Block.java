@@ -12,7 +12,6 @@ import uk.oczadly.karl.jnano.model.block.interfaces.IBlock;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 @JsonAdapter(BlockAdapter.class)
 public abstract class Block implements IBlock {
@@ -65,7 +64,7 @@ public abstract class Block implements IBlock {
         if (hash == null) {
             synchronized (this) {
                 if (hash == null) {
-                    hash = JNanoHelper.ENCODER_HEX.encode(getHashBytes());
+                    hash = JNanoHelper.ENCODER_HEX.encode(generateHashBytes());
                 }
             }
         }
@@ -76,6 +75,11 @@ public abstract class Block implements IBlock {
      * @return a 32-length array of bytes, representing the hash of this block
      */
     public final byte[] getHashBytes() {
+        generateHashBytes();
+        return Arrays.copyOf(hashBytes, hashBytes.length);
+    }
+    
+    private byte[] generateHashBytes() {
         if (hashBytes == null) {
             synchronized (this) {
                 if (hashBytes == null) {
@@ -88,7 +92,7 @@ public abstract class Block implements IBlock {
                 }
             }
         }
-        return Arrays.copyOf(hashBytes, hashBytes.length);
+        return hashBytes;
     }
     
     @Override
@@ -159,15 +163,13 @@ public abstract class Block implements IBlock {
         if (this == o) return true;
         if (!(o instanceof Block)) return false;
         Block block = (Block)o;
-        return Objects.equals(getHash(), block.getHash()) &&
-                type == block.type;
+        return Arrays.equals(generateHashBytes(), block.generateHashBytes());
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(getHash());
+        return getHash().hashCode();
     }
-    
     
     /**
      * Parses a block from a given JSON string.
