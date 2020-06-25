@@ -11,6 +11,7 @@ import uk.oczadly.karl.jnano.internal.gsonadapters.BlockAdapter;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlock;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 @JsonAdapter(BlockAdapter.class)
@@ -21,6 +22,8 @@ public abstract class Block implements IBlock {
     
     @Expose @SerializedName("hash")
     private volatile String hash;
+    
+    private transient volatile byte[] hashBytes;
     
     @Expose @SerializedName("type")
     private final BlockType type;
@@ -63,12 +66,30 @@ public abstract class Block implements IBlock {
         if (hash == null) {
             synchronized (this) {
                 if (hash == null) {
-                    hash = calculateHash();
-                    return hash;
+                    hash = JNanoHelper.ENCODER_HEX.encode(getHashBytes());
                 }
             }
         }
         return hash;
+    }
+    
+    /**
+     * @return a 32-length array of bytes, representing the hash of this block
+     */
+    public final byte[] getHashBytes() {
+        if (hashBytes == null) {
+            synchronized (this) {
+                if (hashBytes == null) {
+                    if (hash != null) {
+                        // Decode from existing hash string
+                        hashBytes = JNanoHelper.ENCODER_HEX.decode(hash);
+                    } else {
+                        hashBytes = calculateHashBytes();
+                    }
+                }
+            }
+        }
+        return Arrays.copyOf(hashBytes, hashBytes.length);
     }
     
     @Override
@@ -92,7 +113,7 @@ public abstract class Block implements IBlock {
      */
     protected abstract byte[][] generateHashables();
     
-    protected final String calculateHash() {
+    protected final byte[] calculateHashBytes() {
         byte[][] hashables = generateHashables();
         if (hashables == null)
             return null;
@@ -103,7 +124,7 @@ public abstract class Block implements IBlock {
         byte[] hashBytes = new byte[32];
         digest.digest(hashBytes, 0);
         
-        return JNanoHelper.ENCODER_HEX.encode(hashBytes);
+        return hashBytes;
     }
     
     
@@ -118,7 +139,6 @@ public abstract class Block implements IBlock {
      * @return a JSON representation of this block, as a Gson {@link JsonObject}
      */
     public final JsonObject getJsonObject() {
-        // Double-checked locking for initialization
         if (jsonRepresentation == null) {
             synchronized (this) {
                 if (jsonRepresentation == null) {
@@ -126,7 +146,6 @@ public abstract class Block implements IBlock {
                 }
             }
         }
-        
         return jsonRepresentation;
     }
     
