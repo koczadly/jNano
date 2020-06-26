@@ -79,22 +79,6 @@ public abstract class Block implements IBlock {
         return Arrays.copyOf(hashBytes, hashBytes.length);
     }
     
-    private byte[] generateHashBytes() {
-        if (hashBytes == null) {
-            synchronized (this) {
-                if (hashBytes == null) {
-                    if (hash != null) {
-                        // Decode from existing hash string
-                        hashBytes = JNanoHelper.ENCODER_HEX.decode(hash);
-                    } else {
-                        hashBytes = calculateHashBytes();
-                    }
-                }
-            }
-        }
-        return hashBytes;
-    }
-    
     @Override
     public final BlockType getType() {
         return type;
@@ -130,6 +114,22 @@ public abstract class Block implements IBlock {
         return hashBytes;
     }
     
+    private byte[] generateHashBytes() {
+        if (hashBytes == null) {
+            synchronized (this) {
+                if (hashBytes == null) {
+                    if (hash != null) {
+                        // Decode from existing hash string
+                        hashBytes = JNanoHelper.ENCODER_HEX.decode(hash);
+                    } else {
+                        hashBytes = calculateHashBytes();
+                    }
+                }
+            }
+        }
+        return hashBytes;
+    }
+    
     
     /**
      * @return a JSON representation of this block
@@ -154,12 +154,12 @@ public abstract class Block implements IBlock {
     
     
     @Override
-    public String toString() {
+    public final String toString() {
         return this.toJsonString();
     }
     
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Block)) return false;
         Block block = (Block)o;
@@ -167,7 +167,7 @@ public abstract class Block implements IBlock {
     }
     
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return getHash().hashCode();
     }
     
@@ -175,6 +175,7 @@ public abstract class Block implements IBlock {
      * Parses a block from a given JSON string.
      * @param json the json to parse from
      * @return a block object derived from the provided JSON
+     * @see BlockDeserializer
      */
     public static Block parse(String json) {
         return parse(JsonParser.parseString(json).getAsJsonObject());
@@ -184,6 +185,7 @@ public abstract class Block implements IBlock {
      * Parses a block from a given {@link JsonObject} instance.
      * @param json the json to parse from
      * @return a block object derived from the provided JSON
+     * @see BlockDeserializer
      */
     public static Block parse(JsonObject json) {
         return BLOCK_DESERIALIZER.deserialize(json);

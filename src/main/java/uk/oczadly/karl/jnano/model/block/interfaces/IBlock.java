@@ -3,6 +3,9 @@ package uk.oczadly.karl.jnano.model.block.interfaces;
 import uk.oczadly.karl.jnano.model.block.BlockType;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
+/**
+ * This interface is to be implemented by blocks, and contains the required parameters for each block type.
+ */
 public interface IBlock {
     
     /**
