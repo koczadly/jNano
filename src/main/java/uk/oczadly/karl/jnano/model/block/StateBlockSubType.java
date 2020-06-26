@@ -76,8 +76,9 @@ public enum StateBlockSubType {
             case SEND:
                 return SEND;
             case RECEIVE:
-            case OPEN:
                 return RECEIVE;
+            case OPEN:
+                return OPEN;
             case CHANGE:
                 return CHANGE_REP;
         }
