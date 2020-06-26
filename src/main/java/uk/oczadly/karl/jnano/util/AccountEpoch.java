@@ -16,7 +16,7 @@ public enum AccountEpoch {
      * blocks.
      */
     V1(1, "65706F636820763120626C6F636B000000000000000000000000000000000000",
-            NanoAccount.parseSegment("3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xt")),
+            NanoConstants.ADDRESS_GENESIS_LIVE),
     
     /**
      * Version 2 epoch block, which marks the change in minimum work difficulties introduced in node V21.
