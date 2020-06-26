@@ -5,6 +5,10 @@ import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.OpenBlock;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
+/**
+ * This class contains a set of static constant values. Any values which represent a state of the network are for
+ * the official live Nano network only.
+ */
 public final class NanoConstants {
     private NanoConstants() {}
     
@@ -22,6 +26,10 @@ public final class NanoConstants {
             NanoAccount.parseSegment("1111111111111111111111111111111111111111111111111111");
     
     
+    /**
+     * The genesis block on the live Nano network. This represents the block/transaction where all Nano units were
+     * initially introduced to the network.
+     */
     public static final Block BLOCK_GENESIS_LIVE = new OpenBlock(
             "9F0C933C8ADE004D808EA1985FA746A7E95BA2A38F867640F53EC8F180BDFE9E2C1268DEAD7C2664F356E37ABA362BC" +
                     "58E46DBA03E523A7B5A19E4B6EB12BB02",
