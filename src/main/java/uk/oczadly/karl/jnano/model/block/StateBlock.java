@@ -90,7 +90,6 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
                NanoAccount representativeAddress, BigInteger balance, String linkData, NanoAccount linkAccount) {
         super(BlockType.STATE, hash, jsonRepresentation, signature, work);
         
-        if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
         if (!JNanoHelper.isValidHex(previousBlockHash, 64))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (representativeAddress == null) throw new IllegalArgumentException("Block representative cannot be null.");
