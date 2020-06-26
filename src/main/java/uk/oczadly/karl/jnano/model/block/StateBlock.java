@@ -18,8 +18,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         IBlockAccount {
     
     /** Prefix for block hashing. */
-    private static final byte[] HASH_PREAMBLE_BYTES = JNanoHelper.ENCODER_HEX.decode(
-            "0000000000000000000000000000000000000000000000000000000000000006");
+    private static final byte[] HASH_PREAMBLE_BYTES = JNanoHelper.padByteArray(new byte[] {6}, 32);
     
     
     @Expose @SerializedName("account")
@@ -116,12 +115,12 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     /**
      * @return the subtype of the block (may be null)
      */
-    public StateBlockSubType getSubType() {
+    public final StateBlockSubType getSubType() {
         return subType;
     }
     
     @Override
-    public NanoAccount getAccount() {
+    public final NanoAccount getAccount() {
         return accountAddress;
     }
     
@@ -131,7 +130,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     }
     
     @Override
-    public NanoAccount getRepresentative() {
+    public final NanoAccount getRepresentative() {
         return representativeAddress;
     }
     
@@ -146,7 +145,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      * @return the link data, encoded as a hexadecimal string
      */
     @Override
-    public String getLinkData() {
+    public final String getLinkData() {
         return linkData;
     }
     
@@ -156,7 +155,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      * @return the link data, encoded as a Nano account
      */
     @Override
-    public NanoAccount getLinkAsAccount() {
+    public final NanoAccount getLinkAsAccount() {
         return linkAccount;
     }
     
