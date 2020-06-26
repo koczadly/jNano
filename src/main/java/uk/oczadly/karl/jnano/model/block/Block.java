@@ -177,7 +177,16 @@ public abstract class Block implements IBlock {
      * @return a block object derived from the provided JSON
      */
     public static Block parse(String json) {
-        return BLOCK_DESERIALIZER.deserialize(JsonParser.parseString(json).getAsJsonObject());
+        return parse(JsonParser.parseString(json).getAsJsonObject());
+    }
+    
+    /**
+     * Parses a block from a given {@link JsonObject} instance.
+     * @param json the json to parse from
+     * @return a block object derived from the provided JSON
+     */
+    public static Block parse(JsonObject json) {
+        return BLOCK_DESERIALIZER.deserialize(json);
     }
     
 }
