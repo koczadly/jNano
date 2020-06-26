@@ -17,7 +17,8 @@ import java.math.BigInteger;
 public final class StateBlock extends Block implements IBlockLink, IBlockBalance, IBlockPrevious, IBlockRepresentative,
         IBlockAccount {
     
-    private static byte[] HASH_PREAMBLE_BYTES = JNanoHelper.ENCODER_HEX.decode(
+    /** Prefix for block hashing. */
+    private static final byte[] HASH_PREAMBLE_BYTES = JNanoHelper.ENCODER_HEX.decode(
             "0000000000000000000000000000000000000000000000000000000000000006");
     
     
