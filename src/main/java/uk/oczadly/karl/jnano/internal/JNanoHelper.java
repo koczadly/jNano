@@ -30,11 +30,14 @@ public class JNanoHelper {
     
     
     /**
-     * Left-pads a byte array with zeroes.
+     * Left-pads a byte array with zeroes. Will return the same array if length matches, or create a new one if it
+     * needs to be padded.
      */
     public static byte[] padByteArray(byte[] bytes, int len) {
         if (bytes.length > len)
             throw new IllegalArgumentException("Provided byte array was longer than the max padding length.");
+        if (bytes.length == len)
+            return bytes;
         
         byte[] newArr = new byte[len];
         System.arraycopy(bytes, 0, newArr, len - bytes.length, bytes.length);
