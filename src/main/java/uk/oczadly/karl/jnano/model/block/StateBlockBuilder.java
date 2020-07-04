@@ -12,7 +12,7 @@ import java.math.BigInteger;
  * provided setter methods. Finally, call {@link #build()} to create the state block instance from the
  * information supplied to this builder class.</p>
  */
-public class StateBlockBuilder {
+public final class StateBlockBuilder {
     
     private StateBlockSubType subtype;
     private NanoAccount accountAddress;
@@ -42,15 +42,36 @@ public class StateBlockBuilder {
         setBalance(balance);
     }
     
+    /**
+     * Constructs a new {@link StateBlockBuilder} with the non-optional parameters.
+     *
+     * @param accountAddress        the account which owns this block
+     * @param representativeAddress the representative for this account
+     * @param balance               the (newly updated) balance of this account
+     */
+    public StateBlockBuilder(NanoAccount accountAddress, NanoAccount representativeAddress, BigInteger balance) {
+        setAccountAddress(accountAddress);
+        setRepresentativeAddress(representativeAddress);
+        setBalance(balance);
+    }
+    
+    
     
     public String getHash() {
         return hash;
     }
     
+    /**
+     * @param hash the block hash
+     * @return this builder
+     * @deprecated Leaving this value unassigned is preferred, as hashes will be computed programatically.
+     */
+    @Deprecated
     public StateBlockBuilder setHash(String hash) {
         this.hash = hash;
         return this;
     }
+    
     
     public String getSignature() {
         return signature;
@@ -61,6 +82,7 @@ public class StateBlockBuilder {
         return this;
     }
     
+    
     public WorkSolution getWorkSolution() {
         return work;
     }
@@ -70,10 +92,10 @@ public class StateBlockBuilder {
         return this;
     }
     
-    @Deprecated
     public StateBlockBuilder setWorkSolution(String work) {
         return setWorkSolution(new WorkSolution(work));
     }
+    
     
     public StateBlockSubType getSubtype() {
         return subtype;
@@ -83,6 +105,7 @@ public class StateBlockBuilder {
         this.subtype = subtype;
         return this;
     }
+    
     
     public NanoAccount getAccountAddress() {
         return accountAddress;
@@ -96,6 +119,13 @@ public class StateBlockBuilder {
         return this;
     }
     
+    public StateBlockBuilder setAccountAddress(String accountAddress) {
+        if (accountAddress == null)
+            throw new IllegalArgumentException("Account address argument cannot be null.");
+        return setAccountAddress(NanoAccount.parse(accountAddress));
+    }
+    
+    
     public String getPreviousBlockHash() {
         return previousBlockHash;
     }
@@ -107,6 +137,7 @@ public class StateBlockBuilder {
         this.previousBlockHash = previousBlockHash;
         return this;
     }
+    
     
     public NanoAccount getRepresentativeAddress() {
         return representativeAddress;
@@ -120,6 +151,13 @@ public class StateBlockBuilder {
         return this;
     }
     
+    public StateBlockBuilder setRepresentativeAddress(String representativeAddress) {
+        if (representativeAddress == null)
+            throw new IllegalArgumentException("Representative address argument cannot be null.");
+        return setRepresentativeAddress(NanoAccount.parse(representativeAddress));
+    }
+    
+    
     public BigInteger getBalance() {
         return balance;
     }
@@ -127,11 +165,20 @@ public class StateBlockBuilder {
     public StateBlockBuilder setBalance(BigInteger balance) {
         if (balance == null)
             throw new IllegalArgumentException("Balance argument cannot be null.");
-        if (balance.compareTo(BigInteger.ZERO) < 0)
-            throw new IllegalArgumentException("Balance argument must be zero or greater.");
+        if (!JNanoHelper.isBalanceValid(balance))
+            throw new IllegalArgumentException("Provided balance value is not in the valid range.");
         
         this.balance = balance;
         return this;
+    }
+    
+    
+    public String getLinkData() {
+        return linkData;
+    }
+    
+    public NanoAccount getLinkAccount() {
+        return linkAccount;
     }
     
     /**
@@ -144,8 +191,12 @@ public class StateBlockBuilder {
         return this;
     }
     
-    public String getLinkData() {
-        return linkData;
+    /**
+     * @param linkAccount the link data, as an account
+     * @return this builder
+     */
+    public StateBlockBuilder setLinkAccount(String linkAccount) {
+        return setLinkAccount(linkAccount != null ? NanoAccount.parse(linkAccount) : null);
     }
     
     /**
@@ -158,20 +209,13 @@ public class StateBlockBuilder {
         return this;
     }
     
-    public NanoAccount getLinkAccount() {
-        return linkAccount;
-    }
-    
     
     /**
      * @return a new instance of the {@link StateBlock} class using the configured parameters
      */
     public StateBlock build() {
-        // Construct
         return new StateBlock(null, subtype, hash, signature, work, accountAddress,
-                previousBlockHash, representativeAddress, balance,
-                (linkAccount == null && linkData == null) ? JNanoHelper.ZEROES_64 : linkData,
-                linkAccount);
+                previousBlockHash, representativeAddress, balance, linkData, linkAccount);
     }
     
 }

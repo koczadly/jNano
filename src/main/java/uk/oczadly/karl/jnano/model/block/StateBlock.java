@@ -97,7 +97,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         if (!JNanoHelper.isBalanceValid(balance))
             throw new IllegalArgumentException("Account balance is an invalid amount.");
         if (accountAddress == null) throw new IllegalArgumentException("Block account cannot be null.");
-        if (linkData != null && !JNanoHelper.isValidHex(linkData, 64))
+        if (!JNanoHelper.isValidHex(linkData, 64))
             throw new IllegalArgumentException("Link data is invalid.");
         
         this.subType = subtype;
@@ -140,9 +140,9 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     }
     
     /**
+     * {@inheritDoc}
      * Returns the link data field, as a 64-character hexadecimal string. For blocks which aren't initialized with this
      * field, the value will be computed.
-     * @return the link data, encoded as a hexadecimal string
      */
     @Override
     public final String getLinkData() {
@@ -150,9 +150,9 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     }
     
     /**
+     * {@inheritDoc}
      * Returns the link data field, encoded as a Nano account. For blocks which aren't initialized with this field,
      * the value will be computed.
-     * @return the link data, encoded as a Nano account
      */
     @Override
     public final NanoAccount getLinkAsAccount() {
