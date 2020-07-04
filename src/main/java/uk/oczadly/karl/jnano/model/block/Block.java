@@ -40,17 +40,21 @@ public abstract class Block implements IBlock {
         this(type, null, null, null, null);
     }
     
+    public Block(BlockType type, String hash, String signature, WorkSolution workSolution) {
+        this(type, hash, null, signature, workSolution);
+    }
+    
     public Block(BlockType type, String hash, JsonObject jsonRepresentation, String signature,
                  WorkSolution workSolution) {
-        if (hash != null && !JNanoHelper.isValidHex(hash, 64))
-            throw new IllegalArgumentException("Hash string is invalid.");
+        if (!JNanoHelper.isValidHex(hash, 64))
+            throw new IllegalArgumentException("Block hash is invalid.");
         if (!JNanoHelper.isValidHex(signature, 128))
             throw new IllegalArgumentException("Block signature is invalid.");
         
         this.type = type;
         this.hash = hash != null ? hash.toUpperCase() : null;
         this.jsonRepresentation = jsonRepresentation;
-        this.signature = signature;
+        this.signature = signature != null ? signature.toUpperCase() : null;
         this.workSolution = workSolution;
     }
     
@@ -135,17 +139,25 @@ public abstract class Block implements IBlock {
      * @return a JSON representation of this block
      */
     public final String toJsonString() {
-        return getJsonObject().toString();
+        return _getJsonObject().toString();
     }
     
     /**
      * @return a JSON representation of this block, as a Gson {@link JsonObject}
      */
     public final JsonObject getJsonObject() {
+        return _getJsonObject().deepCopy();
+    }
+    
+    private JsonObject _getJsonObject() {
         if (jsonRepresentation == null) {
             synchronized (this) {
                 if (jsonRepresentation == null) {
                     jsonRepresentation = JNanoHelper.GSON.toJsonTree(this).getAsJsonObject();
+                    if (signature == null)
+                        jsonRepresentation.addProperty("signature", JNanoHelper.EMPTY_HEX_128);
+                    if (workSolution == null)
+                        jsonRepresentation.addProperty("work", JNanoHelper.EMPTY_HEX_16);
                 }
             }
         }

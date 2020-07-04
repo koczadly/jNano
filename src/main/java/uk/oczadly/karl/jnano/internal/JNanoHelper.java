@@ -15,7 +15,9 @@ public class JNanoHelper {
     public static final BaseEncoder ENCODER_HEX = new BaseEncoder(HEX_CHARS_UC);
     public static final BaseEncoder ENCODER_NANO_B32 = new BaseEncoder("13456789abcdefghijkmnopqrstuwxyz");
     
-    public static final String EMPTY_HEX_64 = "0000000000000000000000000000000000000000000000000000000000000000";
+    public static final String EMPTY_HEX_16 = repeatChar('0', 16);
+    public static final String EMPTY_HEX_64 = repeatChar('0', 64);
+    public static final String EMPTY_HEX_128 = repeatChar('0', 128);
     
     private static final BigInteger MAX_BALANCE_VAL = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16);
     
@@ -72,6 +74,13 @@ public class JNanoHelper {
     public static boolean isBalanceValid(BigInteger raw) {
         if (raw == null) return true;
         return raw.compareTo(BigInteger.ZERO) >= 0 && raw.compareTo(MAX_BALANCE_VAL) <= 0;
+    }
+    
+    public static String repeatChar(char c, int length) {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i=0; i<length; i++)
+            sb.append(c);
+        return sb.toString();
     }
     
 }
