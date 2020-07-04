@@ -15,9 +15,9 @@ public class JNanoHelper {
     public static final BaseEncoder ENCODER_HEX = new BaseEncoder(HEX_CHARS_UC);
     public static final BaseEncoder ENCODER_NANO_B32 = new BaseEncoder("13456789abcdefghijkmnopqrstuwxyz");
     
-    public static final String EMPTY_HEX_16 = repeatChar('0', 16);
-    public static final String EMPTY_HEX_64 = repeatChar('0', 64);
-    public static final String EMPTY_HEX_128 = repeatChar('0', 128);
+    public static final String ZEROES_16 = repeatChar('0', 16);
+    public static final String ZEROES_64 = repeatChar('0', 64);
+    public static final String ZEROES_128 = repeatChar('0', 128);
     
     private static final BigInteger MAX_BALANCE_VAL = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16);
     
@@ -35,19 +35,17 @@ public class JNanoHelper {
      * Left-pads a byte array with zeroes. Will return the same array if length matches, or create a new one if it
      * needs to be padded.
      */
-    public static byte[] padByteArray(byte[] bytes, int len) {
-        if (bytes.length > len)
-            throw new IllegalArgumentException("Provided byte array was longer than the max padding length.");
-        if (bytes.length == len)
+    public static byte[] leftPadByteArray(byte[] bytes, int minLen) {
+        if (bytes.length >= minLen)
             return bytes;
         
-        byte[] newArr = new byte[len];
-        System.arraycopy(bytes, 0, newArr, len - bytes.length, bytes.length);
+        byte[] newArr = new byte[minLen];
+        System.arraycopy(bytes, 0, newArr, minLen - bytes.length, bytes.length);
         return newArr;
     }
     
     /**
-     * Reverses a given array.
+     * Reverses a given array (will mutate the provided array!)
      */
     public static byte[] reverseArray(byte[] arr) {
         if (arr == null) return null;

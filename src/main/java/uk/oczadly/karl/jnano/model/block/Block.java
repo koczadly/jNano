@@ -155,9 +155,9 @@ public abstract class Block implements IBlock {
                 if (jsonRepresentation == null) {
                     jsonRepresentation = JNanoHelper.GSON.toJsonTree(this).getAsJsonObject();
                     if (signature == null)
-                        jsonRepresentation.addProperty("signature", JNanoHelper.EMPTY_HEX_128);
+                        jsonRepresentation.addProperty("signature", JNanoHelper.ZEROES_128);
                     if (workSolution == null)
-                        jsonRepresentation.addProperty("work", JNanoHelper.EMPTY_HEX_16);
+                        jsonRepresentation.addProperty("work", JNanoHelper.ZEROES_16);
                 }
             }
         }

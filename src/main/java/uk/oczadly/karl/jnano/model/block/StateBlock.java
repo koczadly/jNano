@@ -18,7 +18,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         IBlockAccount {
     
     /** Prefix for block hashing. */
-    private static final byte[] HASH_PREAMBLE_BYTES = JNanoHelper.padByteArray(new byte[] {6}, 32);
+    private static final byte[] HASH_PREAMBLE_BYTES = JNanoHelper.leftPadByteArray(new byte[] {6}, 32);
     
     
     @Expose @SerializedName("account")
@@ -102,11 +102,11 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         
         this.subType = subtype;
         this.accountAddress = accountAddress;
-        this.previousBlockHash = previousBlockHash != null ? previousBlockHash.toUpperCase() : JNanoHelper.EMPTY_HEX_64;
+        this.previousBlockHash = previousBlockHash != null ? previousBlockHash.toUpperCase() : JNanoHelper.ZEROES_64;
         this.representativeAddress = representativeAddress;
         this.balance = balance;
         if (linkAccount == null && linkData == null) // If no data field is specified
-            linkData = JNanoHelper.EMPTY_HEX_64;
+            linkData = JNanoHelper.ZEROES_64;
         this.linkData = linkData != null ? linkData.toUpperCase() : linkAccount.toPublicKey();
         this.linkAccount = linkAccount != null ? linkAccount : NanoAccount.parsePublicKey(linkData);
     }
@@ -167,7 +167,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
                 getAccount().getPublicKeyBytes(),
                 JNanoHelper.ENCODER_HEX.decode(getPreviousBlockHash()),
                 getRepresentative().getPublicKeyBytes(),
-                JNanoHelper.padByteArray(getBalance().toByteArray(), 16),
+                JNanoHelper.leftPadByteArray(getBalance().toByteArray(), 16),
                 JNanoHelper.ENCODER_HEX.decode(getLinkData())
         };
     }

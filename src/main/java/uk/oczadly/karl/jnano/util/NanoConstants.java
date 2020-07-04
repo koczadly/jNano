@@ -1,5 +1,6 @@
 package uk.oczadly.karl.jnano.util;
 
+import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.OpenBlock;
@@ -22,8 +23,7 @@ public final class NanoConstants {
     /**
      * The official designated burn address. Funds sent to this address will be permanently irretrievable.
      */
-    public static final NanoAccount ADDRESS_BURN =
-            NanoAccount.parseSegment("1111111111111111111111111111111111111111111111111111");
+    public static final NanoAccount ADDRESS_BURN = NanoAccount.parsePublicKey(JNanoHelper.ZEROES_64);
     
     
     /**

@@ -170,7 +170,7 @@ public class StateBlockBuilder {
         // Construct
         return new StateBlock(null, subtype, hash, signature, work, accountAddress,
                 previousBlockHash, representativeAddress, balance,
-                (linkAccount == null && linkData == null) ? JNanoHelper.EMPTY_HEX_64 : linkData,
+                (linkAccount == null && linkData == null) ? JNanoHelper.ZEROES_64 : linkData,
                 linkAccount);
     }
     
