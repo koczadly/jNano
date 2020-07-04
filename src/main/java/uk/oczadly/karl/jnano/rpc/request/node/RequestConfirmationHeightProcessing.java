@@ -12,6 +12,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHash;
  * Official RPC documentation</a>
  * @deprecated This request is for debugging purposes only and is subject to change with each node revision.
  */
+@Deprecated
 public class RequestConfirmationHeightProcessing extends RpcRequest<ResponseBlockHash> {
     
     public RequestConfirmationHeightProcessing() {

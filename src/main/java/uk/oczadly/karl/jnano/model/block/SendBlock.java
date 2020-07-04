@@ -14,11 +14,7 @@ import java.math.BigInteger;
 
 /**
  * Represents a {@code send} block, and the associated data.
- *
- * @deprecated Only state blocks ({@link StateBlock}) are supported by the Nano node.
  */
-@SuppressWarnings("DeprecatedIsStillUsed")
-@Deprecated
 public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlockBalance {
     
     @Expose @SerializedName("previous")
@@ -35,6 +31,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
         super(BlockType.SEND);
     }
     
+    @Deprecated
     public SendBlock(String signature, WorkSolution work, String previousBlockHash, NanoAccount destinationAccount,
                      BigInteger balance) {
         this(null, null, signature, work, previousBlockHash, destinationAccount, balance);

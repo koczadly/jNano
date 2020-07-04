@@ -11,11 +11,7 @@ import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 /**
  * Represents a {@code change} block, and the associated data.
- *
- * @deprecated Only state blocks ({@link StateBlock}) are supported by the Nano node.
  */
-@SuppressWarnings("DeprecatedIsStillUsed")
-@Deprecated
 public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresentative {
     
     @Expose @SerializedName("previous")
@@ -29,6 +25,7 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
         super(BlockType.CHANGE);
     }
     
+    @Deprecated
     public ChangeBlock(String signature, WorkSolution workSolution, String previousBlockHash,
                        NanoAccount representativeAccount) {
         this(null, null, signature, workSolution, previousBlockHash, representativeAccount);

@@ -11,35 +11,41 @@ import java.util.Map;
 public enum StateBlockSubType {
     
     @SerializedName("send")
-    SEND("send", true),
+    SEND        ("send",    true,   BlockType.SEND),
     
     @SerializedName("receive")
-    RECEIVE("receive", true),
+    RECEIVE     ("receive", true,   BlockType.RECEIVE),
     
     @SerializedName("open")
-    OPEN("open", true),
+    OPEN        ("open",    true,   BlockType.OPEN),
     
     @SerializedName("change")
-    CHANGE_REP("change", false),
+    CHANGE_REP  ("change",  false,  BlockType.CHANGE),
     
     @SerializedName("epoch")
-    EPOCH("epoch", false);
+    EPOCH       ("epoch",   false,  null);
     
     
-    static final Map<String, StateBlockSubType> nameLookupMap = new HashMap<>();
+    static final Map<String, StateBlockSubType> NAME_LOOKUP_MAP = new HashMap<>();
+    static final Map<BlockType, StateBlockSubType> LEGACY_LOOKUP_MAP = new HashMap<>();
     
-    static {
-        for (StateBlockSubType type : values())
-            nameLookupMap.put(type.getProtocolName().toLowerCase(), type);
+    static { // Initialize lookup maps
+        for (StateBlockSubType type : values()) {
+            NAME_LOOKUP_MAP.put(type.getProtocolName().toLowerCase(), type);
+            if (type.getLegacyType() != null)
+                LEGACY_LOOKUP_MAP.put(type.getLegacyType(), type);
+        }
     }
     
     
     String name;
     boolean isTransaction;
+    BlockType legacyType;
     
-    StateBlockSubType(String name, boolean isTransaction) {
+    StateBlockSubType(String name, boolean isTransaction, BlockType legacyType) {
         this.name = name;
         this.isTransaction = isTransaction;
+        this.legacyType = legacyType;
     }
     
     
@@ -57,6 +63,12 @@ public enum StateBlockSubType {
         return name;
     }
     
+    /**
+     * @return the legacy {@link BlockType} which represents the same activity, or null if there isn't one
+     */
+    public BlockType getLegacyType() {
+        return legacyType;
+    }
     
     @Override
     public String toString() {
@@ -70,19 +82,8 @@ public enum StateBlockSubType {
      * @param type the legacy block type
      * @return the corresponding subtype, or null if incompatible
      */
-    @SuppressWarnings("deprecation")
     public static StateBlockSubType getFromLegacyType(BlockType type) {
-        switch (type) {
-            case SEND:
-                return SEND;
-            case RECEIVE:
-                return RECEIVE;
-            case OPEN:
-                return OPEN;
-            case CHANGE:
-                return CHANGE_REP;
-        }
-        return null;
+        return LEGACY_LOOKUP_MAP.get(type);
     }
     
     /**
@@ -92,7 +93,7 @@ public enum StateBlockSubType {
      * @return the corresponding subtype, or null if not found
      */
     public static StateBlockSubType getFromName(String name) {
-        return nameLookupMap.get(name.toLowerCase());
+        return NAME_LOOKUP_MAP.get(name.toLowerCase());
     }
     
 }

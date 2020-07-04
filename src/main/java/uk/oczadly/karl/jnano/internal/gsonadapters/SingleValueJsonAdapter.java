@@ -14,6 +14,7 @@ public class SingleValueJsonAdapter implements JsonDeserializer<Object> {
     private static Map<Class<?>, Field> FIELD_MAP = new ConcurrentHashMap<>();
     
     
+    @SuppressWarnings("deprecation")
     @Override
     public Object deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {

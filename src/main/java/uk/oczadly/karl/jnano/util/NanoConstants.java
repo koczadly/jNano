@@ -30,6 +30,7 @@ public final class NanoConstants {
      * The genesis block on the live Nano network. This represents the block/transaction where all Nano units were
      * initially introduced to the network.
      */
+    @SuppressWarnings("deprecation")
     public static final Block BLOCK_GENESIS_LIVE = new OpenBlock(
             "9F0C933C8ADE004D808EA1985FA746A7E95BA2A38F867640F53EC8F180BDFE9E2C1268DEAD7C2664F356E37ABA362BC" +
                     "58E46DBA03E523A7B5A19E4B6EB12BB02",

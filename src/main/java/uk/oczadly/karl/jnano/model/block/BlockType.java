@@ -10,19 +10,15 @@ import com.google.gson.annotations.SerializedName;
 public enum BlockType {
     
     @SerializedName("open")
-    @Deprecated
     OPEN(true),
     
     @SerializedName("change")
-    @Deprecated
     CHANGE(false),
     
     @SerializedName("send")
-    @Deprecated
     SEND(true),
     
     @SerializedName("receive")
-    @Deprecated
     RECEIVE(true),
     
     @SerializedName("state")

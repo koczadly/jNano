@@ -10,11 +10,7 @@ import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 /**
  * Represents a {@code receive} block, and the associated data.
- *
- * @deprecated Only state blocks ({@link StateBlock}) are supported by the Nano node.
  */
-@SuppressWarnings("DeprecatedIsStillUsed")
-@Deprecated
 public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource {
     
     @Expose @SerializedName("previous")
@@ -28,6 +24,7 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
         super(BlockType.RECEIVE);
     }
     
+    @Deprecated
     public ReceiveBlock(String signature, WorkSolution work, String previousBlockHash, String sourceBlockHash) {
         this(null, null, signature, work, previousBlockHash, sourceBlockHash);
     }

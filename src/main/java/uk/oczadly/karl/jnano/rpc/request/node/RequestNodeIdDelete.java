@@ -10,6 +10,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#node_id_delete">Official RPC documentation</a>
  * @deprecated This request is for debugging purposes only and is subject to change with each node revision.
  */
+@Deprecated
 public class RequestNodeIdDelete extends RpcRequest<ResponseSuccessful> {
     
     public RequestNodeIdDelete() {

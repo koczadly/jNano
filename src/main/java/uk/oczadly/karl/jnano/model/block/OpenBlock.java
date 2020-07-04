@@ -12,11 +12,7 @@ import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 /**
  * Represents an {@code open} block, and the associated data.
- *
- * @deprecated Only state blocks ({@link StateBlock}) are supported by the Nano node.
  */
-@SuppressWarnings("DeprecatedIsStillUsed")
-@Deprecated
 public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBlockRepresentative {
     
     @Expose @SerializedName("source")
@@ -33,6 +29,7 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
         super(BlockType.OPEN);
     }
     
+    @Deprecated
     public OpenBlock(String signature, WorkSolution work, String sourceBlockHash, NanoAccount accountAddress,
                      NanoAccount representativeAccount) {
         this(null, null, signature, work, sourceBlockHash, accountAddress, representativeAccount);

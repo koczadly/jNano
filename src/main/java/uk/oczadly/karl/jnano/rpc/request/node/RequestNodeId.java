@@ -10,6 +10,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseNodeId;
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#node_id">Official RPC documentation</a>
  * @deprecated This request is for debugging purposes only and is subject to change with each node revision.
  */
+@Deprecated
 public class RequestNodeId extends RpcRequest<ResponseNodeId> {
     
     public RequestNodeId() {
