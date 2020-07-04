@@ -93,7 +93,7 @@ public final class StateBlockBuilder {
     }
     
     public StateBlockBuilder setWorkSolution(String work) {
-        return setWorkSolution(new WorkSolution(work));
+        return setWorkSolution(work != null ? new WorkSolution(work) : null);
     }
     
     
