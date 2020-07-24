@@ -6,18 +6,28 @@ import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 public final class NetworkConstants {
     
+    private final String networkName, addressPrefix;
     private final OpenBlock genesisBlock;
     private final NanoAccount burnAddress;
-    private final String addressPrefix;
     
-    NetworkConstants(String burnAddressSegment, String addressPrefix, String genBlockSig, WorkSolution genBlockWork,
-                     String genBlockSource, String genBlockAccountSeg) {
-        this.burnAddress = NanoAccount.parseSegment(burnAddressSegment, addressPrefix);
+    @SuppressWarnings("deprecation")
+    NetworkConstants(String networkName, String addressPrefix, String burnAddressSegment, String genBlockSig,
+                     WorkSolution genBlockWork, String genBlockAccountSeg) {
+        this.networkName = networkName;
         this.addressPrefix = addressPrefix;
+        this.burnAddress = NanoAccount.parseSegment(burnAddressSegment, addressPrefix);
         NanoAccount genesisAccount = NanoAccount.parseSegment(genBlockAccountSeg, addressPrefix);
-        this.genesisBlock = new OpenBlock(genBlockSig, genBlockWork, genBlockSource, genesisAccount, genesisAccount);
+        this.genesisBlock = new OpenBlock(genBlockSig, genBlockWork, genesisAccount.toPublicKey(), genesisAccount,
+                genesisAccount);
     }
     
+    
+    /**
+     * @return the name of this network
+     */
+    public String getNetworkName() {
+        return networkName;
+    }
     
     /**
      * @return the genesis block which created all existing nano units
