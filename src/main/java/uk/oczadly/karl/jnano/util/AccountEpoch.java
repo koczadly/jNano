@@ -18,13 +18,13 @@ public enum AccountEpoch {
      * Version 1 epoch block, which marks the transition from legacy blocks (send/receive/open/change) to UTX state
      * blocks.
      */
-    V1(1, "65706F636820763120626C6F636B000000000000000000000000000000000000",
+    V1("65706F636820763120626C6F636B000000000000000000000000000000000000",
             NanoConstants.NANO_LIVE_NET.getGenesisAccount()),
     
     /**
      * Version 2 epoch block, which marks the change in minimum work difficulties introduced in node V21.
      */
-    V2(2, "65706F636820763220626C6F636B000000000000000000000000000000000000",
+    V2("65706F636820763220626C6F636B000000000000000000000000000000000000",
             NanoAccount.parseSegment("3qb6o6i1tkzr6jwr5s7eehfxwg9x6eemitdinbpi7u8bjjwsgqfj"));
     
     
@@ -35,17 +35,15 @@ public enum AccountEpoch {
     
     static {
         for (AccountEpoch e : AccountEpoch.values()) {
-            VER_MAP.put(e.version, e);
-            ID_MAP.put(e.id, e);
+            VER_MAP.put(e.getVersion(), e);
+            ID_MAP.put(e.getIdentifier(), e);
         }
     }
     
-    int version;
     String id;
     NanoAccount signerAcc;
     
-    AccountEpoch(int version, String id, NanoAccount signerAcc) {
-        this.version = version;
+    AccountEpoch(String id, NanoAccount signerAcc) {
         this.id = id;
         this.signerAcc = signerAcc;
     }
@@ -55,7 +53,7 @@ public enum AccountEpoch {
      * @return the version which this epoch block will upgrade an account to
      */
     public int getVersion() {
-        return version;
+        return ordinal() + 1;
     }
     
     /**
