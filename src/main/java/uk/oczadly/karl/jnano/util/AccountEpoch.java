@@ -9,6 +9,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This enum class represents account epochs for the live Nano network.
+ */
 public enum AccountEpoch {
     
     /**
@@ -16,7 +19,7 @@ public enum AccountEpoch {
      * blocks.
      */
     V1(1, "65706F636820763120626C6F636B000000000000000000000000000000000000",
-            NanoConstants.ADDRESS_GENESIS_LIVE),
+            NanoConstants.NANO_LIVE_NET.getGenesisAccount()),
     
     /**
      * Version 2 epoch block, which marks the change in minimum work difficulties introduced in node V21.

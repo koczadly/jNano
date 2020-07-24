@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import uk.oczadly.karl.jnano.internal.gsonadapters.ArrayTypeAdapterFactoryFix;
 import uk.oczadly.karl.jnano.internal.gsonadapters.BooleanTypeDeserializer;
 import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
+import uk.oczadly.karl.jnano.util.NanoConstants;
 
 import java.math.BigInteger;
 
@@ -18,9 +19,6 @@ public class JNanoHelper {
     public static final String ZEROES_16 = repeatChar('0', 16);
     public static final String ZEROES_64 = repeatChar('0', 64);
     public static final String ZEROES_128 = repeatChar('0', 128);
-    
-    private static final BigInteger MAX_BALANCE_VAL = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16);
-    
     
     public static final GsonBuilder GSON_BUILDER = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
@@ -71,7 +69,7 @@ public class JNanoHelper {
      */
     public static boolean isBalanceValid(BigInteger raw) {
         if (raw == null) return true;
-        return raw.compareTo(BigInteger.ZERO) >= 0 && raw.compareTo(MAX_BALANCE_VAL) <= 0;
+        return raw.compareTo(BigInteger.ZERO) >= 0 && raw.compareTo(NanoConstants.MAX_BALANCE_RAW) <= 0;
     }
     
     public static String repeatChar(char c, int length) {
