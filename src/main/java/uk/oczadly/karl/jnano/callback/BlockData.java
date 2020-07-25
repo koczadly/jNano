@@ -1,7 +1,5 @@
 package uk.oczadly.karl.jnano.callback;
 
-import com.google.gson.annotations.JsonAdapter;
-import uk.oczadly.karl.jnano.internal.gsonadapters.CallbackBlockTypeDeserializer;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.BlockType;
@@ -12,7 +10,6 @@ import java.math.BigInteger;
  * This class encapsulates a variety of data relating to newly-processed blocks. Instances of this class are generated
  * and returned by a {@link BlockCallbackServer} as new blocks are received.
  */
-@JsonAdapter(CallbackBlockTypeDeserializer.class)
 public class BlockData {
     
     private final String rawJson, blockHash;

@@ -2,9 +2,14 @@ package uk.oczadly.karl.jnano.callback;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import uk.oczadly.karl.jnano.callback.httpserver.HttpCallback;
 import uk.oczadly.karl.jnano.callback.httpserver.HttpRequest;
 import uk.oczadly.karl.jnano.callback.httpserver.HttpServerThread;
+import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.block.BlockType;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -109,7 +114,22 @@ public class BlockCallbackServer {
     private class HttpCallbackProcessor implements HttpCallback {
         @Override
         public void onRequest(HttpRequest request) {
-            BlockData blockData = gson.fromJson(request.getBody(), BlockData.class); // Deserialize
+            JsonObject json = JsonParser.parseString(request.getBody()).getAsJsonObject();
+            
+            Block block = gson.fromJson(json.get("block"), Block.class);
+            
+            BlockData blockData = new BlockData(request.getBody(),
+                    NanoAccount.parse(json.get("account").getAsString()),
+                    json.get("hash").getAsString(),
+                    block,
+                    gson.fromJson(json.get("subtype"), BlockType.class),
+                    json.has("is_send")
+                            ? json.get("is_send").getAsBoolean()
+                            : block.getType() == BlockType.SEND,
+                    (block.getType().isTransaction() && json.has("amount"))
+                            ? json.get("amount").getAsBigInteger()
+                            : null);
+            
             notifyListeners(blockData, request.getPath(), request.getClientAddr()); // Notify listeners
         }
     }
