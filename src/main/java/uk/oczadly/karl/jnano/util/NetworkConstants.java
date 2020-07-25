@@ -44,6 +44,13 @@ public final class NetworkConstants {
     }
     
     /**
+     * @return the network identifier string (genesis block hash)
+     */
+    public String getNetworkIdentifier() {
+        return getGenesisBlock().getHash();
+    }
+    
+    /**
      * @return the officially designated burn address, where coins are made irretrievable
      */
     public NanoAccount getBurnAddress() {

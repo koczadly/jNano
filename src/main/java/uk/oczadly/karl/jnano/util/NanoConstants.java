@@ -74,11 +74,11 @@ public final class NanoConstants {
             throw new IllegalArgumentException("Block hash is not a valid 64-character hex string.");
         
         hash = hash.toUpperCase();
-        if (NANO_LIVE_NET.getGenesisBlock().getHash().equals(hash))
+        if (NANO_LIVE_NET.getNetworkIdentifier().equals(hash))
             return NANO_LIVE_NET;
-        if (NANO_BETA_NET.getGenesisBlock().getHash().equals(hash))
+        if (NANO_BETA_NET.getNetworkIdentifier().equals(hash))
             return NANO_BETA_NET;
-        if (BANANO_LIVE_NET.getGenesisBlock().getHash().equals(hash))
+        if (BANANO_LIVE_NET.getNetworkIdentifier().equals(hash))
             return BANANO_LIVE_NET;
         return null;
     }
