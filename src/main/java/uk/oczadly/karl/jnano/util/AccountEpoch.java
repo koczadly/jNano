@@ -25,7 +25,7 @@ public enum AccountEpoch {
      * Version 2 epoch block, which marks the change in minimum work difficulties introduced in node V21.
      */
     V2("65706F636820763220626C6F636B000000000000000000000000000000000000",
-            NanoAccount.parseSegment("3qb6o6i1tkzr6jwr5s7eehfxwg9x6eemitdinbpi7u8bjjwsgqfj"));
+            NanoAccount.parseAddressSegment("3qb6o6i1tkzr6jwr5s7eehfxwg9x6eemitdinbpi7u8bjjwsgqfj"));
     
     
     public static final AccountEpoch LATEST_EPOCH = values()[values().length - 1];

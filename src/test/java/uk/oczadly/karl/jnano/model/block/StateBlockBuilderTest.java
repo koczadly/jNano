@@ -13,7 +13,7 @@ public class StateBlockBuilderTest {
     private static final String NULL_ZERO_STRING = "0000000000000000000000000000000000000000000000000000000000000000";
     private static final String DATA = "8AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97";
     private static final NanoAccount ACCOUNT =
-            NanoAccount.parse("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz");
+            NanoAccount.parseAddress("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz");
     
     public static StateBlockBuilder newBuilder() {
         return new StateBlockBuilder(

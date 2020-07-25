@@ -15,7 +15,7 @@ public class ChangeBlockTest {
                         "2BC58E46DBA03E523A7B5A19E4B6EB12BB02",
                 new WorkSolution("62f05417dd3fb691"),
                 "991CF190094C00F0B68E2E5F75F6BEE95A2E0BD93CEAA4A6734DB9F19B728948",
-                NanoAccount.parse("nano_3robocazheuxet5ju1gtif4cefkhfbupkykc97hfanof859ie9ajpdfhy3ez"));
+                NanoAccount.parseAddress("nano_3robocazheuxet5ju1gtif4cefkhfbupkykc97hfanof859ie9ajpdfhy3ez"));
         
         assertEquals("1D8B97BD8BD4F06FF46CA158A079C2E92CDC27EB6A95AE0B6A4F136564FB5F62", b.getHash());
     }

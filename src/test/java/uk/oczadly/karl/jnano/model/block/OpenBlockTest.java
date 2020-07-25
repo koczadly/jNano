@@ -15,8 +15,8 @@ public class OpenBlockTest {
                         "2BC58E46DBA03E523A7B5A19E4B6EB12BB02",
                 new WorkSolution("62f05417dd3fb691"),
                 "991CF190094C00F0B68E2E5F75F6BEE95A2E0BD93CEAA4A6734DB9F19B728948",
-                NanoAccount.parse("nano_3robocazheuxet5ju1gtif4cefkhfbupkykc97hfanof859ie9ajpdfhy3ez"),
-                NanoAccount.parse("nano_31xitw55kb3ko8yaz3439hqaqpibxa9shx76suaa3no786do3hjuz8dy6izw"));
+                NanoAccount.parseAddress("nano_3robocazheuxet5ju1gtif4cefkhfbupkykc97hfanof859ie9ajpdfhy3ez"),
+                NanoAccount.parseAddress("nano_31xitw55kb3ko8yaz3439hqaqpibxa9shx76suaa3no786do3hjuz8dy6izw"));
         
         assertEquals("C62EA8D1AEFE50328CE8C06E279E6AC36038B751C574F10BCB8C7AEA6C933694", b.getHash());
     }

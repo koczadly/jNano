@@ -15,6 +15,9 @@ import java.util.Objects;
  * through the methods of this class, without needing to configure or connect to an external node.</p>
  * <p>To instantiate this class, use the provided static methods (eg. {@link #parse(String)}), or use the
  * constructor to clone an existing object.</p>
+ * <p>Using the built-in JSON adapter, this class will call {@link #parse(String)} for deserializing, allowing
+ * accounts encoded in either address or public key formats. When serializing this class, the {@link #toAddress()}
+ * method will be used to convert into address format.</p>
  */
 @JsonAdapter(NanoAccount.Adapter.class)
 public final class NanoAccount {
@@ -44,7 +47,7 @@ public final class NanoAccount {
      * Copies an existing {@link NanoAccount} object, but using a different protocol prefix.
      * @param address   the address to clone
      * @param newPrefix the prefix to assign, or null for no prefix
-     * @see #parse(String)
+     * @see #parseAddress(String)
      */
     public NanoAccount(NanoAccount address, String newPrefix) {
         this(newPrefix, address.keyBytes, address.checksumBytes, null, address.publicKeyHex,
@@ -54,7 +57,7 @@ public final class NanoAccount {
     /**
      * Constructs an AccountAddress instance from an array of key bytes, using the default prefix.
      * @param keyBytes an array of 32 bytes representing the key
-     * @see #parse(String)
+     * @see #parseAddress(String)
      */
     public NanoAccount(byte[] keyBytes) {
         this(keyBytes, DEFAULT_PREFIX);
@@ -64,7 +67,7 @@ public final class NanoAccount {
      * Constructs an AccountAddress instance from an array of key bytes, using the specified prefix.
      * @param keyBytes an array of 32 bytes representing the key
      * @param prefix   the prefix to assign, or null for no prefix
-     * @see #parse(String)
+     * @see #parseAddress(String)
      */
     public NanoAccount(byte[] keyBytes, String prefix) {
         this(prefix, Arrays.copyOf(keyBytes, keyBytes.length), null, null);
@@ -198,23 +201,44 @@ public final class NanoAccount {
     
     
     /**
+     * Creates a new {@link NanoAccount} from a given address or public key.
+     * If using an address format, the string should include a prefix, separator, address segment and checksum.
+     * Accounts encoded as a public key should be a 64-character hexadecimal string. In cases where a hexadecimal
+     * string is passed, the prefix will be the default ({@value #DEFAULT_PREFIX}).
+     * @param str the account address string
+     * @return the created address object
+     * @throws AddressFormatException if the address does not meet the required format criteria
+     */
+    public static NanoAccount parse(String str) {
+        if (str == null) throw new IllegalArgumentException("Account string cannot be null.");
+        
+        if (str.length() == 64 && str.indexOf(PREFIX_SEPARATOR_CHAR) == -1) {
+            return parsePublicKey(str); // Hex
+        } else if (str.length() == 60 || str.indexOf(PREFIX_SEPARATOR_CHAR) != -1) {
+            return parseAddress(str); // Address
+        }
+        throw new AddressFormatException("Could not identify the encoding format of the given address.");
+    }
+    
+    /**
      * Creates a new {@link NanoAccount} from a given address. The address should contain an encoded public key and
      * checksum, along with an optional prefix (eg.
      * {@code nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz}).
      * @param address the account address string
      * @return the created address object
+     * @throws AddressFormatException if the address does not meet the required format criteria
      */
-    public static NanoAccount parse(String address) {
+    public static NanoAccount parseAddress(String address) {
         if (address == null) throw new IllegalArgumentException("Address argument cannot be null.");
         if (address.length() < 60) throw new AddressFormatException("Address string is too short.");
-    
+        
         int separatorIndex = address.lastIndexOf(PREFIX_SEPARATOR_CHAR);
         
         if ((separatorIndex == -1 && address.length() != 60)
                 || (separatorIndex != -1 && (address.length() - separatorIndex - 1) != 60))
             throw new AddressFormatException("Address/checksum segment is not the right length.");
         
-        return parseSegment(
+        return parseAddressSegment(
                 address.substring(address.length() - 60, address.length() - 8),
                 (separatorIndex <= 0 ? null : address.substring(0, separatorIndex)),
                 address.substring(address.length() - 8));
@@ -226,9 +250,10 @@ public final class NanoAccount {
      * {@code 34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6q}).
      * @param address the 52-character account address segment
      * @return the created address object
+     * @throws AddressFormatException if the address does not meet the required format criteria
      */
-    public static NanoAccount parseSegment(String address) {
-        return parseSegment(address, DEFAULT_PREFIX);
+    public static NanoAccount parseAddressSegment(String address) {
+        return parseAddressSegment(address, DEFAULT_PREFIX);
     }
     
     /**
@@ -237,9 +262,10 @@ public final class NanoAccount {
      * @param address the 52-character account address segment
      * @param prefix  the protocol identifier prefix to use (without separator), or null for no prefix
      * @return the created address object
+     * @throws AddressFormatException if the address does not meet the required format criteria
      */
-    public static NanoAccount parseSegment(String address, String prefix) {
-        return parseSegment(address, prefix, null);
+    public static NanoAccount parseAddressSegment(String address, String prefix) {
+        return parseAddressSegment(address, prefix, null);
     }
     
     /**
@@ -252,7 +278,7 @@ public final class NanoAccount {
      * @return the created address object
      * @throws AddressFormatException if the address does not meet the required format criteria
      */
-    public static NanoAccount parseSegment(String address, String prefix, String checksum) {
+    public static NanoAccount parseAddressSegment(String address, String prefix, String checksum) {
         if (address == null) throw new IllegalArgumentException("Address argument cannot be null.");
         if (address.length() != 52) throw new AddressFormatException("Address string must be 52 characters long.");
         if (address.charAt(0) != '1' && address.charAt(0) != '3')
@@ -311,7 +337,7 @@ public final class NanoAccount {
      */
     public static boolean isValidNano(String address) {
         try {
-            NanoAccount addr = parse(address);
+            NanoAccount addr = parseAddress(address);
             return isValidNano(addr);
         } catch (AddressFormatException e) {
             return false;
@@ -347,7 +373,7 @@ public final class NanoAccount {
      */
     public static boolean isValid(String address, String prefix) {
         try {
-            NanoAccount addr = parse(address);
+            NanoAccount addr = parseAddress(address);
             return prefix == null || prefix.equalsIgnoreCase(addr.getPrefix());
         } catch (AddressFormatException e) {
             return false;
@@ -362,7 +388,7 @@ public final class NanoAccount {
      */
     public static boolean isSegmentValid(String addressSegment, String checksum) {
         try {
-            parseSegment(addressSegment, null, checksum);
+            parseAddressSegment(addressSegment, null, checksum);
             return true;
         } catch (AddressFormatException e) {
             return false;
@@ -398,12 +424,7 @@ public final class NanoAccount {
         @Override
         public NanoAccount deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
-            String str = json.getAsString();
-            if (str.length() == 64 && str.indexOf(PREFIX_SEPARATOR_CHAR) == -1) {
-                return parsePublicKey(str); // Hex
-            } else {
-                return parse(str); // Address
-            }
+            return parse(json.getAsString());
         }
         
         @Override

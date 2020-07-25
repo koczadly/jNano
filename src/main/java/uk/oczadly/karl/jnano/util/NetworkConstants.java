@@ -15,8 +15,8 @@ public final class NetworkConstants {
                      WorkSolution genBlockWork, String genBlockAccountSeg) {
         this.networkName = networkName;
         this.addressPrefix = addressPrefix;
-        this.burnAddress = NanoAccount.parseSegment(burnAddressSegment, addressPrefix);
-        NanoAccount genesisAccount = NanoAccount.parseSegment(genBlockAccountSeg, addressPrefix);
+        this.burnAddress = NanoAccount.parseAddressSegment(burnAddressSegment, addressPrefix);
+        NanoAccount genesisAccount = NanoAccount.parseAddressSegment(genBlockAccountSeg, addressPrefix);
         this.genesisBlock = new OpenBlock(genBlockSig, genBlockWork, genesisAccount.toPublicKey(), genesisAccount,
                 genesisAccount);
     }

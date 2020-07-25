@@ -16,9 +16,9 @@ public class StateBlockTest {
     @Before
     public void setup() {
         builder = new StateBlockBuilder(
-                NanoAccount.parse("nano_3dmtrrws3pocycmbqwawk6xs7446qxa36fcncush4s1pejk16ksbmakis78m"),
+                NanoAccount.parseAddress("nano_3dmtrrws3pocycmbqwawk6xs7446qxa36fcncush4s1pejk16ksbmakis78m"),
                 "90204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488",
-                NanoAccount.parse("nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk"),
+                NanoAccount.parseAddress("nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk"),
                 new BigInteger("1234567"));
     }
     
@@ -34,7 +34,7 @@ public class StateBlockTest {
                 block.getHash());
         
         // Account link
-        assertEquals(NanoAccount.parse("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"),
+        assertEquals(NanoAccount.parseAddress("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"),
                 block.getLinkAsAccount());
     }
     
@@ -45,14 +45,14 @@ public class StateBlockTest {
                 .build();
         
         // Account link
-        assertEquals(NanoAccount.parse("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"),
+        assertEquals(NanoAccount.parseAddress("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"),
                 block.getLinkAsAccount());
     }
     
     @Test
     public void testCalcLinkData() {
         StateBlock block = builder
-                .setLinkAccount(NanoAccount.parse("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
+                .setLinkAccount(NanoAccount.parseAddress("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
                 .build();
         
         // Account link
@@ -62,11 +62,11 @@ public class StateBlockTest {
     @Test
     public void equalityCheck() {
         StateBlock block1 = builder
-                .setLinkAccount(NanoAccount.parse("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
+                .setLinkAccount(NanoAccount.parseAddress("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
                 .build();
         
         StateBlock block2 = builder
-                .setLinkAccount(NanoAccount.parse("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
+                .setLinkAccount(NanoAccount.parseAddress("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
                 .build();
         
         StateBlock block3 = builder

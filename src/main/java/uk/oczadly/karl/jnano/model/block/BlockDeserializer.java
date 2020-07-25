@@ -27,12 +27,12 @@ public final class BlockDeserializer {
                 nullable(json.get("hash"), JsonElement::getAsString),
                 json.get("signature").getAsString(),
                 nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
-                NanoAccount.parse(json.get("account").getAsString()),
+                NanoAccount.parseAddress(json.get("account").getAsString()),
                 json.get("previous").getAsString(),
-                NanoAccount.parse(json.get("representative").getAsString()),
+                NanoAccount.parseAddress(json.get("representative").getAsString()),
                 json.get("balance").getAsBigInteger(),
                 nullable(json.get("link"), JsonElement::getAsString),
-                nullable(json.get("link_as_account"), o -> NanoAccount.parse(o.getAsString()))
+                nullable(json.get("link_as_account"), o -> NanoAccount.parseAddress(o.getAsString()))
         );
         registerDeserializer("state", stateDeserializer);
         registerDeserializer("utx", stateDeserializer);
@@ -44,7 +44,7 @@ public final class BlockDeserializer {
                 json.get("signature").getAsString(),
                 nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
                 json.get("previous").getAsString(),
-                NanoAccount.parse(json.get("representative").getAsString())
+                NanoAccount.parseAddress(json.get("representative").getAsString())
         ));
         
         // OPEN
@@ -54,8 +54,8 @@ public final class BlockDeserializer {
                 json.get("signature").getAsString(),
                 nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
                 json.get("source").getAsString(),
-                NanoAccount.parse(json.get("account").getAsString()),
-                NanoAccount.parse(json.get("representative").getAsString())
+                NanoAccount.parseAddress(json.get("account").getAsString()),
+                NanoAccount.parseAddress(json.get("representative").getAsString())
         ));
         
         // RECEIVE
@@ -75,7 +75,7 @@ public final class BlockDeserializer {
                 json.get("signature").getAsString(),
                 new WorkSolution(json.get("work").getAsString()),
                 json.get("previous").getAsString(),
-                NanoAccount.parse(json.get("destination").getAsString()),
+                NanoAccount.parseAddress(json.get("destination").getAsString()),
                 new BigInteger(json.get("balance").getAsString(), 16) // Hex encoded value
         ));
     }

@@ -122,7 +122,7 @@ public final class StateBlockBuilder {
     public StateBlockBuilder setAccountAddress(String accountAddress) {
         if (accountAddress == null)
             throw new IllegalArgumentException("Account address argument cannot be null.");
-        return setAccountAddress(NanoAccount.parse(accountAddress));
+        return setAccountAddress(NanoAccount.parseAddress(accountAddress));
     }
     
     
@@ -154,7 +154,7 @@ public final class StateBlockBuilder {
     public StateBlockBuilder setRepresentativeAddress(String representativeAddress) {
         if (representativeAddress == null)
             throw new IllegalArgumentException("Representative address argument cannot be null.");
-        return setRepresentativeAddress(NanoAccount.parse(representativeAddress));
+        return setRepresentativeAddress(NanoAccount.parseAddress(representativeAddress));
     }
     
     
@@ -196,7 +196,7 @@ public final class StateBlockBuilder {
      * @return this builder
      */
     public StateBlockBuilder setLinkAccount(String linkAccount) {
-        return setLinkAccount(linkAccount != null ? NanoAccount.parse(linkAccount) : null);
+        return setLinkAccount(linkAccount != null ? NanoAccount.parseAddress(linkAccount) : null);
     }
     
     /**
