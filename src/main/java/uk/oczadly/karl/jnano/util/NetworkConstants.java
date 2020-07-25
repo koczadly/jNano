@@ -57,4 +57,10 @@ public final class NetworkConstants {
         return addressPrefix;
     }
     
+    
+    @Override
+    public String toString() {
+        return getNetworkName();
+    }
+    
 }
