@@ -19,7 +19,13 @@ public final class NanoConstants {
      * The maximum possible balance value, in raw units. This does not account for burned funds, but is simply the
      * number of units which are generated within the genesis block.
      */
-    public static BigInteger MAX_BALANCE_RAW = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16);
+    public static final BigInteger MAX_BALANCE_RAW = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16);
+    
+    /**
+     * The zero-th index account, represented by all zeroes for the public key. This address is also the burn address
+     * for most networks and forks.
+     */
+    public static final NanoAccount ZERO_ACCOUNT = NanoAccount.parsePublicKey(JNanoHelper.ZEROES_64);
     
     
     /**
