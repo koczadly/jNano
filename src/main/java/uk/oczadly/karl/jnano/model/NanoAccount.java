@@ -23,6 +23,11 @@ import java.util.Objects;
 public final class NanoAccount {
     
     /**
+     * The character which separates the prefix from the address string.
+     */
+    public static final char PREFIX_SEPARATOR_CHAR = '_';
+    
+    /**
      * The default Nano prefix, officially used on the live network. This value does not contain the additional
      * separator char ({@link #PREFIX_SEPARATOR_CHAR}).
      */
@@ -30,16 +35,10 @@ public final class NanoAccount {
     
     private static final String[] DEFAULT_ALLOWED_PREFIXES = {DEFAULT_PREFIX, "xrb"};
     
-    /**
-     * The character which separates the prefix from the address string.
-     */
-    public static final char PREFIX_SEPARATOR_CHAR = '_';
-    
     
     private final byte[] keyBytes;
     private final String prefix;
-    
-    // Values below may be initialized lazily
+    // Fields below may be initialized lazily
     private volatile byte[] checksumBytes;
     private volatile String cachedAddress, publicKeyHex, segAddress, segChecksum;
     
@@ -47,8 +46,10 @@ public final class NanoAccount {
      * Copies an existing {@link NanoAccount} object, but using a different protocol prefix.
      * @param address   the address to clone
      * @param newPrefix the prefix to assign, or null for no prefix
-     * @see #parseAddress(String)
+     * @see #parse(String)
+     * @deprecated Use of {@link #withPrefix(String)} method is preferred for better clarity
      */
+    @Deprecated
     public NanoAccount(NanoAccount address, String newPrefix) {
         this(newPrefix, address.keyBytes, address.checksumBytes, null, address.publicKeyHex,
                 address.segAddress, address.segChecksum);
@@ -57,7 +58,7 @@ public final class NanoAccount {
     /**
      * Constructs an AccountAddress instance from an array of key bytes, using the default prefix.
      * @param keyBytes an array of 32 bytes representing the key
-     * @see #parseAddress(String)
+     * @see #parse(String)
      */
     public NanoAccount(byte[] keyBytes) {
         this(keyBytes, DEFAULT_PREFIX);
@@ -66,8 +67,8 @@ public final class NanoAccount {
     /**
      * Constructs an AccountAddress instance from an array of key bytes, using the specified prefix.
      * @param keyBytes an array of 32 bytes representing the key
-     * @param prefix   the prefix to assign, or null for no prefix
-     * @see #parseAddress(String)
+     * @param prefix   the protocol identifier prefix (without separator), or null for no prefix
+     * @see #parse(String)
      */
     public NanoAccount(byte[] keyBytes, String prefix) {
         this(prefix, Arrays.copyOf(keyBytes, keyBytes.length), null, null);
@@ -79,6 +80,7 @@ public final class NanoAccount {
     
     private NanoAccount(String prefix, byte[] keyBytes, byte[] checksumBytes, String cachedAddress,
                         String publicKeyHex, String segAddress, String segChecksum) {
+        validatePrefix(prefix);
         if (keyBytes == null) throw new IllegalArgumentException("Key byte array cannot be null.");
         if (keyBytes.length != 32) throw new IllegalArgumentException("Key byte array must have a length of 32.");
         this.keyBytes = keyBytes;
@@ -201,6 +203,16 @@ public final class NanoAccount {
     
     
     /**
+     * Creates a new {@link NanoAccount} representing the same public key with the newly assigned protocol prefix.
+     * @param prefix the new protocol identifier prefix (without separator), or null for no prefix
+     * @return a new instance with the specified prefix
+     */
+    public NanoAccount withPrefix(String prefix) {
+        return new NanoAccount(this, prefix);
+    }
+    
+    
+    /**
      * Creates a new {@link NanoAccount} from a given address or public key.
      * If using an address format, the string should include a prefix, separator, address segment and checksum.
      * Accounts encoded as a public key should be a 64-character hexadecimal string. In cases where a hexadecimal
@@ -210,12 +222,29 @@ public final class NanoAccount {
      * @throws AddressFormatException if the address does not meet the required format criteria
      */
     public static NanoAccount parse(String str) {
+        return parse(str, DEFAULT_PREFIX);
+    }
+    
+    /**
+     * <p>Creates a new {@link NanoAccount} from a given address or public key.</p>
+     * If using an address format, the string should include a prefix, separator, address segment and checksum - if
+     * the address includes a prefix, then that prefix will be used, rather than the specified default.
+     * Accounts encoded as a public key should be a 64-character hexadecimal string. In cases where a hexadecimal
+     * string is passed, the prefix will be the specified prefix argument.
+     * @param str           the account address string
+     * @param defaultPrefix the default protocol identifier prefix (without separator), or null for no prefix
+     * @return the created address object
+     * @throws AddressFormatException if the address does not meet the required format criteria
+     */
+    public static NanoAccount parse(String str, String defaultPrefix) {
         if (str == null) throw new IllegalArgumentException("Account string cannot be null.");
         
         if (str.length() == 64 && str.indexOf(PREFIX_SEPARATOR_CHAR) == -1) {
-            return parsePublicKey(str); // Hex
+            return parsePublicKey(str, defaultPrefix); // Hex
         } else if (str.length() == 60 || str.indexOf(PREFIX_SEPARATOR_CHAR) != -1) {
             return parseAddress(str); // Address
+        } else if (str.length() == 52) {
+            return parseAddressSegment(str, defaultPrefix); // Address segment
         }
         throw new AddressFormatException("Could not identify the encoding format of the given address.");
     }
@@ -260,7 +289,7 @@ public final class NanoAccount {
      * Creates a new {@link NanoAccount} from a given address segment and prefix. The segment excludes the initial
      * prefix and checksum (the last 8 characters), (eg. {@code 34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6q}).
      * @param address the 52-character account address segment
-     * @param prefix  the protocol identifier prefix to use (without separator), or null for no prefix
+     * @param prefix  the protocol identifier prefix (without separator), or null for no prefix
      * @return the created address object
      * @throws AddressFormatException if the address does not meet the required format criteria
      */
@@ -283,6 +312,7 @@ public final class NanoAccount {
         if (address.length() != 52) throw new AddressFormatException("Address string must be 52 characters long.");
         if (address.charAt(0) != '1' && address.charAt(0) != '3')
             throw new AddressFormatException("Addresses may only begin with characters 1 or 3.");
+        validatePrefix(prefix);
         if (checksum != null && checksum.length() != 8)
             throw new AddressFormatException("Expected checksum string must be 8 characters long.");
         
@@ -368,7 +398,7 @@ public final class NanoAccount {
      * Checks whether a given address string is valid. For an address to be considered valid, the format must be of
      * an appropriate length, contain the defined prefix, and have a matching checksum value.
      * @param address the account address string
-     * @param prefix  the prefix value to compare, or null to allow any
+     * @param prefix  the prefix value to compare (without separator), or null to allow any
      * @return whether the given address string is valid
      */
     public static boolean isValid(String address, String prefix) {
@@ -419,6 +449,11 @@ public final class NanoAccount {
         return keyBytes;
     }
     
+    private static void validatePrefix(String prefix) {
+        if (prefix != null && !prefix.isEmpty() && !prefix.matches("[0-9A-Za-z]+"))
+            throw new IllegalArgumentException("Address prefix contains an illegal character.");
+    }
+    
     
     static class Adapter implements JsonSerializer<NanoAccount>, JsonDeserializer<NanoAccount> {
         @Override
@@ -434,17 +469,9 @@ public final class NanoAccount {
     }
     
     public static class AddressFormatException extends IllegalArgumentException {
-        public AddressFormatException() {
-            super();
-        }
-    
-        public AddressFormatException(String msg) {
-            super(msg);
-        }
-    
-        public AddressFormatException(Throwable cause) {
-            super(cause);
-        }
+        public AddressFormatException() { super(); }
+        public AddressFormatException(String msg) { super(msg); }
+        public AddressFormatException(Throwable cause) { super(cause); }
     }
 
 }
