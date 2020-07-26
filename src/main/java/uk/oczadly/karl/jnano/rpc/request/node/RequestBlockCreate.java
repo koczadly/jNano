@@ -191,6 +191,8 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
             }
             this.work = block.getWorkSolution().getAsHexadecimal();
         }
+    
+        public Builder() {}
         
         /**
          * @param balance        the account's balance after the block
