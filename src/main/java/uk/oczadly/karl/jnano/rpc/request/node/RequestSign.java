@@ -2,6 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSignature;
 
@@ -35,7 +36,6 @@ public class RequestSign extends RpcRequest<ResponseSignature> {
     
     /**
      * Constructs a sign request using a private key.
-     *
      * @param blockJson  the block's JSON contents
      * @param privateKey the private key of the account
      */
@@ -44,8 +44,16 @@ public class RequestSign extends RpcRequest<ResponseSignature> {
     }
     
     /**
+     * Constructs a sign request using a private key.
+     * @param block      the block to sign
+     * @param privateKey the private key of the account
+     */
+    public RequestSign(Block block, String privateKey) {
+        this(null, block.toJsonString(), privateKey, null, null);
+    }
+    
+    /**
      * Constructs a sign request using a wallet account.
-     *
      * @param blockJson the block's JSON contents
      * @param walletId  the local wallet ID of the account
      * @param account   the local account's address
@@ -55,8 +63,17 @@ public class RequestSign extends RpcRequest<ResponseSignature> {
     }
     
     /**
-     * I've got no idea what this does or how it works.
-     *
+     * Constructs a sign request using a wallet account.
+     * @param block    the block to sign
+     * @param walletId the local wallet ID of the account
+     * @param account  the local account's address
+     */
+    public RequestSign(Block block, String walletId, String account) {
+        this(null, block.toJsonString(), null, walletId, account);
+    }
+    
+    /**
+     * Signs a block from a given hash.
      * @param blockHash the block's hash
      */
     public RequestSign(String blockHash) { // TODO
