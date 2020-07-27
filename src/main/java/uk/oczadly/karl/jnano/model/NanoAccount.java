@@ -37,6 +37,14 @@ public final class NanoAccount {
     private static final String[] DEFAULT_ALLOWED_PREFIXES = {DEFAULT_PREFIX, "xrb"};
     private static final BigInteger MAX_INDEX_VAL = new BigInteger(JNanoHelper.repeatChar('F', 64), 16);
     
+    /**
+     * <p>The zeroth index account, represented by all zeroes for the public key. This address is also the burn address
+     * used within Nano and other forks.</p>
+     * <p>A common use of this account would be for requests which require an initial starting account to initiate a
+     * traversal (as seen with {@link uk.oczadly.karl.jnano.rpc.request.node.RequestLedger}).</p>
+     */
+    public static final NanoAccount ZERO_ACCOUNT = new NanoAccount(BigInteger.ZERO);
+    
     
     private final byte[] keyBytes;
     private final String prefix;

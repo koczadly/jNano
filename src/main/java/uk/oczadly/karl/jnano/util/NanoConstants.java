@@ -21,14 +21,6 @@ public final class NanoConstants {
      */
     public static final BigInteger MAX_BALANCE_RAW = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16);
     
-    /**
-     * <p>The zero-th index account, represented by all zeroes for the public key. This address is also the burn address
-     * used within Nano and other forks.</p>
-     * <p>A common use of this account would be for requests which require an initial starting account to initiate a
-     * traversal (as seen with {@link uk.oczadly.karl.jnano.rpc.request.node.RequestLedger}).</p>
-     */
-    public static final NanoAccount ZERO_ACCOUNT = new NanoAccount(BigInteger.ZERO);
-    
     
     /**
      * Constants representing the official live Nano network.
@@ -36,7 +28,7 @@ public final class NanoConstants {
      */
     public static final NetworkConstants NANO_LIVE_NET = new NetworkConstants(
             "Nano live network",
-            "nano",
+            NanoAccount.DEFAULT_PREFIX,
             "1111111111111111111111111111111111111111111111111111",
             "9F0C933C8ADE004D808EA1985FA746A7E95BA2A38F867640F53EC8F180BDFE9E2C1268DEAD7C2664F356E37ABA362BC58E46D" +
                     "BA03E523A7B5A19E4B6EB12BB02",
@@ -49,7 +41,7 @@ public final class NanoConstants {
      */
     public static final NetworkConstants NANO_BETA_NET = new NetworkConstants(
             "Nano beta network",
-            "nano",
+            NanoAccount.DEFAULT_PREFIX,
             "1111111111111111111111111111111111111111111111111111",
             "DB9EFAC98A28EEA048E722F91C2A2720E1D8EF2A81453C80FC53B453180C0A264CE021D38D5B4540B1BBB0C378B80F2DF7389" +
                     "027593C08DDEF9F47934B9CF805",
