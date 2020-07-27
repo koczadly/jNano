@@ -22,10 +22,12 @@ public final class NanoConstants {
     public static final BigInteger MAX_BALANCE_RAW = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16);
     
     /**
-     * The zero-th index account, represented by all zeroes for the public key. This address is also the burn address
-     * for most networks and forks.
+     * <p>The zero-th index account, represented by all zeroes for the public key. This address is also the burn address
+     * used within Nano and other forks.</p>
+     * <p>A common use of this account would be for requests which require an initial starting account to initiate a
+     * traversal (as seen with {@link uk.oczadly.karl.jnano.rpc.request.node.RequestLedger}).</p>
      */
-    public static final NanoAccount ZERO_ACCOUNT = NanoAccount.parsePublicKey(JNanoHelper.ZEROES_64);
+    public static final NanoAccount ZERO_ACCOUNT = new NanoAccount(BigInteger.ZERO);
     
     
     /**

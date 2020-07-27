@@ -18,7 +18,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         IBlockAccount {
     
     /** Prefix for block hashing. */
-    private static final byte[] HASH_PREAMBLE_BYTES = JNanoHelper.leftPadByteArray(new byte[] {6}, 32);
+    private static final byte[] HASH_PREAMBLE_BYTES = JNanoHelper.leftPadByteArray(new byte[] {6}, 32, false);
     
     
     @Expose @SerializedName("account")
@@ -167,7 +167,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
                 getAccount().getPublicKeyBytes(),
                 JNanoHelper.ENCODER_HEX.decode(getPreviousBlockHash()),
                 getRepresentative().getPublicKeyBytes(),
-                JNanoHelper.leftPadByteArray(getBalance().toByteArray(), 16),
+                JNanoHelper.leftPadByteArray(getBalance().toByteArray(), 16, false),
                 JNanoHelper.ENCODER_HEX.decode(getLinkData())
         };
     }

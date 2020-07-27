@@ -33,12 +33,16 @@ public class JNanoHelper {
      * Left-pads a byte array with zeroes. Will return the same array if length matches, or create a new one if it
      * needs to be padded.
      */
-    public static byte[] leftPadByteArray(byte[] bytes, int minLen) {
-        if (bytes.length >= minLen)
-            return bytes;
+    public static byte[] leftPadByteArray(byte[] arr, int len, boolean trim) {
+        if (arr.length == len || (!trim && arr.length > len))
+            return arr;
         
-        byte[] newArr = new byte[minLen];
-        System.arraycopy(bytes, 0, newArr, minLen - bytes.length, bytes.length);
+        byte[] newArr = new byte[len];
+        if (arr.length > len) { // Trim
+            System.arraycopy(arr, arr.length - len, newArr, 0, len);
+        } else { // Pad
+            System.arraycopy(arr, 0, newArr, len - arr.length, arr.length);
+        }
         return newArr;
     }
     

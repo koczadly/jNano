@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseLedger;
+import uk.oczadly.karl.jnano.util.NanoConstants;
 
 import java.math.BigInteger;
 
@@ -43,7 +44,7 @@ public class RequestLedger extends RpcRequest<ResponseLedger> {
     
     
     /**
-     * @param account the address to start from
+     * @param account the address to start from, or null to begin from the zeroth account
      * @param count   the response limit
      */
     public RequestLedger(String account, int count) {
@@ -51,7 +52,7 @@ public class RequestLedger extends RpcRequest<ResponseLedger> {
     }
     
     /**
-     * @param account          the address to start from
+     * @param account          the address to start from, or null to begin from the zeroth account
      * @param count            the response limit
      * @param modifiedSince    (optional) filter accounts modified after the specified UNIX timestamp
      * @param sorting          (optional) whether the accounts should be sorted in descending order (WARNING: 'count' is
@@ -61,7 +62,7 @@ public class RequestLedger extends RpcRequest<ResponseLedger> {
     public RequestLedger(String account, int count, Integer modifiedSince, Boolean sorting,
                          BigInteger thresholdBalance) {
         super("ledger", ResponseLedger.class);
-        this.account = account;
+        this.account = account != null ? account : NanoConstants.ZERO_ACCOUNT.toAddress();
         this.count = count;
         this.modifiedSince = modifiedSince;
         this.sorting = sorting;

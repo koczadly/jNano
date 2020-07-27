@@ -7,6 +7,7 @@ import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
 
 import java.lang.reflect.Type;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -34,6 +35,7 @@ public final class NanoAccount {
     public static final String DEFAULT_PREFIX = "nano";
     
     private static final String[] DEFAULT_ALLOWED_PREFIXES = {DEFAULT_PREFIX, "xrb"};
+    private static final BigInteger MAX_INDEX_VAL = new BigInteger(JNanoHelper.repeatChar('F', 64), 16);
     
     
     private final byte[] keyBytes;
@@ -41,6 +43,7 @@ public final class NanoAccount {
     // Fields below may be initialized lazily
     private volatile byte[] checksumBytes;
     private volatile String cachedAddress, publicKeyHex, segAddress, segChecksum;
+    private volatile BigInteger index;
     
     /**
      * Copies an existing {@link NanoAccount} object, but using a different protocol prefix.
@@ -52,7 +55,28 @@ public final class NanoAccount {
     @Deprecated
     public NanoAccount(NanoAccount address, String newPrefix) {
         this(newPrefix, address.keyBytes, address.checksumBytes, null, address.publicKeyHex,
-                address.segAddress, address.segChecksum);
+                address.segAddress, address.segChecksum, address.index);
+    }
+    
+    /**
+     * Constructs an AccountAddress instance from a positive integer index, using the default prefix.
+     * @param index the integer representation of this account
+     * @see #parse(String)
+     */
+    public NanoAccount(BigInteger index) {
+        this(index, DEFAULT_PREFIX);
+    }
+    
+    /**
+     * Constructs an AccountAddress instance from a positive integer index, using the specified prefix.
+     * @param index  the integer representation of this account
+     * @param prefix the protocol identifier prefix (without separator), or null for no prefix
+     * @see #parse(String)
+     */
+    public NanoAccount(BigInteger index, String prefix) {
+        this(prefix, JNanoHelper.leftPadByteArray(index.toByteArray(), 32, true), null, null, null);
+        if (index.compareTo(BigInteger.ZERO) < 0 || index.compareTo(MAX_INDEX_VAL) > 0)
+            throw new IllegalArgumentException("Account index is out of bounds.");
     }
     
     /**
@@ -71,15 +95,15 @@ public final class NanoAccount {
      * @see #parse(String)
      */
     public NanoAccount(byte[] keyBytes, String prefix) {
-        this(prefix, Arrays.copyOf(keyBytes, keyBytes.length), null, null);
+        this(prefix, Arrays.copyOf(keyBytes, keyBytes.length), null, null, null);
     }
     
-    private NanoAccount(String prefix, byte[] keyBytes, String segAddress, String publicKeyHex) {
-        this(prefix, keyBytes, null, null, publicKeyHex, segAddress, null);
+    private NanoAccount(String prefix, byte[] keyBytes, String segAddress, String publicKeyHex, BigInteger index) {
+        this(prefix, keyBytes, null, null, publicKeyHex, segAddress, null, index);
     }
     
     private NanoAccount(String prefix, byte[] keyBytes, byte[] checksumBytes, String cachedAddress,
-                        String publicKeyHex, String segAddress, String segChecksum) {
+                        String publicKeyHex, String segAddress, String segChecksum, BigInteger index) {
         validatePrefix(prefix);
         if (keyBytes == null) throw new IllegalArgumentException("Key byte array cannot be null.");
         if (keyBytes.length != 32) throw new IllegalArgumentException("Key byte array must have a length of 32.");
@@ -90,6 +114,7 @@ public final class NanoAccount {
         this.publicKeyHex = publicKeyHex;
         this.segAddress = segAddress;
         this.segChecksum = segChecksum;
+        this.index = index;
     }
     
     
@@ -118,6 +143,22 @@ public final class NanoAccount {
             }
         }
         return Arrays.copyOf(checksumBytes, checksumBytes.length);
+    }
+    
+    /**
+     * <p>Returns an integer-based encoding of the account's public key. This could be used to compare different
+     * {@link NanoAccount} instances against each other in a logical order.</p>
+     * <p>Note that this is <em>not</em> the same as the account index within the context of seeds and wallets.</p>
+     * @return the integer-based index of this account, derived from the key byte array
+     */
+    public BigInteger getAccountIndex() {
+        if (index == null) {
+            synchronized (this) {
+                if (index == null)
+                    index = new BigInteger(keyBytes);
+            }
+        }
+        return index;
     }
     
     /**
@@ -322,7 +363,7 @@ public final class NanoAccount {
         
         // Create object
         NanoAccount createdAddr = new NanoAccount(prefix, calculateKeyBytes(address, JNanoHelper.ENCODER_NANO_B32),
-                address, null);
+                address, null, null);
         
         // Verify checksum (if provided)
         if (checksum != null && !checksum.equals(createdAddr.getAddressChecksumSegment()))
@@ -355,7 +396,7 @@ public final class NanoAccount {
         if (key.length() != 64) throw new AddressFormatException("Key string must be 64 characters long.");
         
         key = key.toUpperCase();
-        return new NanoAccount(prefix, calculateKeyBytes(key, JNanoHelper.ENCODER_HEX), null, key);
+        return new NanoAccount(prefix, calculateKeyBytes(key, JNanoHelper.ENCODER_HEX), null, key, null);
     }
     
     

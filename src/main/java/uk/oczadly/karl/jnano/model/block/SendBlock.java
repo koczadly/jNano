@@ -89,7 +89,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
         return new byte[][] {
                 JNanoHelper.ENCODER_HEX.decode(getPreviousBlockHash()),
                 getDestinationAccount().getPublicKeyBytes(),
-                JNanoHelper.leftPadByteArray(getBalance().toByteArray(), 16)
+                JNanoHelper.leftPadByteArray(getBalance().toByteArray(), 16, false)
         };
     }
     
