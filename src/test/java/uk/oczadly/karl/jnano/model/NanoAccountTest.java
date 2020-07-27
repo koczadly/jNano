@@ -4,6 +4,8 @@ import com.google.gson.JsonParser;
 import org.junit.Test;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 
+import java.math.BigInteger;
+
 import static org.junit.Assert.*;
 
 public class NanoAccountTest {
@@ -36,6 +38,13 @@ public class NanoAccountTest {
                 () -> NanoAccount.parse("bumbaclaaat"));
         assertThrows(NanoAccount.AddressFormatException.class,
                 () -> NanoAccount.parse("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"));
+    }
+    
+    @Test
+    public void testIndex() {
+        assertEquals(NanoAccount.parsePublicKey(JNanoHelper.ZEROES_64), new NanoAccount(BigInteger.ZERO));
+        assertEquals(new BigInteger(ACC_1_PUBKEY, 16), NanoAccount.parsePublicKey(ACC_1_PUBKEY).getAccountIndex());
+        assertEquals(ACC_1_PUBKEY, new NanoAccount(new BigInteger(ACC_1_PUBKEY, 16)).toPublicKey());
     }
     
     @Test

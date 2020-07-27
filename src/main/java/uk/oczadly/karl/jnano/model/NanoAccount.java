@@ -155,7 +155,7 @@ public final class NanoAccount {
         if (index == null) {
             synchronized (this) {
                 if (index == null)
-                    index = new BigInteger(keyBytes);
+                    index = new BigInteger(1, keyBytes);
             }
         }
         return index;
