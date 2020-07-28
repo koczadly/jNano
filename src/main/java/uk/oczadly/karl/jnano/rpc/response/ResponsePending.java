@@ -2,6 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
@@ -39,7 +40,7 @@ public class ResponsePending extends RpcResponse {
         private BigInteger amount;
         
         @Expose @SerializedName("source")
-        private String sourceAccount;
+        private NanoAccount sourceAccount;
         
         
         /**
@@ -52,7 +53,7 @@ public class ResponsePending extends RpcResponse {
         /**
          * @return the sending account of this block
          */
-        public String getSourceAccount() {
+        public NanoAccount getSourceAccount() {
             return sourceAccount;
         }
         

@@ -52,7 +52,7 @@ public class ResponseMultiAccountsPending extends RpcResponse {
         private BigInteger amount;
         
         @Expose @SerializedName("source")
-        private String sourceAccount;
+        private NanoAccount sourceAccount;
         
         
         /**
@@ -65,7 +65,7 @@ public class ResponseMultiAccountsPending extends RpcResponse {
         /**
          * @return the sending account of this block
          */
-        public String getSourceAccount() {
+        public NanoAccount getSourceAccount() {
             return sourceAccount;
         }
         
