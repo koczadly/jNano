@@ -5,7 +5,6 @@ import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.internal.gsonadapters.BlockAdapter;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlock;
@@ -106,16 +105,8 @@ public abstract class Block implements IBlock {
     
     protected final byte[] calculateHashBytes() {
         byte[][] hashables = generateHashables();
-        if (hashables == null)
-            return null;
-    
-        Blake2b digest = new Blake2b(null, 32, null, null);
-        for (byte[] ba : hashables)
-            digest.update(ba, 0, ba.length);
-        byte[] hashBytes = new byte[32];
-        digest.digest(hashBytes, 0);
-        
-        return hashBytes;
+        if (hashables == null) return null;
+        return JNanoHelper.blake2b(32, hashables);
     }
     
     private byte[] generateHashBytes() {

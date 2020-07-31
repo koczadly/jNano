@@ -2,6 +2,7 @@ package uk.oczadly.karl.jnano.internal;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.gsonadapters.ArrayTypeAdapterFactoryFix;
 import uk.oczadly.karl.jnano.internal.gsonadapters.BooleanTypeDeserializer;
 import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
@@ -81,6 +82,15 @@ public class JNanoHelper {
         for (int i=0; i<length; i++)
             sb.append(c);
         return sb.toString();
+    }
+    
+    public static byte[] blake2b(int len, byte[]...data) {
+        Blake2b digest = new Blake2b(null, len, null, null);
+        for (byte[] array : data)
+            digest.update(array, 0, array.length);
+        byte[] out = new byte[len];
+        digest.digest(out, 0);
+        return out;
     }
     
 }

@@ -2,7 +2,6 @@ package uk.oczadly.karl.jnano.model;
 
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
-import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
 
@@ -477,12 +476,7 @@ public final class NanoAccount {
     
     /** Helper method to calculate checksum bytes from a public key. */
     private static byte[] calculateChecksumBytes(byte[] keyBytes) {
-        //Digest
-        Blake2b digest = new Blake2b(null, 5, null, null); //Blake2b algorithm, 5 bytes length
-        digest.update(keyBytes, 0, keyBytes.length);
-        byte[] out = new byte[5];
-        digest.digest(out, 0);
-        return JNanoHelper.reverseArray(out);
+        return JNanoHelper.reverseArray(JNanoHelper.blake2b(5, keyBytes));
     }
     
     /** Helper method to calculate bytes from an encoded address. */
