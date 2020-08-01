@@ -3,6 +3,7 @@ package uk.oczadly.karl.jnano.util;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
@@ -13,7 +14,10 @@ import java.math.BigInteger;
  */
 public final class NanoConstants {
     private NanoConstants() {}
-    
+    /*
+        TODO: work difficulites need to be updated
+        https://docs.nano.org/running-a-node/beta-network/#differences-from-the-main-network
+     */
     
     /**
      * The maximum possible balance value, in raw units. This does not account for burned funds, but is simply the
@@ -33,7 +37,9 @@ public final class NanoConstants {
             "9F0C933C8ADE004D808EA1985FA746A7E95BA2A38F867640F53EC8F180BDFE9E2C1268DEAD7C2664F356E37ABA362BC58E46D" +
                     "BA03E523A7B5A19E4B6EB12BB02",
             new WorkSolution("62f05417dd3fb691"),
-            "3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xt");
+            "3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xt",
+            new NetworkConstants.MinimumWorkDifficulty(
+                    new WorkDifficulty("ffffffc000000000"), new WorkDifficulty("ffffffc000000000")));
     
     /**
      * Constants representing the official beta Nano network.
@@ -46,7 +52,9 @@ public final class NanoConstants {
             "DB9EFAC98A28EEA048E722F91C2A2720E1D8EF2A81453C80FC53B453180C0A264CE021D38D5B4540B1BBB0C378B80F2DF7389" +
                     "027593C08DDEF9F47934B9CF805",
             new WorkSolution("7f5c2eb5e2658e81"),
-            "1betagcfp7ojzzkof35peohaakx7mt9ddnj4ya8n7sa8imae4ttn");
+            "1betagcfp7ojzzkof35peohaakx7mt9ddnj4ya8n7sa8imae4ttn",
+            new NetworkConstants.MinimumWorkDifficulty(
+                    new WorkDifficulty("fffff00000000000"), new WorkDifficulty("fffff00000000000")));
     
     /**
      * Constants representing the official Banano network.
@@ -59,7 +67,9 @@ public final class NanoConstants {
             "533DCAB343547B93C4128E779848DEA5877D3278CB5EA948BB3A9AA1AE0DB293DE6D9DA4F69E8D1DDFA385F9B4C5E4F38DFA4" +
                     "2C00D7B183560435D07AFA18900",
             new WorkSolution("fa055f79fa56abcf"),
-            "1bananobh5rat99qfgt1ptpieie5swmoth87thi74qgbfrij7dcg");
+            "1bananobh5rat99qfgt1ptpieie5swmoth87thi74qgbfrij7dcg",
+            new NetworkConstants.MinimumWorkDifficulty(
+                    new WorkDifficulty("fffffe0000000000"), new WorkDifficulty("fffffe0000000000")));
     
     
     /**

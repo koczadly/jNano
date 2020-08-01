@@ -2,6 +2,8 @@ package uk.oczadly.karl.jnano.util;
 
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.OpenBlock;
+import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
+import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 public final class NetworkConstants {
@@ -9,16 +11,18 @@ public final class NetworkConstants {
     private final String networkName, addressPrefix;
     private final OpenBlock genesisBlock;
     private final NanoAccount burnAddress;
+    private MinimumWorkDifficulty workDifficulty;
     
     @SuppressWarnings("deprecation")
     NetworkConstants(String networkName, String addressPrefix, String burnAddressSegment, String genBlockSig,
-                     WorkSolution genBlockWork, String genBlockAccountSeg) {
+                     WorkSolution genBlockWork, String genBlockAccountSeg, MinimumWorkDifficulty workDifficulty) {
         this.networkName = networkName;
         this.addressPrefix = addressPrefix;
         this.burnAddress = NanoAccount.parseAddressSegment(burnAddressSegment, addressPrefix);
         NanoAccount genesisAccount = NanoAccount.parseAddressSegment(genBlockAccountSeg, addressPrefix);
         this.genesisBlock = new OpenBlock(genBlockSig, genBlockWork, genesisAccount.toPublicKey(), genesisAccount,
                 genesisAccount);
+        this.workDifficulty = workDifficulty;
     }
     
     
@@ -64,10 +68,38 @@ public final class NetworkConstants {
         return addressPrefix;
     }
     
+    /**
+     * @param blockType the block type
+     * @return the work minimum difficulty threshold for the given block type
+     */
+    public WorkDifficulty getWorkDifficultyThreshold(StateBlockSubType blockType) {
+        return workDifficulty.getWorkThreshold(blockType);
+    }
+    
     
     @Override
     public String toString() {
         return getNetworkName();
+    }
+    
+    
+    public static class MinimumWorkDifficulty {
+        private WorkDifficulty work1, work2;
+        
+        MinimumWorkDifficulty(WorkDifficulty work1, WorkDifficulty work2) {
+            this.work1 = work1;
+            this.work2 = work2;
+        }
+        
+        public WorkDifficulty getWorkThreshold(StateBlockSubType subtype) {
+            switch (subtype) {
+                case SEND:
+                case CHANGE_REP:
+                    return work1;
+                default:
+                    return work2;
+            }
+        }
     }
     
 }
