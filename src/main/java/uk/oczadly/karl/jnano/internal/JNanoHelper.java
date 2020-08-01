@@ -84,13 +84,42 @@ public class JNanoHelper {
         return sb.toString();
     }
     
-    public static byte[] blake2b(int len, byte[]...data) {
-        Blake2b digest = new Blake2b(null, len, null, null);
+    public static byte[] blake2b(int outputLen, byte[]...data) {
+        Blake2b digest = new Blake2b(null, outputLen, null, null);
         for (byte[] array : data)
             digest.update(array, 0, array.length);
-        byte[] out = new byte[len];
+        byte[] out = new byte[outputLen];
         digest.digest(out, 0);
         return out;
+    }
+    
+    public static byte[] longToBytes(long val) {
+        return new byte[] {
+                (byte)((val >> 56) & 0xFF),
+                (byte)((val >> 48) & 0xFF),
+                (byte)((val >> 40) & 0xFF),
+                (byte)((val >> 32) & 0xFF),
+                (byte)((val >> 24) & 0xFF),
+                (byte)((val >> 16) & 0xFF),
+                (byte)((val >> 8 ) & 0xFF),
+                (byte)(val & 0xFF)
+        };
+    }
+        
+    public static long bytesToLong(byte[] bytes) {
+        if (bytes.length > 8)
+            throw new IllegalArgumentException("Byte array must have 8 (or fewer) elements.");
+        
+        bytes = leftPadByteArray(bytes, 8, false);
+        long val = bytes[0] & 0xFF;
+        val = ((val << 8) | (bytes[1] & 0xFF));
+        val = ((val << 8) | (bytes[2] & 0xFF));
+        val = ((val << 8) | (bytes[3] & 0xFF));
+        val = ((val << 8) | (bytes[4] & 0xFF));
+        val = ((val << 8) | (bytes[5] & 0xFF));
+        val = ((val << 8) | (bytes[6] & 0xFF));
+        val = ((val << 8) | (bytes[7] & 0xFF));
+        return val;
     }
     
 }
