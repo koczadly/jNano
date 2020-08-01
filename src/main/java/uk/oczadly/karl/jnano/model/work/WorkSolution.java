@@ -7,15 +7,24 @@ import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.rpc.request.node.RequestWorkGenerate;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * This class represents a proof-of-work solution.
  */
 @JsonAdapter(WorkSolution.WorkSolutionJsonAdapter.class)
 public class WorkSolution {
-
+    
+    private static final Random RANDOM = new Random();
+    private static final ExecutorService WORK_GEN_POOL = Executors.newWorkStealingPool();
+    
     private final long longVal;
     private final String hexVal;
     
@@ -102,8 +111,7 @@ public class WorkSolution {
      * <p>Generates a work solution from the given root and minimum difficulty threshold. The root value should be
      * either the block hash for existing accounts, or the account's public key for the first block.</p>
      * <p><strong>CAUTION:</strong> This method will generate the work on the CPU. For GPU calculations, use the
-     * work generation utility provided by the node through RPC
-     * ({@link RequestWorkGenerate}).</p>
+     * work generation utility provided by the node through RPC ({@link RequestWorkGenerate}).</p>
      * @param root      the root hash (64 character hex string)
      * @param threshold the minimum difficulty threshold
      * @return the generated work solution
@@ -120,8 +128,7 @@ public class WorkSolution {
      * <p>Generates a work solution from the given root and minimum difficulty threshold. The root value should be
      * either the block hash for existing accounts, or the account's public key for the first block.</p>
      * <p><strong>CAUTION:</strong> This method will generate the work on the CPU. For GPU calculations, use the
-     * work generation utility provided by the node through RPC
-     * ({@link RequestWorkGenerate}).</p>
+     * work generation utility provided by the node through RPC ({@link RequestWorkGenerate}).</p>
      * @param root      the root bytes (32 element byte array)
      * @param threshold the minimum difficulty threshold
      * @return the generated work solution
@@ -132,19 +139,84 @@ public class WorkSolution {
         if (threshold == null) throw new IllegalArgumentException("Difficulty threshold cannot be null.");
         
         byte[] thresholdBytes = convertLongToBytes(threshold.getAsLong());
-        byte[] work = new byte[8];
-        new Random().nextBytes(work); // Populate initial work array with random bytes
+        byte[] initialWork = new byte[8];
+        RANDOM.nextBytes(initialWork);
+        return generate(root, thresholdBytes, initialWork, null);
+    }
     
+    /**
+     * <p>Generates a work solution from the given root and minimum difficulty threshold. The root value should be
+     * either the block hash for existing accounts, or the account's public key for the first block.</p>
+     * <p><strong>CAUTION:</strong> This method will generate the work on the CPU. For GPU calculations, use the
+     * work generation utility provided by the node through RPC ({@link RequestWorkGenerate}).</p>
+     * @param root      the root hash (64 character hex string)
+     * @param threshold the minimum difficulty threshold
+     * @param cores     the number of CPU cores to use, or zero to use all
+     * @return a future object, representing the generated work solution
+     */
+    public static Future<WorkSolution> generate(String root, WorkDifficulty threshold, int cores) {
+        if (root == null) throw new IllegalArgumentException("Root argument cannot be null.");
+        if (!JNanoHelper.isValidHex(root, 64))
+            throw new IllegalArgumentException("Root argument must be a 64-character hex string.");
+    
+        return generate(JNanoHelper.ENCODER_HEX.decode(root), threshold, cores);
+    }
+    
+    /**
+     * <p>Generates a work solution from the given root and minimum difficulty threshold. The root value should be
+     * either the block hash for existing accounts, or the account's public key for the first block.</p>
+     * <p><strong>CAUTION:</strong> This method will generate the work on the CPU. For GPU calculations, use the
+     * work generation utility provided by the node through RPC ({@link RequestWorkGenerate}).</p>
+     * @param root      the root bytes (32 element byte array)
+     * @param threshold the minimum difficulty threshold
+     * @param cores     the number of CPU cores to use, or zero to use all
+     * @return a future object, representing the generated work solution
+     */
+    public static Future<WorkSolution> generate(byte[] root, WorkDifficulty threshold, int cores) {
+        if (root == null) throw new IllegalArgumentException("Root array cannot be null.");
+        if (root.length != 32) throw new IllegalArgumentException("Root array must have a length of 32.");
+        if (threshold == null) throw new IllegalArgumentException("Difficulty threshold cannot be null.");
+        if (cores < 0) throw new IllegalArgumentException("Work generation requires at least 1 CPU core.");
+        
+        int numCores = cores == 0 ? Runtime.getRuntime().availableProcessors() :
+                Math.min(Runtime.getRuntime().availableProcessors(), cores);
+        
+        final CompletableFuture<WorkSolution> future = new CompletableFuture<>();
+        byte[] thresholdBytes = convertLongToBytes(threshold.getAsLong());
+        byte[] initialWork = new byte[8];
+        RANDOM.nextBytes(initialWork); // Populate initial work array with random bytes
+        
+        AtomicBoolean interrupt = new AtomicBoolean(false);
+        for (int i=0; i<numCores; i++) {
+            byte[] work = Arrays.copyOf(initialWork, initialWork.length);
+            work[7] += i;
+            
+            WORK_GEN_POOL.execute(() -> {
+                WorkSolution result = generate(root, thresholdBytes, work, interrupt);
+                if (result != null) {
+                    future.complete(result);
+                    interrupt.set(true);
+                }
+            });
+        }
+        return future;
+    }
+    
+    
+    private static WorkSolution generate(byte[] root, byte[] thresholdBytes, byte[] work, AtomicBoolean interrupt) {
         Blake2b digest = new Blake2b(null, 8, null, null);
         byte[] difficulty = new byte[8];
         
         while (true) {
+            if ((interrupt != null && interrupt.get()) || Thread.currentThread().isInterrupted()) return null;
+            
+            // Hash digest
             digest.reset();
             digest.update(work, 0, work.length);
             digest.update(root, 0, root.length);
             digest.digest(difficulty, 0);
-            
-            // Compare threshold
+        
+            // Compare against threshold
             boolean valid = true;
             for (int i=0; i<thresholdBytes.length; i++) {
                 if (Byte.compareUnsigned(difficulty[i], thresholdBytes[i]) < 0) {
@@ -152,16 +224,14 @@ public class WorkSolution {
                     break;
                 }
             }
-            if (valid)
-                return new WorkSolution(convertBytesToLong(work));
-    
+            if (valid) return new WorkSolution(convertBytesToLong(work));
+            
             // Increment 'work' array
-            for (int i=0; i<work.length; i++) {
+            for (int i = 0; i< work.length; i++) {
                 if (++work[i] != 0) break;
             }
         }
     }
-    
     
     private static byte[] convertLongToBytes(long val) {
         return JNanoHelper.reverseArray(JNanoHelper.longToBytes(val));
