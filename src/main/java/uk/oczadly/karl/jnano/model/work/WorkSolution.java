@@ -74,8 +74,8 @@ public class WorkSolution {
     public WorkDifficulty calculateDifficulty(byte[] root) {
         if (root == null) throw new IllegalArgumentException("Root array cannot be null.");
         if (root.length != 32) throw new IllegalArgumentException("Root array must have a length of 32.");
-        
-        return new WorkDifficulty(toLong(calculateDifficulty(toByteArray(longVal), root)));
+    
+        return new WorkDifficulty(convertBytesToLong(JNanoHelper.blake2b(8, convertLongToBytes(longVal), root)));
     }
     
     
@@ -131,7 +131,7 @@ public class WorkSolution {
         if (root.length != 32) throw new IllegalArgumentException("Root array must have a length of 32.");
         if (threshold == null) throw new IllegalArgumentException("Difficulty threshold cannot be null.");
         
-        byte[] thresholdBytes = toByteArray(threshold.getAsLong());
+        byte[] thresholdBytes = convertLongToBytes(threshold.getAsLong());
         byte[] work = new byte[8];
         new Random().nextBytes(work); // Populate initial work array with random bytes
     
@@ -145,38 +145,30 @@ public class WorkSolution {
             digest.digest(difficulty, 0);
             
             // Compare threshold
-            boolean thresholdValid = true;
+            boolean valid = true;
             for (int i=0; i<thresholdBytes.length; i++) {
                 if (Byte.compareUnsigned(difficulty[i], thresholdBytes[i]) < 0) {
-                    thresholdValid = false;
+                    valid = false;
                     break;
                 }
             }
-            if (thresholdValid)
-                return new WorkSolution(toLong(work));
-            
-            incrementArray(work);
+            if (valid)
+                return new WorkSolution(convertBytesToLong(work));
+    
+            // Increment 'work' array
+            for (int i=0; i<work.length; i++) {
+                if (++work[i] != 0) break;
+            }
         }
     }
     
     
-    private static void incrementArray(byte[] arr) {
-        for (int i=0; i<arr.length; i++) {
-            if (++arr[i] != 0) return;
-        }
-    }
-    
-    private static byte[] toByteArray(long val) {
+    private static byte[] convertLongToBytes(long val) {
         return JNanoHelper.reverseArray(JNanoHelper.longToBytes(val));
     }
     
-    private static long toLong(byte[] val) {
+    private static long convertBytesToLong(byte[] val) {
         return JNanoHelper.bytesToLong(JNanoHelper.reverseArray(val));
-    }
-    
-    private static byte[] calculateDifficulty(byte[] work, byte[] root) {
-        // NOTE: code is duplicated in generate() for better efficiency
-        return JNanoHelper.blake2b(8, work, root);
     }
     
     
