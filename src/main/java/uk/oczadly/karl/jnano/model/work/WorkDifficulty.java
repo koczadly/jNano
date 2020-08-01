@@ -68,6 +68,15 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
         return getAsHexadecimal();
     }
     
+    /**
+     * Returns whether or not this difficulty is equal to or above the provided threshold difficulty.
+     * @param threshold the minimum threshold difficulty to compare
+     * @return true if this difficulty is equal to or greater than the provided threshold
+     */
+    public boolean isValid(WorkDifficulty threshold) {
+        return compareTo(threshold) >= 0;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
