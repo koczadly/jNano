@@ -133,7 +133,7 @@ public class WorkSolution {
         
         byte[] thresholdBytes = toByteArray(threshold.getAsLong());
         byte[] work = new byte[8];
-        new Random(1).nextBytes(work); // Initialize byte array with random vals
+        new Random().nextBytes(work); // Populate initial work array with random bytes
     
         Blake2b digest = new Blake2b(null, 8, null, null);
         byte[] difficulty = new byte[8];
