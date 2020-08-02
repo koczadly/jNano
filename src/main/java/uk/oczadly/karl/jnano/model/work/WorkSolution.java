@@ -115,6 +115,7 @@ public class WorkSolution {
      * @param root      the root hash (64 character hex string)
      * @param threshold the minimum difficulty threshold
      * @return the generated work solution
+     * @see #generateMultiThreaded(String, WorkDifficulty)
      */
     public static WorkSolution generate(String root, WorkDifficulty threshold) {
         if (root == null) throw new IllegalArgumentException("Root argument cannot be null.");
@@ -132,6 +133,7 @@ public class WorkSolution {
      * @param root      the root bytes (32 element byte array)
      * @param threshold the minimum difficulty threshold
      * @return the generated work solution
+     * @see #generateMultiThreaded(byte[], WorkDifficulty)
      */
     public static WorkSolution generate(byte[] root, WorkDifficulty threshold) {
         if (root == null) throw new IllegalArgumentException("Root array cannot be null.");
@@ -146,50 +148,85 @@ public class WorkSolution {
     
     /**
      * <p>Generates a work solution from the given root and minimum difficulty threshold. The root value should be
-     * either the block hash for existing accounts, or the account's public key for the first block.</p>
+     * either the block hash for existing accounts, or the account's public key for the first block. This variant of
+     * the generate method will utilise all of the systems CPU cores.</p>
      * <p><strong>CAUTION:</strong> This method will generate the work on the CPU. For GPU calculations, use the
      * work generation utility provided by the node through RPC ({@link RequestWorkGenerate}).</p>
      * @param root      the root hash (64 character hex string)
      * @param threshold the minimum difficulty threshold
-     * @param cores     the number of CPU cores to use, or zero to use all
      * @return a future object, representing the generated work solution
      */
-    public static Future<WorkSolution> generate(String root, WorkDifficulty threshold, int cores) {
-        if (root == null) throw new IllegalArgumentException("Root argument cannot be null.");
-        if (!JNanoHelper.isValidHex(root, 64))
-            throw new IllegalArgumentException("Root argument must be a 64-character hex string.");
+    public static Future<WorkSolution> generateMultiThreaded(String root, WorkDifficulty threshold) {
+        return generateMultiThreaded(root, threshold, WORK_GEN_POOL, Runtime.getRuntime().availableProcessors());
+    }
     
-        return generate(JNanoHelper.ENCODER_HEX.decode(root), threshold, cores);
+    /**
+     * <p>Generates a work solution from the given root and minimum difficulty threshold. The root value should be
+     * either the block hash for existing accounts, or the account's public key for the first block. This variant of
+     * the generate method will utilise all of the systems CPU cores.</p>
+     * <p><strong>CAUTION:</strong> This method will generate the work on the CPU. For GPU calculations, use the
+     * work generation utility provided by the node through RPC ({@link RequestWorkGenerate}).</p>
+     * @param root      the root bytes (32 element byte array)
+     * @param threshold the minimum difficulty threshold
+     * @return a future object, representing the generated work solution
+     */
+    public static Future<WorkSolution> generateMultiThreaded(byte[] root, WorkDifficulty threshold) {
+        return generateMultiThreaded(root, threshold, WORK_GEN_POOL, Runtime.getRuntime().availableProcessors());
     }
     
     /**
      * <p>Generates a work solution from the given root and minimum difficulty threshold. The root value should be
      * either the block hash for existing accounts, or the account's public key for the first block.</p>
+     * <p>This variant of the generate method will submit the number of {@code parallelTasks} specified to the given
+     * {@code executor}. Once a valid work solution has been found by any of the created tasks, they will all
+     * automatically end and discard themselves.</p>
      * <p><strong>CAUTION:</strong> This method will generate the work on the CPU. For GPU calculations, use the
      * work generation utility provided by the node through RPC ({@link RequestWorkGenerate}).</p>
-     * @param root      the root bytes (32 element byte array)
-     * @param threshold the minimum difficulty threshold
-     * @param cores     the number of CPU cores to use, or zero to use all
+     * @param root          the root hash (64 character hex string)
+     * @param threshold     the minimum difficulty threshold
+     * @param executor      the {@link ExecutorService} to submit the work generation tasks to
+     * @param parallelTasks the number of tasks to submit to the executor service
      * @return a future object, representing the generated work solution
      */
-    public static Future<WorkSolution> generate(byte[] root, WorkDifficulty threshold, int cores) {
+    public static Future<WorkSolution> generateMultiThreaded(String root, WorkDifficulty threshold,
+                                                             ExecutorService executor, int parallelTasks) {
+        if (root == null) throw new IllegalArgumentException("Root argument cannot be null.");
+        if (!JNanoHelper.isValidHex(root, 64))
+            throw new IllegalArgumentException("Root argument must be a 64-character hex string.");
+    
+        return generateMultiThreaded(JNanoHelper.ENCODER_HEX.decode(root), threshold, executor, parallelTasks);
+    }
+    
+    /**
+     * <p>Generates a work solution from the given root and minimum difficulty threshold. The root value should be
+     * either the block hash for existing accounts, or the account's public key for the first block.</p>
+     * <p>This variant of the generate method will submit the number of {@code parallelTasks} specified to the given
+     * {@code executor}. Once a valid work solution has been found by any of the created tasks, they will all
+     * automatically end and discard themselves.</p>
+     * <p><strong>CAUTION:</strong> This method will generate the work on the CPU. For GPU calculations, use the
+     * work generation utility provided by the node through RPC ({@link RequestWorkGenerate}).</p>
+     * @param root          the root bytes (32 element byte array)
+     * @param threshold     the minimum difficulty threshold
+     * @param executor      the {@link ExecutorService} to submit the work generation tasks to
+     * @param parallelTasks the number of tasks to submit to the executor service
+     * @return a future object, representing the generated work solution
+     */
+    public static Future<WorkSolution> generateMultiThreaded(byte[] root, WorkDifficulty threshold,
+                                                             ExecutorService executor, int parallelTasks) {
         if (root == null) throw new IllegalArgumentException("Root array cannot be null.");
         if (root.length != 32) throw new IllegalArgumentException("Root array must have a length of 32.");
         if (threshold == null) throw new IllegalArgumentException("Difficulty threshold cannot be null.");
-        if (cores < 0) throw new IllegalArgumentException("Work generation requires at least 1 CPU core.");
-        
-        int numCores = cores == 0 ? Runtime.getRuntime().availableProcessors() :
-                Math.min(Runtime.getRuntime().availableProcessors(), cores);
+        if (parallelTasks < 1) throw new IllegalArgumentException("Parallel tasks must be 1 or greater.");
         
         final CompletableFuture<WorkSolution> future = new CompletableFuture<>();
         byte[] thresholdBytes = convertLongToBytes(threshold.getAsLong());
         byte[] initialWork = new byte[8];
         RANDOM.nextBytes(initialWork); // Populate initial work array with random bytes
-        
         AtomicBoolean interrupt = new AtomicBoolean(false);
-        for (int i=0; i<numCores; i++) {
+        
+        for (int i=0; i<parallelTasks; i++) {
             byte[] work = Arrays.copyOf(initialWork, initialWork.length);
-            work[7] += i;
+            work[7] += i; // Ensure last (MSB) byte is different for each thread
             
             WORK_GEN_POOL.execute(() -> {
                 WorkSolution result = generate(root, thresholdBytes, work, interrupt);
@@ -208,7 +245,8 @@ public class WorkSolution {
         byte[] difficulty = new byte[8];
         
         while (true) {
-            if ((interrupt != null && interrupt.get()) || Thread.currentThread().isInterrupted()) return null;
+            if ((interrupt != null && interrupt.get()) || Thread.currentThread().isInterrupted())
+                return null;
             
             // Hash digest
             digest.reset();
@@ -227,7 +265,7 @@ public class WorkSolution {
             if (valid) return new WorkSolution(convertBytesToLong(work));
             
             // Increment 'work' array
-            for (int i = 0; i< work.length; i++) {
+            for (int i=0; i<work.length; i++) {
                 if (++work[i] != 0) break;
             }
         }
