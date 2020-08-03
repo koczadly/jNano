@@ -55,6 +55,20 @@ public final class StateBlockBuilder {
         setBalance(balance);
     }
     
+    /**
+     * Constructs a new {@link StateBlockBuilder} from an existing {@link StateBlock}.
+     *
+     * @param block the state block to copy from
+     */
+    public StateBlockBuilder(StateBlock block) {
+        this(block.getAccount(), block.getPreviousBlockHash(), block.getRepresentative(), block.getBalance());
+        setHash(block.getHash());
+        setSignature(block.getSignature());
+        setWorkSolution(block.getWorkSolution());
+        setSubtype(block.getSubType());
+        setLinkData(block.getLinkData());
+    }
+    
     
     
     public String getHash() {
