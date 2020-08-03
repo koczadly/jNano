@@ -1,6 +1,5 @@
 package uk.oczadly.karl.jnano.model.block;
 
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
@@ -26,12 +25,12 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     
     @Deprecated
     public ReceiveBlock(String signature, WorkSolution work, String previousBlockHash, String sourceBlockHash) {
-        this(null, null, signature, work, previousBlockHash, sourceBlockHash);
+        this(null, signature, work, previousBlockHash, sourceBlockHash);
     }
     
-    protected ReceiveBlock(JsonObject jsonRepresentation, String hash, String signature, WorkSolution work,
+    protected ReceiveBlock(String hash, String signature, WorkSolution work,
                         String previousBlockHash, String sourceBlockHash) {
-        super(BlockType.RECEIVE, hash, jsonRepresentation, signature, work);
+        super(BlockType.RECEIVE, hash, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
         if (!JNanoHelper.isValidHex(previousBlockHash, 64))

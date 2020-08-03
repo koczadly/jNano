@@ -1,6 +1,5 @@
 package uk.oczadly.karl.jnano.model.block;
 
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
@@ -28,12 +27,12 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
     @Deprecated
     public ChangeBlock(String signature, WorkSolution workSolution, String previousBlockHash,
                        NanoAccount representativeAccount) {
-        this(null, null, signature, workSolution, previousBlockHash, representativeAccount);
+        this(null, signature, workSolution, previousBlockHash, representativeAccount);
     }
     
-    protected ChangeBlock(JsonObject jsonRepresentation, String hash, String signature, WorkSolution workSolution,
+    protected ChangeBlock(String hash, String signature, WorkSolution workSolution,
                        String previousBlockHash, NanoAccount representativeAccount) {
-        super(BlockType.CHANGE, hash, jsonRepresentation, signature, workSolution);
+        super(BlockType.CHANGE, hash, signature, workSolution);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
         if (!JNanoHelper.isValidHex(previousBlockHash, 64))

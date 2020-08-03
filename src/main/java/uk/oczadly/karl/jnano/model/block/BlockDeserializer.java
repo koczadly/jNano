@@ -22,7 +22,6 @@ public final class BlockDeserializer {
     public BlockDeserializer() {
         // STATE
         Function<JsonObject, Block> stateDeserializer = json -> new StateBlock(
-                json,
                 nullable(json.get("subtype"), o -> StateBlockSubType.getFromName(o.getAsString())),
                 nullable(json.get("hash"), JsonElement::getAsString),
                 json.get("signature").getAsString(),
@@ -39,7 +38,6 @@ public final class BlockDeserializer {
         
         // CHANGE
         registerDeserializer("change", json -> new ChangeBlock(
-                json,
                 nullable(json.get("hash"), JsonElement::getAsString),
                 json.get("signature").getAsString(),
                 nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
@@ -49,7 +47,6 @@ public final class BlockDeserializer {
         
         // OPEN
         registerDeserializer("open", json -> new OpenBlock(
-                json,
                 nullable(json.get("hash"), JsonElement::getAsString),
                 json.get("signature").getAsString(),
                 nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
@@ -60,7 +57,6 @@ public final class BlockDeserializer {
         
         // RECEIVE
         registerDeserializer("receive", json -> new ReceiveBlock(
-                json,
                 nullable(json.get("hash"), JsonElement::getAsString),
                 json.get("signature").getAsString(),
                 nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
@@ -70,7 +66,6 @@ public final class BlockDeserializer {
         
         // SEND
         registerDeserializer("send", json -> new SendBlock(
-                json,
                 nullable(json.get("hash"), JsonElement::getAsString),
                 json.get("signature").getAsString(),
                 new WorkSolution(json.get("work").getAsString()),

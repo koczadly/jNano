@@ -1,6 +1,5 @@
 package uk.oczadly.karl.jnano.model.block;
 
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
@@ -32,12 +31,12 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     @Deprecated
     public OpenBlock(String signature, WorkSolution work, String sourceBlockHash, NanoAccount accountAddress,
                      NanoAccount representativeAccount) {
-        this(null, null, signature, work, sourceBlockHash, accountAddress, representativeAccount);
+        this(null, signature, work, sourceBlockHash, accountAddress, representativeAccount);
     }
     
-    protected OpenBlock(JsonObject jsonRepresentation, String hash, String signature, WorkSolution work,
+    protected OpenBlock(String hash, String signature, WorkSolution work,
                      String sourceBlockHash, NanoAccount accountAddress, NanoAccount representativeAccount) {
-        super(BlockType.OPEN, hash, jsonRepresentation, signature, work);
+        super(BlockType.OPEN, hash, signature, work);
     
         if (sourceBlockHash == null) throw new IllegalArgumentException("Source block hash cannot be null.");
         if (!JNanoHelper.isValidHex(sourceBlockHash, 64))

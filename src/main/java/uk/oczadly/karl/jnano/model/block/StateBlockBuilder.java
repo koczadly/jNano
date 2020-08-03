@@ -228,7 +228,7 @@ public final class StateBlockBuilder {
      * @return a new instance of the {@link StateBlock} class using the configured parameters
      */
     public StateBlock build() {
-        return new StateBlock(null, subtype, hash, signature, work, accountAddress,
+        return new StateBlock(subtype, hash, signature, work, accountAddress,
                 previousBlockHash, representativeAddress, balance, linkData, linkAccount);
     }
     

@@ -1,6 +1,5 @@
 package uk.oczadly.karl.jnano.model.block;
 
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
@@ -34,12 +33,12 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
     @Deprecated
     public SendBlock(String signature, WorkSolution work, String previousBlockHash, NanoAccount destinationAccount,
                      BigInteger balance) {
-        this(null, null, signature, work, previousBlockHash, destinationAccount, balance);
+        this(null, signature, work, previousBlockHash, destinationAccount, balance);
     }
     
-    protected SendBlock(JsonObject jsonRepresentation, String hash, String signature, WorkSolution work,
+    protected SendBlock(String hash, String signature, WorkSolution work,
                      String previousBlockHash, NanoAccount destinationAccount, BigInteger balance) {
-        super(BlockType.SEND, hash, jsonRepresentation, signature, work);
+        super(BlockType.SEND, hash, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
         if (!JNanoHelper.isValidHex(previousBlockHash, 64))

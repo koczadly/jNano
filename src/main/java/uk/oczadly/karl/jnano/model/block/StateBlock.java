@@ -1,6 +1,5 @@
 package uk.oczadly.karl.jnano.model.block;
 
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNanoHelper;
@@ -61,8 +60,9 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      * @see StateBlockBuilder
      */
     public StateBlock(StateBlockSubType subtype, String signature, WorkSolution work, NanoAccount accountAddress,
-                      String previousBlockHash, NanoAccount representativeAddress, BigInteger balance, NanoAccount link) {
-        this(null, subtype, null, signature, work, accountAddress, previousBlockHash, representativeAddress,
+                      String previousBlockHash, NanoAccount representativeAddress, BigInteger balance,
+                      NanoAccount link) {
+        this(subtype, null, signature, work, accountAddress, previousBlockHash, representativeAddress,
                 balance, null, link);
     }
     
@@ -81,14 +81,14 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      */
     public StateBlock(StateBlockSubType subtype, String signature, WorkSolution work, NanoAccount accountAddress,
                       String previousBlockHash, NanoAccount representativeAddress, BigInteger balance, String link) {
-        this(null, subtype, null, signature, work, accountAddress, previousBlockHash, representativeAddress,
+        this(subtype, null, signature, work, accountAddress, previousBlockHash, representativeAddress,
                 balance, link, null);
     }
     
-    StateBlock(JsonObject jsonRepresentation, StateBlockSubType subtype, String hash, String signature,
+    StateBlock(StateBlockSubType subtype, String hash, String signature,
                WorkSolution work, NanoAccount accountAddress, String previousBlockHash,
                NanoAccount representativeAddress, BigInteger balance, String linkData, NanoAccount linkAccount) {
-        super(BlockType.STATE, hash, jsonRepresentation, signature, work);
+        super(BlockType.STATE, hash, signature, work);
         
         if (!JNanoHelper.isValidHex(previousBlockHash, 64))
             throw new IllegalArgumentException("Previous block hash is invalid.");

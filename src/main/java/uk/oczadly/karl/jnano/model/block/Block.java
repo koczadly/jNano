@@ -32,19 +32,18 @@ public abstract class Block implements IBlock {
     @Expose @SerializedName("work")
     private final WorkSolution workSolution;
     
-    private volatile JsonObject jsonRepresentation;
-    
     
     protected Block(BlockType type) {
         this(type, null, null, null, null);
     }
     
-    public Block(BlockType type, String hash, String signature, WorkSolution workSolution) {
-        this(type, hash, null, signature, workSolution);
-    }
-    
+    @Deprecated(forRemoval = true)
     public Block(BlockType type, String hash, JsonObject jsonRepresentation, String signature,
                  WorkSolution workSolution) {
+        this(type, hash, signature, workSolution);
+    }
+    
+    public Block(BlockType type, String hash, String signature, WorkSolution workSolution) {
         if (!JNanoHelper.isValidHex(hash, 64))
             throw new IllegalArgumentException("Block hash is invalid.");
         if (!JNanoHelper.isValidHex(signature, 128))
@@ -52,7 +51,6 @@ public abstract class Block implements IBlock {
         
         this.type = type;
         this.hash = hash != null ? hash.toUpperCase() : null;
-        this.jsonRepresentation = jsonRepresentation;
         this.signature = signature != null ? signature.toUpperCase() : null;
         this.workSolution = workSolution;
     }
@@ -130,29 +128,37 @@ public abstract class Block implements IBlock {
      * @return a JSON representation of this block
      */
     public final String toJsonString() {
-        return _getJsonObject().toString();
+        return toJsonString(true);
+    }
+    
+    /**
+     * @param fillBlanks if true, null properties will be filled with dummy data
+     * @return a JSON representation of this block
+     */
+    public final String toJsonString(boolean fillBlanks) {
+        return getJsonObject(fillBlanks).toString();
     }
     
     /**
      * @return a JSON representation of this block, as a Gson {@link JsonObject}
      */
     public final JsonObject getJsonObject() {
-        return _getJsonObject().deepCopy();
+        return getJsonObject(true);
     }
     
-    private JsonObject _getJsonObject() {
-        if (jsonRepresentation == null) {
-            synchronized (this) {
-                if (jsonRepresentation == null) {
-                    jsonRepresentation = JNanoHelper.GSON.toJsonTree(this).getAsJsonObject();
-                    if (signature == null)
-                        jsonRepresentation.addProperty("signature", JNanoHelper.ZEROES_128);
-                    if (workSolution == null)
-                        jsonRepresentation.addProperty("work", JNanoHelper.ZEROES_16);
-                }
-            }
+    /**
+     * @param fillBlanks if true, null properties will be filled with dummy data
+     * @return a JSON representation of this block, as a Gson {@link JsonObject}
+     */
+    public final JsonObject getJsonObject(boolean fillBlanks) {
+        JsonObject json = JNanoHelper.GSON.toJsonTree(this).getAsJsonObject();
+        if (fillBlanks) {
+            if (signature == null)
+                json.addProperty("signature", JNanoHelper.ZEROES_128);
+            if (workSolution == null)
+                json.addProperty("work", JNanoHelper.ZEROES_16);
         }
-        return jsonRepresentation;
+        return json;
     }
     
     
