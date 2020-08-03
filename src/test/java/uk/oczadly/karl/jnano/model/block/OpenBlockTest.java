@@ -10,7 +10,7 @@ public class OpenBlockTest {
     
     @Test
     public void testHashing() {
-        OpenBlock b = new OpenBlock(null, null,
+        OpenBlock b = new OpenBlock(null,
                 "9F0C933C8ADE004D808EA1985FA746A7E95BA2A38F867640F53EC8F180BDFE9E2C1268DEAD7C2664F356E37ABA36" +
                         "2BC58E46DBA03E523A7B5A19E4B6EB12BB02",
                 new WorkSolution("62f05417dd3fb691"),
