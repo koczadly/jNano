@@ -373,8 +373,14 @@ public class RpcQueryNode {
         if (responseClass == null)
             throw new IllegalArgumentException("Response class argument cannot be null.");
         
-        String responseJson = this.processRequestRaw(jsonRequest, timeout); // Send the request to the node
-        return this.responseDeserializer.deserialize(responseJson, responseClass);
+        try {
+            String responseJson = this.processRequestRaw(jsonRequest, timeout); // Send the request to the node
+            return this.responseDeserializer.deserialize(responseJson, responseClass);
+        } catch (IOException | RpcException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RpcException("An unhandled exception occured.", e);
+        }
     }
     
     /**

@@ -26,7 +26,8 @@ public final class BlockDeserializer {
                 nullable(json.get("hash"), JsonElement::getAsString),
                 json.get("signature").getAsString(),
                 nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
-                NanoAccount.parseAddress(json.get("account").getAsString()),
+                NanoAccount.parseAddress(json.has("account") ? json.get("account").getAsString() :
+                        json.get("representative").getAsString()),
                 json.get("previous").getAsString(),
                 NanoAccount.parseAddress(json.get("representative").getAsString()),
                 json.get("balance").getAsBigInteger(),
