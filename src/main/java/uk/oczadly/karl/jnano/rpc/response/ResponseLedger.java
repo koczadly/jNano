@@ -54,7 +54,7 @@ public class ResponseLedger extends RpcResponse {
         private int blockCount;
         
         @Expose @SerializedName("representative")
-        private String representativeAccount;
+        private NanoAccount representativeAccount;
         
         @Expose @SerializedName("weight")
         private BigInteger votingWeight;
@@ -101,7 +101,7 @@ public class ResponseLedger extends RpcResponse {
         /**
          * @return the address of this account's representative
          */
-        public String getRepresentativeAccount() {
+        public NanoAccount getRepresentativeAccount() {
             return representativeAccount;
         }
         
