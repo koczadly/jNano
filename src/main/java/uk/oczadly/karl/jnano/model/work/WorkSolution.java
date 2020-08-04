@@ -61,8 +61,8 @@ public class WorkSolution {
     
     
     /**
-     * Calculates the difficulty for a given root hash. The root value should be either the block hash for existing
-     * accounts, or the account's public key for the first block.
+     * Calculates the difficulty for a given root hash. The root value should be either the previous block hash for
+     * existing accounts, or the account's public key for the first block.
      * @param root the root hash (64 character hex string)
      * @return the difficulty of this work solution for the given root hash
      */
@@ -75,8 +75,8 @@ public class WorkSolution {
     }
     
     /**
-     * Calculates the difficulty for a given root hash. The root value should be either the block hash for existing
-     * accounts, or the account's public key for the first block.
+     * Calculates the difficulty for a given root hash. The root value should be either the previous block hash for
+     * existing accounts, or the account's public key for the first block.
      * @param root the root hash (32 element byte array)
      * @return the difficulty of this work solution for the given root hash
      */
@@ -109,7 +109,7 @@ public class WorkSolution {
     
     /**
      * <p>Generates a work solution from the given root and minimum difficulty threshold. The root value should be
-     * either the block hash for existing accounts, or the account's public key for the first block.</p>
+     * either the previous block hash for existing accounts, or the account's public key for the first block.</p>
      * <p><strong>CAUTION:</strong> This method will generate the work on the CPU. For GPU calculations, use the
      * work generation utility provided by the node through RPC ({@link RequestWorkGenerate}).</p>
      * @param root      the root hash (64 character hex string)
@@ -127,7 +127,7 @@ public class WorkSolution {
     
     /**
      * <p>Generates a work solution from the given root and minimum difficulty threshold. The root value should be
-     * either the block hash for existing accounts, or the account's public key for the first block.</p>
+     * either the previous block hash for existing accounts, or the account's public key for the first block.</p>
      * <p><strong>CAUTION:</strong> This method will generate the work on the CPU. For GPU calculations, use the
      * work generation utility provided by the node through RPC ({@link RequestWorkGenerate}).</p>
      * @param root      the root bytes (32 element byte array)
@@ -148,8 +148,8 @@ public class WorkSolution {
     
     /**
      * <p>Generates a work solution from the given root and minimum difficulty threshold. The root value should be
-     * either the block hash for existing accounts, or the account's public key for the first block. This variant of
-     * the generate method will utilise all of the systems CPU cores.</p>
+     * either the previous block hash for existing accounts, or the account's public key for the first block. This
+     * variant of the generate method will utilise all of the systems CPU cores.</p>
      * <p><strong>CAUTION:</strong> This method will generate the work on the CPU. For GPU calculations, use the
      * work generation utility provided by the node through RPC ({@link RequestWorkGenerate}).</p>
      * @param root      the root hash (64 character hex string)
@@ -162,8 +162,8 @@ public class WorkSolution {
     
     /**
      * <p>Generates a work solution from the given root and minimum difficulty threshold. The root value should be
-     * either the block hash for existing accounts, or the account's public key for the first block. This variant of
-     * the generate method will utilise all of the systems CPU cores.</p>
+     * either the previous block hash for existing accounts, or the account's public key for the first block. This
+     * variant of the generate method will utilise all of the systems CPU cores.</p>
      * <p><strong>CAUTION:</strong> This method will generate the work on the CPU. For GPU calculations, use the
      * work generation utility provided by the node through RPC ({@link RequestWorkGenerate}).</p>
      * @param root      the root bytes (32 element byte array)
@@ -176,7 +176,7 @@ public class WorkSolution {
     
     /**
      * <p>Generates a work solution from the given root and minimum difficulty threshold. The root value should be
-     * either the block hash for existing accounts, or the account's public key for the first block.</p>
+     * either the previous block hash for existing accounts, or the account's public key for the first block.</p>
      * <p>This variant of the generate method will submit the number of {@code parallelTasks} specified to the given
      * {@code executor}. Once a valid work solution has been found by any of the created tasks, they will all
      * automatically end and discard themselves.</p>
@@ -199,7 +199,7 @@ public class WorkSolution {
     
     /**
      * <p>Generates a work solution from the given root and minimum difficulty threshold. The root value should be
-     * either the block hash for existing accounts, or the account's public key for the first block.</p>
+     * either the previous block hash for existing accounts, or the account's public key for the first block.</p>
      * <p>This variant of the generate method will submit the number of {@code parallelTasks} specified to the given
      * {@code executor}. Once a valid work solution has been found by any of the created tasks, they will all
      * automatically end and discard themselves.</p>
