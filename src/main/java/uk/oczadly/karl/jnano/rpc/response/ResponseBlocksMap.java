@@ -1,8 +1,6 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.JsonAdapter;
-import uk.oczadly.karl.jnano.internal.gsonadapters.SingleValueJsonAdapter;
 import uk.oczadly.karl.jnano.model.block.Block;
 
 import java.util.Map;
@@ -10,7 +8,6 @@ import java.util.Map;
 /**
  * This response class contains a map of block hashes and their contents.
  */
-@JsonAdapter(SingleValueJsonAdapter.class)
 public class ResponseBlocksMap extends RpcResponse {
     
     @Expose
