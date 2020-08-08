@@ -169,6 +169,8 @@ public final class NanoAccount {
     }
     
     /**
+     * <p>Formats this account as a 64-character hexadecimal string.</p>
+     * <p>Example returned value: {@code 8AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97}</p>
      * @return this address, represented by a 64-character hexadecimal string
      */
     public String toPublicKey() {
@@ -182,6 +184,8 @@ public final class NanoAccount {
     }
     
     /**
+     * <p>Formats this account as a standard address string, containing the prefix (if applicable) and checksum.</p>
+     * <p>Example returned value: {@code nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz}</p>
      * @return this address, complete with prefix and checksum
      */
     public synchronized String toAddress() {
@@ -228,6 +232,11 @@ public final class NanoAccount {
     }
     
     
+    /**
+     * Formats this account to an address string. Use of {@link #toAddress()} is preferred for clarity and future
+     * consistency.
+     * @see #toAddress()
+     */
     @Override
     public String toString() {
         return toAddress();
