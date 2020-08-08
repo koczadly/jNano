@@ -270,13 +270,23 @@ public final class NanoAccount {
     
     
     /**
-     * Creates a new {@link NanoAccount} from a given address or public key.
-     * If using an address format, the string should include a prefix, separator, address segment and checksum.
-     * Accounts encoded as a public key should be a 64-character hexadecimal string. In cases where a hexadecimal
-     * string is passed, the prefix will be the default ({@value #DEFAULT_PREFIX}).
+     * <p>Creates a new {@link NanoAccount} from a given address or public key.</p>
+     * <p>This method supports the following encoding string formats:
+     * <ul>
+     *     <li>Address (eg: {@code nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz})</li>
+     *     <li>Address segment (eg: {@code 34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6q})</li>
+     *     <li>Public key (eg: {@code 8AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97})</li>
+     * </ul>
+     * </p>
+     *
+     * <p>If a protocol prefix is not passed as part of the string because the format doesn't support it, then the
+     * {@link #DEFAULT_PREFIX} value will be used instead. Note that this will not be used for addresses which contain a
+     * checksum and no prefix; for these addresses, a null prefix will be used when creating the object.</p>
+     *
      * @param str the account address string
      * @return the created address object
      * @throws AddressFormatException if the address does not meet the required format criteria
+     * @see #parse(String, String)
      */
     public static NanoAccount parse(String str) {
         return parse(str, DEFAULT_PREFIX);
@@ -284,10 +294,18 @@ public final class NanoAccount {
     
     /**
      * <p>Creates a new {@link NanoAccount} from a given address or public key.</p>
-     * If using an address format, the string should include a prefix, separator, address segment and checksum - if
-     * the address includes a prefix, then that prefix will be used, rather than the specified default.
-     * Accounts encoded as a public key should be a 64-character hexadecimal string. In cases where a hexadecimal
-     * string is passed, the prefix will be the specified prefix argument.
+     * <p>This method supports the following encoding string formats:
+     * <ul>
+     *     <li>Address (eg: {@code nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz})</li>
+     *     <li>Address segment (eg: {@code 34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6q})</li>
+     *     <li>Public key (eg: {@code 8AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97})</li>
+     * </ul>
+     * </p>
+     *
+     * <p>If a protocol prefix is not passed as part of the string because the format doesn't support it, then the
+     * {@code defaultPrefix} value will be used instead. Note that this will not be used for addresses which contain a
+     * checksum and no prefix; for these addresses, a null prefix will be used when creating the object.</p>
+     *
      * @param str           the account address string
      * @param defaultPrefix the default protocol identifier prefix (without separator), or null for no prefix
      * @return the created address object
