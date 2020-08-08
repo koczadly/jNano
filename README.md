@@ -25,7 +25,7 @@ This project is hosted on [Maven Central](https://search.maven.org/artifact/uk.o
 ```
 
 ### Documentation
-The latest Javadoc pages can be [viewed online through Javadoc.io](https://www.javadoc.io/doc/uk.oczadly.karl/jnano).
+The latest Javadoc pages can be [viewed online through Javadoc.io](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk.oczadly.karl.jnano-summary.html).
 Additional documentation can be found on the [wiki pages](https://github.com/koczadly/jNano/wiki/).
 
 ### Configuring the node
