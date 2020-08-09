@@ -28,7 +28,6 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
         super(BlockType.OPEN);
     }
     
-    @Deprecated
     public OpenBlock(String signature, WorkSolution work, String sourceBlockHash, NanoAccount accountAddress,
                      NanoAccount representativeAccount) {
         this(null, signature, work, sourceBlockHash, accountAddress, representativeAccount);

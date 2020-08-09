@@ -23,7 +23,6 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
         super(BlockType.RECEIVE);
     }
     
-    @Deprecated
     public ReceiveBlock(String signature, WorkSolution work, String previousBlockHash, String sourceBlockHash) {
         this(null, signature, work, previousBlockHash, sourceBlockHash);
     }

@@ -30,7 +30,6 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
         super(BlockType.SEND);
     }
     
-    @Deprecated
     public SendBlock(String signature, WorkSolution work, String previousBlockHash, NanoAccount destinationAccount,
                      BigInteger balance) {
         this(null, signature, work, previousBlockHash, destinationAccount, balance);

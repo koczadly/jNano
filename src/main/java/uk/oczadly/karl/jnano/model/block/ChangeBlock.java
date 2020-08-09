@@ -24,7 +24,6 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
         super(BlockType.CHANGE);
     }
     
-    @Deprecated
     public ChangeBlock(String signature, WorkSolution workSolution, String previousBlockHash,
                        NanoAccount representativeAccount) {
         this(null, signature, workSolution, previousBlockHash, representativeAccount);
