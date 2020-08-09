@@ -27,7 +27,7 @@ public class BlockAdapterTest {
                 "  " +
                 "\"previous\":\"700DC6DF005DF78706A2C721D3EAA3755CC5209151D4BBD7EEB1D6FF77A068F8\",\n" +
                 "  \"destination\":\"nano_3deo53mkqduhn6gu55nf4jnmx8dorugsrjfnteywbedcswpsit3zz4u5urg3\",\n" +
-                "  \"balance\": \"0000003196C882D0CC90B344BEB82FC0\",  \n" +
+                "  \"balance\": \"1036304679954330940296402126272\",  \n" +
                 "  \"work\": \"6440a18c6061b71d\",  \n" +
                 "  \"signature\": \"7DFEE7769F8BC0A72428E7898FDFDF0660A6E234559B3B284A63B14611783AEC0706FE79368C2816B" +
                 "26363FD65CF900F55DB90E086EA741D718E2758B64F3406\"}";
@@ -51,7 +51,7 @@ public class BlockAdapterTest {
                 block.getPreviousBlockHash());
         assertEquals("nano_3deo53mkqduhn6gu55nf4jnmx8dorugsrjfnteywbedcswpsit3zz4u5urg3",
                 block.getDestinationAccount().toAddress());
-        assertEquals("3928845117595383247300999000000", block.getBalance().toString());
+        assertEquals("1036304679954330940296402126272", block.getBalance().toString());
     }
     
     
