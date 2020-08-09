@@ -44,6 +44,8 @@ public abstract class Block implements IBlock {
     }
     
     public Block(BlockType type, String hash, String signature, WorkSolution workSolution) {
+        if (type == null)
+            throw new IllegalArgumentException("Block type cannot be null.");
         if (!JNanoHelper.isValidHex(hash, 64))
             throw new IllegalArgumentException("Block hash is invalid.");
         if (!JNanoHelper.isValidHex(signature, 128))
@@ -93,6 +95,16 @@ public abstract class Block implements IBlock {
     @Override
     public final WorkSolution getWorkSolution() {
         return workSolution;
+    }
+    
+    
+    /**
+     * Returns whether or not this object contains all the necessary fields to be a block. This includes having a
+     * non-null work value and signature.
+     * @return true if this block contains all mandatory fields
+     */
+    public boolean isComplete() {
+        return getWorkSolution() != null && getSignature() != null;
     }
     
     
