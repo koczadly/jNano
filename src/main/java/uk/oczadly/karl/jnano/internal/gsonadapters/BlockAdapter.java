@@ -8,7 +8,7 @@ import java.lang.reflect.Type;
 
 public class BlockAdapter implements JsonSerializer<Block>, JsonDeserializer<Block> {
     
-    private static final BlockDeserializer blockDeserializer = new BlockDeserializer();
+    private static final BlockDeserializer blockDeserializer = BlockDeserializer.withDefaults();
     
     
     @Override

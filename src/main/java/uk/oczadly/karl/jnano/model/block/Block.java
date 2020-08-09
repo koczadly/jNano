@@ -15,7 +15,7 @@ import java.util.Arrays;
 @JsonAdapter(BlockAdapter.class)
 public abstract class Block implements IBlock {
     
-    private static final BlockDeserializer BLOCK_DESERIALIZER = new BlockDeserializer();
+    private static final BlockDeserializer BLOCK_DESERIALIZER = BlockDeserializer.withDefaults();
     
     
     @Expose @SerializedName("hash")

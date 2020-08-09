@@ -18,7 +18,11 @@ public final class BlockDeserializer {
     
     private final Map<String, Function<JsonObject, ? extends Block>> deserializers = new ConcurrentHashMap<>();
     
+    
+    private BlockDeserializer(int unused) {}
+    
     @SuppressWarnings("deprecation")
+    @Deprecated(forRemoval = true)
     public BlockDeserializer() {
         // STATE
         Function<JsonObject, Block> stateDeserializer = json -> new StateBlock(
@@ -72,7 +76,7 @@ public final class BlockDeserializer {
                 new WorkSolution(json.get("work").getAsString()),
                 json.get("previous").getAsString(),
                 NanoAccount.parseAddress(json.get("destination").getAsString()),
-                new BigInteger(json.get("balance").getAsString(), 16) // Hex encoded value
+                new BigInteger(json.get("balance").getAsString())
         ));
     }
     
@@ -111,6 +115,24 @@ public final class BlockDeserializer {
     
     private static <T, U> T nullable(U obj, Function<U, T> func) {
         return obj != null ? func.apply(obj) : null;
+    }
+    
+    
+    /**
+     * Constructs a new BlockDeserializer with the default supported block deserializers.
+     * @return a newly created BlockDeserializer object
+     */
+    public static BlockDeserializer withDefaults() {
+        return new BlockDeserializer();
+    }
+    
+    /**
+     * Constructs a new BlockDeserializer without any of the default block deserializers. You will need to register
+     * new deserializers for this to work.
+     * @return a newly created BlockDeserializer object
+     */
+    public static BlockDeserializer withNone() {
+        return new BlockDeserializer(0);
     }
     
 }
