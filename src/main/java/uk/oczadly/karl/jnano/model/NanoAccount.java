@@ -271,13 +271,12 @@ public final class NanoAccount {
     
     /**
      * <p>Creates a new {@link NanoAccount} from a given address or public key.</p>
-     * <p>This method supports the following encoding string formats:
+     * <p>This method supports the following encoding string formats:</p>
      * <ul>
      *     <li>Address (eg: {@code nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz})</li>
      *     <li>Address segment (eg: {@code 34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6q})</li>
      *     <li>Public key (eg: {@code 8AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97})</li>
      * </ul>
-     * </p>
      *
      * <p>If a protocol prefix is not passed as part of the string because the format doesn't support it, then the
      * {@link #DEFAULT_PREFIX} value will be used instead. Note that this will not be used for addresses which contain a
@@ -294,13 +293,12 @@ public final class NanoAccount {
     
     /**
      * <p>Creates a new {@link NanoAccount} from a given address or public key.</p>
-     * <p>This method supports the following encoding string formats:
+     * <p>This method supports the following encoding string formats:</p>
      * <ul>
      *     <li>Address (eg: {@code nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz})</li>
      *     <li>Address segment (eg: {@code 34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6q})</li>
      *     <li>Public key (eg: {@code 8AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97})</li>
      * </ul>
-     * </p>
      *
      * <p>If a protocol prefix is not passed as part of the string because the format doesn't support it, then the
      * {@code defaultPrefix} value will be used instead. Note that this will not be used for addresses which contain a
