@@ -115,9 +115,10 @@ public class WorkSolution {
      * @param root      the root hash (64 character hex string)
      * @param threshold the minimum difficulty threshold
      * @return the generated work solution
+     * @throws InterruptedException if the thread is interrupted
      * @see #generateMultiThreaded(String, WorkDifficulty)
      */
-    public static WorkSolution generate(String root, WorkDifficulty threshold) {
+    public static WorkSolution generate(String root, WorkDifficulty threshold) throws InterruptedException {
         if (root == null) throw new IllegalArgumentException("Root argument cannot be null.");
         if (!JNanoHelper.isValidHex(root, 64))
             throw new IllegalArgumentException("Root argument must be a 64-character hex string.");
@@ -133,9 +134,10 @@ public class WorkSolution {
      * @param root      the root bytes (32 element byte array)
      * @param threshold the minimum difficulty threshold
      * @return the generated work solution
+     * @throws InterruptedException if the thread is interrupted
      * @see #generateMultiThreaded(byte[], WorkDifficulty)
      */
-    public static WorkSolution generate(byte[] root, WorkDifficulty threshold) {
+    public static WorkSolution generate(byte[] root, WorkDifficulty threshold) throws InterruptedException {
         if (root == null) throw new IllegalArgumentException("Root array cannot be null.");
         if (root.length != 32) throw new IllegalArgumentException("Root array must have a length of 32.");
         if (threshold == null) throw new IllegalArgumentException("Difficulty threshold cannot be null.");
@@ -226,12 +228,16 @@ public class WorkSolution {
         
         for (int i=0; i<parallelTasks; i++) {
             byte[] work = Arrays.copyOf(initialWork, initialWork.length);
-            work[7] += i; // Ensure last (MSB) byte is different for each thread
+            work[7] += i * 2; // Ensure last (MSB) byte is different for each thread
             
             WORK_GEN_POOL.execute(() -> {
-                WorkSolution result = generate(root, thresholdBytes, work, interrupt);
-                if (result != null) {
+                try {
+                    WorkSolution result = generate(root, thresholdBytes, work, interrupt);
                     future.complete(result);
+                    interrupt.set(true);
+                } catch (InterruptedException e) {
+                    // In case thread is interrupted from an external cause
+                    future.completeExceptionally(e);
                     interrupt.set(true);
                 }
             });
@@ -240,20 +246,24 @@ public class WorkSolution {
     }
     
     
-    private static WorkSolution generate(byte[] root, byte[] thresholdBytes, byte[] work, AtomicBoolean interrupt) {
+    private static WorkSolution generate(byte[] root, byte[] thresholdBytes, byte[] work, AtomicBoolean interrupt)
+            throws InterruptedException {
         Blake2b digest = new Blake2b(null, 8, null, null);
         byte[] difficulty = new byte[8];
         
+        if (interrupt == null)
+            interrupt = new AtomicBoolean(false);
+        Thread thread = Thread.currentThread();
+        
         while (true) {
-            if ((interrupt != null && interrupt.get()) || Thread.currentThread().isInterrupted())
-                return null;
+            if (interrupt.get() || thread.isInterrupted())
+                throw new InterruptedException();
             
             // Hash digest
-            digest.reset();
             digest.update(work, 0, work.length);
             digest.update(root, 0, root.length);
             digest.digest(difficulty, 0);
-        
+            
             // Compare against threshold
             boolean valid = true;
             for (int i=0; i<thresholdBytes.length; i++) {
@@ -262,7 +272,8 @@ public class WorkSolution {
                     break;
                 }
             }
-            if (valid) return new WorkSolution(convertBytesToLong(work));
+            if (valid)
+                return new WorkSolution(convertBytesToLong(work));
             
             // Increment 'work' array
             for (int i=0; i<work.length; i++) {
@@ -278,6 +289,7 @@ public class WorkSolution {
     private static long convertBytesToLong(byte[] val) {
         return JNanoHelper.bytesToLong(JNanoHelper.reverseArray(val));
     }
+    
     
     
     static class WorkSolutionJsonAdapter implements JsonSerializer<WorkSolution>,
