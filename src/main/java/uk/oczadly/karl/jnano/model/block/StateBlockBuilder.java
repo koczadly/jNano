@@ -27,7 +27,18 @@ public final class StateBlockBuilder {
     
     
     /**
-     * Constructs a new {@link StateBlockBuilder} with the non-optional parameters.
+     * Constructs a new {@link StateBlockBuilder} with the account parameter. This will also set the representative
+     * as the given account, which can be overridden through the setter.
+     *
+     * @param accountAddress the account which owns this block
+     */
+    public StateBlockBuilder(NanoAccount accountAddress) {
+        setAccountAddress(accountAddress);
+        setRepresentativeAddress(accountAddress);
+    }
+    
+    /**
+     * Constructs a new {@link StateBlockBuilder} with a set of parameters.
      *
      * @param accountAddress        the account which owns this block
      * @param previousBlockHash     the hash of the previous (or latest) block for the account
