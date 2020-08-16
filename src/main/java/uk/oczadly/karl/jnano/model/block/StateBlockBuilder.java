@@ -145,9 +145,6 @@ public final class StateBlockBuilder {
     }
     
     public StateBlockBuilder setPreviousBlockHash(String previousBlockHash) {
-        if (previousBlockHash == null)
-            throw new IllegalArgumentException("Previous block hash argument cannot be null.");
-        
         this.previousBlockHash = previousBlockHash;
         return this;
     }
