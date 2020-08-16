@@ -11,15 +11,6 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
     
     private static volatile Field RESPONSE_JSON_FIELD;
     
-    static {
-        try {
-            RESPONSE_JSON_FIELD = RpcResponse.class.getDeclaredField("rawJson");
-            RESPONSE_JSON_FIELD.setAccessible(true);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-    }
-    
     private Gson gson;
     
     public RpcResponseDeserializerImpl() {
@@ -48,9 +39,7 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
                 throw parseException(errorElement.getAsString());
     
             // Deserialize response
-            R responseObj = gson.fromJson(responseJson, responseClass); // Deserialize from JSON
-    
-            // Populate original json object
+            R responseObj = gson.fromJson(responseJson, responseClass);
             populateJsonField(responseObj, responseJson);
     
             return responseObj;
@@ -100,6 +89,14 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
     
     
     private void populateJsonField(RpcResponse response, JsonObject json) {
+        if (RESPONSE_JSON_FIELD == null) {
+            try {
+                RESPONSE_JSON_FIELD = RpcResponse.class.getDeclaredField("rawJson");
+                RESPONSE_JSON_FIELD.setAccessible(true);
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+        }
         if (RESPONSE_JSON_FIELD != null) {
             try {
                 RESPONSE_JSON_FIELD.set(response, json);
