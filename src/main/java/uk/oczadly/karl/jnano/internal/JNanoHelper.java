@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.gsonadapters.ArrayTypeAdapterFactoryFix;
+import uk.oczadly.karl.jnano.internal.gsonadapters.BigIntSerializer;
 import uk.oczadly.karl.jnano.internal.gsonadapters.BooleanTypeDeserializer;
 import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
 import uk.oczadly.karl.jnano.util.NanoConstants;
@@ -25,7 +26,8 @@ public class JNanoHelper {
             .excludeFieldsWithoutExposeAnnotation()
             .registerTypeAdapterFactory(new ArrayTypeAdapterFactoryFix())       // Empty array hotfix
             .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer())  // Boolean deserializer
-            .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer()); // Boolean deserializer
+            .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer())  // Boolean deserializer
+            .registerTypeAdapter(BigInteger.class, new BigIntSerializer());     // BigInt serializer (string)
     
     public static final Gson GSON = GSON_BUILDER.create();
     
