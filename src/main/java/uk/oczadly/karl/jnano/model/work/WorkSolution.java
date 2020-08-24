@@ -28,10 +28,16 @@ public class WorkSolution {
     private final long longVal;
     private final String hexVal;
     
+    /**
+     * @param hexVal the work solution, encoded as a hexadecimal string
+     */
     public WorkSolution(String hexVal) {
         this(Long.parseUnsignedLong(hexVal.startsWith("0x") ? hexVal.substring(2) : hexVal, 16));
     }
     
+    /**
+     * @param longVal the work solution, encoded as an unsigned long
+     */
     public WorkSolution(long longVal) {
         this.longVal = longVal;
     
@@ -251,12 +257,10 @@ public class WorkSolution {
         Blake2b digest = new Blake2b(null, 8, null, null);
         byte[] difficulty = new byte[8];
         
-        if (interrupt == null)
-            interrupt = new AtomicBoolean(false);
         Thread thread = Thread.currentThread();
         
         while (true) {
-            if (interrupt.get() || thread.isInterrupted())
+            if ((interrupt != null && interrupt.get()) || thread.isInterrupted())
                 throw new InterruptedException();
             
             // Hash digest
