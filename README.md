@@ -5,10 +5,10 @@ jNano is a Java library used to interface with the official [Nano node](https://
 Nano is a crypto-currency which aims to offer instantaneous feeless transactions. For more information, visit
 [https://nano.org](https://nano.org).
 
-WebSocket support is currently in development, and will be made publicly available shortly.
 ## Features
 This library provides you simple access to the following:
 - Synchronous and asynchronous methods for executing RPC calls (all commands up to V20 are supported)
+- WebSocket support for receiving live data feeds and events from the node
 - A server for listening to real-time block callbacks from the node
 - Various utility classes for computing and processing natively, without the need of a node
 
