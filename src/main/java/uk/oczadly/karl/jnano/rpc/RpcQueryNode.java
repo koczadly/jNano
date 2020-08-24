@@ -1,5 +1,6 @@
 package uk.oczadly.karl.jnano.rpc;
 
+import uk.oczadly.karl.jnano.internal.JNanoHelper;
 import uk.oczadly.karl.jnano.rpc.exception.RpcException;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
@@ -51,10 +52,8 @@ public class RpcQueryNode {
     
     /**
      * Constructs a new query node with the local loopback address with port 7076 ({@code [::1]:7076}).
-     *
-     * @throws MalformedURLException if the address cannot be parsed
      */
-    public RpcQueryNode() throws MalformedURLException {
+    public RpcQueryNode() {
         this(7076);
     }
     
@@ -62,10 +61,9 @@ public class RpcQueryNode {
      * Constructs a new query node with the local loopback address {@code [::1]} and the specified port.
      *
      * @param port the port which the node is listening on
-     * @throws MalformedURLException if the address cannot be parsed
      */
-    public RpcQueryNode(int port) throws MalformedURLException {
-        this("::1", port);
+    public RpcQueryNode(int port) {
+        this(JNanoHelper.unchecked(() -> new URL("HTTP", "::1", port, "")));
     }
     
     /**

@@ -10,6 +10,7 @@ import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
 import uk.oczadly.karl.jnano.util.NanoConstants;
 
 import java.math.BigInteger;
+import java.util.concurrent.Callable;
 
 public class JNanoHelper {
     
@@ -122,6 +123,16 @@ public class JNanoHelper {
         val = ((val << 8) | (bytes[6] & 0xFF));
         val = ((val << 8) | (bytes[7] & 0xFF));
         return val;
+    }
+    
+    public static <T> T unchecked(Callable<T> supplier) {
+        try {
+            return supplier.call();
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     
 }
