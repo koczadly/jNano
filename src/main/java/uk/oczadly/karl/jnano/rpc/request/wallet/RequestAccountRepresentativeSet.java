@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.wallet;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHash;
 
 /**
@@ -41,7 +41,8 @@ public class RequestAccountRepresentativeSet extends RpcRequest<ResponseBlockHas
      * @param representativeAccount the new representative address
      * @param workSolution          a pre-computed work solution
      */
-    public RequestAccountRepresentativeSet(String walletId, String account, String representativeAccount, String workSolution) {
+    public RequestAccountRepresentativeSet(String walletId, String account, String representativeAccount,
+                                           String workSolution) {
         super("account_representative_set", ResponseBlockHash.class);
         this.walletId = walletId;
         this.account = account;

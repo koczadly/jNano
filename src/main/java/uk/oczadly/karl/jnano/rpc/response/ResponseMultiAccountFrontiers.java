@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcResponse;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.util.Map;
 
@@ -12,23 +12,24 @@ import java.util.Map;
 public class ResponseMultiAccountFrontiers extends RpcResponse {
     
     @Expose @SerializedName("frontiers")
-    private Map<String, String> frontiers;
+    private Map<NanoAccount, String> frontiers;
     
     
     /**
      * Map follows the structure {@code address -> head block hash}.
+     *
      * @return a map of account frontiers
      */
-    public Map<String, String> getFrontiers() {
+    public Map<NanoAccount, String> getFrontiers() {
         return frontiers;
     }
     
     /**
-     * @param accountAddress an account's address
+     * @param address an account's address
      * @return the head block hash of the specified account, or null if not present in the response
      */
-    public String getFrontierBlockHash(String accountAddress) {
-        return this.frontiers.get(accountAddress.toLowerCase());
+    public String getFrontierBlockHash(NanoAccount address) {
+        return this.frontiers.get(address);
     }
     
 }

@@ -22,7 +22,7 @@ public class HttpServerThread extends Thread {
     
     @Override
     public void run() {
-        while(!Thread.interrupted()) {
+        while (!Thread.interrupted()) {
             try {
                 Socket socket = this.socket.accept(); // Listen for requests
                 

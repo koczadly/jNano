@@ -2,7 +2,8 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseLedger;
 
 import java.math.BigInteger;
@@ -43,24 +44,25 @@ public class RequestLedger extends RpcRequest<ResponseLedger> {
     
     
     /**
-     * @param account   the address to start from
-     * @param count     the response limit
+     * @param account the address to start from, or null to begin from the zeroth account
+     * @param count   the response limit
      */
     public RequestLedger(String account, int count) {
         this(account, count, null, null, null);
     }
     
     /**
-     * @param account           the address to start from
-     * @param count             the response limit
-     * @param modifiedSince     (optional) filter accounts modified after the specified UNIX timestamp
-     * @param sorting           (optional) whether the accounts should be sorted in descending order (WARNING:
-     *                          'count' is ignored if specified)
-     * @param thresholdBalance  (optional) the minimum threshold balance for listed accounts
+     * @param account          the address to start from, or null to begin from the zeroth account
+     * @param count            the response limit
+     * @param modifiedSince    (optional) filter accounts modified after the specified UNIX timestamp
+     * @param sorting          (optional) whether the accounts should be sorted in descending order (WARNING: 'count' is
+     *                         ignored if specified)
+     * @param thresholdBalance (optional) the minimum threshold balance for listed accounts
      */
-    public RequestLedger(String account, int count, Integer modifiedSince, Boolean sorting, BigInteger thresholdBalance) {
+    public RequestLedger(String account, int count, Integer modifiedSince, Boolean sorting,
+                         BigInteger thresholdBalance) {
         super("ledger", ResponseLedger.class);
-        this.account = account;
+        this.account = account != null ? account : NanoAccount.ZERO_ACCOUNT.toAddress();
         this.count = count;
         this.modifiedSince = modifiedSince;
         this.sorting = sorting;

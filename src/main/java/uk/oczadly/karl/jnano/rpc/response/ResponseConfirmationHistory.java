@@ -2,7 +2,6 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcResponse;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -34,15 +33,14 @@ public class ResponseConfirmationHistory extends RpcResponse {
     }
     
     
-    
     public static class ConfirmationStats {
         @Expose @SerializedName("count")
         private int count;
         
         @Expose @SerializedName("average")
         private int average;
-    
-    
+        
+        
         /**
          * @return the number of confirmations
          */
@@ -61,48 +59,48 @@ public class ResponseConfirmationHistory extends RpcResponse {
     public static class Confirmation {
         @Expose @SerializedName("hash")
         private String hash;
-    
+        
         @Expose @SerializedName("duration")
         private int duration;
-    
+        
         @Expose @SerializedName("time")
         private int time;
-    
+        
         @Expose @SerializedName("tally")
         private BigInteger tally;
-    
+        
         @Expose @SerializedName("request_count")
         private int requestCount;
-    
-    
+        
+        
         /**
          * @return the block's hash
          */
         public String getHash() {
             return hash;
         }
-    
+        
         /**
          * @return the elapsed duration of the confirmation
          */
         public int getDuration() {
             return duration;
         }
-    
+        
         /**
          * @return the starting UNIX timestamp of the confirmation
          */
         public int getTime() {
             return time;
         }
-    
+        
         /**
          * @return the total voted weight of this block
          */
         public BigInteger getTally() {
             return tally;
         }
-    
+        
         /**
          * @return the number of requests made for this block
          */

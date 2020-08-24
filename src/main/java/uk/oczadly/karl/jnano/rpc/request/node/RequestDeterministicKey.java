@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseKeyPair;
 
 /**
@@ -17,14 +17,23 @@ public class RequestDeterministicKey extends RpcRequest<ResponseKeyPair> {
     private final String seed;
     
     @Expose @SerializedName("index")
-    private final int accountIndex;
+    private final long accountIndex;
     
     
     /**
-     * @param seed          the seed to generate private keys from
-     * @param accountIndex  the index of the account
+     * Expands an account from a given seed, using the first ({@code 0}) index.
+     * @param seed         the seed to generate private keys from
      */
-    public RequestDeterministicKey(String seed, int accountIndex) {
+    public RequestDeterministicKey(String seed) {
+        this(seed, 0L);
+    }
+    
+    /**
+     * Expands an account from a given seed and index.
+     * @param seed         the seed to generate private keys from
+     * @param accountIndex the index of the account
+     */
+    public RequestDeterministicKey(String seed, long accountIndex) {
         super("deterministic_key", ResponseKeyPair.class);
         this.seed = seed;
         this.accountIndex = accountIndex;
@@ -41,7 +50,7 @@ public class RequestDeterministicKey extends RpcRequest<ResponseKeyPair> {
     /**
      * @return the requested index
      */
-    public int getAccountIndex() {
+    public long getAccountIndex() {
         return accountIndex;
     }
     

@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseUnopened;
 
 /**
@@ -25,8 +25,8 @@ public class RequestUnopened extends RpcRequest<ResponseUnopened> {
     }
     
     /**
-     * @param account   (optional) the starting account's address
-     * @param count     (optional) the result limit
+     * @param account (optional) the starting account's address
+     * @param count   (optional) the result limit
      */
     public RequestUnopened(String account, Integer count) {
         super("unopened", ResponseUnopened.class);

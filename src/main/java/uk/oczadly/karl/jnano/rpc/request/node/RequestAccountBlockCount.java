@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseAccountBlockCount;
 
 /**
@@ -18,7 +18,7 @@ public class RequestAccountBlockCount extends RpcRequest<ResponseAccountBlockCou
     
     
     /**
-     * @param account   the account's address
+     * @param account the account's address
      */
     public RequestAccountBlockCount(String account) {
         super("account_block_count", ResponseAccountBlockCount.class);

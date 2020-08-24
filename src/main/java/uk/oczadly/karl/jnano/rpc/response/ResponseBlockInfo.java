@@ -1,10 +1,19 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.rpc.RpcResponse;
+import uk.oczadly.karl.jnano.model.block.BlockDeserializer;
+import uk.oczadly.karl.jnano.model.block.SendBlock;
+import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
+import java.lang.reflect.Type;
 import java.math.BigInteger;
 
 /**
@@ -13,7 +22,7 @@ import java.math.BigInteger;
 public class ResponseBlockInfo extends RpcResponse {
     
     @Expose @SerializedName("block_account")
-    private String account;
+    private NanoAccount account;
     
     @Expose @SerializedName("amount")
     private BigInteger amount;
@@ -30,7 +39,7 @@ public class ResponseBlockInfo extends RpcResponse {
     @Expose @SerializedName("confirmed")
     private boolean confirmed;
     
-    @Expose @SerializedName("contents")
+    @Expose @SerializedName("contents") @JsonAdapter(BlockAdapter.class)
     private Block blockContents;
     
     @Expose @SerializedName("subtype")
@@ -40,7 +49,7 @@ public class ResponseBlockInfo extends RpcResponse {
     /**
      * @return the account who created this block
      */
-    public String getAccount() {
+    public NanoAccount getAccount() {
         return account;
     }
     
@@ -91,6 +100,28 @@ public class ResponseBlockInfo extends RpcResponse {
      */
     public String getSubtype() {
         return subtype;
+    }
+    
+    
+    
+    // Fix for hexadecimal-encoded balances with SEND blocks.
+    private static class BlockAdapter implements JsonDeserializer<Block> {
+        BlockDeserializer deserializer = BlockDeserializer.withDefaults();
+        
+        public BlockAdapter() {
+            deserializer.registerDeserializer("send", json -> new SendBlock(
+                    json.get("signature").getAsString(),
+                    new WorkSolution(json.get("work").getAsString()),
+                    json.get("previous").getAsString(),
+                    NanoAccount.parseAddress(json.get("destination").getAsString()),
+                    new BigInteger(json.get("balance").getAsString(), 16)
+            ));
+        }
+        
+        @Override
+        public Block deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            return deserializer.deserialize(json.getAsJsonObject());
+        }
     }
     
 }

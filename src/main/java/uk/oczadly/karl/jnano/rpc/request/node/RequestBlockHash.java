@@ -3,7 +3,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHash;
 
 /**
@@ -11,7 +11,10 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHash;
  * <br>Calls the RPC command {@code block_hash}, and returns a {@link ResponseBlockHash} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#block_hash">Official RPC documentation</a>
+ * @deprecated Use of {@link Block#getHash()} method is preferred, which will locally calculate the hash without the
+ * need of an external node.
  */
+@Deprecated
 public class RequestBlockHash extends RpcRequest<ResponseBlockHash> {
     
     @Expose @SerializedName("json_block")
@@ -26,7 +29,7 @@ public class RequestBlockHash extends RpcRequest<ResponseBlockHash> {
      * @param block the block's data
      */
     public RequestBlockHash(Block block) {
-        this(block.getJsonString());
+        this(block.toJsonString());
     }
     
     /**

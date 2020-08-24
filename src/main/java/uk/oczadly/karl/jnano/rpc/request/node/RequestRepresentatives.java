@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseRepresentatives;
 
 /**
@@ -32,8 +32,8 @@ public class RequestRepresentatives extends RpcRequest<ResponseRepresentatives> 
     }
     
     /**
-     * @param sorting   (optional) whether the results should be sorted by voting weight (in descending order)
-     * @param count     (optional) the limit of representatives to list
+     * @param sorting (optional) whether the results should be sorted by voting weight (in descending order)
+     * @param count   (optional) the limit of representatives to list
      */
     public RequestRepresentatives(Boolean sorting, Integer count) {
         super("representatives", ResponseRepresentatives.class);

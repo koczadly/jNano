@@ -2,7 +2,6 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcResponse;
 
 import java.math.BigInteger;
 
@@ -10,7 +9,7 @@ import java.math.BigInteger;
  * This response class contains information about a single account.
  */
 public class ResponseAccountInfo extends RpcResponse {
-
+    
     @Expose @SerializedName("frontier")
     private String frontierBlockHash;
     
@@ -37,6 +36,12 @@ public class ResponseAccountInfo extends RpcResponse {
     
     @Expose @SerializedName("pending")
     private BigInteger balancePending;
+    
+    @Expose @SerializedName("confirmation_height")
+    private int confirmationHeight;
+    
+    @Expose @SerializedName("confirmation_height_frontier")
+    private String confirmationHeightFrontier;
     
     
     /**
@@ -102,4 +107,17 @@ public class ResponseAccountInfo extends RpcResponse {
         return balancePending;
     }
     
+    /**
+     * @return the current confirmation height for this account
+     */
+    public int getConfirmationHeight() {
+        return confirmationHeight;
+    }
+    
+    /**
+     * @return the current confirmation height block hash for this account
+     */
+    public String getConfirmationHeightFrontier() {
+        return confirmationHeightFrontier;
+    }
 }

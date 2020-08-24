@@ -2,8 +2,8 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.rpc.RpcResponse;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
 public class ResponseAccountHistory extends RpcResponse {
     
     @Expose @SerializedName("account")
-    private String account;
+    private NanoAccount account;
     
     @Expose @SerializedName("history")
     private List<Block> history;
@@ -28,7 +28,7 @@ public class ResponseAccountHistory extends RpcResponse {
     /**
      * @return the account's address
      */
-    public String getAccount() {
+    public NanoAccount getAccount() {
         return account;
     }
     
@@ -41,6 +41,7 @@ public class ResponseAccountHistory extends RpcResponse {
     
     /**
      * @return the previous block hash, or null if traversing backwards
+     *
      * @see #getNextBlockHash()
      */
     public String getPreviousBlockHash() {
@@ -49,6 +50,7 @@ public class ResponseAccountHistory extends RpcResponse {
     
     /**
      * @return the next block hash, or null if traversing forwards
+     *
      * @see #getPreviousBlockHash()
      */
     public String getNextBlockHash() {

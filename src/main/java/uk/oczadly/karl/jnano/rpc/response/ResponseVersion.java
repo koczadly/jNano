@@ -2,33 +2,20 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcResponse;
 
 /**
  * This response class contains details about the node's version.
  */
 public class ResponseVersion extends RpcResponse {
     
-    @Expose @SerializedName("rpc_version")
-    private int rpcVersion;
-    
-    @Expose @SerializedName("store_version")
-    private int storeVersion;
-    
-    @Expose @SerializedName("protocol_version")
-    private int protocolVersion;
-    
-    @Expose @SerializedName("node_vendor")
-    private String nodeVendor;
-    
-    @Expose @SerializedName("network")
-    private String network;
-    
-    @Expose @SerializedName("network_identifier")
-    private String networkId;
-    
-    @Expose @SerializedName("build_info")
-    private String buildInfo;
+    @Expose @SerializedName("rpc_version") private int rpcVersion;
+    @Expose @SerializedName("store_version") private int storeVersion;
+    @Expose @SerializedName("protocol_version") private int protocolVersion;
+    @Expose @SerializedName("node_vendor") private String nodeVendor;
+    @Expose @SerializedName("store_vendor") private String storeVendor;
+    @Expose @SerializedName("network") private String network;
+    @Expose @SerializedName("network_identifier") private String networkId;
+    @Expose @SerializedName("build_info") private String buildInfo;
     
     
     /**
@@ -57,6 +44,13 @@ public class ResponseVersion extends RpcResponse {
      */
     public String getNodeVendor() {
         return nodeVendor;
+    }
+    
+    /**
+     * @return the backend store (database) vendor
+     */
+    public String getStoreVendor() {
+        return storeVendor;
     }
     
     /**

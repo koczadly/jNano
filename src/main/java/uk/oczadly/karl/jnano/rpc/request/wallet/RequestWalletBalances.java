@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.wallet;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseMultiAccountBalances;
 
 import java.math.BigInteger;
@@ -23,7 +23,7 @@ public class RequestWalletBalances extends RpcRequest<ResponseMultiAccountBalanc
     
     
     /**
-     * @param walletId  the wallet's ID
+     * @param walletId the wallet's ID
      */
     public RequestWalletBalances(String walletId) {
         this(walletId, null);

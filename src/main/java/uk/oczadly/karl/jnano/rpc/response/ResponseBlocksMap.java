@@ -1,9 +1,7 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.rpc.RpcResponse;
 
 import java.util.Map;
 
@@ -12,12 +10,13 @@ import java.util.Map;
  */
 public class ResponseBlocksMap extends RpcResponse {
     
-    @Expose @SerializedName("blocks")
+    @Expose
     private Map<String, Block> blocks;
     
     
     /**
      * Map follows the structure {@code hash -> block}.
+     *
      * @return a list of blocks
      */
     public Map<String, Block> getBlocks() {

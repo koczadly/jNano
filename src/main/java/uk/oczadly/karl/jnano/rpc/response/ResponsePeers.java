@@ -2,7 +2,6 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcResponse;
 
 import java.util.Map;
 
@@ -17,6 +16,7 @@ public class ResponsePeers extends RpcResponse {
     
     /**
      * Map follows the structure {@code IP address -> node information}.
+     *
      * @return a map of representatives
      */
     public Map<String, PeerInfo> getPeers() {
@@ -24,32 +24,31 @@ public class ResponsePeers extends RpcResponse {
     }
     
     
-    
     public static class PeerInfo {
         @Expose @SerializedName("protocol_version")
         private int protocolVer;
-    
+        
         @Expose @SerializedName("node_id")
         private String nodeId;
-    
+        
         @Expose @SerializedName("type")
         private String type;
-    
-    
+        
+        
         /**
          * @return the protocol version this node is using
          */
         public int getProtocolVer() {
             return protocolVer;
         }
-    
+        
         /**
          * @return the unique ID of this node
          */
         public String getNodeId() {
             return nodeId;
         }
-    
+        
         /**
          * @return the type of network connection to this node
          */

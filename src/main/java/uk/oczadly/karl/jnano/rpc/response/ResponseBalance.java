@@ -2,7 +2,6 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcResponse;
 
 import java.math.BigInteger;
 
@@ -10,7 +9,7 @@ import java.math.BigInteger;
  * This response class contains both pocketed and pending balance amounts.
  */
 public class ResponseBalance extends RpcResponse {
-
+    
     @Expose @SerializedName("balance")
     private BigInteger pocketed;
     

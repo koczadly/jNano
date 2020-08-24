@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcResponse;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 /**
  * This response class contains debug information about the node's ID.
@@ -16,10 +16,10 @@ public class ResponseNodeId extends RpcResponse {
     private String publicKey;
     
     @Expose @SerializedName("as_account")
-    private String asAccount;
+    private NanoAccount asAccount;
     
     @Expose @SerializedName("node_id")
-    private String nodeId;
+    private NanoAccount nodeId;
     
     
     public String getPrivateKey() {
@@ -30,11 +30,11 @@ public class ResponseNodeId extends RpcResponse {
         return publicKey;
     }
     
-    public String getPublicKeyAccount() {
+    public NanoAccount getPublicKeyAccount() {
         return asAccount;
     }
     
-    public String getNodeId() {
+    public NanoAccount getNodeId() {
         return nodeId;
     }
     

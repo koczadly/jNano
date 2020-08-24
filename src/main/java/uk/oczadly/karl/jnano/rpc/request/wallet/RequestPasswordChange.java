@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.wallet;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
 /**
@@ -21,8 +21,8 @@ public class RequestPasswordChange extends RpcRequest<ResponseSuccessful> {
     
     
     /**
-     * @param walletId  the wallet's ID
-     * @param password  the new encryption password
+     * @param walletId the wallet's ID
+     * @param password the new encryption password
      */
     public RequestPasswordChange(String walletId, String password) {
         super("password_change", ResponseSuccessful.class);

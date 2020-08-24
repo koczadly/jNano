@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.wallet;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseWalletChangeSeed;
 
 /**
@@ -26,17 +26,17 @@ public class RequestWalletChangeSeed extends RpcRequest<ResponseWalletChangeSeed
     
     
     /**
-     * @param walletId  the wallet's ID
-     * @param seed      the new seed
+     * @param walletId the wallet's ID
+     * @param seed     the new seed
      */
     public RequestWalletChangeSeed(String walletId, String seed) {
         this(walletId, seed, null);
     }
     
     /**
-     * @param walletId  the wallet's ID
-     * @param seed      the new seed
-     * @param count     the number of accounts to restore from the seed
+     * @param walletId the wallet's ID
+     * @param seed     the new seed
+     * @param count    the number of accounts to restore from the seed
      */
     public RequestWalletChangeSeed(String walletId, String seed, Integer count) {
         super("wallet_change_seed", ResponseWalletChangeSeed.class);

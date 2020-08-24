@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
 /**
@@ -21,8 +21,8 @@ public class RequestKeepAlive extends RpcRequest<ResponseSuccessful> {
     
     
     /**
-     * @param peerAddress   the remote peer's IP address
-     * @param peerPort      the remote peer's port
+     * @param peerAddress the remote peer's IP address
+     * @param peerPort    the remote peer's port
      */
     public RequestKeepAlive(String peerAddress, int peerPort) {
         super("keepalive", ResponseSuccessful.class);

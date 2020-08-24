@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcResponse;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -86,29 +86,29 @@ public class ResponseConfirmationQuorum extends RpcResponse {
     
     public static class PeerInfo {
         @Expose @SerializedName("account")
-        private String account;
-    
+        private NanoAccount account;
+        
         @Expose @SerializedName("ip")
         private String ip;
-    
+        
         @Expose @SerializedName("weight")
         private BigInteger weight;
-    
-    
+        
+        
         /**
          * @return the address of the representative
          */
-        public String getAccount() {
+        public NanoAccount getAccount() {
             return account;
         }
-    
+        
         /**
          * @return the IP address of the representative
          */
         public String getIp() {
             return ip;
         }
-    
+        
         /**
          * @return the voting weight of this representative
          */

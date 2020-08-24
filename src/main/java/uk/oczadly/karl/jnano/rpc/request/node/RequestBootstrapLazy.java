@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
 /**
@@ -19,6 +19,9 @@ public class RequestBootstrapLazy extends RpcRequest<ResponseSuccessful> {
     @Expose @SerializedName("force")
     private final Boolean force;
     
+    @Expose @SerializedName("id")
+    private String trackingId;
+    
     
     /**
      * @param blockHash the block's hash
@@ -32,9 +35,19 @@ public class RequestBootstrapLazy extends RpcRequest<ResponseSuccessful> {
      * @param force     (optional) whether all current bootstraps should be forcefully closed
      */
     public RequestBootstrapLazy(String blockHash, Boolean force) {
+        this(blockHash, force, null);
+    }
+    
+    /**
+     * @param blockHash  the block's hash
+     * @param force      (optional) whether all current bootstraps should be forcefully closed
+     * @param trackingId (optional) the tracking ID for this request
+     */
+    public RequestBootstrapLazy(String blockHash, Boolean force, String trackingId) {
         super("bootstrap_lazy", ResponseSuccessful.class);
         this.blockHash = blockHash;
         this.force = force;
+        this.trackingId = trackingId;
     }
     
     
@@ -50,6 +63,13 @@ public class RequestBootstrapLazy extends RpcRequest<ResponseSuccessful> {
      */
     public Boolean getForce() {
         return force;
+    }
+    
+    /**
+     * @return the tracking identifier for this request
+     */
+    public String getTrackingId() {
+        return trackingId;
     }
     
 }

@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.wallet;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseWalletPending;
 
 import java.math.BigInteger;
@@ -38,19 +38,19 @@ public class RequestWalletPending extends RpcRequest<ResponseWalletPending> {
     
     
     /**
-     * @param walletId  the wallet's ID
-     * @param count     the number of blocks to limit
+     * @param walletId the wallet's ID
+     * @param count    the number of blocks to limit
      */
     public RequestWalletPending(String walletId, int count) {
         this(walletId, count, null, null, null);
     }
     
     /**
-     * @param walletId              the wallet's ID
-     * @param count                 the number of blocks to limit
-     * @param threshold             (optional) the minimum threshold amount in RAW
-     * @param includeActive         (optional) whether active blocks should be included
-     * @param includeOnlyConfirmed  (optional) whether only blocks undergoing height processing should be listed
+     * @param walletId             the wallet's ID
+     * @param count                the number of blocks to limit
+     * @param threshold            (optional) the minimum threshold amount in RAW
+     * @param includeActive        (optional) whether active blocks should be included
+     * @param includeOnlyConfirmed (optional) whether only blocks undergoing height processing should be listed
      */
     public RequestWalletPending(String walletId, int count, BigInteger threshold, Boolean includeActive,
                                 Boolean includeOnlyConfirmed) {

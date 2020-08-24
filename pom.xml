@@ -6,7 +6,7 @@
 
     <groupId>uk.oczadly.karl</groupId>
     <artifactId>jnano</artifactId>
-    <version>2.1.0-V20</version>
+    <version>2.5.10-V21</version>
 
     <packaging>jar</packaging>
 
@@ -37,10 +37,18 @@
 
 
     <dependencies>
+        <!-- JSON library -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.8.5</version>
+            <version>2.8.6</version>
+        </dependency>
+
+        <!-- Blake2b library -->
+        <dependency>
+            <groupId>com.rfksystems</groupId>
+            <artifactId>blake2b</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
@@ -149,11 +157,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.21.0</version>
-                    <configuration>
-                        <groups>UtilTests.class,FunctionalityTests.class</groups>
-                        <excludedGroups>NodeTests.class</excludedGroups>
-                    </configuration>
+                    <version>2.22.2</version>
                 </plugin>
             </plugins>
         </pluginManagement>

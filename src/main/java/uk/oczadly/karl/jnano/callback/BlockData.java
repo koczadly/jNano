@@ -1,28 +1,28 @@
 package uk.oczadly.karl.jnano.callback;
 
-import com.google.gson.annotations.JsonAdapter;
-import uk.oczadly.karl.jnano.internal.gsonadapters.CallbackBlockTypeDeserializer;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.BlockType;
 
 import java.math.BigInteger;
 
 /**
- * This class encapsulates a variety of data relating to newly-processed blocks. Instances of this class
- * are generated and returned by a {@link BlockCallbackServer} as new blocks are received.
+ * This class encapsulates a variety of data relating to newly-processed blocks. Instances of this class are generated
+ * and returned by a {@link BlockCallbackServer} as new blocks are received.
  */
-@JsonAdapter(CallbackBlockTypeDeserializer.class)
 public class BlockData {
     
-    private final String rawJson, accountAddress, blockHash;
+    private final String rawJson, blockHash;
+    private final NanoAccount account;
     private final Block block;
     private final BlockType subtype;
     private final boolean isSend;
     private final BigInteger amount;
     
-    public BlockData(String rawJson, String accountAddress, String blockHash, Block block, BlockType subtype, boolean isSend, BigInteger amount) {
+    public BlockData(String rawJson, NanoAccount account, String blockHash, Block block, BlockType subtype,
+                     boolean isSend, BigInteger amount) {
         this.rawJson = rawJson;
-        this.accountAddress = accountAddress;
+        this.account = account;
         this.blockHash = blockHash;
         this.block = block;
         this.subtype = subtype;
@@ -42,8 +42,8 @@ public class BlockData {
     /**
      * @return the account who the block belongs to
      */
-    public String getAccountAddress() {
-        return accountAddress;
+    public NanoAccount getAccountAddress() {
+        return account;
     }
     
     /**

@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.wallet;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseWork;
 
 /**
@@ -21,8 +21,8 @@ public class RequestWorkGet extends RpcRequest<ResponseWork> {
     
     
     /**
-     * @param walletId  the wallet's ID
-     * @param account   the account's address
+     * @param walletId the wallet's ID
+     * @param account  the account's address
      */
     public RequestWorkGet(String walletId, String account) {
         super("work_get", ResponseWork.class);

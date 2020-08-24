@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseMultiAccountsPending;
 
 import java.math.BigInteger;
@@ -40,23 +40,24 @@ public class RequestMultiAccountsPending extends RpcRequest<ResponseMultiAccount
     
     
     /**
-     * @param accounts  the accounts' addresses
-     * @param count     the limit
+     * @param accounts the accounts' addresses
+     * @param count    the limit
      */
     public RequestMultiAccountsPending(String[] accounts, int count) {
         this(accounts, count, null, null, null, null);
     }
     
     /**
-     * @param accounts              the accounts' addresses
-     * @param count                 the block limit
-     * @param threshold             (optional) the minimum amount threshold
-     * @param includeActive         (optional) whether active blocks should be included
-     * @param sorting               (optional) whether each account's blocks should be sorted in descending order
-     * @param includeOnlyConfirmed  (optional) whether only blocks undergoing confirmation height processing should
-     *                              be listed
+     * @param accounts             the accounts' addresses
+     * @param count                the block limit
+     * @param threshold            (optional) the minimum amount threshold
+     * @param includeActive        (optional) whether active blocks should be included
+     * @param sorting              (optional) whether each account's blocks should be sorted in descending order
+     * @param includeOnlyConfirmed (optional) whether only blocks undergoing confirmation height processing should be
+     *                             listed
      */
-    public RequestMultiAccountsPending(String[] accounts, int count, BigInteger threshold, Boolean includeActive, Boolean sorting, Boolean includeOnlyConfirmed) {
+    public RequestMultiAccountsPending(String[] accounts, int count, BigInteger threshold, Boolean includeActive,
+                                       Boolean sorting, Boolean includeOnlyConfirmed) {
         super("accounts_pending", ResponseMultiAccountsPending.class);
         this.accounts = accounts;
         this.count = count;

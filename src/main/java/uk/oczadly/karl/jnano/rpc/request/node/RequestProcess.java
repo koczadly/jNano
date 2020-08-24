@@ -3,7 +3,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHash;
 
 /**
@@ -37,7 +37,7 @@ public class RequestProcess extends RpcRequest<ResponseBlockHash> {
      * @param force (optional) whether fork resolution should be forced
      */
     public RequestProcess(Block block, Boolean force) {
-        this(block.getJsonString(), force, null, null);
+        this(block.toJsonString(), force, null, null);
     }
     
     /**
@@ -61,7 +61,7 @@ public class RequestProcess extends RpcRequest<ResponseBlockHash> {
     /**
      * @param blockJson the block's JSON contents
      * @param force     (optional) whether fork resolution should be forced
-     * @param watchWork (optional) the subtype of the block
+     * @param watchWork (optional) whether the block should be placed on watch for confirmation
      * @param subtype   (optional) the subtype of the block
      */
     public RequestProcess(String blockJson, Boolean force, Boolean watchWork, String subtype) {

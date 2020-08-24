@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.wallet;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseAccountsMoved;
 
 /**
@@ -24,9 +24,9 @@ public class RequestAccountsMove extends RpcRequest<ResponseAccountsMoved> {
     
     
     /**
-     * @param sourceWalletId        the source wallet ID
-     * @param destinationWalletId   the destination wallet ID
-     * @param accounts              an array of accounts' addresses to be moved
+     * @param sourceWalletId      the source wallet ID
+     * @param destinationWalletId the destination wallet ID
+     * @param accounts            an array of accounts' addresses to be moved
      */
     public RequestAccountsMove(String sourceWalletId, String destinationWalletId, String... accounts) {
         super("account_move", ResponseAccountsMoved.class);

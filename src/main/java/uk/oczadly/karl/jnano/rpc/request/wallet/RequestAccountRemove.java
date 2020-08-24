@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.wallet;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
 /**
@@ -21,8 +21,8 @@ public class RequestAccountRemove extends RpcRequest<ResponseSuccessful> {
     
     
     /**
-     * @param walletId  the containing wallet's ID
-     * @param account   the account's address
+     * @param walletId the containing wallet's ID
+     * @param account  the account's address
      */
     public RequestAccountRemove(String walletId, String account) {
         super("account_remove", ResponseSuccessful.class);

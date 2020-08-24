@@ -6,26 +6,23 @@ import com.google.gson.annotations.SerializedName;
  * This class represents the types of block available. Only {@link #STATE} blocks should be used from hereon, and have
  * since been deprecated on the official Nano node.
  */
+@SuppressWarnings("DeprecatedIsStillUsed")
 public enum BlockType {
     
     @SerializedName("open")
-    @Deprecated
-    OPEN    (true),
+    OPEN(true),
     
     @SerializedName("change")
-    @Deprecated
-    CHANGE  (false),
+    CHANGE(false),
     
     @SerializedName("send")
-    @Deprecated
-    SEND    (true),
+    SEND(true),
     
     @SerializedName("receive")
-    @Deprecated
-    RECEIVE (true),
+    RECEIVE(true),
     
     @SerializedName("state")
-    STATE   (true);
+    STATE(true);
     
     
     boolean isTransaction;
@@ -37,7 +34,9 @@ public enum BlockType {
     
     /**
      * @return whether the block type represents a transfer of funds
+     * @deprecated Certain block types require contextual information to determine the action.
      */
+    @Deprecated
     public boolean isTransaction() {
         return isTransaction;
     }

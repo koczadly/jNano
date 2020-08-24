@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.wallet;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.rpc.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseAccount;
 
 /**
@@ -24,17 +24,17 @@ public class RequestWalletAdd extends RpcRequest<ResponseAccount> {
     
     
     /**
-     * @param walletId  the wallet's ID
-     * @param key       the private key for the account
+     * @param walletId the wallet's ID
+     * @param key      the private key for the account
      */
     public RequestWalletAdd(String walletId, String key) {
         this(walletId, key, null);
     }
     
     /**
-     * @param walletId      the wallet's ID
-     * @param key           the private key for the account
-     * @param generateWork  whether work should be pre-computed for this account
+     * @param walletId     the wallet's ID
+     * @param key          the private key for the account
+     * @param generateWork whether work should be pre-computed for this account
      */
     public RequestWalletAdd(String walletId, String key, Boolean generateWork) {
         super("wallet_add", ResponseAccount.class);

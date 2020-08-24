@@ -2,7 +2,6 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
-import uk.oczadly.karl.jnano.rpc.RpcResponse;
 
 import java.lang.reflect.Type;
 
@@ -22,6 +21,7 @@ public class ResponseSuccessful extends RpcResponse {
     
     /**
      * Note: depending on the query, the given value may have no function and could be incorrect.
+     *
      * @return whether the query was successful
      */
     public boolean isSuccessful() {
