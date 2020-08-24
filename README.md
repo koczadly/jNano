@@ -75,7 +75,26 @@ node.processRequestAsync(new RequestVersion(), new QueryCallback<>() {
     }
 });
 ```
-#### Listening for real-time blocks
+#### Listening for real-time blocks (WebSocket)
+The following will create a WebSocket listener which connects to port 7078 on localhost. For each new block confirmed
+ by the node, the hash will be printed to the console.
+```java
+NanoWebSocketClient ws = new NanoWebSocketClient(); // Defaults to endpoint localhost:7078
+ws.connect(); // Connect to the websocket
+
+// Register a listener for block confirmations
+ws.getTopicConfirmedBlocks().registerListener((message, context) -> {
+    System.out.println("New block: " + message.getHash()); // Print the hash of all new blocks
+});
+
+// Subscribe to the block confirmations topic, and specify an account filter
+ws.getTopicConfirmedBlocks().subscribe(new TopicOptionsConfirmation()
+        .setAccounts(List.of(
+                NanoAccount.parse("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz")))
+        .setIncludeBlock(true));
+```
+
+#### Listening for real-time blocks (callback server)
 The following will create a callback server on port 8080, and print the hash and type of all new blocks to the
  console. The node will need to be configured to send to your application's listening address and port for this to work.
 ```java
