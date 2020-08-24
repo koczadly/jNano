@@ -3,7 +3,7 @@ package uk.oczadly.karl.jnano.model.work;
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import com.rfksystems.blake2b.Blake2b;
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.rpc.request.node.RequestWorkGenerate;
 
 import java.lang.reflect.Type;
@@ -74,10 +74,10 @@ public class WorkSolution {
      */
     public WorkDifficulty calculateDifficulty(String root) {
         if (root == null) throw new IllegalArgumentException("Root argument cannot be null.");
-        if (!JNanoHelper.isValidHex(root, 64))
+        if (!JNH.isValidHex(root, 64))
             throw new IllegalArgumentException("Root argument must be a 64-character hex string.");
         
-        return calculateDifficulty(JNanoHelper.ENCODER_HEX.decode(root));
+        return calculateDifficulty(JNH.ENC_16.decode(root));
     }
     
     /**
@@ -90,7 +90,7 @@ public class WorkSolution {
         if (root == null) throw new IllegalArgumentException("Root array cannot be null.");
         if (root.length != 32) throw new IllegalArgumentException("Root array must have a length of 32.");
     
-        return new WorkDifficulty(convertBytesToLong(JNanoHelper.blake2b(8, convertLongToBytes(longVal), root)));
+        return new WorkDifficulty(convertBytesToLong(JNH.blake2b(8, convertLongToBytes(longVal), root)));
     }
     
     
@@ -126,10 +126,10 @@ public class WorkSolution {
      */
     public static WorkSolution generate(String root, WorkDifficulty threshold) throws InterruptedException {
         if (root == null) throw new IllegalArgumentException("Root argument cannot be null.");
-        if (!JNanoHelper.isValidHex(root, 64))
+        if (!JNH.isValidHex(root, 64))
             throw new IllegalArgumentException("Root argument must be a 64-character hex string.");
         
-        return generate(JNanoHelper.ENCODER_HEX.decode(root), threshold);
+        return generate(JNH.ENC_16.decode(root), threshold);
     }
     
     /**
@@ -199,10 +199,10 @@ public class WorkSolution {
     public static Future<WorkSolution> generateMultiThreaded(String root, WorkDifficulty threshold,
                                                              ExecutorService executor, int parallelTasks) {
         if (root == null) throw new IllegalArgumentException("Root argument cannot be null.");
-        if (!JNanoHelper.isValidHex(root, 64))
+        if (!JNH.isValidHex(root, 64))
             throw new IllegalArgumentException("Root argument must be a 64-character hex string.");
     
-        return generateMultiThreaded(JNanoHelper.ENCODER_HEX.decode(root), threshold, executor, parallelTasks);
+        return generateMultiThreaded(JNH.ENC_16.decode(root), threshold, executor, parallelTasks);
     }
     
     /**
@@ -287,11 +287,11 @@ public class WorkSolution {
     }
     
     private static byte[] convertLongToBytes(long val) {
-        return JNanoHelper.reverseArray(JNanoHelper.longToBytes(val));
+        return JNH.reverseArray(JNH.longToBytes(val));
     }
     
     private static long convertBytesToLong(byte[] val) {
-        return JNanoHelper.bytesToLong(JNanoHelper.reverseArray(val));
+        return JNH.bytesToLong(JNH.reverseArray(val));
     }
     
     

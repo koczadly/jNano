@@ -1,6 +1,6 @@
 package uk.oczadly.karl.jnano.util;
 
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 
 import java.security.SecureRandom;
 
@@ -28,7 +28,7 @@ public final class WalletUtil {
     public static String generateRandomSeed(SecureRandom random) {
         StringBuilder seed = new StringBuilder(64);
         for (int i=0; i<64; i++)
-            seed.append(JNanoHelper.HEX_CHARS_UC[random.nextInt(16)]);
+            seed.append(JNH.HEX_CHARS_UC[random.nextInt(16)]);
         return seed.toString();
     }
     
@@ -51,11 +51,11 @@ public final class WalletUtil {
     public static String deriveKeyFromSeed(String seed, long index) {
         if (seed == null)
             throw new IllegalArgumentException("Seed cannot be null.");
-        if (!JNanoHelper.isValidHex(seed, 64))
+        if (!JNH.isValidHex(seed, 64))
             throw new IllegalArgumentException("Seed must be a 64-character hex string.");
         
-        byte[] seedBytes = deriveKeyFromSeed(JNanoHelper.ENCODER_HEX.decode(seed), index);
-        return JNanoHelper.ENCODER_HEX.encode(seedBytes);
+        byte[] seedBytes = deriveKeyFromSeed(JNH.ENC_16.decode(seed), index);
+        return JNH.ENC_16.encode(seedBytes);
     }
     
     /**
@@ -72,8 +72,8 @@ public final class WalletUtil {
         if (index < 0 || index > MAX_SEED_INDEX)
             throw new IllegalArgumentException("Seed index is out of bounds.");
         
-        byte[] indexBytes = JNanoHelper.leftPadByteArray(JNanoHelper.longToBytes(index), 4, true);
-        return JNanoHelper.blake2b(32, seed, indexBytes);
+        byte[] indexBytes = JNH.leftPadByteArray(JNH.longToBytes(index), 4, true);
+        return JNH.blake2b(32, seed, indexBytes);
     }
     
 }

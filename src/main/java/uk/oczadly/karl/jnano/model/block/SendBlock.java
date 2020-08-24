@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockBalance;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockLink;
@@ -40,11 +40,11 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
         super(BlockType.SEND, hash, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNanoHelper.isValidHex(previousBlockHash, 64))
+        if (!JNH.isValidHex(previousBlockHash, 64))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (destinationAccount == null) throw new IllegalArgumentException("Block destination account cannot be null.");
         if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");
-        if (!JNanoHelper.isBalanceValid(balance))
+        if (!JNH.isBalanceValid(balance))
             throw new IllegalArgumentException("Account balance is an invalid amount.");
         
         this.previousBlockHash = previousBlockHash;
@@ -85,9 +85,9 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
     @Override
     protected byte[][] generateHashables() {
         return new byte[][] {
-                JNanoHelper.ENCODER_HEX.decode(getPreviousBlockHash()),
+                JNH.ENC_16.decode(getPreviousBlockHash()),
                 getDestinationAccount().getPublicKeyBytes(),
-                JNanoHelper.leftPadByteArray(getBalance().toByteArray(), 16, false)
+                JNH.leftPadByteArray(getBalance().toByteArray(), 16, false)
         };
     }
     

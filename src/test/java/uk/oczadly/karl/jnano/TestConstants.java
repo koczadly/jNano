@@ -1,6 +1,6 @@
 package uk.oczadly.karl.jnano;
 
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.util.HashMap;
@@ -25,7 +25,7 @@ public class TestConstants {
                 .computeIfAbsent(len, k -> {
                     StringBuilder sb = new StringBuilder(len);
                     for (int i=0; i<len; i++)
-                        sb.append(JNanoHelper.HEX_CHARS_UC[RANDOM.nextInt(16)]);
+                        sb.append(JNH.HEX_CHARS_UC[RANDOM.nextInt(16)]);
                     return sb.toString();
                 });
     }

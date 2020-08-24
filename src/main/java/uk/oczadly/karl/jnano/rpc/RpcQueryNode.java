@@ -1,6 +1,6 @@
 package uk.oczadly.karl.jnano.rpc;
 
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.rpc.exception.RpcException;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
@@ -63,7 +63,7 @@ public class RpcQueryNode {
      * @param port the port which the node is listening on
      */
     public RpcQueryNode(int port) {
-        this(JNanoHelper.unchecked(() -> new URL("HTTP", "::1", port, "")));
+        this(JNH.unchecked(() -> new URL("HTTP", "::1", port, "")));
     }
     
     /**

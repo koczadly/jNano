@@ -1,7 +1,7 @@
 package uk.oczadly.karl.jnano.rpc;
 
 import com.google.gson.Gson;
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 
 public class RpcRequestSerializerImpl implements RpcRequestSerializer {
@@ -9,7 +9,7 @@ public class RpcRequestSerializerImpl implements RpcRequestSerializer {
     private Gson gson;
     
     public RpcRequestSerializerImpl() {
-        this(JNanoHelper.GSON);
+        this(JNH.GSON);
     }
     
     public RpcRequestSerializerImpl(Gson gson) {

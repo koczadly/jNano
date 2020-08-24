@@ -1,6 +1,6 @@
 package uk.oczadly.karl.jnano.util;
 
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
@@ -80,7 +80,7 @@ public final class NanoConstants {
     public static NetworkConstants getNetworkFromGenesisHash(String hash) {
         if (hash == null)
             throw new IllegalArgumentException("Block hash cannot be null.");
-        if (!JNanoHelper.isValidHex(hash, 64))
+        if (!JNH.isValidHex(hash, 64))
             throw new IllegalArgumentException("Block hash is not a valid 64-character hex string.");
         
         hash = hash.toUpperCase();

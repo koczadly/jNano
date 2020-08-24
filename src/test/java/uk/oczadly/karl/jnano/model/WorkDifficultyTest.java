@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.model;
 
 import com.google.gson.JsonParser;
 import org.junit.Test;
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 
 import static org.junit.Assert.assertEquals;
@@ -40,7 +40,7 @@ public class WorkDifficultyTest {
     
     @Test
     public void testJsonDeserialize() {
-        WorkDifficulty obj = JNanoHelper.GSON.fromJson("\"" + TEST_WORK_1 + "\"", WorkDifficulty.class);
+        WorkDifficulty obj = JNH.GSON.fromJson("\"" + TEST_WORK_1 + "\"", WorkDifficulty.class);
         assertEquals(TEST_WORK_1, obj.getAsHexadecimal());
     }
     
@@ -49,7 +49,7 @@ public class WorkDifficultyTest {
         WorkDifficulty obj = new WorkDifficulty(TEST_WORK_1);
         
         assertEquals(JsonParser.parseString("\"" + TEST_WORK_1 + "\""),
-                JsonParser.parseString(JNanoHelper.GSON.toJson(obj)));
+                JsonParser.parseString(JNH.GSON.toJson(obj)));
     }
     
     @Test

@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.model;
 
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
 
 import java.lang.reflect.Type;
@@ -34,7 +34,7 @@ public final class NanoAccount {
     public static final String DEFAULT_PREFIX = "nano";
     
     private static final String[] DEFAULT_ALLOWED_PREFIXES = {DEFAULT_PREFIX, "xrb"};
-    private static final BigInteger MAX_INDEX_VAL = new BigInteger(JNanoHelper.repeatChar('F', 64), 16);
+    private static final BigInteger MAX_INDEX_VAL = new BigInteger(JNH.repeatChar('F', 64), 16);
     
     /**
      * <p>The zeroth index account, represented by all zeroes for the public key. This address is also the burn address
@@ -81,7 +81,7 @@ public final class NanoAccount {
      * @see #parse(String)
      */
     public NanoAccount(BigInteger index, String prefix) {
-        this(prefix, JNanoHelper.leftPadByteArray(index.toByteArray(), 32, true), null, null, null);
+        this(prefix, JNH.leftPadByteArray(index.toByteArray(), 32, true), null, null, null);
         if (index.compareTo(BigInteger.ZERO) < 0 || index.compareTo(MAX_INDEX_VAL) > 0)
             throw new IllegalArgumentException("Account index is out of bounds.");
     }
@@ -177,7 +177,7 @@ public final class NanoAccount {
         if (publicKeyHex == null) {
             synchronized (this) {
                 if (publicKeyHex == null)
-                    publicKeyHex = JNanoHelper.ENCODER_HEX.encode(keyBytes);
+                    publicKeyHex = JNH.ENC_16.encode(keyBytes);
             }
         }
         return publicKeyHex;
@@ -212,7 +212,7 @@ public final class NanoAccount {
         if (segAddress == null) {
             synchronized (this) {
                 if (segAddress == null)
-                    segAddress = JNanoHelper.ENCODER_NANO_B32.encode(getPublicKeyBytes());
+                    segAddress = JNH.ENC_32.encode(getPublicKeyBytes());
             }
         }
         return segAddress;
@@ -225,7 +225,7 @@ public final class NanoAccount {
         if (segChecksum == null) {
             synchronized (this) {
                 if (segChecksum == null)
-                    segChecksum = JNanoHelper.ENCODER_NANO_B32.encode(getChecksumBytes());
+                    segChecksum = JNH.ENC_32.encode(getChecksumBytes());
             }
         }
         return segChecksum;
@@ -394,7 +394,7 @@ public final class NanoAccount {
         checksum = checksum != null ? checksum.toLowerCase() : null;
         
         // Create object
-        NanoAccount createdAddr = new NanoAccount(prefix, calculateKeyBytes(address, JNanoHelper.ENCODER_NANO_B32),
+        NanoAccount createdAddr = new NanoAccount(prefix, calculateKeyBytes(address, JNH.ENC_32),
                 address, null, null);
         
         // Verify checksum (if provided)
@@ -428,7 +428,7 @@ public final class NanoAccount {
         if (key.length() != 64) throw new AddressFormatException("Key string must be 64 characters long.");
         
         key = key.toUpperCase();
-        return new NanoAccount(prefix, calculateKeyBytes(key, JNanoHelper.ENCODER_HEX), null, key, null);
+        return new NanoAccount(prefix, calculateKeyBytes(key, JNH.ENC_16), null, key, null);
     }
     
     
@@ -501,7 +501,7 @@ public final class NanoAccount {
     
     /** Helper method to calculate checksum bytes from a public key. */
     private static byte[] calculateChecksumBytes(byte[] keyBytes) {
-        return JNanoHelper.reverseArray(JNanoHelper.blake2b(5, keyBytes));
+        return JNH.reverseArray(JNH.blake2b(5, keyBytes));
     }
     
     /** Helper method to calculate bytes from an encoded address. */

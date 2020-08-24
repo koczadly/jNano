@@ -1,7 +1,7 @@
 package uk.oczadly.karl.jnano.rpc;
 
 import com.google.gson.*;
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.rpc.exception.*;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 
@@ -14,7 +14,7 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
     private Gson gson;
     
     public RpcResponseDeserializerImpl() {
-        this(JNanoHelper.GSON);
+        this(JNH.GSON);
     }
     
     public RpcResponseDeserializerImpl(Gson gson) {

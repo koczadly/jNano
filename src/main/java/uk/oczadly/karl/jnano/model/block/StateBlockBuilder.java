@@ -1,6 +1,6 @@
 package uk.oczadly.karl.jnano.model.block;
 
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
@@ -187,7 +187,7 @@ public final class StateBlockBuilder {
     public StateBlockBuilder setBalance(BigInteger balance) {
         if (balance == null)
             throw new IllegalArgumentException("Balance argument cannot be null.");
-        if (!JNanoHelper.isBalanceValid(balance))
+        if (!JNH.isBalanceValid(balance))
             throw new IllegalArgumentException("Provided balance value is not in the valid range.");
         
         this.balance = balance;

@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockRepresentative;
@@ -38,7 +38,7 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
         super(BlockType.OPEN, hash, signature, work);
     
         if (sourceBlockHash == null) throw new IllegalArgumentException("Source block hash cannot be null.");
-        if (!JNanoHelper.isValidHex(sourceBlockHash, 64))
+        if (!JNH.isValidHex(sourceBlockHash, 64))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (accountAddress == null) throw new IllegalArgumentException("Block account cannot be null.");
         if (representativeAccount == null) throw new IllegalArgumentException("Block representative cannot be null.");
@@ -68,7 +68,7 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     @Override
     protected byte[][] generateHashables() {
         return new byte[][] {
-                JNanoHelper.ENCODER_HEX.decode(getSourceBlockHash()),
+                JNH.ENC_16.decode(getSourceBlockHash()),
                 getRepresentative().getPublicKeyBytes(),
                 getAccount().getPublicKeyBytes()
         };

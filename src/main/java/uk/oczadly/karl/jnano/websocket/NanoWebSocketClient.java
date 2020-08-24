@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.websocket.topic.*;
 
 import java.net.URI;
@@ -41,7 +41,7 @@ public final class NanoWebSocketClient {
     
     private final AtomicLong nextReqId = new AtomicLong(0);
     private final Map<Long, CountDownLatch> requestTrackers = new ConcurrentHashMap<>();
-    private final Gson gson = JNanoHelper.GSON;
+    private final Gson gson = JNH.GSON;
     private final Map<String, WsTopic<?>> topics = new ConcurrentHashMap<>();
     
     private final WsTopicConfirmation topicConfirmation = new WsTopicConfirmation(this);
@@ -58,7 +58,7 @@ public final class NanoWebSocketClient {
      * Configures a WebSocket endpoint on localhost, port 7078.
      */
     public NanoWebSocketClient() {
-        this(JNanoHelper.unchecked(() -> new URI("ws://[::1]:7078")));
+        this(JNH.unchecked(() -> new URI("ws://[::1]:7078")));
     }
     
     /**

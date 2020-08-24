@@ -5,7 +5,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.gsonadapters.BlockAdapter;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlock;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
@@ -46,9 +46,9 @@ public abstract class Block implements IBlock {
     public Block(BlockType type, String hash, String signature, WorkSolution workSolution) {
         if (type == null)
             throw new IllegalArgumentException("Block type cannot be null.");
-        if (!JNanoHelper.isValidHex(hash, 64))
+        if (!JNH.isValidHex(hash, 64))
             throw new IllegalArgumentException("Block hash is invalid.");
-        if (!JNanoHelper.isValidHex(signature, 128))
+        if (!JNH.isValidHex(signature, 128))
             throw new IllegalArgumentException("Block signature is invalid.");
         
         this.type = type;
@@ -67,7 +67,7 @@ public abstract class Block implements IBlock {
         if (hash == null) {
             synchronized (this) {
                 if (hash == null) {
-                    hash = JNanoHelper.ENCODER_HEX.encode(generateHashBytes());
+                    hash = JNH.ENC_16.encode(generateHashBytes());
                 }
             }
         }
@@ -116,7 +116,7 @@ public abstract class Block implements IBlock {
     protected final byte[] calculateHashBytes() {
         byte[][] hashables = generateHashables();
         if (hashables == null) return null;
-        return JNanoHelper.blake2b(32, hashables);
+        return JNH.blake2b(32, hashables);
     }
     
     private byte[] generateHashBytes() {
@@ -125,7 +125,7 @@ public abstract class Block implements IBlock {
                 if (hashBytes == null) {
                     if (hash != null) {
                         // Decode from existing hash string
-                        hashBytes = JNanoHelper.ENCODER_HEX.decode(hash);
+                        hashBytes = JNH.ENC_16.decode(hash);
                     } else {
                         hashBytes = calculateHashBytes();
                     }
@@ -163,12 +163,12 @@ public abstract class Block implements IBlock {
      * @return a JSON representation of this block, as a Gson {@link JsonObject}
      */
     public final JsonObject getJsonObject(boolean fillBlanks) {
-        JsonObject json = JNanoHelper.GSON.toJsonTree(this).getAsJsonObject();
+        JsonObject json = JNH.GSON.toJsonTree(this).getAsJsonObject();
         if (fillBlanks) {
             if (signature == null)
-                json.addProperty("signature", JNanoHelper.ZEROES_128);
+                json.addProperty("signature", JNH.ZEROES_128);
             if (workSolution == null)
-                json.addProperty("work", JNanoHelper.ZEROES_16);
+                json.addProperty("work", JNH.ZEROES_16);
         }
         return json;
     }

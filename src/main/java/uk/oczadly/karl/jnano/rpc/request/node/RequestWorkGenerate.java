@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
@@ -156,7 +156,7 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
          * @param <B>   the block interfaces
          */
         public <B extends Block & IBlockPrevious & IBlockAccount> Builder(B block) {
-            this((block.getPreviousBlockHash() == null || block.getPreviousBlockHash().equals(JNanoHelper.ZEROES_64))
+            this((block.getPreviousBlockHash() == null || block.getPreviousBlockHash().equals(JNH.ZEROES_64))
                     ? block.getAccount().toPublicKey() : block.getPreviousBlockHash(), block);
         }
     
@@ -167,7 +167,7 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
          * @param block the block to generate work for
          */
         public Builder(String root, Block block) {
-            if (!JNanoHelper.isValidHex(root, 64))
+            if (!JNH.isValidHex(root, 64))
                 throw new IllegalArgumentException("Root string is invalid.");
             if (root == null)
                 throw new IllegalArgumentException("Root cannot be null.");

@@ -1,7 +1,7 @@
 package uk.oczadly.karl.jnano.util;
 
 import org.junit.Test;
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 
 import static org.junit.Assert.*;
 
@@ -11,7 +11,7 @@ public class WalletUtilTest {
     public void generateSeed() {
         String seed = WalletUtil.generateRandomSeed();
         assertNotNull(seed);
-        assertTrue(JNanoHelper.isValidHex(seed, 64));
+        assertTrue(JNH.isValidHex(seed, 64));
     }
     
     @Test

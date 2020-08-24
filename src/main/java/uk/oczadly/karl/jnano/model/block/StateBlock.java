@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.*;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
@@ -17,7 +17,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         IBlockAccount {
     
     /** Prefix for block hashing. */
-    private static final byte[] HASH_PREAMBLE_BYTES = JNanoHelper.leftPadByteArray(new byte[] {6}, 32, false);
+    private static final byte[] HASH_PREAMBLE_BYTES = JNH.leftPadByteArray(new byte[] {6}, 32, false);
     
     
     @Expose @SerializedName("account")
@@ -90,23 +90,23 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
                NanoAccount representativeAddress, BigInteger balance, String linkData, NanoAccount linkAccount) {
         super(BlockType.STATE, hash, signature, work);
         
-        if (!JNanoHelper.isValidHex(previousBlockHash, 64))
+        if (!JNH.isValidHex(previousBlockHash, 64))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (representativeAddress == null) throw new IllegalArgumentException("Block representative cannot be null.");
         if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");
-        if (!JNanoHelper.isBalanceValid(balance))
+        if (!JNH.isBalanceValid(balance))
             throw new IllegalArgumentException("Account balance is an invalid amount.");
         if (accountAddress == null) throw new IllegalArgumentException("Block account cannot be null.");
-        if (!JNanoHelper.isValidHex(linkData, 64))
+        if (!JNH.isValidHex(linkData, 64))
             throw new IllegalArgumentException("Link data is invalid.");
         
         this.subType = subtype;
         this.accountAddress = accountAddress;
-        this.previousBlockHash = previousBlockHash != null ? previousBlockHash.toUpperCase() : JNanoHelper.ZEROES_64;
+        this.previousBlockHash = previousBlockHash != null ? previousBlockHash.toUpperCase() : JNH.ZEROES_64;
         this.representativeAddress = representativeAddress;
         this.balance = balance;
         if (linkAccount == null && linkData == null) // If no data field is specified
-            linkData = JNanoHelper.ZEROES_64;
+            linkData = JNH.ZEROES_64;
         this.linkData = linkData != null ? linkData.toUpperCase() : linkAccount.toPublicKey();
         this.linkAccount = linkAccount != null ? linkAccount : NanoAccount.parsePublicKey(linkData);
     }
@@ -165,10 +165,10 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         return new byte[][] {
                 HASH_PREAMBLE_BYTES,
                 getAccount().getPublicKeyBytes(),
-                JNanoHelper.ENCODER_HEX.decode(getPreviousBlockHash()),
+                JNH.ENC_16.decode(getPreviousBlockHash()),
                 getRepresentative().getPublicKeyBytes(),
-                JNanoHelper.leftPadByteArray(getBalance().toByteArray(), 16, false),
-                JNanoHelper.ENCODER_HEX.decode(getLinkData())
+                JNH.leftPadByteArray(getBalance().toByteArray(), 16, false),
+                JNH.ENC_16.decode(getLinkData())
         };
     }
     

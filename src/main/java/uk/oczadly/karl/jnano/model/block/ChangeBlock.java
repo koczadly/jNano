@@ -2,7 +2,7 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.internal.JNanoHelper;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockRepresentative;
@@ -34,7 +34,7 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
         super(BlockType.CHANGE, hash, signature, workSolution);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNanoHelper.isValidHex(previousBlockHash, 64))
+        if (!JNH.isValidHex(previousBlockHash, 64))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (representativeAccount == null) throw new IllegalArgumentException("Block representative cannot be null.");
         
@@ -57,7 +57,7 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
     @Override
     protected byte[][] generateHashables() {
         return new byte[][] {
-                JNanoHelper.ENCODER_HEX.decode(getPreviousBlockHash()),
+                JNH.ENC_16.decode(getPreviousBlockHash()),
                 getRepresentative().getPublicKeyBytes()
         };
     }

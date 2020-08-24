@@ -14,12 +14,15 @@ import java.math.BigInteger;
 import java.time.Instant;
 import java.util.concurrent.Callable;
 
-public class JNanoHelper {
+/**
+ * JNano Helper class.
+ */
+public class JNH {
     
     public static final char[] HEX_CHARS_UC = "0123456789ABCDEF".toCharArray();
     
-    public static final BaseEncoder ENCODER_HEX = new BaseEncoder(HEX_CHARS_UC);
-    public static final BaseEncoder ENCODER_NANO_B32 = new BaseEncoder("13456789abcdefghijkmnopqrstuwxyz");
+    public static final BaseEncoder ENC_16 = new BaseEncoder(HEX_CHARS_UC);
+    public static final BaseEncoder ENC_32 = new BaseEncoder("13456789abcdefghijkmnopqrstuwxyz");
     
     public static final String ZEROES_16 = repeatChar('0', 16);
     public static final String ZEROES_64 = repeatChar('0', 64);
