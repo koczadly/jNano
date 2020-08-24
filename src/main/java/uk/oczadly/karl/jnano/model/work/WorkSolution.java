@@ -229,8 +229,8 @@ public class WorkSolution {
         for (int i=0; i<parallelTasks; i++) {
             byte[] work = Arrays.copyOf(initialWork, initialWork.length);
             work[7] += i * 2; // Ensure last (MSB) byte is different for each thread
-            
-            WORK_GEN_POOL.execute(() -> {
+    
+            executor.execute(() -> {
                 try {
                     WorkSolution result = generate(root, thresholdBytes, work, interrupt);
                     future.complete(result);
