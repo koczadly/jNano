@@ -6,10 +6,12 @@ import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.gsonadapters.ArrayTypeAdapterFactoryFix;
 import uk.oczadly.karl.jnano.internal.gsonadapters.BigIntSerializer;
 import uk.oczadly.karl.jnano.internal.gsonadapters.BooleanTypeDeserializer;
+import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
 import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
 import uk.oczadly.karl.jnano.util.NanoConstants;
 
 import java.math.BigInteger;
+import java.time.Instant;
 import java.util.concurrent.Callable;
 
 public class JNanoHelper {
@@ -28,7 +30,8 @@ public class JNanoHelper {
             .registerTypeAdapterFactory(new ArrayTypeAdapterFactoryFix())       // Empty array hotfix
             .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer())  // Boolean deserializer
             .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer())  // Boolean deserializer
-            .registerTypeAdapter(BigInteger.class, new BigIntSerializer());     // BigInt serializer (string)
+            .registerTypeAdapter(BigInteger.class, new BigIntSerializer())      // BigInt serializer (string)
+            .registerTypeAdapter(Instant.class, new InstantAdapter());          // Instant adapter (epoch millis)
     
     public static final Gson GSON = GSON_BUILDER.create();
     
