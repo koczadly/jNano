@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class TopicUpdateConfirmation {
@@ -24,6 +25,10 @@ public class TopicUpdateConfirmation {
         return this;
     }
     
+    public TopicUpdateConfirmation setAccountsAdd(NanoAccount... accountsAdd) {
+        return setAccountsAdd(Arrays.asList(accountsAdd));
+    }
+    
     public List<NanoAccount> getAccountsRemove() {
         return accountsRemove;
     }
@@ -31,6 +36,10 @@ public class TopicUpdateConfirmation {
     public TopicUpdateConfirmation setAccountsRemove(List<NanoAccount> accountsRemove) {
         this.accountsRemove = accountsRemove;
         return this;
+    }
+    
+    public TopicUpdateConfirmation setAccountsRemove(NanoAccount... accountsAdd) {
+        return setAccountsRemove(Arrays.asList(accountsAdd));
     }
     
 }

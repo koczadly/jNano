@@ -20,7 +20,7 @@ This project is hosted on [Maven Central](https://search.maven.org/artifact/uk.o
 <dependency>
     <groupId>uk.oczadly.karl</groupId>
     <artifactId>jnano</artifactId>
-    <version>2.6.0-V21</version>
+    <version>2.6.1-V21</version>
 </dependency>
 ```
 
@@ -84,12 +84,12 @@ NanoWebSocketClient ws = new NanoWebSocketClient(); // Defaults to endpoint loca
 ws.connect(); // Connect to the websocket
 
 // Register a listener for block confirmations
-ws.getTopicConfirmedBlocks().registerListener((message, context) -> {
+ws.getTopics().topicConfirmedBlocks().registerListener((message, context) -> {
     System.out.println("New block: " + message.getHash()); // Print the hash of all new blocks
 });
 
 // Subscribe to the block confirmations topic, and specify an account filter
-ws.getTopicConfirmedBlocks().subscribe(new TopicOptionsConfirmation()
+ws.getTopics().topicConfirmedBlocks().subscribe(new TopicOptionsConfirmation()
         .setAccounts(List.of(
                 NanoAccount.parse("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz")))
         .setIncludeBlock(true));

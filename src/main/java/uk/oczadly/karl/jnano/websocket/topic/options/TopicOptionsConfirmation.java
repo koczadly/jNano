@@ -2,8 +2,10 @@ package uk.oczadly.karl.jnano.websocket.topic.options;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.websocket.topic.message.TopicMessageConfirmation;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class TopicOptionsConfirmation {
@@ -15,7 +17,7 @@ public class TopicOptionsConfirmation {
     private Boolean allLocalAccounts;
     
     @Expose @SerializedName("accounts")
-    private List<String> accounts;
+    private List<NanoAccount> accounts;
     
     @Expose @SerializedName("include_block")
     private Boolean includeBlock;
@@ -42,13 +44,17 @@ public class TopicOptionsConfirmation {
         return this;
     }
     
-    public List<String> getAccounts() {
+    public List<NanoAccount> getAccounts() {
         return accounts;
     }
     
-    public TopicOptionsConfirmation setAccounts(List<String> accounts) {
+    public TopicOptionsConfirmation setAccounts(List<NanoAccount> accounts) {
         this.accounts = accounts;
         return this;
+    }
+    
+    public TopicOptionsConfirmation setAccounts(NanoAccount... accounts) {
+        return setAccounts(Arrays.asList(accounts));
     }
     
     public Boolean getIncludeBlock() {
