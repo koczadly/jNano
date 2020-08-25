@@ -6,9 +6,7 @@ import uk.oczadly.karl.jnano.internal.JNH;
 
 import java.net.URI;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -41,6 +39,7 @@ public final class NanoWebSocketClient {
     private final AtomicLong nextReqId = new AtomicLong(0);
     private final Map<Long, CountDownLatch> requestTrackers = new ConcurrentHashMap<>();
     private final Gson gson = JNH.GSON;
+    private final ExecutorService listenerExecutors = Executors.newFixedThreadPool(500);
     private final TopicRegistry topicRegistry = new TopicRegistry(this);
     
     
@@ -142,6 +141,10 @@ public final class NanoWebSocketClient {
     
     Map<Long, CountDownLatch> getRequestTrackers() {
         return requestTrackers;
+    }
+    
+    ExecutorService getListenerExecutor() {
+        return listenerExecutors;
     }
     
     protected void processRequest(JsonObject json) {

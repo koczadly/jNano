@@ -20,9 +20,13 @@ class WebSocketHandler extends WebSocketClient {
     
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        WsObserver listener = client.getWsObserver();
-        if (listener != null)
-            listener.onOpen(handshakedata.getHttpStatus());
+        // Notify socket observer
+        WsObserver observer = client.getWsObserver();
+        if (observer != null) {
+            client.getListenerExecutor().submit(() -> {
+                observer.onOpen(handshakedata.getHttpStatus());
+            });
+        }
     }
     
     @Override
@@ -41,15 +45,23 @@ class WebSocketHandler extends WebSocketClient {
         } else if (json.has("message")) {
             // New message
             WsTopic<?> wsTopic = client.getTopics().get(json.get("topic").getAsString());
+            
             if (wsTopic != null) {
-                wsTopic.notifyListeners(json);
+                client.getListenerExecutor().submit(() -> {
+                    wsTopic.notifyListeners(json);
+                });
                 handled = true;
             }
         }
-    
-        WsObserver listener = client.getWsObserver();
-        if (listener != null)
-            listener.onMessage(json, handled);
+        
+        // Notify socket observer
+        WsObserver observer = client.getWsObserver();
+        if (observer != null) {
+            boolean finalHandled = handled;
+            client.getListenerExecutor().submit(() -> {
+                observer.onMessage(json, finalHandled);
+            });
+        }
     }
     
     @Override
@@ -61,17 +73,24 @@ class WebSocketHandler extends WebSocketClient {
             }
         }
         client.getRequestTrackers().clear();
-        
-        WsObserver listener = client.getWsObserver();
-        if (listener != null)
-            listener.onClose(code, reason, remote);
+    
+        // Notify socket observer
+        WsObserver observer = client.getWsObserver();
+        if (observer != null) {
+            client.getListenerExecutor().submit(() -> {
+                observer.onClose(code, reason, remote);
+            });
+        }
     }
     
     @Override
     public void onError(Exception ex) {
-        WsObserver listener = client.getWsObserver();
-        if (listener != null) {
-            listener.onError(ex);
+        // Notify socket observer
+        WsObserver observer = client.getWsObserver();
+        if (observer != null) {
+            client.getListenerExecutor().submit(() -> {
+                observer.onError(ex);
+            });
         } else {
             ex.printStackTrace();
         }
