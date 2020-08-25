@@ -20,7 +20,7 @@ class WebSocketHandler extends WebSocketClient {
     
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        SocketListener listener = client.getSocketListener();
+        WsObserver listener = client.getWsObserver();
         if (listener != null)
             listener.onOpen(handshakedata.getHttpStatus());
     }
@@ -40,28 +40,28 @@ class WebSocketHandler extends WebSocketClient {
             }
         } else if (json.has("message")) {
             // New message
-            WsTopic<?> wsTopic = client.getTopic(json.get("topic").getAsString());
+            WsTopic<?> wsTopic = client.getTopics().get(json.get("topic").getAsString());
             if (wsTopic != null) {
                 wsTopic.notifyListeners(json);
                 handled = true;
             }
         }
     
-        SocketListener listener = client.getSocketListener();
+        WsObserver listener = client.getWsObserver();
         if (listener != null)
             listener.onMessage(json, handled);
     }
     
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        SocketListener listener = client.getSocketListener();
+        WsObserver listener = client.getWsObserver();
         if (listener != null)
             listener.onClose(code, reason, remote);
     }
     
     @Override
     public void onError(Exception ex) {
-        SocketListener listener = client.getSocketListener();
+        WsObserver listener = client.getWsObserver();
         if (listener != null) {
             listener.onError(ex);
         } else {

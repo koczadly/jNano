@@ -144,9 +144,9 @@ public class WsTopic<M> {
             try {
                 listener.onMessage(message, context);
             } catch (Exception e) {
-                SocketListener socketListener = client.getSocketListener();
-                if (socketListener != null) {
-                    socketListener.onError(e); // Notify socket listener of exception
+                WsObserver wsObserver = client.getWsObserver();
+                if (wsObserver != null) {
+                    wsObserver.onError(e); // Notify socket listener of exception
                 }
             }
         }

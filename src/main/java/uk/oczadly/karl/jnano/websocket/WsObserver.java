@@ -2,9 +2,9 @@ package uk.oczadly.karl.jnano.websocket;
 
 import com.google.gson.JsonObject;
 
-public interface SocketListener {
+public interface WsObserver {
     
-    SocketListener DEFAULT = new SocketListener() {
+    WsObserver DEFAULT = new WsObserver() {
         @Override
         public void onOpen(int httpStatus) {
             System.out.println("WebSocket connected.");
@@ -20,6 +20,7 @@ public interface SocketListener {
     
         @Override
         public void onError(Exception ex) {
+            System.err.println("Uncaught error within WebSocket:");
             ex.printStackTrace();
         }
     };

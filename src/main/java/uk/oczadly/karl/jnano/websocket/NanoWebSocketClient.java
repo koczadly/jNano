@@ -3,7 +3,6 @@ package uk.oczadly.karl.jnano.websocket;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import uk.oczadly.karl.jnano.internal.JNH;
-import uk.oczadly.karl.jnano.websocket.topic.*;
 
 import java.net.URI;
 import java.util.Map;
@@ -15,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * <p>This class represents a WebSocket which can interact with the Nano WebSocket RPC API.</p>
  * <p>Instances of this class may be re-used after closing through the {@link #connect()} method, without having to
- * re-create another instance. It is recommended to use the {@link #setSocketListener(SocketListener)} method to
+ * re-create another instance. It is recommended to use the {@link #setWsObserver(WsObserver)} method to
  * listen for uncaught exceptions and WebSocket events.</p>
  * <p>Below is an example of how this class should be utilised in a standard scenario:</p>
  * <pre>{@code
@@ -37,21 +36,12 @@ public final class NanoWebSocketClient {
     
     private final URI uri;
     private volatile WebSocketHandler ws;
-    private volatile SocketListener socketListener;
+    private volatile WsObserver wsObserver = WsObserver.DEFAULT;
     
     private final AtomicLong nextReqId = new AtomicLong(0);
     private final Map<Long, CountDownLatch> requestTrackers = new ConcurrentHashMap<>();
     private final Gson gson = JNH.GSON;
-    private final Map<String, WsTopic<?>> topics = new ConcurrentHashMap<>();
-    
-    private final WsTopicConfirmation topicConfirmation = new WsTopicConfirmation(this);
-    private final WsTopicVote topicVote = new WsTopicVote(this);
-    private final WsTopicStoppedElection topicStoppedElection = new WsTopicStoppedElection(this);
-    private final WsTopicActiveDifficulty topicActiveDifficulty = new WsTopicActiveDifficulty(this);
-    private final WsTopicWork topicWork = new WsTopicWork(this);
-    private final WsTopicTelemetry topicTelemetry = new WsTopicTelemetry(this);
-    private final WsTopicUnconfirmedBlocks topicUnconfirmed = new WsTopicUnconfirmedBlocks(this);
-    private final WsTopicBootstrap topicBootstrap = new WsTopicBootstrap(this);
+    private final TopicRegistry topicRegistry = new TopicRegistry(this);
     
     
     /**
@@ -67,17 +57,6 @@ public final class NanoWebSocketClient {
      */
     public NanoWebSocketClient(URI uri) {
         this.uri = uri;
-        
-        setSocketListener(SocketListener.DEFAULT);
-        
-        registerTopic(topicConfirmation);
-        registerTopic(topicVote);
-        registerTopic(topicStoppedElection);
-        registerTopic(topicActiveDifficulty);
-        registerTopic(topicWork);
-        registerTopic(topicTelemetry);
-        registerTopic(topicUnconfirmed);
-        registerTopic(topicBootstrap);
     }
     
     
@@ -128,108 +107,32 @@ public final class NanoWebSocketClient {
     
     
     /**
-     * Sets the listener for this socket. This is not normally necessary, but can provide additional information
+     * Sets the observer for this WebSocket. This is not normally necessary, but can provide additional information
      * about the status and activity of this WebSocket. Only one listener may be registered for each WebSocket. This
      * method will only work while the socket is unopened or closed.
-     * @param socketListener the socket listener
+     * @param wsObserver the socket listener
      * @throws IllegalStateException if the socket is currently open
      */
-    public void setSocketListener(SocketListener socketListener) {
+    public void setWsObserver(WsObserver wsObserver) {
         if (isOpen())
             throw new IllegalStateException("The socket listener cannot be updated while the WebSocket is open.");
         
-        this.socketListener = socketListener;
+        this.wsObserver = wsObserver;
     }
     
     /**
-     * @return the socket listener
+     * @return the socket listener object
      */
-    public SocketListener getSocketListener() {
-        return socketListener;
-    }
-    
-    
-    /**
-     * Registers a topic to this websocket if one isn't already registered under the same topic. Most developers and
-     * app use-cases will not need to use this method.
-     * @param topic the topic to register
-     */
-    public void registerTopic(WsTopic<?> topic) {
-        this.topics.putIfAbsent(topic.getTopicName().toLowerCase(), topic);
+    public WsObserver getWsObserver() {
+        return wsObserver;
     }
     
     /**
-     * Returns a topic manager object from a given topic name.
-     * @param topicName the topic name
-     * @return the topic associated with the given name
+     * Returns the topic registry, which contains all the available topics which can be subscribed to.
+     * @return the topic registry
      */
-    public WsTopic<?> getTopic(String topicName) {
-        return this.topics.get(topicName.toLowerCase());
-    }
-    
-    
-    /**
-     * Returns a topic object where you can register listeners, subscribe to and unsubscribe from.
-     * @return the {@code confirmation} topic object
-     */
-    public WsTopicConfirmation getTopicConfirmedBlocks() {
-        return topicConfirmation;
-    }
-    
-    /**
-     * Returns a topic object where you can register listeners, subscribe to and unsubscribe from.
-     * @return the {@code active_difficulty} topic object
-     */
-    public WsTopicActiveDifficulty getTopicActiveDifficulty() {
-        return topicActiveDifficulty;
-    }
-    
-    /**
-     * Returns a topic object where you can register listeners, subscribe to and unsubscribe from.
-     * @return the {@code bootstrap} topic object
-     */
-    public WsTopicBootstrap getTopicBootstrap() {
-        return topicBootstrap;
-    }
-    
-    /**
-     * Returns a topic object where you can register listeners, subscribe to and unsubscribe from.
-     * @return the {@code stopped_election} topic object
-     */
-    public WsTopicStoppedElection getTopicStoppedElection() {
-        return topicStoppedElection;
-    }
-    
-    /**
-     * Returns a topic object where you can register listeners, subscribe to and unsubscribe from.
-     * @return the {@code telemetry} topic object
-     */
-    public WsTopicTelemetry getTopicTelemetry() {
-        return topicTelemetry;
-    }
-    
-    /**
-     * Returns a topic object where you can register listeners, subscribe to and unsubscribe from.
-     * @return the {@code new_unconfirmed_block} topic object
-     */
-    public WsTopicUnconfirmedBlocks getTopicUnconfirmedBlocks() {
-        return topicUnconfirmed;
-    }
-    
-    /**
-     * Returns a topic object where you can register listeners, subscribe to and unsubscribe from.
-     * @return the {@code vote} topic object
-     */
-    public WsTopicVote getTopicVote() {
-        return topicVote;
-    }
-    
-    /**
-     * Returns a topic object where you can register listeners, subscribe to and unsubscribe from.
-     * @return the {@code work} topic object
-     */
-    public WsTopicWork getTopicWork() {
-        return topicWork;
+    public TopicRegistry getTopics() {
+        return topicRegistry;
     }
     
     
