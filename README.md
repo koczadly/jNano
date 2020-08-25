@@ -20,7 +20,7 @@ This project is hosted on [Maven Central](https://search.maven.org/artifact/uk.o
 <dependency>
     <groupId>uk.oczadly.karl</groupId>
     <artifactId>jnano</artifactId>
-    <version>2.6.1-V21</version>
+    <version>2.6.2-V21</version>
 </dependency>
 ```
 
@@ -90,9 +90,7 @@ ws.getTopics().topicConfirmedBlocks().registerListener((message, context) -> {
 
 // Subscribe to the block confirmations topic, and specify an account filter
 ws.getTopics().topicConfirmedBlocks().subscribe(new TopicOptionsConfirmation()
-        .setAccounts(List.of(
-                NanoAccount.parse("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz")))
-        .setIncludeBlock(true));
+        .setAccounts(NanoAccount.parse("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz")));
 ```
 
 #### Listening for real-time blocks (callback server)
