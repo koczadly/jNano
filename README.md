@@ -38,6 +38,7 @@ Before using this library, you will need to configure the node correctly.
 ### Examples
 Detailed examples can be found on the associated wiki pages linked below:
 - [Query requests and operation execution](https://github.com/koczadly/jNano/wiki/Query-requests#how-to-use-the-library)
+- [Real-time WebSocket topic listeners](https://github.com/koczadly/jNano/wiki/WebSocket-communication)
 - [Real-time network block listener](https://github.com/koczadly/jNano/wiki/Block-callback#how-to-use-the-library)
 - [Additional tools and utilities](https://github.com/koczadly/jNano/wiki/Utilities)
 
@@ -111,6 +112,7 @@ server.start();
 The following dependencies are required, and are handled automatically through Maven:
 - [Gson 2.8.6](https://github.com/google/gson)
 - [blake2b 1.0.0](https://github.com/rfksystems/blake2b)
+- [Java-WebSocket 1.5.1](https://github.com/TooTallNate/Java-WebSocket)
 
 ---
 
