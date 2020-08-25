@@ -54,6 +54,14 @@ class WebSocketHandler extends WebSocketClient {
     
     @Override
     public void onClose(int code, String reason, boolean remote) {
+        // Notify waiting subscriptions
+        for (CountDownLatch latch : client.getRequestTrackers().values()) {
+            if (latch != null && latch.getCount() > 0) {
+                latch.countDown(); // Trigger
+            }
+        }
+        client.getRequestTrackers().clear();
+        
         WsObserver listener = client.getWsObserver();
         if (listener != null)
             listener.onClose(code, reason, remote);

@@ -21,8 +21,8 @@ public class WsTopicConfirmation extends WsTopic<TopicMessageConfirmation>
     }
     
     @Override
-    public boolean subscribe(TopicOptionsConfirmation options, long timeout) throws InterruptedException {
-        return _subscribe(options, timeout);
+    public boolean subscribeBlocking(long timeout, TopicOptionsConfirmation options) throws InterruptedException {
+        return _subscribeBlocking(timeout, options);
     }
     
     @Override
@@ -31,8 +31,8 @@ public class WsTopicConfirmation extends WsTopic<TopicMessageConfirmation>
     }
     
     @Override
-    public boolean update(TopicUpdateConfirmation options, long timeout) throws InterruptedException {
-        return _update(options, timeout);
+    public boolean updateBlocking(long timeout, TopicUpdateConfirmation options) throws InterruptedException {
+        return _updateBlocking(timeout, options);
     }
     
 }

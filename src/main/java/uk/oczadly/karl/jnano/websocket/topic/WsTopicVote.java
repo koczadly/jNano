@@ -20,8 +20,8 @@ public class WsTopicVote extends WsTopic<TopicMessageVote>
     }
     
     @Override
-    public boolean subscribe(TopicOptionsVote options, long timeout) throws InterruptedException {
-        return _subscribe(options, timeout);
+    public boolean subscribeBlocking(long timeout, TopicOptionsVote options) throws InterruptedException {
+        return _subscribeBlocking(timeout, options);
     }
     
 }

@@ -85,6 +85,10 @@ public final class NanoWebSocketClient {
         if (isOpen())
             throw new IllegalStateException("WebSocket is already open.");
         
+        // Clear state
+        requestTrackers.clear();
+        nextReqId.set(0);
+        
         this.ws = new WebSocketHandler(uri, this);
         return ws.connectBlocking();
     }
@@ -161,9 +165,9 @@ public final class NanoWebSocketClient {
         
         if (timeout <= 0) {
             completionLatch.await(); // Indefinite
-            return true;
+            return isOpen();
         } else {
-            return completionLatch.await(timeout, TimeUnit.MILLISECONDS); // Timeout
+            return completionLatch.await(timeout, TimeUnit.MILLISECONDS) && isOpen(); // Timeout
         }
     }
 

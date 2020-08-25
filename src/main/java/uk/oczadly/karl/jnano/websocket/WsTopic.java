@@ -87,28 +87,45 @@ public class WsTopic<M> {
      * @throws InterruptedException if the thread is interrupted
      */
     public final boolean subscribe(long timeout) throws InterruptedException {
-        return _subscribe(null, timeout);
+        return _subscribeBlocking(timeout, null);
     }
     
     /**
-     * Unsubscribes from this topic without any options or configurations. This method will process asynchronously
-     * and will not block the thread. The underlying websocket must be open before you can call this method.
-     * @throws IllegalStateException if the websocket is not currently open
+     * <p>Unsubscribes from this topic without any options or configurations. The underlying WebSocket <em>must</em> be
+     * open before you call this method.</p>
+     * <p>This method will process asynchronously and will not block the thread or verify completion.</p>
+     * @throws IllegalStateException if the WebSocket is not currently open
      */
     public final void unsubscribe() {
         client.processRequest(createJson("unsubscribe"));
     }
     
     /**
-     * Unsubscribes from this topic without any options or configurations. This method will block and wait for the
-     * associated acknowledgement response to be received before continuing, unless the timeout expires. The underlying
-     * websocket must be open before you can call this method.
-     * @param timeout the timeout in milliseconds, or zero for no timeout
-     * @return true if the action completed successfully, false if the timeout period expired
-     * @throws IllegalStateException if the websocket is not currently open
+     * <p>Unsubscribes from this topic without any options or configurations. The underlying WebSocket <em>must</em> be
+     * open before you call this method.</p>
+     * <p>This method will block indefinitely and wait for the associated acknowledgement message to be received before
+     * continuing and returning true, false if the WebSocket closed, or throw an {@link InterruptedException} if the
+     * thread is interrupted.</p>
+     * @return true if the action completed successfully, false if the WS is closed
+     * @throws IllegalStateException if the WebSocket is not currently open
      * @throws InterruptedException if the thread is interrupted
      */
-    public final boolean unsubscribe(long timeout) throws InterruptedException {
+    public final boolean unsubscribeBlocking() throws InterruptedException {
+        return unsubscribeBlocking(0);
+    }
+    
+    /**
+     * <p>Unsubscribes from this topic without any options or configurations. The underlying WebSocket <em>must</em> be
+     * open before you call this method.</p>
+     * <p>This method will block and wait for the associated acknowledgement message to be received before
+     * continuing and returning true, false if the WebSocket closed or the timeout period expires, or throw an
+     * {@link InterruptedException} if the thread is interrupted.</p>
+     * @param timeout the timeout in milliseconds, or zero for no timeout
+     * @return true if the action completed successfully, false if the WS is closed or the timeout expires
+     * @throws IllegalStateException if the WebSocket is not currently open
+     * @throws InterruptedException if the thread is interrupted
+     */
+    public final boolean unsubscribeBlocking(long timeout) throws InterruptedException {
         return client.processRequestAck(createJson("unsubscribe"), timeout);
     }
     
@@ -117,7 +134,7 @@ public class WsTopic<M> {
         client.processRequest(createJson("subscribe", options));
     }
     
-    protected final boolean _subscribe(Object options, long timeout) throws InterruptedException {
+    protected final boolean _subscribeBlocking(long timeout, Object options) throws InterruptedException {
         return client.processRequestAck(createJson("subscribe", options), timeout);
     }
     
@@ -125,7 +142,7 @@ public class WsTopic<M> {
         client.processRequest(createJson("update", options));
     }
     
-    protected final boolean _update(Object options, long timeout) throws InterruptedException {
+    protected final boolean _updateBlocking(long timeout, Object options) throws InterruptedException {
         return client.processRequestAck(createJson("update", options), timeout);
     }
     
