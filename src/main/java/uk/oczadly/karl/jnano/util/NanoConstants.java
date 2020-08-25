@@ -14,17 +14,13 @@ import java.math.BigInteger;
  */
 public final class NanoConstants {
     private NanoConstants() {}
-    /*
-        TODO: work difficulites need to be updated
-        https://docs.nano.org/running-a-node/beta-network/#differences-from-the-main-network
-     */
+    
     
     /**
      * The maximum possible balance value, in raw units. This does not account for burned funds, but is simply the
      * number of units which are generated within the genesis block.
      */
     public static final BigInteger MAX_BALANCE_RAW = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16);
-    
     
     /**
      * Constants representing the official live Nano network.
@@ -39,7 +35,7 @@ public final class NanoConstants {
             new WorkSolution("62f05417dd3fb691"),
             "3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xt",
             new NetworkConstants.MinimumWorkDifficulty(
-                    new WorkDifficulty("ffffffc000000000"), new WorkDifficulty("ffffffc000000000")));
+                    new WorkDifficulty("fffffff800000000"), new WorkDifficulty("fffffe0000000000")));
     
     /**
      * Constants representing the official beta Nano network.
@@ -54,7 +50,7 @@ public final class NanoConstants {
             new WorkSolution("7f5c2eb5e2658e81"),
             "1betagcfp7ojzzkof35peohaakx7mt9ddnj4ya8n7sa8imae4ttn",
             new NetworkConstants.MinimumWorkDifficulty(
-                    new WorkDifficulty("fffff00000000000"), new WorkDifficulty("fffff00000000000")));
+                    new WorkDifficulty("fffffff800000000"), new WorkDifficulty("fffffe0000000000")));
     
     /**
      * Constants representing the official Banano network.

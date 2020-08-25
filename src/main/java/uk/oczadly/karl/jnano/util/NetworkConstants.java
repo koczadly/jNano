@@ -83,21 +83,21 @@ public final class NetworkConstants {
     }
     
     
-    public static class MinimumWorkDifficulty {
-        private WorkDifficulty work1, work2;
+    static class MinimumWorkDifficulty {
+        private WorkDifficulty send, receive;
         
-        MinimumWorkDifficulty(WorkDifficulty work1, WorkDifficulty work2) {
-            this.work1 = work1;
-            this.work2 = work2;
+        MinimumWorkDifficulty(WorkDifficulty send, WorkDifficulty receive) {
+            this.send = send;
+            this.receive = receive;
         }
         
         public WorkDifficulty getWorkThreshold(StateBlockSubType subtype) {
             switch (subtype) {
                 case SEND:
                 case CHANGE_REP:
-                    return work1;
+                    return send;
                 default:
-                    return work2;
+                    return receive;
             }
         }
     }
