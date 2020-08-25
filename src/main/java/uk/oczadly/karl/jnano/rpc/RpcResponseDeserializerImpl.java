@@ -50,7 +50,7 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
     
     
     public RpcException parseException(String msg) {
-        String msgLc = msg.toLowerCase();
+        String msgLc = msg.toLowerCase().trim();
         
         // Check and parse error type
         switch (msgLc) {
@@ -69,6 +69,8 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
             case "invalid header: body limit exceeded":
                 return new RpcInvalidRequestJsonException(         // JSON too long
                         "The request JSON exceeded the configured maximum length.");
+            case "unsafe rpc not allowed":
+                return new RpcUnsafeNotAllowedException();         // RPC unsafe
         }
         
         if (msgLc.startsWith("bad") || msgLc.startsWith("invalid") || msgLc.endsWith("invalid")
