@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class TopicOptionsVote {
@@ -25,6 +26,10 @@ public class TopicOptionsVote {
     public TopicOptionsVote setRepresentatives(List<NanoAccount> representatives) {
         this.representatives = representatives;
         return this;
+    }
+    
+    public TopicOptionsVote setRepresentatives(NanoAccount... representatives) {
+        return setRepresentatives(Arrays.asList(representatives));
     }
     
     public Boolean getIncludeReplays() {
