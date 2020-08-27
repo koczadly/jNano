@@ -34,7 +34,7 @@ public final class NanoConstants {
                     "BA03E523A7B5A19E4B6EB12BB02",
             new WorkSolution("62f05417dd3fb691"),
             "3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xt",
-            new NetworkConstants.MinimumWorkDifficulty(
+            new NetworkConstants.WorkDifficultiesV2(
                     new WorkDifficulty("fffffff800000000"), new WorkDifficulty("fffffe0000000000")));
     
     /**
@@ -49,8 +49,8 @@ public final class NanoConstants {
                     "027593C08DDEF9F47934B9CF805",
             new WorkSolution("7f5c2eb5e2658e81"),
             "1betagcfp7ojzzkof35peohaakx7mt9ddnj4ya8n7sa8imae4ttn",
-            new NetworkConstants.MinimumWorkDifficulty(
-                    new WorkDifficulty("fffffff800000000"), new WorkDifficulty("fffffe0000000000")));
+            new NetworkConstants.WorkDifficultiesV2(
+                    new WorkDifficulty("fffff00000000000"), new WorkDifficulty("ffffe00000000000")));
     
     /**
      * Constants representing the official Banano network.
@@ -59,13 +59,12 @@ public final class NanoConstants {
     public static final NetworkConstants BANANO_LIVE_NET = new NetworkConstants(
             "Banano live network",
             "ban",
-            "1burnbabyburndiscoinferno111111111111111111111111111",
+            "1111111111111111111111111111111111111111111111111111",
             "533DCAB343547B93C4128E779848DEA5877D3278CB5EA948BB3A9AA1AE0DB293DE6D9DA4F69E8D1DDFA385F9B4C5E4F38DFA4" +
                     "2C00D7B183560435D07AFA18900",
             new WorkSolution("fa055f79fa56abcf"),
             "1bananobh5rat99qfgt1ptpieie5swmoth87thi74qgbfrij7dcg",
-            new NetworkConstants.MinimumWorkDifficulty(
-                    new WorkDifficulty("fffffe0000000000"), new WorkDifficulty("fffffe0000000000")));
+            new NetworkConstants.WorkDifficultiesV1(new WorkDifficulty("fffffe0000000000")));
     
     
     /**
