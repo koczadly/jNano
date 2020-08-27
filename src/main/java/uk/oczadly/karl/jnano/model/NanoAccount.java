@@ -519,7 +519,7 @@ public final class NanoAccount {
     
     private static void validatePrefix(String prefix) {
         if (prefix != null && !prefix.isEmpty() && !prefix.matches("[0-9A-Za-z]+"))
-            throw new IllegalArgumentException("Address prefix contains an illegal character.");
+            throw new AddressFormatException("Address prefix contains an illegal character.");
     }
     
     
