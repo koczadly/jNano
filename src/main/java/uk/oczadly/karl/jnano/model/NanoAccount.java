@@ -268,6 +268,14 @@ public final class NanoAccount {
         return new NanoAccount(this, prefix);
     }
     
+    /**
+     * Checks whether the address prefix meets the criteria for a valid Nano address (eg. {@code nano} and {@code xrb}).
+     * @return whether the given address is a valid Nano account
+     */
+    public boolean isValidNano() {
+        return Arrays.stream(DEFAULT_ALLOWED_PREFIXES).anyMatch(e -> e.equalsIgnoreCase(getPrefix()));
+    }
+    
     
     /**
      * <p>Creates a new {@link NanoAccount} from a given address or public key.</p>
@@ -394,8 +402,8 @@ public final class NanoAccount {
         checksum = checksum != null ? checksum.toLowerCase() : null;
         
         // Create object
-        NanoAccount createdAddr = new NanoAccount(prefix, calculateKeyBytes(address, JNH.ENC_32),
-                address, null, null);
+        NanoAccount createdAddr = new NanoAccount(
+                prefix, calculateKeyBytes(address, JNH.ENC_32), address, null, null);
         
         // Verify checksum (if provided)
         if (checksum != null && !checksum.equals(createdAddr.getAddressChecksumSegment()))
@@ -452,9 +460,10 @@ public final class NanoAccount {
      * prefix must match one of the pre-defined Nano prefix strings.
      * @param address the account address
      * @return whether the given address is a valid Nano account
+     * @see #isValidNano()
      */
     public static boolean isValidNano(NanoAccount address) {
-        return Arrays.stream(DEFAULT_ALLOWED_PREFIXES).anyMatch(e -> e.equalsIgnoreCase(address.getPrefix()));
+        return address.isValidNano();
     }
     
     /**
@@ -537,9 +546,8 @@ public final class NanoAccount {
     }
     
     public static class AddressFormatException extends IllegalArgumentException {
-        public AddressFormatException() { super(); }
-        public AddressFormatException(String msg) { super(msg); }
-        public AddressFormatException(Throwable cause) { super(cause); }
+        AddressFormatException(String msg) { super(msg); }
+        AddressFormatException(Throwable cause) { super(cause); }
     }
 
 }
