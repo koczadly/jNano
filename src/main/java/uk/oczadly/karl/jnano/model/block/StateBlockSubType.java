@@ -26,6 +26,13 @@ public enum StateBlockSubType {
     EPOCH       (false,  null);
     
     
+    /**
+     * @deprecated Use {@link #CHANGE} instead
+     */
+    @Deprecated(forRemoval = true)
+    public static final StateBlockSubType CHANGE_REP = CHANGE;
+    
+    
     static final Map<BlockType, StateBlockSubType> LEGACY_LOOKUP_MAP = new HashMap<>();
     
     static { // Initialize lookup maps
