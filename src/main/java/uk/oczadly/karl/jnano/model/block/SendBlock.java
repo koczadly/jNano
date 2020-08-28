@@ -40,7 +40,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
     
     
     SendBlock() {
-        super(BlockType.SEND.getProtocolName());
+        super(BlockType.SEND);
     }
     
     public SendBlock(String signature, WorkSolution work, String previousBlockHash, NanoAccount destinationAccount,
@@ -50,7 +50,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
     
     protected SendBlock(String hash, String signature, WorkSolution work,
                      String previousBlockHash, NanoAccount destinationAccount, BigInteger balance) {
-        super(BlockType.SEND.getProtocolName(), hash, signature, work);
+        super(BlockType.SEND, hash, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
         if (!JNH.isValidHex(previousBlockHash, HASH_LENGTH))

@@ -39,7 +39,7 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     
     
     OpenBlock() {
-        super(BlockType.OPEN.getProtocolName());
+        super(BlockType.OPEN);
     }
     
     public OpenBlock(String signature, WorkSolution work, String sourceBlockHash, NanoAccount accountAddress,
@@ -49,7 +49,7 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     
     protected OpenBlock(String hash, String signature, WorkSolution work,
                      String sourceBlockHash, NanoAccount accountAddress, NanoAccount representativeAccount) {
-        super(BlockType.OPEN.getProtocolName(), hash, signature, work);
+        super(BlockType.OPEN, hash, signature, work);
     
         if (sourceBlockHash == null) throw new IllegalArgumentException("Source block hash cannot be null.");
         if (!JNH.isValidHex(sourceBlockHash, HASH_LENGTH))

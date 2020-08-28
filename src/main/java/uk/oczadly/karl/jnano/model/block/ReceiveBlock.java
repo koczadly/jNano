@@ -33,7 +33,7 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     
     
     ReceiveBlock() {
-        super(BlockType.RECEIVE.getProtocolName());
+        super(BlockType.RECEIVE);
     }
     
     public ReceiveBlock(String signature, WorkSolution work, String previousBlockHash, String sourceBlockHash) {
@@ -42,7 +42,7 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     
     protected ReceiveBlock(String hash, String signature, WorkSolution work,
                         String previousBlockHash, String sourceBlockHash) {
-        super(BlockType.RECEIVE.getProtocolName(), hash, signature, work);
+        super(BlockType.RECEIVE, hash, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
         if (!JNH.isValidHex(previousBlockHash, HASH_LENGTH))

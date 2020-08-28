@@ -37,20 +37,50 @@ public abstract class Block implements IBlock {
         throw new UnsupportedOperationException("A block type must be specified.");
     }
     
+    /**
+     * @param type the block type, as a string
+     */
     protected Block(String type) {
         this(type, null, null, null);
     }
     
+    /**
+     * @param type the block type
+     */
+    protected Block(BlockType type) {
+        this(type, null, null, null);
+    }
+    
+    /**
+     * @param type          the block type, as a string
+     * @param hash          the block hash, or null (for performance improvements only)
+     * @param signature     the block signature
+     * @param workSolution  the work solution
+     */
     protected Block(String type, String hash, String signature, WorkSolution workSolution) {
-        if (type == null)
+        this(null, type, hash, signature, workSolution);
+    }
+    
+    /**
+     * @param type          the block type
+     * @param hash          the block hash, or null (for performance improvements only)
+     * @param signature     the block signature
+     * @param workSolution  the work solution
+     */
+    protected Block(BlockType type, String hash, String signature, WorkSolution workSolution) {
+        this(type, type.getProtocolName(), hash, signature, workSolution);
+    }
+    
+    private Block(BlockType type, String typeStr, String hash, String signature, WorkSolution workSolution) {
+        if (type == null && typeStr == null)
             throw new IllegalArgumentException("Block type cannot be null.");
         if (!JNH.isValidHex(hash, HASH_LENGTH))
             throw new IllegalArgumentException("Block hash is invalid.");
         if (!JNH.isValidHex(signature, 128))
             throw new IllegalArgumentException("Block signature is invalid.");
         
-        this.type = type.toLowerCase();
-        this.typeEnum = BlockType.fromName(this.type);
+        this.type = typeStr.toLowerCase();
+        this.typeEnum = type;
         this.hash = hash != null ? hash.toUpperCase() : null;
         this.signature = signature != null ? signature.toUpperCase() : null;
         this.workSolution = workSolution;
