@@ -8,6 +8,8 @@ import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -33,8 +35,11 @@ public final class NanoAccount {
      */
     public static final String DEFAULT_PREFIX = "nano";
     
-    private static final String[] DEFAULT_ALLOWED_PREFIXES = {DEFAULT_PREFIX, "xrb"};
-    private static final BigInteger MAX_INDEX_VAL = new BigInteger(JNH.repeatChar('F', 64), 16);
+    /**
+     * An immutable list of permitted prefixes on the Nano network. This includes the {@link #DEFAULT_PREFIX} value.
+     */
+    public static final List<String> DEFAULT_PERMITTED_PREFIXES =
+            Collections.unmodifiableList(List.of(DEFAULT_PREFIX, "xrb"));
     
     /**
      * <p>The zeroth index account, represented by all zeroes for the public key. This address is also the burn address
@@ -43,6 +48,8 @@ public final class NanoAccount {
      * traversal (as seen with {@link uk.oczadly.karl.jnano.rpc.request.node.RequestLedger}).</p>
      */
     public static final NanoAccount ZERO_ACCOUNT = new NanoAccount(BigInteger.ZERO);
+    
+    private static final BigInteger MAX_INDEX_VAL = new BigInteger(JNH.repeatChar('F', 64), 16);
     
     
     private final byte[] keyBytes;
@@ -273,7 +280,7 @@ public final class NanoAccount {
      * @return whether the given address is a valid Nano account
      */
     public boolean isValidNano() {
-        return comparePrefix(getPrefix(), DEFAULT_ALLOWED_PREFIXES);
+        return comparePrefix(getPrefix(), DEFAULT_PERMITTED_PREFIXES.toArray(new String[0]));
     }
     
     
