@@ -465,6 +465,7 @@ public final class NanoAccount {
     /**
      * Checks whether a given address string is a valid Nano address. For an address to be considered valid, the
      * prefix must match one of the pre-defined Nano prefix strings.
+     * <p>Equivalent to calling {@link #isValidNano()} on the instance.</p>
      * @param address the account address
      * @return whether the given address is a valid Nano account
      * @see #isValidNano()
