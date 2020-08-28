@@ -7,10 +7,14 @@ Nano is a crypto-currency which aims to offer instantaneous feeless transactions
 
 ## Features
 This library provides you simple access to the following:
-- Synchronous and asynchronous methods for executing RPC calls (all commands up to V20 are supported)
-- WebSocket support for receiving live data feeds and events from the node
-- A server for listening to real-time block callbacks from the node
-- Various utility classes for computing and processing natively, without the need of a node
+- Synchronous and asynchronous methods for [executing RPC calls](https://github.com/koczadly/jNano/wiki/Query
+-requests) (all commands up to V21 are supported).
+- [WebSocket support](https://github.com/koczadly/jNano/wiki/WebSocket-communication) for receiving live data feeds
+ and events from the node.
+- A [server for listening to real-time block callbacks](https://github.com/koczadly/jNano/wiki/Block-callback) from
+ the node.
+- Various [utility classes](https://github.com/koczadly/jNano/wiki/Utilities) for validating, computing and processing
+ natively, without the need of a connected node.
 
 ## Usage
 ### Maven
@@ -29,18 +33,11 @@ The latest Javadoc pages can be [viewed online through Javadoc.io](https://www.j
 Additional documentation can be found on the [wiki pages](https://github.com/koczadly/jNano/wiki/).
 
 ### Configuring the node
-Before using this library, you will need to configure the node correctly.
-- If you wish to make RPC requests using this library, 
-[view the queries wiki page](https://github.com/koczadly/jNano/wiki/Query-requests#node-configuration).
-- If you are wanting to listen for live blocks on the Nano network, 
-[view the callback wiki page](https://github.com/koczadly/jNano/wiki/Block-callback#node-configuration).
+Before using this library, you will need to configure the node correctly. Make sure to view the wiki topics for steps
+ on how to do this.
 
 ### Examples
-Detailed examples can be found on the associated wiki pages linked below:
-- [Query requests and operation execution](https://github.com/koczadly/jNano/wiki/Query-requests#how-to-use-the-library)
-- [Real-time WebSocket topic listeners](https://github.com/koczadly/jNano/wiki/WebSocket-communication)
-- [Real-time network block listener](https://github.com/koczadly/jNano/wiki/Block-callback#how-to-use-the-library)
-- [Additional tools and utilities](https://github.com/koczadly/jNano/wiki/Utilities)
+*More detailed examples can be found on the associated [wiki pages](https://github.com/koczadly/jNano/wiki/).*
 
 #### Creating a node object
 The following will define a node on localhost:7076 (default for the empty constructor). Other addresses and ports
