@@ -2,6 +2,7 @@ package uk.oczadly.karl.jnano.util;
 
 import org.junit.Test;
 import uk.oczadly.karl.jnano.TestConstants;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.*;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
@@ -12,6 +13,9 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class AccountEpochTest {
+    
+    private final NanoAccount RANDOM_ACC = TestConstants.randAccount();
+    
     
     @Test
     public void testComparison() {
@@ -36,28 +40,28 @@ public class AccountEpochTest {
     @Test
     public void testFromBlock() {
         // Not epoch
-        assertNull(AccountEpoch.fromEpochBlock(new OpenBlock(null, new WorkSolution(TestConstants.hex(16)), TestConstants.hex(64),
-                TestConstants.account(0), TestConstants.account(0))));
+        assertNull(AccountEpoch.fromEpochBlock(new OpenBlock(null, new WorkSolution(TestConstants.randHex(16)), TestConstants.randHex(64),
+                RANDOM_ACC, RANDOM_ACC)));
         
         // Epoch V2
         assertEquals(AccountEpoch.V2,AccountEpoch.fromEpochBlock(
-                new StateBlock(StateBlockSubType.EPOCH, null, new WorkSolution(TestConstants.hex(16)),
-                        TestConstants.account(0), TestConstants.hex(64), TestConstants.account(0),
+                new StateBlock(StateBlockSubType.EPOCH, null, new WorkSolution(TestConstants.randHex(16)),
+                        RANDOM_ACC, TestConstants.randHex(64), RANDOM_ACC,
                         BigInteger.TEN, AccountEpoch.V2.getIdentifier())));
     }
 
     @Test
     public void testCalcAccountWithEpoch() {
         List<Block> blocks = new ArrayList<>();
-        blocks.add(new OpenBlock(null, new WorkSolution(TestConstants.hex(16)), TestConstants.hex(64),
-                TestConstants.account(0), TestConstants.account(0)));
-        blocks.add(new ChangeBlock(null, new WorkSolution(TestConstants.hex(16)), TestConstants.hex(64),
-                TestConstants.account(0)));
-        blocks.add(new StateBlock(StateBlockSubType.EPOCH, null, new WorkSolution(TestConstants.hex(16)),
-                TestConstants.account(0), TestConstants.hex(64), TestConstants.account(0), BigInteger.TEN,
+        blocks.add(new OpenBlock(null, new WorkSolution(TestConstants.randHex(16)), TestConstants.randHex(64),
+                RANDOM_ACC, RANDOM_ACC));
+        blocks.add(new ChangeBlock(null, new WorkSolution(TestConstants.randHex(16)), TestConstants.randHex(64),
+                RANDOM_ACC));
+        blocks.add(new StateBlock(StateBlockSubType.EPOCH, null, new WorkSolution(TestConstants.randHex(16)),
+                RANDOM_ACC, TestConstants.randHex(64), RANDOM_ACC, BigInteger.TEN,
                 AccountEpoch.V1.getIdentifier())); // EPOCH V1
-        blocks.add(new StateBlock(StateBlockSubType.SEND, null, new WorkSolution(TestConstants.hex(16)),
-                TestConstants.account(0), TestConstants.hex(64), TestConstants.account(0), BigInteger.TEN,
+        blocks.add(new StateBlock(StateBlockSubType.SEND, null, new WorkSolution(TestConstants.randHex(16)),
+                RANDOM_ACC, TestConstants.randHex(64), RANDOM_ACC, BigInteger.TEN,
                 AccountEpoch.V2.getIdentifier())); // EPOCH V2, but not epoch block
         
         assertEquals(AccountEpoch.V1, AccountEpoch.calculateAccountVersion(blocks));
@@ -66,12 +70,12 @@ public class AccountEpochTest {
     @Test
     public void testCalcAccountWithoutEpoch() {
         List<Block> blocks = new ArrayList<>();
-        blocks.add(new OpenBlock(null, new WorkSolution(TestConstants.hex(16)), TestConstants.hex(64),
-                TestConstants.account(0), TestConstants.account(0)));
-        blocks.add(new ChangeBlock(null, new WorkSolution(TestConstants.hex(16)), TestConstants.hex(64),
-                TestConstants.account(0)));
-        blocks.add(new StateBlock(StateBlockSubType.SEND, null, new WorkSolution(TestConstants.hex(16)),
-                TestConstants.account(0), TestConstants.hex(64), TestConstants.account(0),
+        blocks.add(new OpenBlock(null, new WorkSolution(TestConstants.randHex(16)), TestConstants.randHex(64),
+                RANDOM_ACC, RANDOM_ACC));
+        blocks.add(new ChangeBlock(null, new WorkSolution(TestConstants.randHex(16)), TestConstants.randHex(64),
+                RANDOM_ACC));
+        blocks.add(new StateBlock(StateBlockSubType.SEND, null, new WorkSolution(TestConstants.randHex(16)),
+                RANDOM_ACC, TestConstants.randHex(64), RANDOM_ACC,
                 BigInteger.TEN, AccountEpoch.V1.getIdentifier())); // EPOCH V1, but not epoch block
         
         assertEquals(null, AccountEpoch.calculateAccountVersion(blocks));

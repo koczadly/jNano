@@ -2,45 +2,56 @@ package uk.oczadly.karl.jnano;
 
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.block.StateBlockBuilder;
+import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
+import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.math.BigInteger;
 import java.util.Random;
 
 public class TestConstants {
     
     private static final Random RANDOM = new Random();
-    private static final long RAND_SEED = RANDOM.nextLong();
-    private static final Map<Integer, Map<Integer, String>> HEX_CACHE = new HashMap<>(); // index -> len -> val
-    private static final Map<Integer, NanoAccount> ACCOUNT_CACHE = new HashMap<>(); // index -> val
     
     
-    public static String hex(int len) {
-        return hex(len, RANDOM.nextInt());
+    public static String randHex(int len) {
+        return randHex(len, true);
     }
     
-    public static String hex(int len, int index) {
-        return HEX_CACHE
-                .computeIfAbsent(index, k -> new HashMap<>())
-                .computeIfAbsent(len, k -> {
-                    StringBuilder sb = new StringBuilder(len);
-                    for (int i=0; i<len; i++)
-                        sb.append(JNH.HEX_CHARS_UC[RANDOM.nextInt(16)]);
-                    return sb.toString();
-                });
+    public static String randHex(int len, boolean nonZero) {
+        StringBuilder sb = new StringBuilder(len);
+        for (int i=0; i<len; i++)
+            sb.append(JNH.HEX_CHARS_UC[(nonZero && i == 0) ? (RANDOM.nextInt(15) + 1) : RANDOM.nextInt(16)]);
+        return sb.toString();
     }
     
     
-    public static NanoAccount account() {
-        return account(RANDOM.nextInt());
+    public static NanoAccount randAccount() {
+        return randAccount(NanoAccount.DEFAULT_PREFIX);
     }
     
-    public static NanoAccount account(int index) {
-        return ACCOUNT_CACHE.computeIfAbsent(index, e -> {
-            byte[] bytes = new byte[32];
-            RANDOM.nextBytes(bytes);
-            return new NanoAccount(bytes);
-        });
+    public static NanoAccount randAccount(String prefix) {
+        byte[] bytes = new byte[32];
+        RANDOM.nextBytes(bytes);
+        return new NanoAccount(bytes);
+    }
+    
+    
+    public static BigInteger randBalance() {
+        return new BigInteger(128, RANDOM);
+    }
+    
+    
+    public static StateBlockBuilder randStateBlock() {
+        return new StateBlockBuilder(randAccount())
+                .setSubtype(StateBlockSubType.values()[RANDOM.nextInt(StateBlockSubType.values().length)])
+                .setRepresentativeAddress(randAccount())
+                .setPreviousBlockHash(randHex(64))
+                .setSignature(randHex(128))
+                .setWorkSolution(new WorkSolution(RANDOM.nextLong()))
+                .setLinkData(randHex(64))
+                .setBalance(randBalance());
+                
     }
 
 }
