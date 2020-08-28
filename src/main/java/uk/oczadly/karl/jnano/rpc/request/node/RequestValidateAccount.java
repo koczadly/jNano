@@ -12,8 +12,8 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseValidation;
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#validate_account_number">Official RPC documentation</a>
  *
- * @deprecated Use of Java-based library method {@link NanoAccount#isValid(String)} is preferred for better efficiency
- * and less reliance on external services.
+ * @deprecated Use of Java-based library method {@link NanoAccount#isValid(String, String...)} (String)} is preferred
+ * for better efficiency and less reliance on external services.
  */
 @Deprecated
 public class RequestValidateAccount extends RpcRequest<ResponseValidation> {
