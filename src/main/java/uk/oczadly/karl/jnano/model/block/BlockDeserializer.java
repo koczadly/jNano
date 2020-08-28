@@ -27,6 +27,7 @@ public final class BlockDeserializer {
     
     public void registerDeserializer(BlockType blockType, Function<JsonObject, ? extends Block> deserializer) {
         registerDeserializer(blockType.getProtocolName(), deserializer);
+        blockType.getAlternateNames().forEach(n -> registerDeserializer(n, deserializer));
     }
     
     public Function<JsonObject, ? extends Block> getDeserializer(String blockType) {
@@ -65,7 +66,6 @@ public final class BlockDeserializer {
         BlockDeserializer deserializer = new BlockDeserializer();
         
         deserializer.registerDeserializer(BlockType.STATE,   StateBlock.DESERIALIZER);   // State
-        deserializer.registerDeserializer("utx",             StateBlock.DESERIALIZER);   // State
         deserializer.registerDeserializer(BlockType.CHANGE,  ChangeBlock.DESERIALIZER);  // Change
         deserializer.registerDeserializer(BlockType.OPEN,    OpenBlock.DESERIALIZER);    // Open
         deserializer.registerDeserializer(BlockType.RECEIVE, ReceiveBlock.DESERIALIZER); // Receive

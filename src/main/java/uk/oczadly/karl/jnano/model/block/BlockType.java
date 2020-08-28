@@ -2,6 +2,8 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.*;
+
 /**
  * This class represents the types of block available. Only {@link #STATE} blocks should be used from hereon, and have
  * since been deprecated on the official Nano node.
@@ -22,15 +24,31 @@ public enum BlockType {
     RECEIVE (true,  ReceiveBlock.class),
     
     @SerializedName(value = "state", alternate = "utx")
-    STATE   (true,  StateBlock.class);
+    STATE   (true,  StateBlock.class, new String[] {"utx"});
+    
+    
+    private static final Map<String, BlockType> LOOKUP_MAP = new HashMap<>();
+    
+    static {
+        for (BlockType type : BlockType.values()) {
+            LOOKUP_MAP.put(type.getProtocolName().toLowerCase(), type);
+            type.getAlternateNames().forEach(n -> LOOKUP_MAP.put(n.toLowerCase(), type));
+        }
+    }
     
     
     boolean isTransaction;
     Class<? extends Block> blockClass;
+    Set<String> altNames;
     
     BlockType(boolean isTransaction, Class<? extends Block> blockClass) {
+        this(isTransaction, blockClass, new String[0]);
+    }
+    
+    BlockType(boolean isTransaction, Class<? extends Block> blockClass, String[] altNames) {
         this.isTransaction = isTransaction;
         this.blockClass = blockClass;
+        this.altNames = Collections.unmodifiableSet(new HashSet<>(List.of(altNames)));
     }
     
     
@@ -58,6 +76,13 @@ public enum BlockType {
         return name().toLowerCase();
     }
     
+    /**
+     * @return a list of alternate protocol names
+     */
+    public Set<String> getAlternateNames() {
+        return altNames;
+    }
+    
     @Override
     public String toString() {
         return getProtocolName();
@@ -71,11 +96,7 @@ public enum BlockType {
      * @return the corresponding type, or null if not found
      */
     public static BlockType fromName(String name) {
-        try {
-            return valueOf(name.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+        return LOOKUP_MAP.get(name.toLowerCase());
     }
     
 }
