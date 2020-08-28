@@ -455,8 +455,7 @@ public final class NanoAccount {
      */
     public static boolean isValidNano(String address) {
         try {
-            NanoAccount addr = parseAddress(address);
-            return isValidNano(addr);
+            return parseAddress(address).isValidNano();
         } catch (AddressFormatException e) {
             return false;
         }
