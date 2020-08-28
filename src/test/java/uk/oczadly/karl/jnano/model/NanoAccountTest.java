@@ -89,8 +89,9 @@ public class NanoAccountTest {
     @Test
     public void testValidityChecks() {
         assertTrue(NanoAccount.isValid(ACC_1_ADDR)); // No prefix specified
-        assertTrue(NanoAccount.isValid(ACC_1_ADDR, ACC_1_PREFIX)); // Right prefix
-        assertFalse(NanoAccount.isValid(ACC_1_ADDR, "nano")); // Wrong prefix
+        assertTrue(NanoAccount.isValid(ACC_1_ADDR, (String[])null)); // No prefix specified
+        assertTrue(NanoAccount.isValid(ACC_1_ADDR, "slug", ACC_1_PREFIX)); // Right prefix
+        assertFalse(NanoAccount.isValid(ACC_1_ADDR, "slug", "nano")); // Wrong prefix
         assertTrue(NanoAccount.isSegmentValid(ACC_1_ADDRSEG, ACC_1_CHECKSUM));
         assertFalse(NanoAccount.isSegmentValid(ACC_1_ADDR, INVALID_CHECKSUM));
         

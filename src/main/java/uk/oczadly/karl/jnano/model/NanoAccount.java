@@ -273,7 +273,7 @@ public final class NanoAccount {
      * @return whether the given address is a valid Nano account
      */
     public boolean isValidNano() {
-        return Arrays.stream(DEFAULT_ALLOWED_PREFIXES).anyMatch(e -> e.equalsIgnoreCase(getPrefix()));
+        return comparePrefix(getPrefix(), DEFAULT_ALLOWED_PREFIXES);
     }
     
     
@@ -468,25 +468,15 @@ public final class NanoAccount {
     
     /**
      * Checks whether a given address string is valid. For an address to be considered valid, the format must be of
-     * an appropriate length, contain a prefix, and have a matching checksum value.
-     * @param address the account address string
-     * @return whether the given address string is valid
-     */
-    public static boolean isValid(String address) {
-        return isValid(address, null);
-    }
-    
-    /**
-     * Checks whether a given address string is valid. For an address to be considered valid, the format must be of
      * an appropriate length, contain the defined prefix, and have a matching checksum value.
-     * @param address the account address string
-     * @param prefix  the prefix value to compare (without separator), or null to allow any
+     * @param address  the account address string
+     * @param prefixes an array of permittable prefixes (without separator), or null/empty to allow any
      * @return whether the given address string is valid
      */
-    public static boolean isValid(String address, String prefix) {
+    public static boolean isValid(String address, String...prefixes) {
         try {
             NanoAccount addr = parseAddress(address);
-            return prefix == null || prefix.equalsIgnoreCase(addr.getPrefix());
+            return comparePrefix(addr.getPrefix(), prefixes);
         } catch (AddressFormatException e) {
             return false;
         }
@@ -529,6 +519,12 @@ public final class NanoAccount {
     private static void validatePrefix(String prefix) {
         if (prefix != null && !prefix.isEmpty() && !prefix.matches("[0-9A-Za-z]+"))
             throw new AddressFormatException("Address prefix contains an illegal character.");
+    }
+    
+    private static boolean comparePrefix(String prefix, String[] prefixes) {
+        if (prefixes == null || prefixes.length == 0) return true; // Allow any prefix
+        if (prefix == null) return false; // Prefix is null, cannot be valid
+        return Arrays.stream(prefixes).anyMatch(prefix::equalsIgnoreCase); // Match
     }
     
     
