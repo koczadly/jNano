@@ -11,6 +11,14 @@ import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.util.Arrays;
 
+/**
+ * An abstract class which represents a Nano block.
+ * <p>For a concrete version of this class, use {@link StateBlock} (or {@link SendBlock}, {@link ReceiveBlock},
+ * {@link ChangeBlock} and {@link OpenBlock} for legacy types).</p>
+ * <p>To convert a JSON string/object to a Block instance, use the {@link #parse(JsonObject)} static method or the
+ * {@link BlockDeserializer} class. This class can automatically be serialized and deserialized by Gson, as a
+ * built-in JSON adapter is provided and automatically registered.</p>
+ */
 @JsonAdapter(BlockDeserializer.JsonAdapter.class)
 public abstract class Block implements IBlock {
     
