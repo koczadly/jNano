@@ -14,11 +14,8 @@ import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
  */
 public class RpcRequest<R extends RpcResponse> {
     
-    @Expose @SerializedName("action")
-    private final String actionCommand;
-    
+    private final transient String actionCommand;
     private final transient Class<R> responseClass;
-    
     
     /**
      * @param actionCommand the command (or "action") name to be sent to the node

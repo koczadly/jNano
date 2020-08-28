@@ -1,6 +1,7 @@
 package uk.oczadly.karl.jnano.rpc;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 
@@ -24,7 +25,9 @@ public class RpcRequestSerializerImpl implements RpcRequestSerializer {
     
     @Override
     public String serialize(RpcRequest<?> request) {
-        return gson.toJson(request);
+        JsonObject obj = gson.toJsonTree(request).getAsJsonObject();
+        obj.addProperty("action", request.getActionCommand());
+        return obj.toString();
     }
 
 }
