@@ -11,8 +11,8 @@
     <packaging>jar</packaging>
 
     <name>jNano</name>
-    <description>A Java library for interfacing with the Nano RPC node</description>
-    <url>https://github.com/koczadly/jnano</url>
+    <description>A comprehensive Java library for the Nano (and Banano) cryptocurrency.</description>
+    <url>https://github.com/koczadly/jNano</url>
 
     <licenses>
         <license>
