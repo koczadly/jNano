@@ -17,16 +17,24 @@ public final class BlockDeserializer {
     private BlockDeserializer() {}
     
     
-    public void registerDeserializer(String name, Function<JsonObject, ? extends Block> deserializer) {
-        deserializers.put(name.toLowerCase(), deserializer);
-    }
-    
     public Map<String, Function<JsonObject, ? extends Block>> getDeserializers() {
         return deserializers;
     }
     
+    public void registerDeserializer(String blockType, Function<JsonObject, ? extends Block> deserializer) {
+        deserializers.put(blockType.toLowerCase(), deserializer);
+    }
+    
+    public void registerDeserializer(BlockType blockType, Function<JsonObject, ? extends Block> deserializer) {
+        registerDeserializer(blockType.getProtocolName(), deserializer);
+    }
+    
     public Function<JsonObject, ? extends Block> getDeserializer(String blockType) {
         return deserializers.get(blockType.toLowerCase());
+    }
+    
+    public Function<JsonObject, ? extends Block> getDeserializer(BlockType blockType) {
+        return getDeserializer(blockType.getProtocolName());
     }
     
     
@@ -56,12 +64,12 @@ public final class BlockDeserializer {
     public static BlockDeserializer withDefaults() {
         BlockDeserializer deserializer = new BlockDeserializer();
         
-        deserializer.registerDeserializer("state", StateBlock.DESERIALIZER);        // State
-        deserializer.registerDeserializer("utx", StateBlock.DESERIALIZER);          // State
-        deserializer.registerDeserializer("change", ChangeBlock.DESERIALIZER);      // Change
-        deserializer.registerDeserializer("open", OpenBlock.DESERIALIZER);          // Open
-        deserializer.registerDeserializer("receive", ReceiveBlock.DESERIALIZER);    // Receive
-        deserializer.registerDeserializer("send", SendBlock.DESERIALIZER);          // Send
+        deserializer.registerDeserializer(BlockType.STATE,   StateBlock.DESERIALIZER);   // State
+        deserializer.registerDeserializer("utx",             StateBlock.DESERIALIZER);   // State
+        deserializer.registerDeserializer(BlockType.CHANGE,  ChangeBlock.DESERIALIZER);  // Change
+        deserializer.registerDeserializer(BlockType.OPEN,    OpenBlock.DESERIALIZER);    // Open
+        deserializer.registerDeserializer(BlockType.RECEIVE, ReceiveBlock.DESERIALIZER); // Receive
+        deserializer.registerDeserializer(BlockType.SEND,    SendBlock.DESERIALIZER);    // Send
         return deserializer;
     }
     
