@@ -169,22 +169,30 @@ public abstract class Block implements IBlock {
      * @return a JSON representation of this block, as a Gson {@link JsonObject}
      */
     public final JsonObject getJsonObject(boolean fillBlanks) {
-        JsonObject json = JNH.GSON.toJsonTree(this).getAsJsonObject();
+        JsonObject json = buildJsonObject();
         if (fillBlanks) {
             if (signature == null)
                 json.addProperty("signature", JNH.ZEROES_128);
             if (workSolution == null)
                 json.addProperty("work", JNH.ZEROES_16);
-            fillBlanks(json);
+            fillJsonBlanks(json);
         }
         return json;
     }
     
     /**
      * Fill blank or missing parameters with {@link JsonObject#addProperty(String, String)}.
-     * @param json
+     * @param json the JSON object to fill
      */
-    protected void fillBlanks(JsonObject json) {}
+    protected void fillJsonBlanks(JsonObject json) {}
+    
+    /**
+     * Build a JsonObject that represents this instance.
+     * @return the JsonObject representing this block
+     */
+    protected JsonObject buildJsonObject() {
+        return JNH.GSON.toJsonTree(this).getAsJsonObject();
+    }
     
     
     @Override
