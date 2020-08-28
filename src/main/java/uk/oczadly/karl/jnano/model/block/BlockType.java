@@ -1,30 +1,24 @@
 package uk.oczadly.karl.jnano.model.block;
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.*;
+import com.google.gson.annotations.JsonAdapter;
 
+import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * This class represents the types of block available. Only {@link #STATE} blocks should be used from hereon, and have
  * since been deprecated on the official Nano node.
  */
-@SuppressWarnings("DeprecatedIsStillUsed")
+@JsonAdapter(BlockType.Adapter.class)
 public enum BlockType {
     
-    @SerializedName("open")
-    OPEN    (true,  OpenBlock.class),
-    
-    @SerializedName("change")
-    CHANGE  (false, ChangeBlock.class),
-    
-    @SerializedName("send")
-    SEND    (true,  SendBlock.class),
-    
-    @SerializedName("receive")
-    RECEIVE (true,  ReceiveBlock.class),
-    
-    @SerializedName(value = "state", alternate = "utx")
-    STATE   (true,  StateBlock.class, new String[] {"utx"});
+    OPEN    (true,  OpenBlock.class,    OpenBlock.DESERIALIZER),
+    CHANGE  (false, ChangeBlock.class,  ChangeBlock.DESERIALIZER),
+    SEND    (true,  SendBlock.class,    SendBlock.DESERIALIZER),
+    RECEIVE (true,  ReceiveBlock.class, ReceiveBlock.DESERIALIZER),
+    STATE   (true,  StateBlock.class,   StateBlock.DESERIALIZER, "utx");
     
     
     private static final Map<String, BlockType> LOOKUP_MAP = new HashMap<>();
@@ -39,15 +33,14 @@ public enum BlockType {
     
     boolean isTransaction;
     Class<? extends Block> blockClass;
+    Function<JsonObject, ? extends Block> deserializer;
     Set<String> altNames;
     
-    BlockType(boolean isTransaction, Class<? extends Block> blockClass) {
-        this(isTransaction, blockClass, new String[0]);
-    }
-    
-    BlockType(boolean isTransaction, Class<? extends Block> blockClass, String[] altNames) {
+    BlockType(boolean isTransaction, Class<? extends Block> blockClass,
+              Function<JsonObject, ? extends Block> deserializer, String...altNames) {
         this.isTransaction = isTransaction;
         this.blockClass = blockClass;
+        this.deserializer = deserializer;
         this.altNames = Collections.unmodifiableSet(new HashSet<>(List.of(altNames)));
     }
     
@@ -83,6 +76,13 @@ public enum BlockType {
         return altNames;
     }
     
+    /**
+     * @return a function which converts a {@link JsonObject} into the appropriate {@link Block} instance
+     */
+    public Function<JsonObject, ? extends Block> getDeserializerFunction() {
+        return deserializer;
+    }
+    
     @Override
     public String toString() {
         return getProtocolName();
@@ -97,6 +97,20 @@ public enum BlockType {
      */
     public static BlockType fromName(String name) {
         return LOOKUP_MAP.get(name.toLowerCase());
+    }
+    
+    
+    
+    static class Adapter implements JsonSerializer<BlockType>, JsonDeserializer<BlockType> {
+        @Override
+        public BlockType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            return fromName(json.getAsString());
+        }
+    
+        @Override
+        public JsonElement serialize(BlockType src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(src.getProtocolName());
+        }
     }
     
 }

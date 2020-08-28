@@ -16,8 +16,6 @@ public abstract class Block implements IBlock {
     
     protected static final int HASH_LENGTH = 64;
     
-    private static final BlockDeserializer BLOCK_DESERIALIZER = BlockDeserializer.withDefaults();
-    
     
     @Expose @SerializedName("hash")
     private volatile String hash;
@@ -230,7 +228,7 @@ public abstract class Block implements IBlock {
      * @see BlockDeserializer
      */
     public static Block parse(JsonObject json) {
-        return BLOCK_DESERIALIZER.deserialize(json);
+        return BlockDeserializer.DEFAULT.deserialize(json);
     }
     
 }

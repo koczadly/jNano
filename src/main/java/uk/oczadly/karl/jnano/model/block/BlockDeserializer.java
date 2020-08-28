@@ -12,6 +12,8 @@ import java.util.function.Function;
  */
 public final class BlockDeserializer {
     
+    static final BlockDeserializer DEFAULT = BlockDeserializer.withDefaults();
+    
     private final Map<String, Function<JsonObject, ? extends Block>> deserializers = new ConcurrentHashMap<>();
     
     private BlockDeserializer() {}
@@ -21,6 +23,7 @@ public final class BlockDeserializer {
         return deserializers;
     }
     
+    
     public void registerDeserializer(String blockType, Function<JsonObject, ? extends Block> deserializer) {
         deserializers.put(blockType.toLowerCase(), deserializer);
     }
@@ -29,6 +32,11 @@ public final class BlockDeserializer {
         registerDeserializer(blockType.getProtocolName(), deserializer);
         blockType.getAlternateNames().forEach(n -> registerDeserializer(n, deserializer));
     }
+    
+    public void registerDeserializer(BlockType blockType) {
+        registerDeserializer(blockType, blockType.getDeserializerFunction());
+    }
+    
     
     public Function<JsonObject, ? extends Block> getDeserializer(String blockType) {
         return deserializers.get(blockType.toLowerCase());
@@ -65,11 +73,11 @@ public final class BlockDeserializer {
     public static BlockDeserializer withDefaults() {
         BlockDeserializer deserializer = new BlockDeserializer();
         
-        deserializer.registerDeserializer(BlockType.STATE,   StateBlock.DESERIALIZER);   // State
-        deserializer.registerDeserializer(BlockType.CHANGE,  ChangeBlock.DESERIALIZER);  // Change
-        deserializer.registerDeserializer(BlockType.OPEN,    OpenBlock.DESERIALIZER);    // Open
-        deserializer.registerDeserializer(BlockType.RECEIVE, ReceiveBlock.DESERIALIZER); // Receive
-        deserializer.registerDeserializer(BlockType.SEND,    SendBlock.DESERIALIZER);    // Send
+        deserializer.registerDeserializer(BlockType.STATE);
+        deserializer.registerDeserializer(BlockType.CHANGE);
+        deserializer.registerDeserializer(BlockType.OPEN);
+        deserializer.registerDeserializer(BlockType.RECEIVE);
+        deserializer.registerDeserializer(BlockType.SEND);
         return deserializer;
     }
     
@@ -83,6 +91,7 @@ public final class BlockDeserializer {
     }
     
     
+    
     /**
      * A Gson adapter ({@link JsonSerializer} and {@link JsonDeserializer}) which allows the serialization and
      * deserialization of blocks.
@@ -91,10 +100,12 @@ public final class BlockDeserializer {
         
         private final BlockDeserializer deserializer;
         
+        /** With default block deserializer. */
         public JsonAdapter() {
-            this(BlockDeserializer.withDefaults());
+            this(DEFAULT);
         }
-        
+    
+        /** With specified block deserializer. */
         public JsonAdapter(BlockDeserializer deserializer) {
             this.deserializer = deserializer;
         }
