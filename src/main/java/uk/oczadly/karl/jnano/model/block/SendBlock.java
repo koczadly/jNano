@@ -1,5 +1,7 @@
 package uk.oczadly.karl.jnano.model.block;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
@@ -10,11 +12,22 @@ import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
+import java.util.function.Function;
 
 /**
  * Represents a {@code send} block, and the associated data.
  */
 public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlockBalance {
+    
+    /** A function which converts a {@link JsonObject} into a {@link SendBlock} instance. */
+    public static final Function<JsonObject, SendBlock> DESERIALIZER = json -> new SendBlock(
+            JNH.nullable(json.get("hash"), JsonElement::getAsString),
+            json.get("signature").getAsString(),
+            new WorkSolution(json.get("work").getAsString()),
+            json.get("previous").getAsString(),
+            NanoAccount.parseAddress(json.get("destination").getAsString()),
+            new BigInteger(json.get("balance").getAsString()));
+    
     
     @Expose @SerializedName("previous")
     private String previousBlockHash;

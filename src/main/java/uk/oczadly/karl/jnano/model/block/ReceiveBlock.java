@@ -1,5 +1,7 @@
 package uk.oczadly.karl.jnano.model.block;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
@@ -7,10 +9,21 @@ import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockSource;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
+import java.util.function.Function;
+
 /**
  * Represents a {@code receive} block, and the associated data.
  */
 public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource {
+    
+    /** A function which converts a {@link JsonObject} into a {@link ReceiveBlock} instance. */
+    public static final Function<JsonObject, ReceiveBlock> DESERIALIZER = json -> new ReceiveBlock(
+            JNH.nullable(json.get("hash"), JsonElement::getAsString),
+            json.get("signature").getAsString(),
+            JNH.nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
+            json.get("previous").getAsString(),
+            json.get("source").getAsString());
+    
     
     @Expose @SerializedName("previous")
     private String previousBlockHash;

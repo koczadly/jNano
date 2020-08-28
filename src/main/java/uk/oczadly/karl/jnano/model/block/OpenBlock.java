@@ -1,5 +1,7 @@
 package uk.oczadly.karl.jnano.model.block;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
@@ -9,10 +11,22 @@ import uk.oczadly.karl.jnano.model.block.interfaces.IBlockRepresentative;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockSource;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
+import java.util.function.Function;
+
 /**
  * Represents an {@code open} block, and the associated data.
  */
 public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBlockRepresentative {
+    
+    /** A function which converts a {@link JsonObject} into a {@link OpenBlock} instance. */
+    public static final Function<JsonObject, OpenBlock> DESERIALIZER = json -> new OpenBlock(
+            JNH.nullable(json.get("hash"), JsonElement::getAsString),
+            json.get("signature").getAsString(),
+            JNH.nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
+            json.get("source").getAsString(),
+            NanoAccount.parseAddress(json.get("account").getAsString()),
+            NanoAccount.parseAddress(json.get("representative").getAsString()));
+    
     
     @Expose @SerializedName("source")
     private String sourceBlockHash;

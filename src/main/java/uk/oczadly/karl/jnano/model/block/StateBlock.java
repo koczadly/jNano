@@ -1,5 +1,7 @@
 package uk.oczadly.karl.jnano.model.block;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
@@ -8,6 +10,7 @@ import uk.oczadly.karl.jnano.model.block.interfaces.*;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
+import java.util.function.Function;
 
 /**
  * <p>Represents a state block, and the associated data.</p>
@@ -15,6 +18,21 @@ import java.math.BigInteger;
  */
 public final class StateBlock extends Block implements IBlockLink, IBlockBalance, IBlockPrevious, IBlockRepresentative,
         IBlockAccount {
+    
+    /** A function which converts a {@link JsonObject} into a {@link StateBlock} instance. */
+    public static final Function<JsonObject, StateBlock> DESERIALIZER = json -> new StateBlock(
+            JNH.nullable(json.get("subtype"), o -> StateBlockSubType.getFromName(o.getAsString())),
+            JNH.nullable(json.get("hash"), JsonElement::getAsString),
+            json.get("signature").getAsString(),
+            JNH.nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
+            NanoAccount.parseAddress(json.has("account") ? json.get("account").getAsString() :
+                    json.get("representative").getAsString()),
+            json.get("previous").getAsString(),
+            NanoAccount.parseAddress(json.get("representative").getAsString()),
+            json.get("balance").getAsBigInteger(),
+            JNH.nullable(json.get("link"), JsonElement::getAsString),
+            JNH.nullable(json.get("link_as_account"), o -> NanoAccount.parseAddress(o.getAsString()))
+    );
     
     /** Prefix for block hashing. */
     private static final byte[] HASH_PREAMBLE_BYTES = JNH.leftPadByteArray(new byte[] {6}, 32, false);

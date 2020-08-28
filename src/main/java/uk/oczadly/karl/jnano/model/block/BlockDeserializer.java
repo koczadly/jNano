@@ -1,12 +1,8 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.*;
-import uk.oczadly.karl.jnano.internal.JNH;
-import uk.oczadly.karl.jnano.model.NanoAccount;
-import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.lang.reflect.Type;
-import java.math.BigInteger;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -60,60 +56,12 @@ public final class BlockDeserializer {
     public static BlockDeserializer withDefaults() {
         BlockDeserializer deserializer = new BlockDeserializer();
         
-        // STATE
-        Function<JsonObject, Block> stateDeserializer = json -> new StateBlock(
-                JNH.nullable(json.get("subtype"), o -> StateBlockSubType.getFromName(o.getAsString())),
-                JNH.nullable(json.get("hash"), JsonElement::getAsString),
-                json.get("signature").getAsString(),
-                JNH.nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
-                NanoAccount.parseAddress(json.has("account") ? json.get("account").getAsString() :
-                        json.get("representative").getAsString()),
-                json.get("previous").getAsString(),
-                NanoAccount.parseAddress(json.get("representative").getAsString()),
-                json.get("balance").getAsBigInteger(),
-                JNH.nullable(json.get("link"), JsonElement::getAsString),
-                JNH.nullable(json.get("link_as_account"), o -> NanoAccount.parseAddress(o.getAsString()))
-        );
-        deserializer.registerDeserializer("state", stateDeserializer);
-        deserializer.registerDeserializer("utx", stateDeserializer);
-    
-        // CHANGE
-        deserializer.registerDeserializer("change", json -> new ChangeBlock(
-                JNH.nullable(json.get("hash"), JsonElement::getAsString),
-                json.get("signature").getAsString(),
-                JNH.nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
-                json.get("previous").getAsString(),
-                NanoAccount.parseAddress(json.get("representative").getAsString())
-        ));
-    
-        // OPEN
-        deserializer.registerDeserializer("open", json -> new OpenBlock(
-                JNH.nullable(json.get("hash"), JsonElement::getAsString),
-                json.get("signature").getAsString(),
-                JNH.nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
-                json.get("source").getAsString(),
-                NanoAccount.parseAddress(json.get("account").getAsString()),
-                NanoAccount.parseAddress(json.get("representative").getAsString())
-        ));
-    
-        // RECEIVE
-        deserializer.registerDeserializer("receive", json -> new ReceiveBlock(
-                JNH.nullable(json.get("hash"), JsonElement::getAsString),
-                json.get("signature").getAsString(),
-                JNH.nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
-                json.get("previous").getAsString(),
-                json.get("source").getAsString())
-        );
-    
-        // SEND
-        deserializer.registerDeserializer("send", json -> new SendBlock(
-                JNH.nullable(json.get("hash"), JsonElement::getAsString),
-                json.get("signature").getAsString(),
-                new WorkSolution(json.get("work").getAsString()),
-                json.get("previous").getAsString(),
-                NanoAccount.parseAddress(json.get("destination").getAsString()),
-                new BigInteger(json.get("balance").getAsString())
-        ));
+        deserializer.registerDeserializer("state", StateBlock.DESERIALIZER);        // State
+        deserializer.registerDeserializer("utx", StateBlock.DESERIALIZER);          // State
+        deserializer.registerDeserializer("change", ChangeBlock.DESERIALIZER);      // Change
+        deserializer.registerDeserializer("open", OpenBlock.DESERIALIZER);          // Open
+        deserializer.registerDeserializer("receive", ReceiveBlock.DESERIALIZER);    // Receive
+        deserializer.registerDeserializer("send", SendBlock.DESERIALIZER);          // Send
         return deserializer;
     }
     
