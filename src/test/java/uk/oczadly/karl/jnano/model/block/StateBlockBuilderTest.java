@@ -1,6 +1,7 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import org.junit.Test;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
@@ -10,7 +11,6 @@ import static org.junit.Assert.*;
 
 public class StateBlockBuilderTest {
     
-    private static final String NULL_ZERO_STRING = "0000000000000000000000000000000000000000000000000000000000000000";
     private static final String DATA = "8AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97";
     private static final NanoAccount ACCOUNT =
             NanoAccount.parseAddress("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz");
@@ -78,8 +78,8 @@ public class StateBlockBuilderTest {
         assertEquals(b2.getLinkData(), DATA);
         
         // Null should default to 000000...
-        assertEquals(NULL_ZERO_STRING, newBuilder().build().getLinkData());
-        assertEquals(NULL_ZERO_STRING, newBuilder().setLinkData(null).build().getLinkData());
+        assertEquals(JNH.ZEROES_64, newBuilder().build().getLinkData());
+        assertEquals(JNH.ZEROES_64, newBuilder().setLinkData(null).build().getLinkData());
     }
     
 }

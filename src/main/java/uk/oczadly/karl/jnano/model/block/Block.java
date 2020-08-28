@@ -6,14 +6,15 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
-import uk.oczadly.karl.jnano.internal.gsonadapters.BlockAdapter;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlock;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.util.Arrays;
 
-@JsonAdapter(BlockAdapter.class)
+@JsonAdapter(BlockDeserializer.JsonAdapter.class)
 public abstract class Block implements IBlock {
+    
+    protected static final int HASH_LENGTH = 64;
     
     private static final BlockDeserializer BLOCK_DESERIALIZER = BlockDeserializer.withDefaults();
     
@@ -24,7 +25,8 @@ public abstract class Block implements IBlock {
     private transient volatile byte[] hashBytes;
     
     @Expose @SerializedName("type")
-    private final BlockType type;
+    private final String type;
+    private transient final BlockType typeEnum;
     
     @Expose @SerializedName("signature")
     private final String signature;
@@ -33,25 +35,24 @@ public abstract class Block implements IBlock {
     private final WorkSolution workSolution;
     
     
-    protected Block(BlockType type) {
-        this(type, null, null, null, null);
+    private Block() {
+        throw new UnsupportedOperationException("A block type must be specified.");
     }
     
-    @Deprecated(forRemoval = true)
-    public Block(BlockType type, String hash, JsonObject jsonRepresentation, String signature,
-                 WorkSolution workSolution) {
-        this(type, hash, signature, workSolution);
+    protected Block(String type) {
+        this(type, null, null, null);
     }
     
-    public Block(BlockType type, String hash, String signature, WorkSolution workSolution) {
+    protected Block(String type, String hash, String signature, WorkSolution workSolution) {
         if (type == null)
             throw new IllegalArgumentException("Block type cannot be null.");
-        if (!JNH.isValidHex(hash, 64))
+        if (!JNH.isValidHex(hash, HASH_LENGTH))
             throw new IllegalArgumentException("Block hash is invalid.");
         if (!JNH.isValidHex(signature, 128))
             throw new IllegalArgumentException("Block signature is invalid.");
         
-        this.type = type;
+        this.type = type.toLowerCase();
+        this.typeEnum = BlockType.fromName(this.type);
         this.hash = hash != null ? hash.toUpperCase() : null;
         this.signature = signature != null ? signature.toUpperCase() : null;
         this.workSolution = workSolution;
@@ -84,6 +85,11 @@ public abstract class Block implements IBlock {
     
     @Override
     public final BlockType getType() {
+        return typeEnum;
+    }
+    
+    @Override
+    public final String getTypeString() {
         return type;
     }
     

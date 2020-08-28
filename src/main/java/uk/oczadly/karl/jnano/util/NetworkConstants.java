@@ -166,7 +166,7 @@ public final class NetworkConstants {
         public WorkDifficulty getForType(StateBlockSubType subtype) {
             switch (subtype) {
                 case SEND:
-                case CHANGE_REP:
+                case CHANGE:
                     return send;
                 default:
                     return receive;

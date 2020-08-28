@@ -6,9 +6,10 @@ import org.junit.Test;
 import uk.oczadly.karl.jnano.model.block.*;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
+import java.math.BigInteger;
+
 import static org.junit.Assert.*;
 
-@SuppressWarnings("deprecation")
 public class BlockAdapterTest {
     
     private Gson gson = new GsonBuilder().create();
@@ -19,12 +20,15 @@ public class BlockAdapterTest {
         return block;
     }
     
+    private static String encapsulateStrings(String json) {
+        return "\"" + json.replaceAll("\"", "\\\\\"") + "\"";
+    }
+    
     
     
     @Test
     public void testSend() {
         String json = "{\"type\":\"send\",\n" +
-                "  " +
                 "\"previous\":\"700DC6DF005DF78706A2C721D3EAA3755CC5209151D4BBD7EEB1D6FF77A068F8\",\n" +
                 "  \"destination\":\"nano_3deo53mkqduhn6gu55nf4jnmx8dorugsrjfnteywbedcswpsit3zz4u5urg3\",\n" +
                 "  \"balance\": \"1036304679954330940296402126272\",  \n" +
@@ -34,7 +38,7 @@ public class BlockAdapterTest {
     
         testSend(deserialize(json)); //Regular block
         // String encapsulated block
-        testSend(deserialize("\"" + json.replaceAll("\"", "\\\\\"") + "\""));
+        testSend(deserialize(encapsulateStrings(json)));
     }
     
     public void testSend(Block rawBlock) {
@@ -64,9 +68,8 @@ public class BlockAdapterTest {
                 "DD194B5425C0836E0BE085C18044C19F1A3BBD4D98F5A4B112A38E6208211F3646CD398E437CA974BE1C43656F512693D1" +
                 "02\"\n}";
         
-        testReceive(deserialize(json)); //Regular block
-        //String encapsulated block
-        testReceive(deserialize("\"" + json.replaceAll("\"", "\\\\\"") + "\""));
+        testReceive(deserialize(json)); // Regular block
+        testReceive(deserialize(encapsulateStrings(json))); // String encapsulated block
     }
     
     public void testReceive(Block rawBlock) {
@@ -95,8 +98,8 @@ public class BlockAdapterTest {
                 "679\",\n    \"work\": \"a7cf03e595499531\",\n    \"signature\": \"0F323D7FEF67152289B288AFD9EE9CD3CD" +
                 "224A3874FA8833E5E2FE60ACC500DADDADE8F37D452088B584C7DB358CA7C79B79A77A3C764ADA964B33DBF34DAB09\"\n}";
         
-        testOpen(deserialize(json)); //Regular block
-        testOpen(deserialize("\"" + json.replaceAll("\"", "\\\\\"") + "\"")); //String encapsulated block
+        testOpen(deserialize(json)); // Regular block
+        testOpen(deserialize(encapsulateStrings(json))); // String encapsulated block
     }
     
     public void testOpen(Block rawBlock) {
@@ -128,14 +131,13 @@ public class BlockAdapterTest {
                 "80D30E001\"\n}";
         
         testChange(deserialize(json)); // Regular block
-        // String encapsulated block
-        testChange(deserialize("\"" + json.replaceAll("\"", "\\\\\"") + "\""));
+        testChange(deserialize(encapsulateStrings(json))); // String encapsulated block
     }
     
     public void testChange(Block rawBlock) {
         assertTrue(rawBlock instanceof ChangeBlock);
         assertEquals(BlockType.CHANGE, rawBlock.getType());
-    
+        
         ChangeBlock block = (ChangeBlock)rawBlock;
         assertEquals("F9490F5C09A2B5B99EBD4D5F50C8095229ACFF7CD823155F14FAA6D17BC87C3EBD8B427A8F2882189D34886" +
                 "40BDA5221A91ED00FB7B72D089037ACA80D30E001", block.getSignature());
@@ -146,6 +148,44 @@ public class BlockAdapterTest {
                 block.getPreviousBlockHash());
         assertEquals("nano_3pczxuorp48td8645bs3m6c3xotxd3idskrenmi65rbrga5zmkemzhwkaznh",
                 block.getRepresentative().toAddress());
+    }
+    
+    
+    @Test
+    public void testState() {
+        String json = "{\"type\":\"state\",\"representative\":\"nano_3rw4un6ys57hrb39sy1qx8qy5wukst1iiponztrz9qiz6" +
+                "qqa55kxzx4491or\",\"link\":\"C798CFF4F1131204F65C4D22C3E6316F26F380EE0616AADBABEA1268FD75FB05\"," +
+                "\"balance\":\"420\",\"previous\":\"707CAA0DBEB16C486EE37C03409D663ACE501D2985CC72ACD6903CECACF31" +
+                "89C\",\"subtype\":\"send\",\"account\":\"nano_3jwrszth46rk1mu7rmb4rhm54us8yg1gw3ipodftqtikf5yqdyr74" +
+                "71nsg1k\",\"hash\":\"D7B1B764399B3417BC1220C602A9608D9C883CF2064EA481E14152813F3A6B9E\",\"work\":\"b7b524ffbff9f517\",\"signature\":\"A41A889F0FF68" +
+                "4A9A167F1EEDD2D389DBFA30B254A263EA1A79B438CBEFEDE2CBEDD1655AB7A2B10CC7B2ACAC94DE2AD670A64A8D314C756B" +
+                "3A8241437C48702\"}";
+    
+        testState(deserialize(json)); // Regular block
+        testState(deserialize(encapsulateStrings(json))); // String encapsulated block
+    }
+    
+    public void testState(Block rawBlock) {
+        assertTrue(rawBlock instanceof StateBlock);
+        assertEquals(BlockType.STATE, rawBlock.getType());
+        
+        StateBlock block = (StateBlock)rawBlock;
+        assertEquals("A41A889F0FF684A9A167F1EEDD2D389DBFA30B254A263EA1A79B438CBEFEDE2CBEDD1655AB7A2B10CC7B2ACAC" +
+                "94DE2AD670A64A8D314C756B3A8241437C48702", block.getSignature());
+        assertEquals(new WorkSolution("b7b524ffbff9f517"), block.getWorkSolution());
+        assertNotNull(block.toJsonString());
+        
+        assertEquals("707CAA0DBEB16C486EE37C03409D663ACE501D2985CC72ACD6903CECACF3189C",
+                block.getPreviousBlockHash());
+        assertEquals("nano_3rw4un6ys57hrb39sy1qx8qy5wukst1iiponztrz9qiz6qqa55kxzx4491or",
+                block.getRepresentative().toAddress());
+        assertEquals("nano_3jwrszth46rk1mu7rmb4rhm54us8yg1gw3ipodftqtikf5yqdyr7471nsg1k",
+                block.getAccount().toAddress());
+        assertEquals("C798CFF4F1131204F65C4D22C3E6316F26F380EE0616AADBABEA1268FD75FB05",
+                block.getLinkData());
+        assertEquals(new BigInteger("420"),
+                block.getBalance());
+        assertEquals(StateBlockSubType.SEND, block.getSubType());
     }
     
 }

@@ -11,39 +11,35 @@ import java.util.Map;
 public enum StateBlockSubType {
     
     @SerializedName("send")
-    SEND        ("send",    true,   BlockType.SEND),
+    SEND        (true,   BlockType.SEND),
     
     @SerializedName("receive")
-    RECEIVE     ("receive", true,   BlockType.RECEIVE),
+    RECEIVE     (true,   BlockType.RECEIVE),
     
     @SerializedName("open")
-    OPEN        ("open",    true,   BlockType.OPEN),
+    OPEN        (true,   BlockType.OPEN),
     
     @SerializedName("change")
-    CHANGE_REP  ("change",  false,  BlockType.CHANGE),
+    CHANGE      (false,  BlockType.CHANGE),
     
     @SerializedName("epoch")
-    EPOCH       ("epoch",   false,  null);
+    EPOCH       (false,  null);
     
     
-    static final Map<String, StateBlockSubType> NAME_LOOKUP_MAP = new HashMap<>();
     static final Map<BlockType, StateBlockSubType> LEGACY_LOOKUP_MAP = new HashMap<>();
     
     static { // Initialize lookup maps
         for (StateBlockSubType type : values()) {
-            NAME_LOOKUP_MAP.put(type.getProtocolName().toLowerCase(), type);
             if (type.getLegacyType() != null)
                 LEGACY_LOOKUP_MAP.put(type.getLegacyType(), type);
         }
     }
     
     
-    String name;
     boolean isTransaction;
     BlockType legacyType;
     
-    StateBlockSubType(String name, boolean isTransaction, BlockType legacyType) {
-        this.name = name;
+    StateBlockSubType(boolean isTransaction, BlockType legacyType) {
         this.isTransaction = isTransaction;
         this.legacyType = legacyType;
     }
@@ -60,7 +56,7 @@ public enum StateBlockSubType {
      * @return the official protocol name of this subtype
      */
     public String getProtocolName() {
-        return name;
+        return name().toLowerCase();
     }
     
     /**
@@ -93,7 +89,11 @@ public enum StateBlockSubType {
      * @return the corresponding subtype, or null if not found
      */
     public static StateBlockSubType getFromName(String name) {
-        return NAME_LOOKUP_MAP.get(name.toLowerCase());
+        try {
+            return valueOf(name.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
     
 }

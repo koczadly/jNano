@@ -13,6 +13,7 @@ import uk.oczadly.karl.jnano.util.NanoConstants;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 
 /**
  * JNano Helper class.
@@ -61,7 +62,7 @@ public class JNH {
      */
     public static byte[] reverseArray(byte[] arr) {
         if (arr == null) return null;
-        for (int i=0; i<(arr.length/2); i++) {
+        for (int i = 0; i < (arr.length / 2); i++) {
             byte tmp = arr[arr.length - i - 1];
             arr[arr.length - i - 1] = arr[i];
             arr[i] = tmp;
@@ -152,6 +153,10 @@ public class JNH {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    public static <T, U> T nullable(U obj, Function<U, T> func) {
+        return obj != null ? func.apply(obj) : null;
     }
     
 }

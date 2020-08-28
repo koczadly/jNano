@@ -21,7 +21,7 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
     
     
     ChangeBlock() {
-        super(BlockType.CHANGE);
+        super(BlockType.CHANGE.getProtocolName());
     }
     
     public ChangeBlock(String signature, WorkSolution workSolution, String previousBlockHash,
@@ -31,10 +31,10 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
     
     protected ChangeBlock(String hash, String signature, WorkSolution workSolution,
                        String previousBlockHash, NanoAccount representativeAccount) {
-        super(BlockType.CHANGE, hash, signature, workSolution);
+        super(BlockType.CHANGE.getProtocolName(), hash, signature, workSolution);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNH.isValidHex(previousBlockHash, 64))
+        if (!JNH.isValidHex(previousBlockHash, HASH_LENGTH))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (representativeAccount == null) throw new IllegalArgumentException("Block representative cannot be null.");
         

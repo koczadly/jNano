@@ -22,7 +22,6 @@ public class StateBlockTest {
                 new BigInteger("1234567"));
     }
     
-    
     @Test
     public void testCalcHash() {
         StateBlock block = builder

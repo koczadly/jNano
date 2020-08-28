@@ -9,9 +9,14 @@ import uk.oczadly.karl.jnano.model.work.WorkSolution;
 public interface IBlock {
     
     /**
-     * @return the block type
+     * @return the block type (may be null!)
      */
     BlockType getType();
+    
+    /**
+     * @return the block type
+     */
+    String getTypeString();
     
     /**
      * @return the block hash

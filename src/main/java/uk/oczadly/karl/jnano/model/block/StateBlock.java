@@ -43,7 +43,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     
     
     StateBlock() {
-        super(BlockType.STATE);
+        super(BlockType.STATE.getProtocolName());
     }
     
     /**
@@ -88,16 +88,16 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     StateBlock(StateBlockSubType subtype, String hash, String signature,
                WorkSolution work, NanoAccount accountAddress, String previousBlockHash,
                NanoAccount representativeAddress, BigInteger balance, String linkData, NanoAccount linkAccount) {
-        super(BlockType.STATE, hash, signature, work);
+        super(BlockType.STATE.getProtocolName(), hash, signature, work);
         
-        if (!JNH.isValidHex(previousBlockHash, 64))
+        if (!JNH.isValidHex(previousBlockHash, HASH_LENGTH))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (representativeAddress == null) throw new IllegalArgumentException("Block representative cannot be null.");
         if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");
         if (!JNH.isBalanceValid(balance))
             throw new IllegalArgumentException("Account balance is an invalid amount.");
         if (accountAddress == null) throw new IllegalArgumentException("Block account cannot be null.");
-        if (!JNH.isValidHex(linkData, 64))
+        if (!JNH.isValidHex(linkData, HASH_LENGTH))
             throw new IllegalArgumentException("Link data is invalid.");
         
         this.subType = subtype;

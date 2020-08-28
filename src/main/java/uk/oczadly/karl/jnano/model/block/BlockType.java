@@ -10,35 +10,45 @@ import com.google.gson.annotations.SerializedName;
 public enum BlockType {
     
     @SerializedName("open")
-    OPEN(true),
+    OPEN    (true,  OpenBlock.class),
     
     @SerializedName("change")
-    CHANGE(false),
+    CHANGE  (false, ChangeBlock.class),
     
     @SerializedName("send")
-    SEND(true),
+    SEND    (true,  SendBlock.class),
     
     @SerializedName("receive")
-    RECEIVE(true),
+    RECEIVE (true,  ReceiveBlock.class),
     
-    @SerializedName("state")
-    STATE(true);
+    @SerializedName(value = "state", alternate = "utx")
+    STATE   (true,  StateBlock.class);
     
     
     boolean isTransaction;
+    Class<? extends Block> blockClass;
     
-    BlockType(boolean isTransaction) {
+    BlockType(boolean isTransaction, Class<? extends Block> blockClass) {
         this.isTransaction = isTransaction;
+        this.blockClass = blockClass;
     }
     
     
     /**
      * @return whether the block type represents a transfer of funds
-     * @deprecated Certain block types require contextual information to determine the action.
+     * @deprecated Certain block types require contextual information to determine the action. This will return
+     * {@code true} for state blocks, but this is not necessarily the case.
      */
     @Deprecated
     public boolean isTransaction() {
         return isTransaction;
+    }
+    
+    /**
+     * @return the class associated with the block type
+     */
+    public Class<? extends Block> getBlockClass() {
+        return blockClass;
     }
     
     /**
@@ -48,10 +58,24 @@ public enum BlockType {
         return name().toLowerCase();
     }
     
-    
     @Override
     public String toString() {
         return getProtocolName();
+    }
+    
+    
+    /**
+     * Returns the enum constant of this type from the protocol name.
+     *
+     * @param name the type name
+     * @return the corresponding type, or null if not found
+     */
+    public static BlockType fromName(String name) {
+        try {
+            return valueOf(name.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
     
 }

@@ -25,7 +25,7 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     
     
     OpenBlock() {
-        super(BlockType.OPEN);
+        super(BlockType.OPEN.getProtocolName());
     }
     
     public OpenBlock(String signature, WorkSolution work, String sourceBlockHash, NanoAccount accountAddress,
@@ -35,10 +35,10 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     
     protected OpenBlock(String hash, String signature, WorkSolution work,
                      String sourceBlockHash, NanoAccount accountAddress, NanoAccount representativeAccount) {
-        super(BlockType.OPEN, hash, signature, work);
+        super(BlockType.OPEN.getProtocolName(), hash, signature, work);
     
         if (sourceBlockHash == null) throw new IllegalArgumentException("Source block hash cannot be null.");
-        if (!JNH.isValidHex(sourceBlockHash, 64))
+        if (!JNH.isValidHex(sourceBlockHash, HASH_LENGTH))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (accountAddress == null) throw new IllegalArgumentException("Block account cannot be null.");
         if (representativeAccount == null) throw new IllegalArgumentException("Block representative cannot be null.");
