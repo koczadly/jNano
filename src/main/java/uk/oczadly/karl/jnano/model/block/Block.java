@@ -175,9 +175,16 @@ public abstract class Block implements IBlock {
                 json.addProperty("signature", JNH.ZEROES_128);
             if (workSolution == null)
                 json.addProperty("work", JNH.ZEROES_16);
+            fillBlanks(json);
         }
         return json;
     }
+    
+    /**
+     * Fill blank or missing parameters with {@link JsonObject#addProperty(String, String)}.
+     * @param json
+     */
+    protected void fillBlanks(JsonObject json) {}
     
     
     @Override
