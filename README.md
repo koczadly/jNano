@@ -7,8 +7,7 @@ Nano is a crypto-currency which aims to offer instantaneous feeless transactions
 
 ## Features
 This library provides you simple access to the following:
-- Synchronous and asynchronous methods for [executing RPC calls](https://github.com/koczadly/jNano/wiki/Query
--requests) (all commands up to V21 are supported).
+- Synchronous and asynchronous methods for [executing RPC calls](https://github.com/koczadly/jNano/wiki/Query-requests) (all commands up to V21 are supported).
 - [WebSocket support](https://github.com/koczadly/jNano/wiki/WebSocket-communication) for receiving live data feeds
  and events from the node.
 - A [server for listening to real-time block callbacks](https://github.com/koczadly/jNano/wiki/Block-callback) from
@@ -40,7 +39,7 @@ Before using this library, you will need to configure the node correctly. Make s
 *More detailed examples can be found on the associated [wiki pages](https://github.com/koczadly/jNano/wiki/).*
 
 #### Creating a node object
-The following will define a node on localhost:7076 (default for the empty constructor). Other addresses and ports
+The following will define a node on `localhost:7076` (default for the empty constructor). Other addresses and ports
  can be specified within the constructor.
 ```java
 RpcQueryNode node = new RpcQueryNode();
