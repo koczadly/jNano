@@ -86,6 +86,19 @@ public class JNH {
         return raw.compareTo(BigInteger.ZERO) >= 0 && raw.compareTo(NanoConstants.MAX_BALANCE_RAW) <= 0;
     }
     
+    /**
+     * @param str the string
+     * @return true if the string is null, empty or filled with zeroes
+     */
+    public static boolean isNullOrZero(String str) {
+        if (str != null) {
+            for (char c : str.toCharArray()) {
+                if (c != '0') return false;
+            }
+        }
+        return true;
+    }
+    
     public static String repeatChar(char c, int length) {
         StringBuilder sb = new StringBuilder(length);
         for (int i=0; i<length; i++)
