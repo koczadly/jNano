@@ -5,15 +5,32 @@
 
 package uk.oczadly.karl.jnano.model.block;
 
+/**
+ * Represents a set of actions performed by a specific block.
+ */
 public class BlockIntent {
     
     private final UncertainBool isSend, isReceive, isChange, isOpen, isEpoch;
     
+    /**
+     * @param isSend    if the block sends funds
+     * @param isReceive if the block receives funds
+     * @param isChange  if the block changes the representative (true if isOpen is true)
+     * @param isOpen    if this is the first block in the account
+     * @param isEpoch   if this block is an epoch marker block
+     */
     public BlockIntent(Boolean isSend, Boolean isReceive, Boolean isChange, Boolean isOpen, Boolean isEpoch) {
         this(UncertainBool.valueOf(isSend), UncertainBool.valueOf(isReceive), UncertainBool.valueOf(isChange),
                 UncertainBool.valueOf(isOpen), UncertainBool.valueOf(isEpoch));
     }
     
+    /**
+     * @param isSend    if the block sends funds
+     * @param isReceive if the block receives funds
+     * @param isChange  if the block changes the representative (true if isOpen is true)
+     * @param isOpen    if this is the first block in the account
+     * @param isEpoch   if this block is an epoch marker block
+     */
     public BlockIntent(UncertainBool isSend, UncertainBool isReceive, UncertainBool isChange, UncertainBool isOpen,
                        UncertainBool isEpoch) {
         this.isSend = UncertainBool.notNull(isSend);
