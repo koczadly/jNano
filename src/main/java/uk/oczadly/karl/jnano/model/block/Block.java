@@ -141,16 +141,6 @@ public abstract class Block implements IBlock {
     
     
     /**
-     * Returns whether or not this object contains all the necessary fields to be a block. This includes having a
-     * non-null work value and signature.
-     * @return true if this block contains all mandatory fields
-     */
-    public boolean isComplete() {
-        return getWorkSolution() != null && getSignature() != null;
-    }
-    
-    
-    /**
      * @return an array of hashable byte arrays in the correct sequence, or null if not supported
      */
     protected abstract byte[][] generateHashables();

@@ -24,6 +24,8 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
             json.get("previous").getAsString(),
             json.get("source").getAsString());
     
+    private static final BlockIntent INTENT = new BlockIntent(false, true, false, false, false);
+    
     
     @Expose @SerializedName("previous")
     private String previousBlockHash;
@@ -64,6 +66,11 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     @Override
     public final String getSourceBlockHash() {
         return sourceBlockHash;
+    }
+    
+    @Override
+    public BlockIntent getIntent() {
+        return INTENT;
     }
     
     

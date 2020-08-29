@@ -28,6 +28,8 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
             NanoAccount.parseAddress(json.get("destination").getAsString()),
             new BigInteger(json.get("balance").getAsString()));
     
+    private static final BlockIntent INTENT = new BlockIntent(true, false, false, false, false);
+    
     
     @Expose @SerializedName("previous")
     private String previousBlockHash;
@@ -92,6 +94,11 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
     @Override
     public final NanoAccount getLinkAsAccount() {
         return getDestinationAccount();
+    }
+    
+    @Override
+    public BlockIntent getIntent() {
+        return INTENT;
     }
     
     

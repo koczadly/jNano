@@ -156,7 +156,7 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
          * @param <B>   the block interfaces
          */
         public <B extends Block & IBlockPrevious & IBlockAccount> Builder(B block) {
-            this(JNH.isNullOrZero(block.getPreviousBlockHash())
+            this(JNH.isZero(block.getPreviousBlockHash(), true)
                     ? block.getAccount().toPublicKey() : block.getPreviousBlockHash(), block);
         }
     

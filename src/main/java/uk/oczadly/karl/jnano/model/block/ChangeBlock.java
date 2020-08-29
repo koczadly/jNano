@@ -25,6 +25,8 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
             json.get("previous").getAsString(),
             NanoAccount.parseAddress(json.get("representative").getAsString()));
     
+    private static final BlockIntent INTENT = new BlockIntent(false, false, true, false, false);
+    
     
     @Expose @SerializedName("previous")
     private String previousBlockHash;
@@ -66,6 +68,11 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
         return representativeAccount;
     }
     
+    @Override
+    public BlockIntent getIntent() {
+        return INTENT;
+    }
+    
     
     @Override
     protected byte[][] generateHashables() {
@@ -74,5 +81,5 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
                 getRepresentative().getPublicKeyBytes()
         };
     }
-    
+   
 }

@@ -177,6 +177,27 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         return linkAccount;
     }
     
+    @Override
+    public BlockIntent getIntent() {
+        boolean hasState = subType != null;
+        
+        return new BlockIntent(
+                // SEND
+                BlockIntent.UncertainBool.ifKnown(hasState, subType == StateBlockSubType.SEND),
+                // RECEIVE
+                BlockIntent.UncertainBool.ifKnown(hasState,
+                        subType == StateBlockSubType.RECEIVE || subType == StateBlockSubType.OPEN),
+                // CHANGE (unknown if SEND or RECEIVE)
+                (subType == StateBlockSubType.SEND || subType == StateBlockSubType.RECEIVE) ?
+                        BlockIntent.UncertainBool.UNKNOWN :
+                        BlockIntent.UncertainBool.ifKnown(hasState, subType == StateBlockSubType.CHANGE),
+                // OPEN (true if OPEN or 'previous' is empty)
+                BlockIntent.UncertainBool.ifKnown(hasState || previousBlockHash != null,
+                        subType == StateBlockSubType.OPEN || JNH.isZero(previousBlockHash, false)),
+                // EPOCH
+                BlockIntent.UncertainBool.ifKnown(hasState, subType == StateBlockSubType.EPOCH));
+    }
+    
     
     @Override
     protected byte[][] generateHashables() {

@@ -39,9 +39,9 @@ public class JNHTest {
     @Test
     public void testNullable() {
         Object obj1 = "slug", obj2 = 42;
-        assertEquals(7, (int)JNH.instanceOf(obj1, String.class, 5, s -> (s.length() == 4 ? 6 : 7)));
-        assertEquals(6, (int)JNH.instanceOf(obj1, String.class, 5, s -> (s.length() == 0 ? 6 : 7)));
-        assertEquals(5, (int)JNH.instanceOf(obj2, String.class, 5, s -> (s.length() == 4 ? 6 : 7)));
+        assertEquals(101, (int)JNH.instanceOf(obj1, String.class, 100, s -> (s.length() == 4 ? 101 : 102)));
+        assertEquals(102, (int)JNH.instanceOf(obj1, String.class, 100, s -> (s.length() == 0 ? 101 : 102)));
+        assertEquals(100, (int)JNH.instanceOf(obj2, String.class, 100, s -> (s.length() == 4 ? 101 : 102)));
     }
     
 }
