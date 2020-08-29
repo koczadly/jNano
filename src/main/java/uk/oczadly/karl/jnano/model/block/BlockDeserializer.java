@@ -96,16 +96,19 @@ public final class BlockDeserializer {
      * A Gson adapter ({@link JsonSerializer} and {@link JsonDeserializer}) which allows the serialization and
      * deserialization of blocks.
      */
-    public static final class JsonAdapter implements JsonSerializer<Block>, JsonDeserializer<Block> {
+    public static class JsonAdapter implements JsonSerializer<Block>, JsonDeserializer<Block> {
         
         private final BlockDeserializer deserializer;
         
-        /** With default block deserializer. */
+        /** With the default block deserializer. */
         public JsonAdapter() {
             this(DEFAULT);
         }
     
-        /** With specified block deserializer. */
+        /**
+         * With the specified block deserializer.
+         * @param deserializer the block deserializer
+         */
         public JsonAdapter(BlockDeserializer deserializer) {
             this.deserializer = deserializer;
         }
