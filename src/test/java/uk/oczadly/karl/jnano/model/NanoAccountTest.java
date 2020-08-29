@@ -117,11 +117,24 @@ public class NanoAccountTest {
     public void testEquality() {
         NanoAccount addr1 = NanoAccount.parsePublicKey(ACC_1_PUBKEY);
         NanoAccount addr2 = NanoAccount.parsePublicKey(ACC_1_PUBKEY);
-        NanoAccount addr3 = NanoAccount.parsePublicKey(ACC_2_PUBKEY);
-    
+        NanoAccount addr3 = NanoAccount.parsePublicKey(ACC_1_PUBKEY, "slug");
+        NanoAccount addr4 = NanoAccount.parsePublicKey(ACC_2_PUBKEY);
         assertEquals(addr1, addr2);
         assertEquals(addr1.hashCode(), addr2.hashCode());
-        assertNotEquals(addr1, addr3);
+        assertNotEquals(addr1, addr3); // Prefix doesnt match
+        assertNotEquals(addr1, addr4); // Public key doesnt match
+    }
+    
+    @Test
+    public void testEqualityIgnorePrefix() {
+        NanoAccount addr1 = NanoAccount.parsePublicKey(ACC_1_PUBKEY, "nano");
+        NanoAccount addr2 = NanoAccount.parsePublicKey(ACC_1_PUBKEY, "ban");
+        NanoAccount addr3 = NanoAccount.parsePublicKey(ACC_2_PUBKEY, "nano");
+        
+        assertTrue(addr1.equalsIgnorePrefix(addr2));
+        assertTrue(addr2.equalsIgnorePrefix(addr1));
+        assertFalse(addr1.equalsIgnorePrefix(addr3));
+        assertFalse(addr3.equalsIgnorePrefix(addr1));
     }
     
     @Test

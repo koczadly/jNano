@@ -24,6 +24,8 @@ import java.util.Objects;
 @JsonAdapter(NanoAccount.Adapter.class)
 public final class NanoAccount {
     
+    private static final BigInteger MAX_INDEX_VAL = new BigInteger(JNH.repeatChar('F', 64), 16);
+    
     /**
      * The character which separates the prefix from the address string.
      */
@@ -48,8 +50,6 @@ public final class NanoAccount {
      * traversal (as seen with {@link uk.oczadly.karl.jnano.rpc.request.node.RequestLedger}).</p>
      */
     public static final NanoAccount ZERO_ACCOUNT = new NanoAccount(BigInteger.ZERO);
-    
-    private static final BigInteger MAX_INDEX_VAL = new BigInteger(JNH.repeatChar('F', 64), 16);
     
     
     private final byte[] keyBytes;
@@ -264,6 +264,7 @@ public final class NanoAccount {
      * @return true if the public key of both accounts match
      */
     public boolean equalsIgnorePrefix(NanoAccount that) {
+        if (that == null) return false;
         if (this == that) return true;
         return Arrays.equals(keyBytes, that.keyBytes);
     }
