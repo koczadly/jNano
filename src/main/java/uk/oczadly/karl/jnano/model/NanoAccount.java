@@ -258,6 +258,16 @@ public final class NanoAccount {
                 Arrays.equals(keyBytes, that.keyBytes);
     }
     
+    /**
+     * Compares this instance with the provided, and verifies the equality of the public key component.
+     * @param that the other NanoAccount instance to compare
+     * @return true if the public key of both accounts match
+     */
+    public boolean equalsIgnorePrefix(NanoAccount that) {
+        if (this == that) return true;
+        return Arrays.equals(keyBytes, that.keyBytes);
+    }
+    
     @Override
     public int hashCode() {
         int result = Objects.hash(prefix);

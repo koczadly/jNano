@@ -89,9 +89,11 @@ public class JNH {
     
     /**
      * @param str the string
+     * @param allowNull if true, the method will return true for null strings
      * @return true if the string is null, empty or filled with zeroes
      */
-    public static boolean isNullOrZero(String str) {
+    public static boolean isZero(String str, boolean allowNull) {
+        if (str == null && !allowNull) return false;
         if (str != null) {
             for (char c : str.toCharArray()) {
                 if (c != '0') return false;
@@ -157,6 +159,11 @@ public class JNH {
     
     public static <T, U> T nullable(U obj, Function<U, T> func) {
         return obj != null ? func.apply(obj) : null;
+    }
+    
+    public static <C, R> R instanceOf(Object obj, Class<C> clazz, R def, Function<C, R> sup) {
+        if (obj == null) return def;
+        return clazz.isInstance(obj) ? sup.apply(clazz.cast(obj)) : def;
     }
     
 }

@@ -25,14 +25,23 @@ public class JNHTest {
     }
     
     @Test
-    public void isNullOrZero() {
-        assertTrue(JNH.isNullOrZero(null));
-        assertTrue(JNH.isNullOrZero(""));
-        assertTrue(JNH.isNullOrZero("0"));
-        assertTrue(JNH.isNullOrZero("00000"));
-        assertTrue(JNH.isNullOrZero(JNH.ZEROES_64));
-        assertFalse(JNH.isNullOrZero("00000001"));
-        assertFalse(JNH.isNullOrZero("04892slugs20"));
+    public void testIsZero() {
+        assertTrue(JNH.isZero(null, true));
+        assertFalse(JNH.isZero(null, false));
+        assertTrue(JNH.isZero("", true));
+        assertTrue(JNH.isZero("0", true));
+        assertTrue(JNH.isZero("00000", true));
+        assertTrue(JNH.isZero(JNH.ZEROES_64, true));
+        assertFalse(JNH.isZero("00000001", true));
+        assertFalse(JNH.isZero("04892slugs20", true));
+    }
+    
+    @Test
+    public void testNullable() {
+        Object obj1 = "slug", obj2 = 42;
+        assertEquals(7, (int)JNH.instanceOf(obj1, String.class, 5, s -> (s.length() == 4 ? 6 : 7)));
+        assertEquals(6, (int)JNH.instanceOf(obj1, String.class, 5, s -> (s.length() == 0 ? 6 : 7)));
+        assertEquals(5, (int)JNH.instanceOf(obj2, String.class, 5, s -> (s.length() == 4 ? 6 : 7)));
     }
     
 }
