@@ -60,7 +60,7 @@ public interface IBlock {
     BlockIntent getIntent();
     
     /**
-     * Returns whether or not this object contains all the necessary fields to be a block. This includes having
+     * Returns whether or not this object contains all the necessary fields to be a valid block. This includes having
      * non-null work and signature values.
      * @return true if this block contains all mandatory fields
      */
