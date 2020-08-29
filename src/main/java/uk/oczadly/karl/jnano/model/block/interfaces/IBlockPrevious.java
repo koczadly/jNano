@@ -11,7 +11,9 @@ package uk.oczadly.karl.jnano.model.block.interfaces;
 public interface IBlockPrevious extends IBlock {
     
     /**
-     * @return the hash of the previous block in this account's blockchain
+     * Returns the hash of the previous block in the account's chain. For the first block in an account, this value
+     * may return null or an empty string of zeroes.
+     * @return the previous block hash
      */
     String getPreviousBlockHash();
 

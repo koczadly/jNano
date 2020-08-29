@@ -56,7 +56,7 @@ public class BlockIntent {
     }
     
     /**
-     * @return true if the block changed the representative, or if the account is new
+     * @return true if the block changed the representative, or if the block is an open block
      */
     public UncertainBool isChangeRep() {
         return isChange;
@@ -95,8 +95,7 @@ public class BlockIntent {
     }
     
     /**
-     * Returns whether this block has a functional purpose. Some block may exist on the network, but have no practical
-     * functionality or action.
+     * Returns whether this block has a functional purpose (eg. transacting funds, modifying an account parameter).
      * @return true if this block has a function
      */
     public UncertainBool hasPurpose() {

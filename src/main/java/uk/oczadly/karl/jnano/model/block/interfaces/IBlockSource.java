@@ -11,7 +11,9 @@ package uk.oczadly.karl.jnano.model.block.interfaces;
 public interface IBlockSource extends IBlock {
     
     /**
-     * @return the hash of the source block which sent the funds
+     * Returns the hash of the block which this block is interacting with (eg. a {@code receive} block accepting the
+     * funds sent from the source {@code send} block).
+     * @return the hash of the source block
      */
     String getSourceBlockHash();
     

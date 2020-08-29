@@ -13,7 +13,8 @@ import uk.oczadly.karl.jnano.model.NanoAccount;
 public interface IBlockAccount extends IBlock {
     
     /**
-     * @return the account which this block belongs to
+     * Returns the account which this block belongs to.
+     * @return the account
      */
     NanoAccount getAccount();
 
