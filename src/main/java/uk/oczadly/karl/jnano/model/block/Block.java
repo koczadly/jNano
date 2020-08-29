@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2020 Karl Oczadly (karl@oczadly.uk)
+ * Licensed under the MIT License
+ */
+
 package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
