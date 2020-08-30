@@ -9,34 +9,46 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.websocket.NanoWebSocketClient;
+import uk.oczadly.karl.jnano.websocket.Topic;
 import uk.oczadly.karl.jnano.websocket.TopicWithSubscribeParams;
-import uk.oczadly.karl.jnano.websocket.WsTopic;
 import uk.oczadly.karl.jnano.websocket.topic.message.TopicMessageVote;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class WsTopicVote extends WsTopic<TopicMessageVote>
-        implements TopicWithSubscribeParams<WsTopicVote.Parameters> {
+/**
+ * The {@code vote} WebSocket topic.
+ * <p>This topic supports subscription parameters with the use of the {@link SubParams} subclass, but does not
+ * support updating of these parameters.</p>
+ * <p>Received data messages will be encoded in the {@link TopicMessageVote} class.</p>
+ *
+ * @see <a href="https://docs.nano.org/integration-guides/websockets/#votes">
+ *     Official WebSocket documentation</a>
+ */
+public class TopicVote extends Topic<TopicMessageVote>
+        implements TopicWithSubscribeParams<TopicVote.SubParams> {
     
-    public WsTopicVote(NanoWebSocketClient client) {
+    public TopicVote(NanoWebSocketClient client) {
         super("vote", client, TopicMessageVote.class);
     }
     
     
     @Override
-    public void subscribe(Parameters params) {
+    public void subscribe(SubParams params) {
         _subscribe(params);
     }
     
     @Override
-    public boolean subscribeBlocking(long timeout, Parameters params) throws InterruptedException {
+    public boolean subscribeBlocking(long timeout, SubParams params) throws InterruptedException {
         return _subscribeBlocking(timeout, params);
     }
     
     
     
-    public static final class Parameters {
+    /**
+     * The configuration parameters when subscribing to this topic.
+     */
+    public static final class SubParams {
         @Expose @SerializedName("representatives")
         private List<NanoAccount> representatives;
         
@@ -51,12 +63,12 @@ public class WsTopicVote extends WsTopic<TopicMessageVote>
             return representatives;
         }
         
-        public Parameters setRepresentatives(List<NanoAccount> representatives) {
+        public SubParams setRepresentatives(List<NanoAccount> representatives) {
             this.representatives = representatives;
             return this;
         }
         
-        public Parameters setRepresentatives(NanoAccount... representatives) {
+        public SubParams setRepresentatives(NanoAccount... representatives) {
             return setRepresentatives(Arrays.asList(representatives));
         }
         
@@ -64,7 +76,7 @@ public class WsTopicVote extends WsTopic<TopicMessageVote>
             return includeReplays;
         }
         
-        public Parameters setIncludeReplays(Boolean includeReplays) {
+        public SubParams setIncludeReplays(Boolean includeReplays) {
             this.includeReplays = includeReplays;
             return this;
         }
@@ -73,7 +85,7 @@ public class WsTopicVote extends WsTopic<TopicMessageVote>
             return includeIndeterminate;
         }
         
-        public Parameters setIncludeIndeterminate(Boolean includeIndeterminate) {
+        public SubParams setIncludeIndeterminate(Boolean includeIndeterminate) {
             this.includeIndeterminate = includeIndeterminate;
             return this;
         }

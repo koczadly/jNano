@@ -49,7 +49,7 @@ class WebSocketHandler extends WebSocketClient {
             }
         } else if (json.has("message")) {
             // New message
-            WsTopic<?> wsTopic = client.getTopics().get(json.get("topic").getAsString());
+            Topic<?> wsTopic = client.getTopics().get(json.get("topic").getAsString());
             
             if (wsTopic != null) {
                 client.getListenerExecutor().submit(() -> {
@@ -94,10 +94,8 @@ class WebSocketHandler extends WebSocketClient {
         WsObserver observer = client.getWsObserver();
         if (observer != null) {
             client.getListenerExecutor().submit(() -> {
-                observer.onError(ex);
+                observer.onSocketError(ex);
             });
-        } else {
-            ex.printStackTrace();
         }
     }
     

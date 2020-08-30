@@ -16,23 +16,26 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * <p>This class represents a WebSocket which can interact with the Nano WebSocket RPC API.</p>
+ *
  * <p>Instances of this class may be re-used after closing through the {@link #connect()} method, without having to
  * re-create another instance. Note that calling {@link #connect()} after disconnecting from an existing connection
  * will reset all of the subscriptions and option parameters.</p>
+ *
  * <p>It is recommended to use the {@link #setWsObserver(WsObserver)} method to listen for network and uncaught
  * exceptions, as well as receiving other miscellaneous network events WebSocket events.</p>
+ *
  * <p>Below is an example of how this class should be utilised in a standard scenario:</p>
  * <pre>{@code
  * NanoWebSocketClient ws = new NanoWebSocketClient(); // Defaults to endpoint localhost:7078
  * ws.connect(); // Connect to the websocket
  *
  * // Register a listener for block confirmations
- * ws.getTopicConfirmedBlocks().registerListener((message, context) -> {
+ * ws.getTopics().topicConfirmedBlocks().registerListener((message, context) -> {
  *     System.out.println("New block: " + message.getHash()); // Print the hash of all new blocks
  * });
  *
  * // Subscribe to the block confirmations topic, and specify an account filter
- * ws.getTopicConfirmedBlocks().subscribe(new TopicOptionsConfirmation()
+ * ws.getTopics().topicConfirmedBlocks().subscribe(new TopicConfirmation.SubParams()
  *         .setAccounts(List.of(NanoAccount.parse("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz")))
  *         .setIncludeBlock(true));
  * }</pre>

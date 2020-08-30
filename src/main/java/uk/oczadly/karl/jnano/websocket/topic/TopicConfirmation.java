@@ -9,43 +9,54 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.websocket.NanoWebSocketClient;
+import uk.oczadly.karl.jnano.websocket.Topic;
 import uk.oczadly.karl.jnano.websocket.TopicWithUpdateParams;
-import uk.oczadly.karl.jnano.websocket.WsTopic;
 import uk.oczadly.karl.jnano.websocket.topic.message.TopicMessageConfirmation;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class WsTopicConfirmation extends WsTopic<TopicMessageConfirmation>
-        implements TopicWithUpdateParams<WsTopicConfirmation.SubParameters, WsTopicConfirmation.UpdateOptions> {
+/**
+ * The {@code confirmation} WebSocket topic.
+ * <p>This topic supports both subscription and update parameters with the use of the {@link SubParams} and
+ * {@link UpdateParams} subclasses.</p>
+ * <p>Received data messages will be encoded in the {@link TopicMessageConfirmation} class.</p>
+ *
+ * @see <a href="https://docs.nano.org/integration-guides/websockets/#confirmation">
+ *     Official WebSocket documentation</a>
+ */
+public class TopicConfirmation extends Topic<TopicMessageConfirmation>
+        implements TopicWithUpdateParams<TopicConfirmation.SubParams, TopicConfirmation.UpdateParams> {
     
-    public WsTopicConfirmation(NanoWebSocketClient client) {
+    public TopicConfirmation(NanoWebSocketClient client) {
         super("confirmation", client, TopicMessageConfirmation.class);
     }
     
     @Override
-    public void subscribe(SubParameters params) {
+    public void subscribe(SubParams params) {
         _subscribe(params);
     }
     
     @Override
-    public boolean subscribeBlocking(long timeout, SubParameters params) throws InterruptedException {
+    public boolean subscribeBlocking(long timeout, SubParams params) throws InterruptedException {
         return _subscribeBlocking(timeout, params);
     }
     
     @Override
-    public void update(UpdateOptions params) {
+    public void update(UpdateParams params) {
         _update(params);
     }
     
     @Override
-    public boolean updateBlocking(long timeout, UpdateOptions params) throws InterruptedException {
+    public boolean updateBlocking(long timeout, UpdateParams params) throws InterruptedException {
         return _updateBlocking(timeout, params);
     }
     
     
-    
-    public static final class SubParameters {
+    /**
+     * The configuration parameters when subscribing to this topic.
+     */
+    public static final class SubParams {
         @Expose @SerializedName("confirmation_type")
         private TopicMessageConfirmation.ConfirmationType type;
         
@@ -66,7 +77,7 @@ public class WsTopicConfirmation extends WsTopic<TopicMessageConfirmation>
             return type;
         }
         
-        public SubParameters setConfirmationType(TopicMessageConfirmation.ConfirmationType type) {
+        public SubParams setConfirmationType(TopicMessageConfirmation.ConfirmationType type) {
             this.type = type;
             return this;
         }
@@ -75,7 +86,7 @@ public class WsTopicConfirmation extends WsTopic<TopicMessageConfirmation>
             return allLocalAccounts;
         }
         
-        public SubParameters setAllLocalAccounts(Boolean allLocalAccounts) {
+        public SubParams setAllLocalAccounts(Boolean allLocalAccounts) {
             this.allLocalAccounts = allLocalAccounts;
             return this;
         }
@@ -84,12 +95,12 @@ public class WsTopicConfirmation extends WsTopic<TopicMessageConfirmation>
             return accounts;
         }
         
-        public SubParameters setAccounts(List<NanoAccount> accounts) {
+        public SubParams setAccounts(List<NanoAccount> accounts) {
             this.accounts = accounts;
             return this;
         }
         
-        public SubParameters setAccounts(NanoAccount... accounts) {
+        public SubParams setAccounts(NanoAccount... accounts) {
             return setAccounts(Arrays.asList(accounts));
         }
         
@@ -97,7 +108,7 @@ public class WsTopicConfirmation extends WsTopic<TopicMessageConfirmation>
             return includeBlock;
         }
         
-        public SubParameters setIncludeBlock(Boolean includeBlock) {
+        public SubParams setIncludeBlock(Boolean includeBlock) {
             this.includeBlock = includeBlock;
             return this;
         }
@@ -106,13 +117,16 @@ public class WsTopicConfirmation extends WsTopic<TopicMessageConfirmation>
             return includeElectionInfo;
         }
         
-        public SubParameters setIncludeElectionInfo(Boolean includeElectionInfo) {
+        public SubParams setIncludeElectionInfo(Boolean includeElectionInfo) {
             this.includeElectionInfo = includeElectionInfo;
             return this;
         }
     }
     
-    public static final class UpdateOptions {
+    /**
+     * The configuration parameters when updating this topic's configuration.
+     */
+    public static final class UpdateParams {
         @Expose @SerializedName("accounts_add")
         private List<NanoAccount> accountsAdd;
         
@@ -124,12 +138,12 @@ public class WsTopicConfirmation extends WsTopic<TopicMessageConfirmation>
             return accountsAdd;
         }
         
-        public UpdateOptions setAccountsAdd(List<NanoAccount> accountsAdd) {
+        public UpdateParams setAccountsAdd(List<NanoAccount> accountsAdd) {
             this.accountsAdd = accountsAdd;
             return this;
         }
         
-        public UpdateOptions setAccountsAdd(NanoAccount... accountsAdd) {
+        public UpdateParams setAccountsAdd(NanoAccount... accountsAdd) {
             return setAccountsAdd(Arrays.asList(accountsAdd));
         }
         
@@ -137,12 +151,12 @@ public class WsTopicConfirmation extends WsTopic<TopicMessageConfirmation>
             return accountsRemove;
         }
         
-        public UpdateOptions setAccountsRemove(List<NanoAccount> accountsRemove) {
+        public UpdateParams setAccountsRemove(List<NanoAccount> accountsRemove) {
             this.accountsRemove = accountsRemove;
             return this;
         }
         
-        public UpdateOptions setAccountsRemove(NanoAccount... accountsAdd) {
+        public UpdateParams setAccountsRemove(NanoAccount... accountsAdd) {
             return setAccountsRemove(Arrays.asList(accountsAdd));
         }
     }

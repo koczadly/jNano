@@ -13,14 +13,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class WsTopic<M> {
+public class Topic<M> {
     
     private final String topicName;
     private final Class<M> classMessage;
     private final NanoWebSocketClient client;
     private final CopyOnWriteArrayList<TopicListener<M>> listeners = new CopyOnWriteArrayList<>();
     
-    public WsTopic(String topicName, NanoWebSocketClient client, Class<M> classMessage) {
+    public Topic(String topicName, NanoWebSocketClient client, Class<M> classMessage) {
         this.topicName = topicName;
         this.client = client;
         this.classMessage = classMessage;
@@ -184,7 +184,7 @@ public class WsTopic<M> {
             } catch (Exception e) {
                 WsObserver wsObserver = client.getWsObserver();
                 if (wsObserver != null) {
-                    wsObserver.onError(e); // Notify socket listener of exception
+                    wsObserver.onHandlerError(e); // Notify socket listener of exception
                 }
             }
         }

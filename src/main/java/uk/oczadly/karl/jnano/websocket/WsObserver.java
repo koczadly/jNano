@@ -14,18 +14,15 @@ public interface WsObserver {
         public void onOpen(int httpStatus) {
             System.out.println("WebSocket connected.");
         }
-    
-        @Override
-        public void onMessage(JsonObject json, boolean handled) {}
-    
+        
         @Override
         public void onClose(int code, String reason, boolean remote) {
             System.out.println("WebSocket closed.");
         }
-    
+        
         @Override
-        public void onError(Exception ex) {
-            System.err.println("Uncaught error within WebSocket:");
+        public void onSocketError(Exception ex) {
+            System.err.println("WebSocket connection exception:");
             ex.printStackTrace();
         }
     };
@@ -42,7 +39,7 @@ public interface WsObserver {
      * @param json    the JSON message
      * @param handled true if the message was handled by a listener
      */
-    void onMessage(JsonObject json, boolean handled);
+    default void onMessage(JsonObject json, boolean handled) {}
     
     /**
      * Executed when the WebSocket is closed.
@@ -53,9 +50,18 @@ public interface WsObserver {
     void onClose(int code, String reason, boolean remote);
     
     /**
-     * Executed when an exception occurs within one of the listeners.
+     * Executed when an exception occurs with the connection.
      * @param ex the exception
      */
-    void onError(Exception ex);
+    void onSocketError(Exception ex);
+    
+    /**
+     * Executed when an uncaught exception occurs within one of the listeners.
+     * @param ex the exception
+     */
+    default void onHandlerError(Exception ex) {
+        System.err.println("Uncaught error within WebSocket:");
+        ex.printStackTrace();
+    }
 
 }

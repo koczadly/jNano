@@ -13,29 +13,29 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TopicRegistry {
     
     private final NanoWebSocketClient client;
-    private final Map<String, WsTopic<?>> topics = new ConcurrentHashMap<>();
+    private final Map<String, Topic<?>> topics = new ConcurrentHashMap<>();
     
-    private final WsTopicConfirmation topicConfirmation;
-    private final WsTopicVote topicVote;
-    private final WsTopicStoppedElection topicStoppedElection;
-    private final WsTopicActiveDifficulty topicActiveDifficulty;
-    private final WsTopicWork topicWork;
-    private final WsTopicTelemetry topicTelemetry;
-    private final WsTopicUnconfirmedBlocks topicUnconfirmed;
-    private final WsTopicBootstrap topicBootstrap;
+    private final TopicConfirmation topicConfirmation;
+    private final TopicVote topicVote;
+    private final TopicStoppedElection topicStoppedElection;
+    private final TopicActiveDifficulty topicActiveDifficulty;
+    private final TopicWork topicWork;
+    private final TopicTelemetry topicTelemetry;
+    private final TopicUnconfirmedBlocks topicUnconfirmed;
+    private final TopicBootstrap topicBootstrap;
     
     
     public TopicRegistry(NanoWebSocketClient client) {
         this.client = client;
         
-        register(this.topicConfirmation = new WsTopicConfirmation(client));
-        register(this.topicVote = new WsTopicVote(client));
-        register(this.topicStoppedElection = new WsTopicStoppedElection(client));
-        register(this.topicActiveDifficulty = new WsTopicActiveDifficulty(client));
-        register(this.topicWork = new WsTopicWork(client));
-        register(this.topicTelemetry = new WsTopicTelemetry(client));
-        register(this.topicUnconfirmed = new WsTopicUnconfirmedBlocks(client));
-        register(this.topicBootstrap = new WsTopicBootstrap(client));
+        register(this.topicConfirmation = new TopicConfirmation(client));
+        register(this.topicVote = new TopicVote(client));
+        register(this.topicStoppedElection = new TopicStoppedElection(client));
+        register(this.topicActiveDifficulty = new TopicActiveDifficulty(client));
+        register(this.topicWork = new TopicWork(client));
+        register(this.topicTelemetry = new TopicTelemetry(client));
+        register(this.topicUnconfirmed = new TopicUnconfirmedBlocks(client));
+        register(this.topicBootstrap = new TopicBootstrap(client));
     }
     
     
@@ -49,7 +49,7 @@ public class TopicRegistry {
      * app use-cases will not need to use this method.
      * @param topic the topic to register
      */
-    public void register(WsTopic<?> topic) {
+    public void register(Topic<?> topic) {
         this.topics.putIfAbsent(topic.getTopicName().toLowerCase(), topic);
     }
     
@@ -58,7 +58,7 @@ public class TopicRegistry {
      * @param topicName the topic name
      * @return the topic associated with the given name
      */
-    public WsTopic<?> get(String topicName) {
+    public Topic<?> get(String topicName) {
         return this.topics.get(topicName.toLowerCase());
     }
     
@@ -67,7 +67,7 @@ public class TopicRegistry {
      * Returns a topic object where you can register listeners, subscribe to and unsubscribe from.
      * @return the {@code confirmation} topic object
      */
-    public WsTopicConfirmation topicConfirmedBlocks() {
+    public TopicConfirmation topicConfirmedBlocks() {
         return topicConfirmation;
     }
     
@@ -75,7 +75,7 @@ public class TopicRegistry {
      * Returns a topic object where you can register listeners, subscribe to and unsubscribe from.
      * @return the {@code vote} topic object
      */
-    public WsTopicVote topicVote() {
+    public TopicVote topicVote() {
         return topicVote;
     }
     
@@ -83,7 +83,7 @@ public class TopicRegistry {
      * Returns a topic object where you can register listeners, subscribe to and unsubscribe from.
      * @return the {@code stopped_election} topic object
      */
-    public WsTopicStoppedElection topicStoppedElection() {
+    public TopicStoppedElection topicStoppedElection() {
         return topicStoppedElection;
     }
     
@@ -91,7 +91,7 @@ public class TopicRegistry {
      * Returns a topic object where you can register listeners, subscribe to and unsubscribe from.
      * @return the {@code active_difficulty} topic object
      */
-    public WsTopicActiveDifficulty topicActiveDifficulty() {
+    public TopicActiveDifficulty topicActiveDifficulty() {
         return topicActiveDifficulty;
     }
     
@@ -99,7 +99,7 @@ public class TopicRegistry {
      * Returns a topic object where you can register listeners, subscribe to and unsubscribe from.
      * @return the {@code work} topic object
      */
-    public WsTopicWork topicWork() {
+    public TopicWork topicWork() {
         return topicWork;
     }
     
@@ -107,7 +107,7 @@ public class TopicRegistry {
      * Returns a topic object where you can register listeners, subscribe to and unsubscribe from.
      * @return the {@code telemetry} topic object
      */
-    public WsTopicTelemetry topicTelemetry() {
+    public TopicTelemetry topicTelemetry() {
         return topicTelemetry;
     }
     
@@ -115,7 +115,7 @@ public class TopicRegistry {
      * Returns a topic object where you can register listeners, subscribe to and unsubscribe from.
      * @return the {@code new_unconfirmed_block} topic object
      */
-    public WsTopicUnconfirmedBlocks topicUnconfirmedBlocks() {
+    public TopicUnconfirmedBlocks topicUnconfirmedBlocks() {
         return topicUnconfirmed;
     }
     
@@ -123,7 +123,7 @@ public class TopicRegistry {
      * Returns a topic object where you can register listeners, subscribe to and unsubscribe from.
      * @return the {@code bootstrap} topic object
      */
-    public WsTopicBootstrap topicBootstrap() {
+    public TopicBootstrap topicBootstrap() {
         return topicBootstrap;
     }
 }
