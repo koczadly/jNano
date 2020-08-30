@@ -85,7 +85,7 @@ ws.getTopics().topicConfirmedBlocks().registerListener((message, context) -> {
 });
 
 // Subscribe to the block confirmations topic, and specify an account filter
-ws.getTopics().topicConfirmedBlocks().subscribe(new TopicOptionsConfirmation()
+ws.getTopics().topicConfirmedBlocks().subscribe(new WsTopicConfirmation.SubParameters()
         .setAccounts(NanoAccount.parse("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz")));
 ```
 
