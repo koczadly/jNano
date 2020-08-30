@@ -21,7 +21,6 @@ module uk.oczadly.karl.jnano {
     exports uk.oczadly.karl.jnano.websocket;
     exports uk.oczadly.karl.jnano.websocket.topic;
     exports uk.oczadly.karl.jnano.websocket.topic.message;
-    exports uk.oczadly.karl.jnano.websocket.topic.options;
     
     // Dependencies
     requires transitive com.google.gson;
