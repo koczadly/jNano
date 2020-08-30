@@ -34,15 +34,14 @@ public class JNH {
     public static final String ZEROES_64 = repeatChar('0', 64);
     public static final String ZEROES_128 = repeatChar('0', 128);
     
-    public static final GsonBuilder GSON_BUILDER = new GsonBuilder()
+    public static final Gson GSON = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
-            .registerTypeAdapterFactory(new ArrayTypeAdapterFactoryFix())       // Empty array hotfix
-            .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer())  // Boolean deserializer
-            .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer())  // Boolean deserializer
-            .registerTypeAdapter(BigInteger.class, new BigIntSerializer())      // BigInt serializer (string)
-            .registerTypeAdapter(Instant.class, new InstantAdapter());          // Instant adapter (epoch millis)
-    
-    public static final Gson GSON = GSON_BUILDER.create();
+            .registerTypeAdapterFactory(new ArrayTypeAdapterFactoryFix())      // Empty array hotfix
+            .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer()) // Boolean deserializer
+            .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer()) // Boolean deserializer
+            .registerTypeAdapter(BigInteger.class, new BigIntSerializer())     // BigInt serializer (string)
+            .registerTypeAdapter(Instant.class, new InstantAdapter())          // Instant adapter (epoch millis)
+            .create();
     
     
     /**
