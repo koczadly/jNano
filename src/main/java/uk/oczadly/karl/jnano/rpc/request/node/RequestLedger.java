@@ -48,6 +48,15 @@ public class RequestLedger extends RpcRequest<ResponseLedger> {
     private final BigInteger thresholdBalance;
     
     
+    
+    /**
+     * Requests the ledger, starting from the zeroth-index account.
+     * @param count   the response limit
+     */
+    public RequestLedger(int count) {
+        this(NanoAccount.ZERO_ACCOUNT.toAddress(), count);
+    }
+    
     /**
      * @param account the address to start from, or null to begin from the zeroth account
      * @param count   the response limit
