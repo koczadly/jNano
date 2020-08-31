@@ -29,7 +29,7 @@ import java.util.Set;
 @JsonAdapter(NanoAccount.Adapter.class)
 public final class NanoAccount {
     
-    private static final BigInteger MAX_INDEX_VAL = new BigInteger(JNH.repeatChar('F', 64), 16);
+    private static final BigInteger MAX_INDEX_VAL = JNH.BIGINT_MAX_256;
     
     /**
      * The character which separates the prefix from the address string.

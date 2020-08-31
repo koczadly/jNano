@@ -17,6 +17,7 @@ import uk.oczadly.karl.jnano.util.NanoConstants;
 
 import java.math.BigInteger;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 
@@ -34,6 +35,9 @@ public class JNH {
     public static final String ZEROES_64 = repeatChar('0', 64);
     public static final String ZEROES_128 = repeatChar('0', 128);
     
+    public static final BigInteger BIGINT_MAX_128 = new BigInteger(1, fullByteArray(16));
+    public static final BigInteger BIGINT_MAX_256 = new BigInteger(1, fullByteArray(32));
+    
     public static final Gson GSON = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
             .registerTypeAdapterFactory(new ArrayTypeAdapterFactoryFix())      // Empty array hotfix
@@ -43,6 +47,15 @@ public class JNH {
             .registerTypeAdapter(Instant.class, new InstantAdapter())          // Instant adapter (epoch millis)
             .create();
     
+    
+    /**
+     * Returns a byte array filled with 1's (0xFF).
+     */
+    public static byte[] fullByteArray(int lenBytes) {
+        byte[] bytes = new byte[lenBytes];
+        Arrays.fill(bytes, (byte)0xFF);
+        return bytes;
+    }
     
     /**
      * Left-pads a byte array with zeroes. Will return the same array if length matches, or create a new one if it

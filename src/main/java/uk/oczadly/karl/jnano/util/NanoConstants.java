@@ -25,7 +25,7 @@ public final class NanoConstants {
      * The maximum possible balance value, in raw units. This does not account for burned funds, but is simply the
      * number of units which are generated within the genesis block.
      */
-    public static final BigInteger MAX_BALANCE_RAW = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16);
+    public static final BigInteger MAX_BALANCE_RAW = JNH.BIGINT_MAX_128;
     
     /**
      * Constants representing the official live Nano network.
