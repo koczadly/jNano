@@ -14,8 +14,8 @@ import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * <p>This class represents an immutable Nano account address string. A wide range of Java-based utilities are provided
@@ -45,8 +45,8 @@ public final class NanoAccount {
     /**
      * An immutable list of permitted prefixes on the Nano network. This includes the {@link #DEFAULT_PREFIX} value.
      */
-    public static final List<String> DEFAULT_PERMITTED_PREFIXES =
-            Collections.unmodifiableList(List.of(DEFAULT_PREFIX, "xrb"));
+    public static final Set<String> DEFAULT_PERMITTED_PREFIXES =
+            Collections.unmodifiableSet(Set.of(DEFAULT_PREFIX, "xrb"));
     
     /**
      * <p>The zeroth index account, represented by all zeroes for the public key. This address is also the burn address
