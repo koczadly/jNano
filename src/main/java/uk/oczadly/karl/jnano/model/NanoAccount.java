@@ -276,7 +276,7 @@ public final class NanoAccount {
     
     @Override
     public int hashCode() {
-        int result = Objects.hash(prefix);
+        int result = prefix.hashCode();
         result = 31 * result + Arrays.hashCode(keyBytes);
         return result;
     }
