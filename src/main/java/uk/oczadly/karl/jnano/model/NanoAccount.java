@@ -43,7 +43,7 @@ public final class NanoAccount {
     public static final String DEFAULT_PREFIX = "nano";
     
     /**
-     * An immutable list of permitted prefixes on the Nano network. This includes the {@link #DEFAULT_PREFIX} value.
+     * An immutable set of permitted prefixes on the Nano network. This includes the {@link #DEFAULT_PREFIX} value.
      */
     public static final Set<String> DEFAULT_PERMITTED_PREFIXES =
             Collections.unmodifiableSet(Set.of(DEFAULT_PREFIX, "xrb"));
