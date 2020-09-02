@@ -43,7 +43,7 @@ public class TestConstants {
     
     
     public static BigInteger randBalance() {
-        return new BigInteger(128, RANDOM);
+        return new BigInteger(127, RANDOM).add(BigInteger.ONE);
     }
     
     
