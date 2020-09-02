@@ -27,6 +27,9 @@ import java.util.Arrays;
 @JsonAdapter(BlockDeserializer.JsonAdapter.class)
 public abstract class Block implements IBlock {
     
+    /**
+     * The length of a hash string in hexadecimal. Multiply by 4 for number of bits.
+     */
     protected static final int HASH_LENGTH = 64;
     
     
@@ -47,7 +50,7 @@ public abstract class Block implements IBlock {
     
     
     private Block() {
-        throw new UnsupportedOperationException("A block type must be specified.");
+        throw new AssertionError("A block type must be specified.");
     }
     
     /**
