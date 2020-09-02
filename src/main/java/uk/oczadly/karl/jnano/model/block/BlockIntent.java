@@ -34,7 +34,7 @@ public class BlockIntent {
     /**
      * @param isSend    if the block sends funds
      * @param isReceive if the block receives funds
-     * @param isChange  if the block changes the representative (true if isOpen is true)
+     * @param isChange  if the block changes the representative
      * @param isOpen    if this is the first block in the account
      * @param isEpoch   if this block is an epoch marker block
      */
@@ -43,7 +43,7 @@ public class BlockIntent {
         this.isSend = UncertainBool.notNull(isSend);
         this.isReceive = UncertainBool.notNull(isReceive);
         this.isOpen = UncertainBool.notNull(isOpen);
-        this.isChange = UncertainBool.anyOf(UncertainBool.notNull(isChange), this.isOpen); // Open overrides rep change
+        this.isChange = UncertainBool.notNull(isChange);
         this.isEpoch = UncertainBool.notNull(isEpoch);
     }
     

@@ -157,9 +157,23 @@ public class StateBlockTest {
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isTransactional());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSpecial());
     
-        // Test epoch open
+        // Test epoch (with OPEN subtype)
         intent = TestConstants.randStateBlock()
                 .setSubtype(StateBlockSubType.OPEN)
+                .setPreviousBlockHash(JNH.ZEROES_64)
+                .setBalance(BigInteger.ZERO)
+                .build().getIntent();
+        assertEquals(BlockIntent.UncertainBool.TRUE, intent.isChangeRep());
+        assertEquals(BlockIntent.UncertainBool.TRUE, intent.isEpochUpgrade());
+        assertEquals(BlockIntent.UncertainBool.TRUE, intent.isFirstBlock());
+        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isReceiveFunds());
+        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isSendFunds());
+        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isTransactional());
+        assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSpecial());
+    
+        // Test epoch (with unknown subtype)
+        intent = TestConstants.randStateBlock()
+                .setSubtype(null)
                 .setPreviousBlockHash(JNH.ZEROES_64)
                 .setBalance(BigInteger.ZERO)
                 .build().getIntent();
@@ -189,11 +203,11 @@ public class StateBlockTest {
                 .setPreviousBlockHash(JNH.ZEROES_64)
                 .build().getIntent();
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isChangeRep());
-        assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isEpochUpgrade());
+        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isEpochUpgrade());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isFirstBlock());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isReceiveFunds());
-        assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isSendFunds());
-        assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isTransactional());
+        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isSendFunds());
+        assertEquals(BlockIntent.UncertainBool.TRUE, intent.isTransactional());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSpecial());
     }
     
