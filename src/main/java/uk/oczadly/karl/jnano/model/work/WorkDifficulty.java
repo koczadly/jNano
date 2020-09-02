@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.model.work;
 
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
+import uk.oczadly.karl.jnano.internal.JNH;
 
 import java.lang.reflect.Type;
 import java.util.Objects;
@@ -43,14 +44,7 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
      */
     public WorkDifficulty(long longVal) {
         this.longVal = longVal;
-        
-        // Convert hex to 16 char length
-        String hex = Long.toHexString(longVal);
-        StringBuilder sb = new StringBuilder(16);
-        for (int i=0; i<(16-hex.length()); i++)
-            sb.append('0');
-        sb.append(hex);
-        this.hexVal = sb.toString();
+        this.hexVal = JNH.leftPadString(Long.toHexString(longVal), 16, '0');
     }
     
     

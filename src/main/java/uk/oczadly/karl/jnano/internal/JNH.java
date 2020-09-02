@@ -88,6 +88,19 @@ public class JNH {
     }
     
     /**
+     * Left-pads a string with the given character up to the minimum length.
+     */
+    public static String leftPadString(String str, int minLen, char padChar) {
+        if (str.length() >= minLen) return str;
+        
+        StringBuilder sb = new StringBuilder(minLen);
+        for (int i=0; i<(minLen-str.length()); i++)
+            sb.append(padChar);
+        sb.append(str);
+        return sb.toString();
+    }
+    
+    /**
      * @return true if the string is null or matches hex format
      */
     public static boolean isValidHex(String str, int len) {

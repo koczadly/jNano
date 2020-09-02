@@ -49,4 +49,11 @@ public class JNHTest {
         assertEquals(100, (int)JNH.instanceOf(obj2, String.class, 100, s -> (s.length() == 4 ? 101 : 102)));
     }
     
+    @Test
+    public void leftPadString() {
+        assertEquals("slug", JNH.leftPadString("slug", 4, '0'));
+        assertEquals("slug", JNH.leftPadString("slug", 2, '0'));
+        assertEquals("sluggage", JNH.leftPadString("sluggage", 4, '0'));
+        assertEquals("000slug", JNH.leftPadString("slug", 7, '0'));
+    }
 }

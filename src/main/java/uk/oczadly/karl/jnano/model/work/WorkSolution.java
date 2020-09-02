@@ -45,14 +45,7 @@ public class WorkSolution {
      */
     public WorkSolution(long longVal) {
         this.longVal = longVal;
-    
-        // Convert hex to 16 char length
-        String hex = Long.toHexString(longVal);
-        StringBuilder sb = new StringBuilder(16);
-        for (int i=0; i<(16-hex.length()); i++)
-            sb.append('0');
-        sb.append(hex);
-        this.hexVal = sb.toString();
+        this.hexVal = JNH.leftPadString(Long.toHexString(longVal), 16, '0');
     }
     
     
