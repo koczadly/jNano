@@ -12,6 +12,9 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * Default implementation of {@link RpcRequestSubmitter}.
+ */
 public class RpcRequestSubmitterImpl implements RpcRequestSubmitter {
     
     @Override

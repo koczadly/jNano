@@ -12,6 +12,9 @@ import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 
 import java.lang.reflect.Field;
 
+/**
+ * Default implementation of {@link RpcResponseDeserializer}.
+ */
 public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
     
     private static volatile Field RESPONSE_JSON_FIELD;

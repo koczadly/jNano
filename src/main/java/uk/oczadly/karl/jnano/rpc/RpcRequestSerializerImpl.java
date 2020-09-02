@@ -10,6 +10,9 @@ import com.google.gson.JsonObject;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 
+/**
+ * Default implementation of {@link RpcRequestSerializer}.
+ */
 public class RpcRequestSerializerImpl implements RpcRequestSerializer {
     
     private Gson gson;
