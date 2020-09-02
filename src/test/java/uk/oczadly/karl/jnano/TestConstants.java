@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class TestConstants {
     
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = new Random(420);
     
     
     public static String randHex(int len) {
