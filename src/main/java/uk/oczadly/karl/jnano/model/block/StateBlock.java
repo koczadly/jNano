@@ -112,7 +112,9 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
                WorkSolution work, NanoAccount accountAddress, String previousBlockHash,
                NanoAccount representativeAddress, BigInteger balance, String linkData, NanoAccount linkAccount) {
         super(BlockType.STATE, hash, signature, work);
-        
+    
+        if (previousBlockHash == null)
+            throw new IllegalArgumentException("Previous block hash cannot be null.");
         if (!JNH.isValidHex(previousBlockHash, HASH_LENGTH))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (representativeAddress == null) throw new IllegalArgumentException("Block representative cannot be null.");
@@ -120,16 +122,16 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         if (!JNH.isBalanceValid(balance))
             throw new IllegalArgumentException("Account balance is an invalid amount.");
         if (accountAddress == null) throw new IllegalArgumentException("Block account cannot be null.");
+        if (linkAccount == null && linkData == null) // If no data field is specified
+            throw new IllegalArgumentException("Link data/account cannot be null.");
         if (!JNH.isValidHex(linkData, HASH_LENGTH))
             throw new IllegalArgumentException("Link data is invalid.");
         
         this.subType = subtype;
         this.accountAddress = accountAddress;
-        this.previousBlockHash = previousBlockHash != null ? previousBlockHash.toUpperCase() : JNH.ZEROES_64;
+        this.previousBlockHash = previousBlockHash.toUpperCase();
         this.representativeAddress = representativeAddress;
         this.balance = balance;
-        if (linkAccount == null && linkData == null) // If no data field is specified
-            linkData = JNH.ZEROES_64;
         this.linkData = linkData != null ? linkData.toUpperCase() : linkAccount.toPublicKey();
         this.linkAccount = linkAccount != null ? linkAccount : NanoAccount.parsePublicKey(linkData);
     }
@@ -186,21 +188,25 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     public BlockIntent getIntent() {
         boolean hasState = subType != null;
         
+        // OPEN if OPEN subtype, or if previous hash is zeroes
+        boolean isOpen = subType == StateBlockSubType.OPEN || JNH.isZero(previousBlockHash, false);
+        // EPOCH if EPOCH subtype, or if an open block with zero balance
+        boolean isEpoch = subType == StateBlockSubType.EPOCH || (isOpen && balance.equals(BigInteger.ZERO));
+        
         return new BlockIntent(
                 // SEND
                 BlockIntent.UncertainBool.ifKnown(hasState, subType == StateBlockSubType.SEND),
                 // RECEIVE
                 BlockIntent.UncertainBool.ifKnown(hasState,
-                        subType == StateBlockSubType.RECEIVE || subType == StateBlockSubType.OPEN),
+                        subType == StateBlockSubType.RECEIVE || (isOpen && !isEpoch)),
                 // CHANGE (unknown if SEND or RECEIVE)
                 (subType == StateBlockSubType.SEND || subType == StateBlockSubType.RECEIVE) ?
                         BlockIntent.UncertainBool.UNKNOWN :
                         BlockIntent.UncertainBool.ifKnown(hasState, subType == StateBlockSubType.CHANGE),
-                // OPEN (true if OPEN or 'previous' is empty)
-                BlockIntent.UncertainBool.ifKnown(hasState || previousBlockHash != null,
-                        subType == StateBlockSubType.OPEN || JNH.isZero(previousBlockHash, false)),
+                // OPEN
+                BlockIntent.UncertainBool.valueOf(isOpen),
                 // EPOCH
-                BlockIntent.UncertainBool.ifKnown(hasState, subType == StateBlockSubType.EPOCH));
+                BlockIntent.UncertainBool.ifKnown(hasState, isEpoch));
     }
     
     
@@ -212,7 +218,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
                 JNH.ENC_16.decode(getPreviousBlockHash()),
                 getRepresentative().getPublicKeyBytes(),
                 JNH.leftPadByteArray(getBalance().toByteArray(), 16, false),
-                JNH.ENC_16.decode(getLinkData())
+                getLinkAsAccount().getPublicKeyBytes()
         };
     }
     

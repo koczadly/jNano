@@ -10,6 +10,13 @@ package uk.oczadly.karl.jnano.model.block;
  */
 public class BlockIntent {
     
+    /**
+     * Represents a BlockIntent object with all unknown values. For use with blocks that have no intent implementation.
+     */
+    public static final BlockIntent ALL_UNKNOWN = new BlockIntent(UncertainBool.UNKNOWN, UncertainBool.UNKNOWN,
+            UncertainBool.UNKNOWN, UncertainBool.UNKNOWN, UncertainBool.UNKNOWN);
+    
+    
     private final UncertainBool isSend, isReceive, isChange, isOpen, isEpoch;
     
     /**
