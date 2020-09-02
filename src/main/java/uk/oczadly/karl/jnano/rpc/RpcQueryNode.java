@@ -373,6 +373,8 @@ public class RpcQueryNode {
      */
     public <R extends RpcResponse> R processRequestRaw(String jsonRequest, int timeout, Class<R> responseClass)
             throws IOException, RpcException {
+        if (jsonRequest == null)
+            throw new IllegalArgumentException("JSON request cannot be null.");
         if (responseClass == null)
             throw new IllegalArgumentException("Response class argument cannot be null.");
         
@@ -399,6 +401,8 @@ public class RpcQueryNode {
      * @throws IOException if an error occurs with the connection to the node
      */
     public String processRequestRaw(String jsonRequest, int timeout) throws IOException {
+        if (jsonRequest == null)
+            throw new IllegalArgumentException("JSON request cannot be null.");
         if (timeout < 0)
             throw new IllegalArgumentException("Timeout period must be zero or greater.");
         
