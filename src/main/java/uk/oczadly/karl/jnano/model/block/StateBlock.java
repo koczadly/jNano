@@ -11,6 +11,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.interfaces.*;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
@@ -34,7 +35,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
                     json.get("representative").getAsString()),
             json.get("previous").getAsString(),
             NanoAccount.parseAddress(json.get("representative").getAsString()),
-            json.get("balance").getAsBigInteger(),
+            new NanoAmount(json.get("balance").getAsString()),
             JNH.nullable(json.get("link"), JsonElement::getAsString),
             JNH.nullable(json.get("link_as_account"), o -> NanoAccount.parseAddress(o.getAsString()))
     );
@@ -53,7 +54,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     private NanoAccount representativeAddress;
     
     @Expose @SerializedName("balance")
-    private BigInteger balance;
+    private NanoAmount balance;
     
     @Expose @SerializedName("link")
     private String linkData;
@@ -82,8 +83,29 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      * @param link                  the link data for this transaction, encoded as an account
      * @see StateBlockBuilder
      */
+    @Deprecated
     public StateBlock(StateBlockSubType subtype, String signature, WorkSolution work, NanoAccount accountAddress,
                       String previousBlockHash, NanoAccount representativeAddress, BigInteger balance,
+                      NanoAccount link) {
+        this(subtype, null, signature, work, accountAddress, previousBlockHash, representativeAddress,
+                new NanoAmount(balance), null, link);
+    }
+    
+    /**
+     * Constructs a new state block.
+     *
+     * @param subtype               the block's subtype
+     * @param signature             the block verification signature
+     * @param work                  the computed work solution
+     * @param accountAddress        the account's address
+     * @param previousBlockHash     the previous block's hash
+     * @param representativeAddress the representative address of this account
+     * @param balance               the balance of the account after this transaction, in raw
+     * @param link                  the link data for this transaction, encoded as an account
+     * @see StateBlockBuilder
+     */
+    public StateBlock(StateBlockSubType subtype, String signature, WorkSolution work, NanoAccount accountAddress,
+                      String previousBlockHash, NanoAccount representativeAddress, NanoAmount balance,
                       NanoAccount link) {
         this(subtype, null, signature, work, accountAddress, previousBlockHash, representativeAddress,
                 balance, null, link);
@@ -102,15 +124,36 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      * @param link                  the link data for this transaction, encoded as a hexadecimal string
      * @see StateBlockBuilder
      */
+    @Deprecated
     public StateBlock(StateBlockSubType subtype, String signature, WorkSolution work, NanoAccount accountAddress,
                       String previousBlockHash, NanoAccount representativeAddress, BigInteger balance, String link) {
+        this(subtype, null, signature, work, accountAddress, previousBlockHash, representativeAddress,
+                new NanoAmount(balance), link, null);
+    }
+    
+    /**
+     * Constructs a new state block.
+     *
+     * @param subtype               the block's subtype
+     * @param signature             the block verification signature
+     * @param work                  the computed work solution
+     * @param accountAddress        the account's address
+     * @param previousBlockHash     the previous block's hash
+     * @param representativeAddress the representative address of this account
+     * @param balance               the balance of the account after this transaction, in raw
+     * @param link                  the link data for this transaction, encoded as a hexadecimal string
+     * @see StateBlockBuilder
+     */
+    @Deprecated
+    public StateBlock(StateBlockSubType subtype, String signature, WorkSolution work, NanoAccount accountAddress,
+                      String previousBlockHash, NanoAccount representativeAddress, NanoAmount balance, String link) {
         this(subtype, null, signature, work, accountAddress, previousBlockHash, representativeAddress,
                 balance, link, null);
     }
     
     StateBlock(StateBlockSubType subtype, String hash, String signature,
                WorkSolution work, NanoAccount accountAddress, String previousBlockHash,
-               NanoAccount representativeAddress, BigInteger balance, String linkData, NanoAccount linkAccount) {
+               NanoAccount representativeAddress, NanoAmount balance, String linkData, NanoAccount linkAccount) {
         super(BlockType.STATE, hash, signature, work);
     
         if (previousBlockHash == null)
@@ -119,8 +162,6 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (representativeAddress == null) throw new IllegalArgumentException("Block representative cannot be null.");
         if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");
-        if (!JNH.isBalanceValid(balance))
-            throw new IllegalArgumentException("Account balance is an invalid amount.");
         if (accountAddress == null) throw new IllegalArgumentException("Block account cannot be null.");
         if (linkAccount == null && linkData == null) // If no data field is specified
             throw new IllegalArgumentException("Link data/account cannot be null.");
@@ -160,7 +201,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     }
     
     @Override
-    public final BigInteger getBalance() {
+    public final NanoAmount getBalance() {
         return balance;
     }
     
@@ -189,7 +230,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         // If OPEN subtype, or if previous hash is zeroes
         boolean isOpen = subType == StateBlockSubType.OPEN || JNH.isZero(previousBlockHash, false);
         // If EPOCH subtype, or if an open block with zero balance
-        boolean isEpoch = subType == StateBlockSubType.EPOCH || (isOpen && balance.equals(BigInteger.ZERO));
+        boolean isEpoch = subType == StateBlockSubType.EPOCH || (isOpen && balance.equals(NanoAmount.ZERO));
         // If SEND subtype
         boolean isSend = subType == StateBlockSubType.SEND;
         // If RECEIVE subtype, or if OPEN and not EPOCH
@@ -217,7 +258,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
                 getAccount().getPublicKeyBytes(),
                 JNH.ENC_16.decode(getPreviousBlockHash()),
                 getRepresentative().getPublicKeyBytes(),
-                JNH.leftPadByteArray(getBalance().toByteArray(), 16, false),
+                JNH.leftPadByteArray(getBalance().getAsRaw().toByteArray(), 16, false),
                 getLinkAsAccount().getPublicKeyBytes()
         };
     }

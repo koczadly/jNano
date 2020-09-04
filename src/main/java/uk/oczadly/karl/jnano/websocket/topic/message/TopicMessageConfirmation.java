@@ -7,9 +7,9 @@ package uk.oczadly.karl.jnano.websocket.topic.message;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
 
-import java.math.BigInteger;
 import java.time.Instant;
 
 public class TopicMessageConfirmation {
@@ -18,7 +18,7 @@ public class TopicMessageConfirmation {
     private String account;
     
     @Expose @SerializedName("amount")
-    private BigInteger amount;
+    private NanoAmount amount;
     
     @Expose @SerializedName("hash")
     private String hash;
@@ -37,7 +37,7 @@ public class TopicMessageConfirmation {
         return account;
     }
     
-    public BigInteger getAmount() {
+    public NanoAmount getAmount() {
         return amount;
     }
     
@@ -73,7 +73,7 @@ public class TopicMessageConfirmation {
         private Instant timestamp;
     
         @Expose @SerializedName("tally")
-        private BigInteger tally;
+        private NanoAmount tally;
     
         @Expose @SerializedName("request_count")
         private int requestCount;
@@ -93,7 +93,7 @@ public class TopicMessageConfirmation {
             return timestamp;
         }
     
-        public BigInteger getTally() {
+        public NanoAmount getTally() {
             return tally;
         }
     

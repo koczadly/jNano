@@ -183,7 +183,7 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
          * @param block the state block
          */
         public Builder(StateBlock block) {
-            this.balance = block.getBalance();
+            this.balance = block.getBalance().getAsRaw();
             this.representative = block.getRepresentative();
             this.previous = block.getPreviousBlockHash();
             this.account = block.getAccount();

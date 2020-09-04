@@ -5,6 +5,8 @@
 
 package uk.oczadly.karl.jnano.util;
 
+import uk.oczadly.karl.jnano.model.NanoAmount;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -13,9 +15,14 @@ import java.text.DecimalFormat;
 /**
  * <p>This class represents the currency units and denominations used to represent an amount of Nano, and can be
  * used to locally convert between the different units.</p>
+ *
+ * <p>Alternatively, you can use the {@link NanoAmount} for representing a quantity of
+ * Nano.</p>
+ *
  * <p>If you are intending to parse or display an amount of Nano to the user, it is recommended that you use the
  * {@link #BASE_UNIT} constant, rather than explicitly specifying the unit. This constant represents the unit that users
  * of Nano will be most familiar with.</p>
+ *
  * <p>Below are a few currency conversion examples:</p>
  * <pre>
  *   // Convert 1.337 knano (KILO) to the base unit (currently MEGA, or "Nano")
@@ -77,9 +84,9 @@ public enum NanoUnit {
     
     private static final DecimalFormat FRIENDLY_DECIMAL_FORMAT = new DecimalFormat("#,##0.######");
     
-    int exponent;
-    BigInteger rawValue;
-    String displayName, classicName;
+    final int exponent;
+    final BigInteger rawValue;
+    final String displayName, classicName;
     
     NanoUnit(int exponent, String displayName, String classicName) {
         this.exponent = exponent;
@@ -209,9 +216,12 @@ public enum NanoUnit {
     
     /**
      * <p>Converts a given value of <i>raw</i> to the current base unit ({@link #BASE_UNIT}), and formats the number to
-     * up to 6 decimal places (rounding up truncated digits), along with a suffix of the unit name. The value will
+     * up to 6 decimal places (cutting off truncated digits), along with a suffix of the unit name. The value will
      * also be formatted to contain separating commas for every 3 digits.</p>
-     * <p>For instance, a value of {@code 1234567000000000000000000000000001} will return {@code 1,234.567001 Nano}.</p>
+     *
+     * <p>For instance, a value of {@code 1234567000000000000000000000000001} will return
+     * {@code >1,234.567000 Nano}.</p>
+     *
      * <p>This value should not be used for any computations, and should only be used for displaying quantities of
      * the currency to a user.</p>
      * @param rawAmount the amount of raw to convert from
@@ -223,10 +233,12 @@ public enum NanoUnit {
     
     /**
      * <p>Converts a given quantity of Nano to the current base unit ({@link #BASE_UNIT}), and formats the number to
-     * up to 6 decimal places (rounding up truncated digits), along with a suffix of the unit name. The value will
+     * up to 6 decimal places (cutting off truncated digits), along with a suffix of the unit name. The value will
      * also be formatted to contain separating commas for every 3 digits.</p>
+     *
      * <p>For instance, a value of {@code 1234567000000000000000000000000001} {@link #RAW} will return {@code
-     * 1,234.567001 Nano}.</p>
+     * >1,234.567000 Nano}.</p>
+     *
      * <p>This value should not be used for any computations, and should only be used for displaying quantities of
      * the currency to a user.</p>
      * @param amount     the amount to convert from
@@ -234,8 +246,10 @@ public enum NanoUnit {
      * @return a friendly string of a given currency amount
      */
     public static String toFriendlyString(BigDecimal amount, NanoUnit sourceUnit) {
-        BigDecimal nanoAmount = BASE_UNIT.convertFrom(sourceUnit, amount).setScale(6, RoundingMode.CEILING);
-        return FRIENDLY_DECIMAL_FORMAT.format(nanoAmount) + " " + BASE_UNIT.getDisplayName();
+        BigDecimal nanoAmount = BASE_UNIT.convertFrom(sourceUnit, amount);
+        BigDecimal scaledAmount = nanoAmount.setScale(6, RoundingMode.FLOOR);
+        boolean trimmed = nanoAmount.compareTo(scaledAmount) > 0;
+        return (trimmed ? ">" : "") + FRIENDLY_DECIMAL_FORMAT.format(nanoAmount) + " " + BASE_UNIT.getDisplayName();
     }
     
 }

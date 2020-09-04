@@ -6,10 +6,9 @@
 package uk.oczadly.karl.jnano.callback;
 
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.BlockType;
-
-import java.math.BigInteger;
 
 /**
  * This class encapsulates a variety of data relating to newly-processed blocks. Instances of this class are generated
@@ -22,10 +21,10 @@ public class BlockData {
     private final Block block;
     private final BlockType subtype;
     private final boolean isSend;
-    private final BigInteger amount;
+    private final NanoAmount amount;
     
     public BlockData(String rawJson, NanoAccount account, String blockHash, Block block, BlockType subtype,
-                     boolean isSend, BigInteger amount) {
+                     boolean isSend, NanoAmount amount) {
         this.rawJson = rawJson;
         this.account = account;
         this.blockHash = blockHash;
@@ -86,7 +85,7 @@ public class BlockData {
     /**
      * @return the value of funds involved, or null if non-transactional
      */
-    public BigInteger getTransactionalAmount() {
+    public NanoAmount getTransactionalAmount() {
         return amount;
     }
     

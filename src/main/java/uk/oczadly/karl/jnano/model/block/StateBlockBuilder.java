@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.model.block;
 
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
@@ -24,13 +25,27 @@ public final class StateBlockBuilder {
     private NanoAccount accountAddress;
     private String previousBlockHash;
     private NanoAccount representativeAddress;
-    private BigInteger balance;
+    private NanoAmount balance;
     private NanoAccount linkAccount;
     private String linkData;
     private String hash;
     private String signature;
     private WorkSolution work;
     
+    
+    /**
+     * Constructs a new {@link StateBlockBuilder} with the no parameters.
+     */
+    public StateBlockBuilder() {}
+    
+    /**
+     * Constructs a new {@link StateBlockBuilder} with the specified subtype.
+     *
+     * @param subType the block subtype
+     */
+    public StateBlockBuilder(StateBlockSubType subType) {
+        setSubtype(subType);
+    }
     
     /**
      * Constructs a new {@link StateBlockBuilder} with the account parameter. This will also set the representative
@@ -51,6 +66,7 @@ public final class StateBlockBuilder {
      * @param representativeAddress the representative for this account
      * @param balance               the (newly updated) balance of this account
      */
+    @Deprecated
     public StateBlockBuilder(NanoAccount accountAddress, String previousBlockHash,
                              NanoAccount representativeAddress, BigInteger balance) {
         setAccountAddress(accountAddress);
@@ -66,6 +82,7 @@ public final class StateBlockBuilder {
      * @param representativeAddress the representative for this account
      * @param balance               the (newly updated) balance of this account
      */
+    @Deprecated
     public StateBlockBuilder(NanoAccount accountAddress, NanoAccount representativeAddress, BigInteger balance) {
         setAccountAddress(accountAddress);
         setRepresentativeAddress(representativeAddress);
@@ -78,12 +95,34 @@ public final class StateBlockBuilder {
      * @param block the state block to copy from
      */
     public StateBlockBuilder(StateBlock block) {
-        this(block.getAccount(), block.getPreviousBlockHash(), block.getRepresentative(), block.getBalance());
+        this();
+        setSubtype(block.getSubType());
+        setAccountAddress(block.getAccount());
+        setPreviousBlockHash(block.getPreviousBlockHash());
+        setRepresentativeAddress(block.getRepresentative());
+        setBalance(getBalance());
         setHash(block.getHash());
         setSignature(block.getSignature());
         setWorkSolution(block.getWorkSolution());
-        setSubtype(block.getSubType());
         setLinkData(block.getLinkData());
+    }
+    
+    /**
+     * Clones an existing {@link StateBlockBuilder}.
+     *
+     * @param builder the builder to copy from
+     */
+    public StateBlockBuilder(StateBlockBuilder builder) {
+        this();
+        setSubtype(builder.getSubtype());
+        setAccountAddress(builder.getAccountAddress());
+        setPreviousBlockHash(builder.getPreviousBlockHash());
+        setRepresentativeAddress(builder.getRepresentativeAddress());
+        setBalance(getBalance());
+        setHash(builder.getHash());
+        setSignature(builder.getSignature());
+        setWorkSolution(builder.getWorkSolution());
+        setLinkData(builder.getLinkData());
     }
     
     
@@ -186,16 +225,15 @@ public final class StateBlockBuilder {
     }
     
     
-    public BigInteger getBalance() {
+    public NanoAmount getBalance() {
         return balance;
     }
     
     public StateBlockBuilder setBalance(BigInteger balance) {
-        if (balance == null)
-            throw new IllegalArgumentException("Balance argument cannot be null.");
-        if (!JNH.isBalanceValid(balance))
-            throw new IllegalArgumentException("Provided balance value is not in the valid range.");
-        
+        return setBalance(new NanoAmount(balance));
+    }
+    
+    public StateBlockBuilder setBalance(NanoAmount balance) {
         this.balance = balance;
         return this;
     }

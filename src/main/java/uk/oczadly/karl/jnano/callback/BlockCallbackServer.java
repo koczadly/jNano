@@ -13,6 +13,7 @@ import uk.oczadly.karl.jnano.callback.httpserver.HttpCallback;
 import uk.oczadly.karl.jnano.callback.httpserver.HttpRequest;
 import uk.oczadly.karl.jnano.callback.httpserver.HttpServerThread;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.BlockType;
 
@@ -132,7 +133,7 @@ public class BlockCallbackServer {
                             ? json.get("is_send").getAsBoolean()
                             : block.getType() == BlockType.SEND,
                     (block.getType().isTransaction() && json.has("amount"))
-                            ? json.get("amount").getAsBigInteger()
+                            ? new NanoAmount(json.get("amount").getAsString())
                             : null);
             
             notifyListeners(blockData, request.getPath(), request.getClientAddr()); // Notify listeners

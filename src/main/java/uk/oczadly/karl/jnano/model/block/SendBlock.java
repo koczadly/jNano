@@ -11,6 +11,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockBalance;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockLink;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
@@ -31,7 +32,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
             new WorkSolution(json.get("work").getAsString()),
             json.get("previous").getAsString(),
             NanoAccount.parseAddress(json.get("destination").getAsString()),
-            new BigInteger(json.get("balance").getAsString()));
+            new NanoAmount(json.get("balance").getAsString()));
     
     private static final BlockIntent INTENT = new BlockIntent(true, false, false, false, false);
     
@@ -43,20 +44,26 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
     private NanoAccount destinationAccount;
     
     @Expose @SerializedName("balance")
-    private BigInteger balance;
+    private NanoAmount balance;
     
     
     SendBlock() {
         super(BlockType.SEND);
     }
     
+    @Deprecated
     public SendBlock(String signature, WorkSolution work, String previousBlockHash, NanoAccount destinationAccount,
                      BigInteger balance) {
+        this(null, signature, work, previousBlockHash, destinationAccount, new NanoAmount(balance));
+    }
+    
+    public SendBlock(String signature, WorkSolution work, String previousBlockHash, NanoAccount destinationAccount,
+                     NanoAmount balance) {
         this(null, signature, work, previousBlockHash, destinationAccount, balance);
     }
     
     protected SendBlock(String hash, String signature, WorkSolution work,
-                     String previousBlockHash, NanoAccount destinationAccount, BigInteger balance) {
+                     String previousBlockHash, NanoAccount destinationAccount, NanoAmount balance) {
         super(BlockType.SEND, hash, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
@@ -64,8 +71,6 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (destinationAccount == null) throw new IllegalArgumentException("Block destination account cannot be null.");
         if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");
-        if (!JNH.isBalanceValid(balance))
-            throw new IllegalArgumentException("Account balance is an invalid amount.");
         
         this.previousBlockHash = previousBlockHash;
         this.destinationAccount = destinationAccount;
@@ -86,16 +91,28 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
     }
     
     @Override
-    public final BigInteger getBalance() {
+    public final NanoAmount getBalance() {
         return balance;
     }
     
     
+    /**
+     * {@inheritDoc}
+     * @deprecated Implemented for compatibility with the link interface.
+     * @see #getDestinationAccount()
+     */
+    @Deprecated
     @Override
     public final String getLinkData() {
         return getDestinationAccount().toPublicKey();
     }
     
+    /**
+     * {@inheritDoc}
+     * @deprecated Implemented for compatibility with the link interface.
+     * @see #getDestinationAccount()
+     */
+    @Deprecated
     @Override
     public final NanoAccount getLinkAsAccount() {
         return getDestinationAccount();
@@ -112,7 +129,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
         return new byte[][] {
                 JNH.ENC_16.decode(getPreviousBlockHash()),
                 getDestinationAccount().getPublicKeyBytes(),
-                JNH.leftPadByteArray(getBalance().toByteArray(), 16, false)
+                JNH.leftPadByteArray(getBalance().getAsRaw().toByteArray(), 16, false)
         };
     }
     

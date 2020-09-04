@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.model.block;
 import org.junit.Test;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
@@ -54,7 +55,7 @@ public class StateBlockBuilderTest {
     
         assertEquals(BlockType.STATE, block.getType());
     
-        assertEquals(new BigInteger("1337"), block.getBalance());
+        assertEquals(new NanoAmount("1337"), block.getBalance());
         assertEquals(StateBlockSubType.EPOCH, block.getSubType());
         assertEquals("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97", block.getHash());
         assertEquals(ACCOUNT, block.getAccount());

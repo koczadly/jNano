@@ -8,10 +8,9 @@ package uk.oczadly.karl.jnano.internal.gsonadapters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Test;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.*;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-
-import java.math.BigInteger;
 
 import static org.junit.Assert.*;
 
@@ -60,7 +59,7 @@ public class BlockAdapterTest {
                 block.getPreviousBlockHash());
         assertEquals("nano_3deo53mkqduhn6gu55nf4jnmx8dorugsrjfnteywbedcswpsit3zz4u5urg3",
                 block.getDestinationAccount().toAddress());
-        assertEquals("1036304679954330940296402126272", block.getBalance().toString());
+        assertEquals("1036304679954330940296402126272", block.getBalance().getAsRaw().toString());
     }
     
     
@@ -188,7 +187,7 @@ public class BlockAdapterTest {
                 block.getAccount().toAddress());
         assertEquals("C798CFF4F1131204F65C4D22C3E6316F26F380EE0616AADBABEA1268FD75FB05",
                 block.getLinkData());
-        assertEquals(new BigInteger("420"),
+        assertEquals(new NanoAmount("420"),
                 block.getBalance());
         assertEquals(StateBlockSubType.SEND, block.getSubType());
     }

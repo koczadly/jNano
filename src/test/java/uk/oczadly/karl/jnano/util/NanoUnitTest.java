@@ -112,8 +112,10 @@ public class NanoUnitTest {
     
     @Test
     public void testFriendlyName() {
-        assertEquals("1,234.567001 Nano",
+        assertEquals(">1,234.567 Nano",
                 NanoUnit.toFriendlyString(new BigInteger("1234567000000000000000000000000001")));
+        assertEquals("1,234.567 Nano",
+                NanoUnit.toFriendlyString(new BigInteger("1234567000000000000000000000000000")));
     }
     
 }

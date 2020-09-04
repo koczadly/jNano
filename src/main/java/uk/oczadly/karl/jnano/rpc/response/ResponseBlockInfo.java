@@ -13,6 +13,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.BlockDeserializer;
 import uk.oczadly.karl.jnano.model.block.SendBlock;
@@ -119,12 +120,13 @@ public class ResponseBlockInfo extends RpcResponse {
                     new WorkSolution(json.get("work").getAsString()),
                     json.get("previous").getAsString(),
                     NanoAccount.parseAddress(json.get("destination").getAsString()),
-                    new BigInteger(json.get("balance").getAsString(), 16)
+                    new NanoAmount(new BigInteger(json.get("balance").getAsString(), 16))
             ));
         }
         
         @Override
-        public Block deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        public Block deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
             return deserializer.deserialize(json.getAsJsonObject());
         }
     }
