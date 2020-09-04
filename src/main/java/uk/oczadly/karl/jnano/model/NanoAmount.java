@@ -103,6 +103,11 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     
+    /**
+     * Returns this amount as a friendly string, complete with the unit name.
+     * @return a friendly string of this amount
+     * @see NanoUnit#toFriendlyString(BigInteger)
+     */
     @Override
     public String toString() {
         return NanoUnit.toFriendlyString(rawValue);
