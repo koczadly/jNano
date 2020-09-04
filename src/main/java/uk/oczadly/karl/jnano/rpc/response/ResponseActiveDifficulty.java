@@ -23,6 +23,12 @@ public class ResponseActiveDifficulty extends RpcResponse {
     @Expose @SerializedName("network_current")
     private WorkDifficulty networkCurrent;
     
+    @Expose @SerializedName("network_receive_minimum")
+    private WorkDifficulty networkReceiveMinimum;
+    
+    @Expose @SerializedName("network_receive_current")
+    private WorkDifficulty networkReceiveCurrent;
+    
     @Expose @SerializedName("multiplier")
     private BigDecimal multiplier;
     
@@ -31,28 +37,42 @@ public class ResponseActiveDifficulty extends RpcResponse {
     
     
     /**
-     * @return the minimum work value required
+     * @return the minimum work value required for any block type
      */
     public WorkDifficulty getNetworkMinimum() {
         return networkMinimum;
     }
     
     /**
-     * @return the current average work value
+     * @return the current average work value for all block types
      */
     public WorkDifficulty getNetworkCurrent() {
         return networkCurrent;
     }
     
     /**
-     * @return the current suggested difficulty multiplier
+     * @return the minimum work value required for receiving blocks
+     */
+    public WorkDifficulty getNetworkReceiveMinimum() {
+        return networkReceiveMinimum;
+    }
+    
+    /**
+     * @return the current average work value for receive blocks
+     */
+    public WorkDifficulty getNetworkReceiveCurrent() {
+        return networkReceiveCurrent;
+    }
+    
+    /**
+     * @return the current recommended difficulty multiplier
      */
     public BigDecimal getMultiplier() {
         return multiplier;
     }
     
     /**
-     * @return a list of historical difficulty trends
+     * @return a list of historical difficulty multipliers, or null if not requested
      */
     public List<BigDecimal> getDifficultyTrend() {
         return difficultyTrend;
