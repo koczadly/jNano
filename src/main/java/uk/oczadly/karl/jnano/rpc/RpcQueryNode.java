@@ -50,6 +50,8 @@ import java.util.concurrent.Future;
  *      e.printStackTrace();
  *  }
  * }</pre>
+ *
+ * @see Builder
  */
 public class RpcQueryNode {
     
