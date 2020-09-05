@@ -18,7 +18,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public abstract class RpcResponse {
     
-    private JsonObject rawJson;
+    private volatile JsonObject rawJson;
     
     
     /**
@@ -33,7 +33,7 @@ public abstract class RpcResponse {
      */
     @Override
     public String toString() {
-        return getRawResponseJson().toString();
+        return rawJson != null ? rawJson.toString() : "{}";
     }
     
 }
