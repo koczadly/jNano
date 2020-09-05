@@ -19,7 +19,8 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
     
     private static volatile Field RESPONSE_JSON_FIELD;
     
-    private Gson gson;
+    private final Gson gson;
+    
     
     public RpcResponseDeserializerImpl() {
         this(JNH.GSON);
@@ -57,7 +58,14 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
     }
     
     
-    public RpcException parseException(String msg) {
+    /**
+     * Parses an {@link RpcException} from a given response message.
+     * @param msg the received error message
+     * @return the parsed exception object
+     * @deprecated Method may be changed or removed in the future.
+     */
+    @Deprecated
+    public static RpcException parseException(String msg) {
         String msgLc = msg.toLowerCase().trim();
         
         // Check and parse error type
@@ -98,7 +106,14 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
     }
     
     
-    private void populateJsonField(RpcResponse response, JsonObject json) {
+    /**
+     * Populates the raw JSON field within {@link RpcResponse} objects.
+     * @param response the response object
+     * @param json     the raw JSON object
+     * @deprecated Method may be changed or removed in the future.
+     */
+    @Deprecated
+    public static void populateJsonField(RpcResponse response, JsonObject json) {
         if (RESPONSE_JSON_FIELD == null) {
             try {
                 RESPONSE_JSON_FIELD = RpcResponse.class.getDeclaredField("rawJson");
@@ -109,6 +124,9 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
         }
         if (RESPONSE_JSON_FIELD != null) {
             try {
+                if (RESPONSE_JSON_FIELD.get(response) != null)
+                    throw new IllegalStateException("Response JSON value is already assigned.");
+                
                 RESPONSE_JSON_FIELD.set(response, json);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
