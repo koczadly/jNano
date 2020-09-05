@@ -6,7 +6,9 @@
 package uk.oczadly.karl.jnano.websocket.topic.message;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.internal.gsonadapters.UnsignedLongAdapter;
 
 import java.util.List;
 
@@ -19,6 +21,7 @@ public class TopicMessageVote {
     private String signature;
     
     @Expose @SerializedName("sequence")
+    @JsonAdapter(UnsignedLongAdapter.class)
     private long sequence;
     
     @Expose @SerializedName("blocks")
