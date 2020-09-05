@@ -12,7 +12,7 @@ import java.net.URL;
  * Classes which implement this interface are responsible for submitting requests and retrieving the responses from an
  * external Nano node.
  */
-public interface RpcRequestSubmitter {
+public interface RpcRequestExecutor {
     
     /**
      * Submits a raw RPC request to the specified external node address.

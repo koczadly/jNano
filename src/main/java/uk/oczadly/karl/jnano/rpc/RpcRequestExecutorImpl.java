@@ -13,9 +13,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Default implementation of {@link RpcRequestSubmitter}.
+ * Default implementation of {@link RpcRequestExecutor}.
  */
-public class RpcRequestSubmitterImpl implements RpcRequestSubmitter {
+public class RpcRequestExecutorImpl implements RpcRequestExecutor {
     
     @Override
     public String submit(URL address, String request, int timeout) throws IOException {
