@@ -77,6 +77,8 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
                 return new RpcInvalidArgumentException(msg + "."); // Invalid/bad argument
             case "rpc control is disabled":
                 return new RpcControlDisabledException();          // RPC control disabled
+            case "cancelled":
+                return new RpcWorkCancelledException();            // Work cancelled
             case "unable to parse json":
                 return new RpcInvalidRequestJsonException(         // Invalid request body
                         "The RPC server was unable to parse the JSON request.");
