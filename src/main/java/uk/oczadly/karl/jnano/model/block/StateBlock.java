@@ -167,6 +167,8 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
             throw new IllegalArgumentException("Link data/account cannot be null.");
         if (!JNH.isValidHex(linkData, HASH_LENGTH))
             throw new IllegalArgumentException("Link data is invalid.");
+        if (linkAccount != null && linkData != null && !linkAccount.toPublicKey().equals(linkData))
+            throw new IllegalArgumentException("Both link types were specified, but their values did not match.");
         
         this.subType = subtype;
         this.accountAddress = accountAddress;
