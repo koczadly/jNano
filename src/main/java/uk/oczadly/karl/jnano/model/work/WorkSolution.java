@@ -9,6 +9,8 @@ import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlockAccount;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.rpc.request.node.RequestWorkGenerate;
 
 import java.lang.reflect.Type;
@@ -65,13 +67,30 @@ public class WorkSolution {
     
     
     /**
+     * Calculates the difficulty for a given block. The block type must implement both the {@link IBlockAccount} and
+     * {@link IBlockPrevious} interfaces.
+     * @param block the block to calculate the difficulty for
+     * @param <B> the block interface types
+     * @return the difficulty of this work solution for the given root hash
+     */
+    public <B extends IBlockAccount & IBlockPrevious> WorkDifficulty calculateDifficulty(B block) {
+        if (block == null) throw new IllegalArgumentException("Block cannot be null.");
+        
+        byte[] root = JNH.isZero(block.getPreviousBlockHash(), true) ?
+                block.getAccount().getPublicKeyBytes() :
+                JNH.ENC_16.decode(block.getPreviousBlockHash());
+        
+        return calculateDifficulty(root);
+    }
+    
+    /**
      * Calculates the difficulty for a given root hash. The root value should be either the previous block hash for
      * existing accounts, or the account's public key for the first block.
      * @param root the root hash (64 character hex string)
      * @return the difficulty of this work solution for the given root hash
      */
     public WorkDifficulty calculateDifficulty(String root) {
-        if (root == null) throw new IllegalArgumentException("Root argument cannot be null.");
+        if (root == null) throw new IllegalArgumentException("Root cannot be null.");
         if (!JNH.isValidHex(root, 64))
             throw new IllegalArgumentException("Root argument must be a 64-character hex string.");
         
