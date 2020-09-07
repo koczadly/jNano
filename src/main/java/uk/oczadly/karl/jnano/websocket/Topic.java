@@ -100,10 +100,11 @@ public class Topic<M> {
     /**
      * <p>Subscribe to this topic without any options or configurations. The underlying WebSocket <em>must</em> be open
      * before you call this method.</p>
-     * <p>This method will block indefinitely and wait for the associated acknowledgement message to be received before
-     * continuing and returning true, false if the WebSocket closed, or throw an {@link InterruptedException} if the
-     * thread is interrupted.</p>
-     * @return true if the action completed successfully, false if the WS is closed
+     * <p>This method will block and wait for the associated acknowledgement message to be received before
+     * continuing and returning true, false if the WebSocket closed or the timeout period expires, or throw an
+     * {@link InterruptedException} if the thread is interrupted.</p>
+     * @param timeout the timeout in milliseconds, or zero for no timeout
+     * @return true if the action completed successfully, false if the WS is closed or the timeout expires
      * @throws IllegalStateException if the WebSocket is not currently open
      * @throws InterruptedException if the thread is interrupted
      */
