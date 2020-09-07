@@ -19,7 +19,7 @@ public class ResponseSuccessful extends RpcResponse {
     
     private final boolean success;
     
-    private ResponseSuccessful(boolean success) {
+    public ResponseSuccessful(boolean success) {
         this.success = success;
     }
     

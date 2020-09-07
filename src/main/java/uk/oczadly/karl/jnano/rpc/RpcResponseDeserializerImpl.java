@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.rpc;
 import com.google.gson.*;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.rpc.exception.*;
+import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 
 import java.lang.reflect.Field;
@@ -37,15 +38,23 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
     
     
     @Override
+    @SuppressWarnings("unchecked")
     public <R extends RpcResponse> R deserialize(String response, Class<R> responseClass) throws RpcException {
-        JsonObject responseJson;
         try {
-            responseJson = JsonParser.parseString(response).getAsJsonObject(); // Parse response
-    
+            // Parse response into JSON
+            JsonObject responseJson = JsonParser.parseString(response).getAsJsonObject();
+            
             // Check for returned RPC error
             JsonElement errorElement = responseJson.get("error");
-            if (errorElement != null)
-                throw parseException(errorElement.getAsString());
+            if (errorElement != null) {
+                String errorStr = errorElement.getAsString();
+                if (responseClass == ResponseSuccessful.class && errorStr.equals("Empty response")) {
+                    // Fix for empty response error
+                    return (R)new ResponseSuccessful(true);
+                } else {
+                    throw parseException(errorStr);
+                }
+            }
     
             // Deserialize response
             R responseObj = gson.fromJson(responseJson, responseClass);
@@ -78,7 +87,7 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
             case "rpc control is disabled":
                 return new RpcControlDisabledException();          // RPC control disabled
             case "cancelled":
-                return new RpcWorkCancelledException();            // Work cancelled
+                return new RpcRequestCancelledException();         // Request cancelled
             case "unable to parse json":
                 return new RpcInvalidRequestJsonException(         // Invalid request body
                         "The RPC server was unable to parse the JSON request.");
