@@ -98,6 +98,8 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
             return new RpcEntityNotFoundException(msg + ".");     // Unknown referenced entity
         } else if (msgLc.endsWith("is disabled")) {
             return new RpcFeatureDisabledException(msg + ".");    // Feature is disabled
+        } else if (msgLc.contains("config")) {
+            return new RpcConfigForbiddenException(msg + ".");    // Config forbids request
         } else if (msgLc.contains("json")) {
             return new RpcInvalidRequestJsonException(msg + "."); // Disallowed/invalid JSON request
         } else if (msgLc.startsWith("internal")) {

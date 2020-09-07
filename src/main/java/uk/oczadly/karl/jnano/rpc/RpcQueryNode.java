@@ -347,7 +347,7 @@ public class RpcQueryNode {
         } catch (IOException | RpcException e) {
             throw e;
         } catch (Exception e) {
-            throw new RpcException("An unhandled exception occured.", e);
+            throw new RpcException("An unhandled exception occured within jNano.", e);
         }
     }
     
