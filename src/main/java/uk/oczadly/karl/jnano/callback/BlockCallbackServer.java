@@ -76,6 +76,9 @@ public class BlockCallbackServer {
     
     /**
      * Notifies the registered block listener instances.
+     * @param block the block data
+     * @param target the target URI path
+     * @param node the node's external address
      */
     protected void notifyListeners(BlockData block, String target, InetAddress node) {
         this.listeners.forEach(listener -> listener.onNewBlock(block, target, node));

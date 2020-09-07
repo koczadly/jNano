@@ -377,7 +377,7 @@ public class RpcQueryNode {
      * This builder class allows you to customize and create new instances of the {@link RpcQueryNode} class.
      *
      * <p>The default assigned values are as follows:</p>
-     * <table>
+     * <table summary="Default values">
      *     <thead><tr><th>Parameter</th><th>Default value</th></tr></thead>
      *     <tbody>
      *         <tr><td>Timeout</td>                 <td>Indefinite ({@code 0})</td></tr>

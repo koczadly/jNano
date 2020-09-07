@@ -99,6 +99,7 @@ public enum NanoUnit {
     /**
      * <p>Returns the exponent of the unit as a power of 10.</p>
      * <p>For instance, 10<sup>x</sup>, with {@code x} being the value returned by this method.</p>
+     * @return the exponent of this unit
      */
     public int getExponent() {
         return exponent;
@@ -117,6 +118,7 @@ public enum NanoUnit {
     
     /**
      * Returns the human-readable name for this currency unit.
+     * @return the display name
      */
     public String getDisplayName() {
         return displayName;
@@ -124,6 +126,7 @@ public enum NanoUnit {
     
     /**
      * Returns the classic legacy name used within previous versions of the node.
+     * @return the legacy name
      */
     public String getClassicName() {
         return classicName;
