@@ -74,13 +74,7 @@ public class WorkSolution {
      * @return the difficulty of this work solution for the given root hash
      */
     public <B extends IBlockAccount & IBlockPrevious> WorkDifficulty calculateDifficulty(B block) {
-        if (block == null) throw new IllegalArgumentException("Block cannot be null.");
-        
-        byte[] root = JNH.isZero(block.getPreviousBlockHash(), true) ?
-                block.getAccount().getPublicKeyBytes() :
-                JNH.ENC_16.decode(block.getPreviousBlockHash());
-        
-        return calculateDifficulty(root);
+        return calculateDifficulty(getRoot(block));
     }
     
     /**
@@ -127,6 +121,21 @@ public class WorkSolution {
     @Override
     public int hashCode() {
         return Objects.hash(longVal);
+    }
+    
+    
+    /**
+     * Returns the root bytes for the given block, for use in work calculations.
+     * @param block the block to calculate the root of
+     * @param <B> the block interface types
+     * @return the root bytes of the given block
+     */
+    public static <B extends IBlockAccount & IBlockPrevious> byte[] getRoot(B block) {
+        if (block == null) throw new IllegalArgumentException("Block cannot be null.");
+    
+        return JNH.isZero(block.getPreviousBlockHash(), true) ?
+                block.getAccount().getPublicKeyBytes() :
+                JNH.ENC_16.decode(block.getPreviousBlockHash());
     }
     
     

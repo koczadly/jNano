@@ -12,6 +12,7 @@ import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
+import uk.oczadly.karl.jnano.model.work.WorkSolution;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseWork;
 
@@ -161,8 +162,7 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
          * @param <B>   the block interfaces
          */
         public <B extends Block & IBlockPrevious & IBlockAccount> Builder(B block) {
-            this(JNH.isZero(block.getPreviousBlockHash(), true)
-                    ? block.getAccount().toPublicKey() : block.getPreviousBlockHash(), block);
+            this(JNH.ENC_16.encode(WorkSolution.getRoot(block)), block);
         }
     
         /**
