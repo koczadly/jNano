@@ -8,7 +8,6 @@ package uk.oczadly.karl.jnano.util;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
@@ -40,7 +39,7 @@ public final class NanoConstants {
             new WorkSolution("62f05417dd3fb691"),
             "3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xt",
             new NetworkConstants.WorkDifficultiesV2(
-                    new WorkDifficulty("fffffff800000000"), new WorkDifficulty("fffffe0000000000")));
+                    0xfffffff800000000L, 0xfffffe0000000000L));
     
     /**
      * Constants representing the official beta Nano network.
@@ -55,7 +54,7 @@ public final class NanoConstants {
             new WorkSolution("7f5c2eb5e2658e81"),
             "1betagcfp7ojzzkof35peohaakx7mt9ddnj4ya8n7sa8imae4ttn",
             new NetworkConstants.WorkDifficultiesV2(
-                    new WorkDifficulty("fffff00000000000"), new WorkDifficulty("ffffe00000000000")));
+                    0xfffff00000000000L, 0xffffe00000000000L));
     
     /**
      * Constants representing the official Banano network.
@@ -69,7 +68,7 @@ public final class NanoConstants {
                     "2C00D7B183560435D07AFA18900",
             new WorkSolution("fa055f79fa56abcf"),
             "1bananobh5rat99qfgt1ptpieie5swmoth87thi74qgbfrij7dcg",
-            new NetworkConstants.WorkDifficultiesV1(new WorkDifficulty("fffffe0000000000")));
+            new NetworkConstants.WorkDifficultiesV1(0xfffffe0000000000L));
     
     
     /**

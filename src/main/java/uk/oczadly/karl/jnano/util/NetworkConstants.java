@@ -5,6 +5,7 @@
 
 package uk.oczadly.karl.jnano.util;
 
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.OpenBlock;
@@ -148,8 +149,8 @@ public final class NetworkConstants {
     static class WorkDifficultiesV1 implements WorkDifficulties {
         private final WorkDifficulty diff;
         
-        WorkDifficultiesV1(WorkDifficulty diff) {
-            this.diff = diff;
+        WorkDifficultiesV1(long diff) {
+            this.diff = new WorkDifficulty(diff);
         }
         
         @Override
@@ -161,10 +162,10 @@ public final class NetworkConstants {
     static class WorkDifficultiesV2 implements WorkDifficulties {
         private final WorkDifficulty send, receive, base;
         
-        WorkDifficultiesV2(WorkDifficulty send, WorkDifficulty receive) {
-            this.send = send;
-            this.receive = receive;
-            this.base = send.compareTo(receive) >= 0 ? send : receive; // Calc max
+        WorkDifficultiesV2(long send, long receive) {
+            this.send = new WorkDifficulty(send);
+            this.receive = new WorkDifficulty(receive);
+            this.base = JNH.max(this.send, this.receive);
         }
         
         @Override
