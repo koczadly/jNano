@@ -7,9 +7,9 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
 
-import java.math.BigInteger;
 import java.util.Map;
 
 /**
@@ -24,7 +24,7 @@ public class ResponseConfirmationInfo extends RpcResponse {
     private String lastWinner;
     
     @Expose @SerializedName("total_tally")
-    private BigInteger totalTally;
+    private NanoAmount totalTally;
     
     @Expose @SerializedName("blocks")
     private Map<String, BlockConfirmation> blocks;
@@ -47,7 +47,7 @@ public class ResponseConfirmationInfo extends RpcResponse {
     /**
      * @return the total voting tally this election
      */
-    public BigInteger getTotalTally() {
+    public NanoAmount getTotalTally() {
         return totalTally;
     }
     
@@ -63,19 +63,19 @@ public class ResponseConfirmationInfo extends RpcResponse {
     
     public static class BlockConfirmation {
         @Expose @SerializedName("tally")
-        private BigInteger tally;
+        private NanoAmount tally;
         
         @Expose @SerializedName("contents")
         private Block blockContents;
         
         @Expose @SerializedName("representatives")
-        private Map<String, BigInteger> representatives;
+        private Map<String, NanoAmount> representatives;
         
         
         /**
          * @return the total vote
          */
-        public BigInteger getTally() {
+        public NanoAmount getTally() {
             return tally;
         }
         
@@ -91,7 +91,7 @@ public class ResponseConfirmationInfo extends RpcResponse {
          *
          * @return a map of representatives who voted on this block
          */
-        public Map<String, BigInteger> getRepresentatives() {
+        public Map<String, NanoAmount> getRepresentatives() {
             return representatives;
         }
     }

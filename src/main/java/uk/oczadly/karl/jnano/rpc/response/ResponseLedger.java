@@ -8,8 +8,8 @@ package uk.oczadly.karl.jnano.rpc.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 
-import java.math.BigInteger;
 import java.util.LinkedHashMap;
 
 /**
@@ -50,7 +50,7 @@ public class ResponseLedger extends RpcResponse {
         private String representativeBlockHash;
         
         @Expose @SerializedName("balance")
-        private BigInteger balance;
+        private NanoAmount balance;
         
         @Expose @SerializedName("modified_timestamp")
         private int modifiedTimestamp;
@@ -62,10 +62,10 @@ public class ResponseLedger extends RpcResponse {
         private NanoAccount representativeAccount;
         
         @Expose @SerializedName("weight")
-        private BigInteger votingWeight;
+        private NanoAmount votingWeight;
         
         @Expose @SerializedName("pending")
-        private BigInteger balancePending;
+        private NanoAmount balancePending;
         
         
         /**
@@ -113,21 +113,21 @@ public class ResponseLedger extends RpcResponse {
         /**
          * @return the total voting weight delegated to this account
          */
-        public BigInteger getVotingWeight() {
+        public NanoAmount getVotingWeight() {
             return votingWeight;
         }
         
         /**
          * @return the confirmed balance of this account in RAW
          */
-        public BigInteger getBalanceConfirmed() {
+        public NanoAmount getBalanceConfirmed() {
             return balance;
         }
         
         /**
          * @return the total pending balance of this account in RAW
          */
-        public BigInteger getBalancePending() {
+        public NanoAmount getBalancePending() {
             return balancePending;
         }
         

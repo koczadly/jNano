@@ -8,8 +8,8 @@ package uk.oczadly.karl.jnano.rpc.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import uk.oczadly.karl.jnano.internal.gsonadapters.SingleValueJsonAdapter;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 
-import java.math.BigInteger;
 
 /**
  * This response class contains a single amount of Nano.
@@ -18,13 +18,13 @@ import java.math.BigInteger;
 public class ResponseAmount extends RpcResponse {
     
     @Expose
-    private BigInteger amount;
+    private NanoAmount amount;
     
     
     /**
      * @return the amount of Nano in RAW
      */
-    public BigInteger getAmount() {
+    public NanoAmount getAmount() {
         return amount;
     }
     

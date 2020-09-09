@@ -7,8 +7,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.math.BigInteger;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 
 /**
  * This response class contains information about a single account.
@@ -25,7 +24,7 @@ public class ResponseAccountInfo extends RpcResponse {
     private String representativeBlockHash;
     
     @Expose @SerializedName("weight")
-    private BigInteger representativeWeight;
+    private NanoAmount representativeWeight;
     
     @Expose @SerializedName("modified_timestamp")
     private long modifiedTimestamp;
@@ -37,10 +36,10 @@ public class ResponseAccountInfo extends RpcResponse {
     private String representativeAccount;
     
     @Expose @SerializedName("balance")
-    private BigInteger balanceConfirmed;
+    private NanoAmount balanceConfirmed;
     
     @Expose @SerializedName("pending")
-    private BigInteger balancePending;
+    private NanoAmount balancePending;
     
     @Expose @SerializedName("confirmation_height")
     private int confirmationHeight;
@@ -94,21 +93,21 @@ public class ResponseAccountInfo extends RpcResponse {
     /**
      * @return the total voting weight of the assigned representative
      */
-    public BigInteger getRepresentativeWeight() {
+    public NanoAmount getRepresentativeWeight() {
         return representativeWeight;
     }
     
     /**
      * @return the confirmed balance of this account in RAW
      */
-    public BigInteger getBalanceConfirmed() {
+    public NanoAmount getBalanceConfirmed() {
         return balanceConfirmed;
     }
     
     /**
      * @return the total pending balance of this account in RAW
      */
-    public BigInteger getBalancePending() {
+    public NanoAmount getBalancePending() {
         return balancePending;
     }
     

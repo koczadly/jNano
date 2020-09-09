@@ -140,6 +140,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     
+    
     static class JsonAdapter implements JsonSerializer<NanoAmount>, JsonDeserializer<NanoAmount> {
         @Override
         public NanoAmount deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)

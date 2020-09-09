@@ -8,8 +8,8 @@ package uk.oczadly.karl.jnano.rpc.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 
-import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -42,13 +42,13 @@ public class ResponseOnlineRepresentatives extends RpcResponse {
     
     public static class RepInfo {
         @Expose @SerializedName("weight")
-        private BigInteger weight;
+        private NanoAmount weight;
         
         
         /**
          * @return the delegated voting weight of this representative
          */
-        public BigInteger getWeight() {
+        public NanoAmount getWeight() {
             return weight;
         }
     }

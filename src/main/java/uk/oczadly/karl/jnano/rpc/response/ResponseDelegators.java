@@ -8,8 +8,8 @@ package uk.oczadly.karl.jnano.rpc.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 
-import java.math.BigInteger;
 import java.util.Map;
 
 /**
@@ -18,7 +18,7 @@ import java.util.Map;
 public class ResponseDelegators extends RpcResponse {
     
     @Expose @SerializedName("delegators")
-    private Map<NanoAccount, BigInteger> delegators;
+    private Map<NanoAccount, NanoAmount> delegators;
     
     
     /**
@@ -26,7 +26,7 @@ public class ResponseDelegators extends RpcResponse {
      *
      * @return a map of delegators
      */
-    public Map<NanoAccount, BigInteger> getDelegators() {
+    public Map<NanoAccount, NanoAmount> getDelegators() {
         return delegators;
     }
     
@@ -34,7 +34,7 @@ public class ResponseDelegators extends RpcResponse {
      * @param accountAddress the account's address
      * @return the balance delegated to the representative
      */
-    public BigInteger getDelegatedBalance(NanoAccount accountAddress) {
+    public NanoAmount getDelegatedBalance(NanoAccount accountAddress) {
         return delegators.get(accountAddress);
     }
     

@@ -7,8 +7,8 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -72,7 +72,7 @@ public class ResponseConfirmationHistory extends RpcResponse {
         private int time;
         
         @Expose @SerializedName("tally")
-        private BigInteger tally;
+        private NanoAmount tally;
         
         @Expose @SerializedName("request_count")
         private int requestCount;
@@ -102,7 +102,7 @@ public class ResponseConfirmationHistory extends RpcResponse {
         /**
          * @return the total voted weight of this block
          */
-        public BigInteger getTally() {
+        public NanoAmount getTally() {
             return tally;
         }
         

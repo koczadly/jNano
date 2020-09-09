@@ -7,8 +7,8 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 
-import java.math.BigInteger;
 
 /**
  * This response class contains summary information about a single wallet.
@@ -16,10 +16,10 @@ import java.math.BigInteger;
 public class ResponseWalletInfo extends RpcResponse {
     
     @Expose @SerializedName("balance")
-    private BigInteger balance;
+    private NanoAmount balance;
     
     @Expose @SerializedName("pending")
-    private BigInteger pendingBalance;
+    private NanoAmount pendingBalance;
     
     @Expose @SerializedName("accounts_count")
     private int accountsCount;
@@ -37,14 +37,14 @@ public class ResponseWalletInfo extends RpcResponse {
     /**
      * @return the total balance of all accounts
      */
-    public BigInteger getBalance() {
+    public NanoAmount getBalance() {
         return balance;
     }
     
     /**
      * @return the total pending balance of all accounts
      */
-    public BigInteger getPendingBalance() {
+    public NanoAmount getPendingBalance() {
         return pendingBalance;
     }
     

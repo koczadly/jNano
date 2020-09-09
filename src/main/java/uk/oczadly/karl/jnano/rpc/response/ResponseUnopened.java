@@ -8,8 +8,8 @@ package uk.oczadly.karl.jnano.rpc.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 
-import java.math.BigInteger;
 import java.util.Map;
 
 /**
@@ -18,7 +18,7 @@ import java.util.Map;
 public class ResponseUnopened extends RpcResponse {
     
     @Expose @SerializedName("accounts")
-    private Map<NanoAccount, BigInteger> accounts;
+    private Map<NanoAccount, NanoAmount> accounts;
     
     
     /**
@@ -26,7 +26,7 @@ public class ResponseUnopened extends RpcResponse {
      *
      * @return a map of unopened accounts and their total pending balance in RAW
      */
-    public Map<NanoAccount, BigInteger> getAccounts() {
+    public Map<NanoAccount, NanoAmount> getAccounts() {
         return accounts;
     }
     
@@ -34,7 +34,7 @@ public class ResponseUnopened extends RpcResponse {
      * @param accountAddress an unopened account's address
      * @return the pending balance of the account in RAW, or null if not present in the response
      */
-    public BigInteger getPendingBalance(NanoAccount accountAddress) {
+    public NanoAmount getPendingBalance(NanoAccount accountAddress) {
         return this.accounts.get(accountAddress);
     }
     

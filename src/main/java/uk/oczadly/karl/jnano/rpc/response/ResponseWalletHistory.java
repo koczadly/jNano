@@ -8,8 +8,8 @@ package uk.oczadly.karl.jnano.rpc.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -37,7 +37,7 @@ public class ResponseWalletHistory extends RpcResponse {
         private NanoAccount account;
         
         @Expose @SerializedName("amount")
-        private BigInteger amount;
+        private NanoAmount amount;
         
         @Expose @SerializedName("block_account")
         private String block_account;
@@ -66,7 +66,7 @@ public class ResponseWalletHistory extends RpcResponse {
         /**
          * @return the amount being sent/received, in RAW
          */
-        public BigInteger getAmount() {
+        public NanoAmount getAmount() {
             return amount;
         }
         

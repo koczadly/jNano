@@ -31,10 +31,10 @@ public class ResponseBlockInfo extends RpcResponse {
     private NanoAccount account;
     
     @Expose @SerializedName("amount")
-    private BigInteger amount;
+    private NanoAmount amount;
     
     @Expose @SerializedName("balance")
-    private BigInteger balance;
+    private NanoAmount balance;
     
     @Expose @SerializedName("height")
     private long height;
@@ -62,14 +62,14 @@ public class ResponseBlockInfo extends RpcResponse {
     /**
      * @return the transactional amount associated with this block in RAW
      */
-    public BigInteger getAmount() {
+    public NanoAmount getAmount() {
         return amount;
     }
     
     /**
      * @return the final balance after executing this block
      */
-    public BigInteger getBalance() {
+    public NanoAmount getBalance() {
         return balance;
     }
     

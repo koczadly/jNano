@@ -8,8 +8,8 @@ package uk.oczadly.karl.jnano.rpc.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -18,22 +18,22 @@ import java.util.List;
 public class ResponseConfirmationQuorum extends RpcResponse {
     
     @Expose @SerializedName("quorum_delta")
-    private BigInteger quorumDelta;
+    private NanoAmount quorumDelta;
     
     @Expose @SerializedName("online_weight_quorum_percent")
     private double onlineQuorumPercent;
     
     @Expose @SerializedName("online_weight_minimum")
-    private BigInteger onlineQuorumMinimum;
+    private NanoAmount onlineQuorumMinimum;
     
     @Expose @SerializedName("online_stake_total")
-    private BigInteger onlineStakeTotal;
+    private NanoAmount onlineStakeTotal;
     
     @Expose @SerializedName("peers_stake_total")
-    private BigInteger peersStakeTotal;
+    private NanoAmount peersStakeTotal;
     
     @Expose @SerializedName("peers_stake_required")
-    private BigInteger peersStakeRequired;
+    private NanoAmount peersStakeRequired;
     
     @Expose @SerializedName("peers")
     private List<PeerInfo> peers;
@@ -42,7 +42,7 @@ public class ResponseConfirmationQuorum extends RpcResponse {
     /**
      * @return the total voting weight required for a block to be confirmed
      */
-    public BigInteger getQuorumDelta() {
+    public NanoAmount getQuorumDelta() {
         return quorumDelta;
     }
     
@@ -56,28 +56,28 @@ public class ResponseConfirmationQuorum extends RpcResponse {
     /**
      * @return the minimum voting weight required (constant)
      */
-    public BigInteger getOnlineQuorumMinimum() {
+    public NanoAmount getOnlineQuorumMinimum() {
         return onlineQuorumMinimum;
     }
     
     /**
      * @return the total online stake from representatives
      */
-    public BigInteger getOnlineStakeTotal() {
+    public NanoAmount getOnlineStakeTotal() {
         return onlineStakeTotal;
     }
     
     /**
      * @return the total online stake from peers
      */
-    public BigInteger getPeersStakeTotal() {
+    public NanoAmount getPeersStakeTotal() {
         return peersStakeTotal;
     }
     
     /**
      * @return the required voting weight from all peers
      */
-    public BigInteger getPeersStakeRequired() {
+    public NanoAmount getPeersStakeRequired() {
         return peersStakeRequired;
     }
     
@@ -97,7 +97,7 @@ public class ResponseConfirmationQuorum extends RpcResponse {
         private String ip;
         
         @Expose @SerializedName("weight")
-        private BigInteger weight;
+        private NanoAmount weight;
         
         
         /**
@@ -117,7 +117,7 @@ public class ResponseConfirmationQuorum extends RpcResponse {
         /**
          * @return the voting weight of this representative
          */
-        public BigInteger getWeight() {
+        public NanoAmount getWeight() {
             return weight;
         }
     }
