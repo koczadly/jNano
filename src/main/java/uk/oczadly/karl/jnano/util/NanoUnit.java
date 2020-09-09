@@ -82,7 +82,8 @@ public enum NanoUnit {
      */
     public static final NanoUnit BASE_UNIT = NanoUnit.MEGA;
     
-    private static final DecimalFormat FRIENDLY_DECIMAL_FORMAT = new DecimalFormat("#,##0.######");
+    private static final DecimalFormat FRIENDLY_DF = new DecimalFormat("#,##0.######");
+    private static final DecimalFormat FRIENDLY_DF_FORCE = new DecimalFormat("#,##0.000000");
     
     final int exponent;
     final BigInteger rawValue;
@@ -223,7 +224,7 @@ public enum NanoUnit {
      * also be formatted to contain separating commas for every 3 digits.</p>
      *
      * <p>For instance, a value of {@code 1234567000000000000000000000000001} will return
-     * {@code >1,234.567000 Nano}.</p>
+     * <code>1,234.567000&#8230; Nano</code>.</p>
      *
      * <p>This value should not be used for any computations, and should only be used for displaying quantities of
      * the currency to a user.</p>
@@ -239,8 +240,8 @@ public enum NanoUnit {
      * up to 6 decimal places (cutting off truncated digits), along with a suffix of the unit name. The value will
      * also be formatted to contain separating commas for every 3 digits.</p>
      *
-     * <p>For instance, a value of {@code 1234567000000000000000000000000001} {@link #RAW} will return {@code
-     * >1,234.567000 Nano}.</p>
+     * <p>For instance, a value of {@code 1234567000000000000000000000000001} {@link #RAW} will return
+     * <code>1,234.567000&#8230; Nano</code>.</p>
      *
      * <p>This value should not be used for any computations, and should only be used for displaying quantities of
      * the currency to a user.</p>
@@ -252,7 +253,18 @@ public enum NanoUnit {
         BigDecimal nanoAmount = BASE_UNIT.convertFrom(sourceUnit, amount);
         BigDecimal scaledAmount = nanoAmount.setScale(6, RoundingMode.FLOOR);
         boolean trimmed = nanoAmount.compareTo(scaledAmount) > 0;
-        return (trimmed ? ">" : "") + FRIENDLY_DECIMAL_FORMAT.format(nanoAmount) + " " + BASE_UNIT.getDisplayName();
+        
+        String valStr;
+        if (scaledAmount.compareTo(BigDecimal.ZERO) == 0) {
+            valStr = (trimmed ? ">" : "") + "0";
+        } else {
+            if (trimmed) {
+                valStr = FRIENDLY_DF_FORCE.format(nanoAmount) + ((char)8230); // Ellipsis character
+            } else {
+                valStr = FRIENDLY_DF.format(nanoAmount);
+            }
+        }
+        return valStr + " " + BASE_UNIT.getDisplayName();
     }
     
 }
