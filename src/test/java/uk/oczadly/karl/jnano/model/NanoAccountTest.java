@@ -82,13 +82,15 @@ public class NanoAccountTest {
     public void testChangePrefix() {
         NanoAccount addr1 = NanoAccount.parseAddress(ACC_1_ADDR);
         addr1.toAddress(); // Preload value
-        NanoAccount addr2 = new NanoAccount(addr1, "slug");
+        NanoAccount addr2 = addr1.withPrefix("slug");
         NanoAccount addr3 = addr1.withPrefix("osama");
     
         assertEquals("slug", addr2.getPrefix());
         assertEquals("slug_" + ACC_1_ADDRSEG + ACC_1_CHECKSUM, addr2.toAddress());
         assertEquals("osama", addr3.getPrefix());
         assertEquals("osama_" + ACC_1_ADDRSEG + ACC_1_CHECKSUM, addr3.toAddress());
+        assertEquals(ACC_1_ADDRSEG + ACC_1_CHECKSUM, addr1.withPrefix(null).toAddress());
+        assertSame(addr2, addr2.withPrefix("slug"));
     }
     
     @Test
@@ -101,7 +103,7 @@ public class NanoAccountTest {
         assertFalse(NanoAccount.isSegmentValid(ACC_1_ADDR, INVALID_CHECKSUM));
         
         // Nano prefix
-        assertTrue(NanoAccount.isValidNano(new NanoAccount(NanoAccount.parseAddress(ACC_1_ADDR), "xrb").toAddress()));
+        assertTrue(NanoAccount.isValidNano(NanoAccount.parseAddress(ACC_1_ADDR).withPrefix("xrb").toAddress()));
         assertTrue(NanoAccount.isValidNano(ACC_2_ADDR));
         assertFalse(NanoAccount.isValidNano(ACC_1_ADDR));
     }

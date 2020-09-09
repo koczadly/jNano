@@ -283,11 +283,14 @@ public final class NanoAccount {
     
     
     /**
-     * Creates a new {@link NanoAccount} representing the same public key with the newly assigned protocol prefix.
+     * Creates a new {@link NanoAccount} representing the same public key with the newly assigned protocol prefix, or
+     * returns this instance if the prefix already matches.
      * @param prefix the new protocol identifier prefix (without separator), or null for no prefix
      * @return a new instance with the specified prefix
      */
     public NanoAccount withPrefix(String prefix) {
+        if (Objects.equals(this.prefix, prefix))
+            return this;
         return new NanoAccount(this, prefix);
     }
     

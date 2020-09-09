@@ -19,12 +19,11 @@ public final class NetworkConstants {
     private final String networkName, addressPrefix;
     private final OpenBlock genesisBlock;
     private final NanoAccount burnAddress;
-    private WorkDifficulties workDifficulty;
+    private final WorkDifficulties workDifficulty;
     
-    @SuppressWarnings("deprecation")
     NetworkConstants(String networkName, String addressPrefix, String burnAddressSegment, String genBlockSig,
                      WorkSolution genBlockWork, String genBlockAccountSeg, WorkDifficulties workDifficulty) {
-        this.networkName = networkName;
+        this.networkName = networkName + " network";
         this.addressPrefix = addressPrefix;
         this.burnAddress = NanoAccount.parseAddressSegment(burnAddressSegment, addressPrefix);
         NanoAccount genesisAccount = NanoAccount.parseAddressSegment(genBlockAccountSeg, addressPrefix);
