@@ -14,12 +14,17 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * Default implementation of {@link RpcRequestExecutor}.
+ * The standard implementation of {@link RpcRequestExecutor}, which submits requests through an HTTP connection.
  */
-public class RpcRequestExecutorImpl implements RpcRequestExecutor {
+public class HttpRequestExecutor implements RpcRequestExecutor {
     
     @Override
     public String submit(URL address, String request, int timeout) throws IOException {
+        if (address == null)
+            throw new IllegalArgumentException("Address cannot be null.");
+        if (!address.getProtocol().equalsIgnoreCase("http") && !address.getProtocol().equalsIgnoreCase("https"))
+            throw new IllegalArgumentException(
+                    "HttpRequestExecutor only supports the 'HTTP' and 'HTTPS' protocols.");
         if (request == null)
             throw new IllegalArgumentException("Request body cannot be null.");
         if (timeout < 0)

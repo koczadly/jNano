@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 
 public class RpcRequestSerializerTest {
     
-    RpcRequestSerializer serializer = new RpcRequestSerializerImpl();
+    RpcRequestSerializer serializer = new JsonRequestSerializer();
     
     
     @Test

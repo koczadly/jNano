@@ -119,9 +119,9 @@ public class RpcQueryNode {
         
         this.address = address;
         this.defaultTimeout = defaultTimeout;
-        this.requestSerializer = serializer != null ? serializer : new RpcRequestSerializerImpl();
-        this.responseDeserializer = deserializer != null ? deserializer : new RpcResponseDeserializerImpl();
-        this.requestExecutor = executor != null ? executor : new RpcRequestExecutorImpl();
+        this.requestSerializer = serializer != null ? serializer : new JsonRequestSerializer();
+        this.responseDeserializer = deserializer != null ? deserializer : new JsonResponseDeserializer();
+        this.requestExecutor = executor != null ? executor : new HttpRequestExecutor();
         this.executorService = executorService != null ? executorService : Executors.newFixedThreadPool(250);
     }
     
@@ -347,7 +347,7 @@ public class RpcQueryNode {
         } catch (IOException | RpcException e) {
             throw e;
         } catch (Exception e) {
-            throw new RpcException("An unhandled exception occured within jNano.", e);
+            throw new RpcException("An unhandled exception occured.", e);
         }
     }
     
@@ -381,9 +381,9 @@ public class RpcQueryNode {
      *     <thead><tr><th>Parameter</th><th>Default value</th></tr></thead>
      *     <tbody>
      *         <tr><td>Timeout</td>                 <td>Indefinite ({@code 0})</td></tr>
-     *         <tr><td>Request serializer</td>      <td>{@link RpcRequestSerializerImpl}</td></tr>
-     *         <tr><td>Response deserializer</td>   <td>{@link RpcResponseDeserializerImpl}</td></tr>
-     *         <tr><td>Request executor</td>        <td>{@link RpcRequestExecutorImpl}</td></tr>
+     *         <tr><td>Request serializer</td>      <td>{@link JsonRequestSerializer}</td></tr>
+     *         <tr><td>Response deserializer</td>   <td>{@link JsonResponseDeserializer}</td></tr>
+     *         <tr><td>Request executor</td>        <td>{@link HttpRequestExecutor}</td></tr>
      *         <tr><td>Thread executor service</td> <td>{@link Executors#newFixedThreadPool(int)} with up to 250
      *         threads</td></tr>
      *     </tbody>

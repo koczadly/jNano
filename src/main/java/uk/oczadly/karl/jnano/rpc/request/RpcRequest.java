@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.rpc.request;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.rpc.JsonRequestSerializer;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 
 /**
@@ -17,7 +18,7 @@ import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
  * using the {@link SerializedName} annotation.</p>
  *
  * <p>To manually encode an {@link RpcRequest} class into a JSON string, use the provided
- * {@link uk.oczadly.karl.jnano.rpc.RpcRequestSerializerImpl} implementation class.</p>
+ * {@link JsonRequestSerializer} implementation class.</p>
  *
  * @param <R> the expected response data class
  */

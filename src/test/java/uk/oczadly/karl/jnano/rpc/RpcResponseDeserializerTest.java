@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class RpcResponseDeserializerTest {
 
-    RpcResponseDeserializer deserializer = new RpcResponseDeserializerImpl();
+    JsonResponseDeserializer deserializer = new JsonResponseDeserializer();
     
     
     @Test(expected = RpcException.class)

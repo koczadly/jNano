@@ -14,25 +14,25 @@ import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 import java.lang.reflect.Field;
 
 /**
- * Default implementation of {@link RpcResponseDeserializer}.
+ * The standard implementation of {@link RpcResponseDeserializer}, which deserializes the response as a JSON object.
  */
-public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
+public class JsonResponseDeserializer implements RpcResponseDeserializer {
     
     private static volatile Field RESPONSE_JSON_FIELD;
     
     private final Gson gson;
     
     
-    public RpcResponseDeserializerImpl() {
+    public JsonResponseDeserializer() {
         this(JNH.GSON);
     }
     
-    public RpcResponseDeserializerImpl(Gson gson) {
+    public JsonResponseDeserializer(Gson gson) {
         this.gson = gson;
     }
     
     
-    public Gson getGsonInstance() {
+    public final Gson getGson() {
         return gson;
     }
     
@@ -57,7 +57,7 @@ public class RpcResponseDeserializerImpl implements RpcResponseDeserializer {
             }
     
             // Deserialize response
-            R responseObj = gson.fromJson(responseJson, responseClass);
+            R responseObj = getGson().fromJson(responseJson, responseClass);
             populateJsonField(responseObj, responseJson);
     
             return responseObj;
