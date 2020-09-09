@@ -248,6 +248,19 @@ public final class StateBlockBuilder {
     }
     
     /**
+     * @param linkData the link data, in either hexadecimal or account format
+     * @return this builder
+     */
+    public StateBlockBuilder setLink(String linkData) {
+        if (linkData == null || JNH.isValidHex(linkData, 64)) {
+            setLinkData(linkData);
+        } else {
+            setLinkAccount(NanoAccount.parseAddress(linkData));
+        }
+        return this;
+    }
+    
+    /**
      * @param linkData the link data, in hexadecimal format
      * @return this builder
      */
