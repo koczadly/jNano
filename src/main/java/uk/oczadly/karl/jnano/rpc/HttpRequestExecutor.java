@@ -14,12 +14,12 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * The standard implementation of {@link RpcRequestExecutor}, which submits requests through an HTTP connection.
+ * The standard implementation of {@link RpcRequestExecutor}, which submits requests through an HTTP POST request.
  */
 public class HttpRequestExecutor implements RpcRequestExecutor {
     
     @Override
-    public String submit(URL address, String request, int timeout) throws IOException {
+    public final String submit(URL address, String request, int timeout) throws IOException {
         if (address == null)
             throw new IllegalArgumentException("Address cannot be null.");
         if (!address.getProtocol().equalsIgnoreCase("http") && !address.getProtocol().equalsIgnoreCase("https"))
@@ -38,10 +38,19 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
         con.setReadTimeout(timeout);
         con.setDoOutput(true);
         con.setDoInput(true);
-        con.setRequestMethod("POST");
+        setRequestHeaders(con);
         
         // Submit
         return makeRequest(con, request);
+    }
+    
+    /**
+     * Set the headers and request method of the connection. May be overridden.
+     * @param con the connection
+     */
+    protected void setRequestHeaders(HttpURLConnection con) throws IOException {
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json");
     }
     
     
