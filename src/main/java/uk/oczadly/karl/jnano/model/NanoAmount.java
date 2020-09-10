@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.model;
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.util.NanoConstants;
 import uk.oczadly.karl.jnano.util.NanoUnit;
 
 import java.lang.reflect.Type;
@@ -27,7 +28,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     public static final NanoAmount ZERO = new NanoAmount(BigInteger.ZERO);
     
     /** The maximum possible balance value, equal to the amount created in the genesis block. */
-    public static final NanoAmount MAX_VALUE = new NanoAmount(JNH.BIGINT_MAX_128);
+    public static final NanoAmount MAX_VALUE = new NanoAmount(NanoConstants.MAX_BALANCE_RAW);
     
     
     private final BigInteger rawValue;

@@ -7,7 +7,6 @@ package uk.oczadly.karl.jnano.util;
 
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
-import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
@@ -25,7 +24,7 @@ public final class NanoConstants {
      * The maximum possible balance value, in raw units. This does not account for burned or undistributed funds, but
      * is simply the number of units which are generated within the genesis block.
      */
-    public static final BigInteger MAX_BALANCE_RAW = NanoAmount.MAX_VALUE.getAsRaw();
+    public static final BigInteger MAX_BALANCE_RAW = JNH.BIGINT_MAX_128;
     
     /**
      * Constants representing the official live Nano network.
