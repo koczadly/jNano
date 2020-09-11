@@ -81,41 +81,44 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
         switch (msgLc) {
             case "wallet is locked":
             case "wallet locked":
-                return new RpcWalletLockedException();             // Wallet locked
+                return new RpcWalletLockedException(msg);     // Wallet locked
             case "insufficient balance":
-                return new RpcInvalidArgumentException(msg + "."); // Invalid/bad argument
+                return new RpcInvalidArgumentException(msg);  // Invalid/bad argument
             case "rpc control is disabled":
-                return new RpcControlDisabledException();          // RPC control disabled
+                return new RpcControlDisabledException(msg);  // RPC control disabled
             case "cancelled":
-                return new RpcRequestCancelledException();         // Request cancelled
+                return new RpcRequestCancelledException(msg); // Request cancelled
             case "unable to parse json":
-                return new RpcInvalidRequestJsonException(         // Invalid request body
-                        "The RPC server was unable to parse the JSON request.");
+                return new RpcInvalidRequestJsonException(    // Invalid request body
+                        "The RPC server was unable to parse the JSON request.", msg);
             case "unknown command":
-                return new RpcUnknownCommandException();           // Unknown command
+                return new RpcUnknownCommandException(msg);   // Unknown command
             case "invalid header: body limit exceeded":
-                return new RpcInvalidRequestJsonException(         // JSON too long
-                        "The request JSON exceeded the configured maximum length.");
+                return new RpcInvalidRequestJsonException(    // JSON too long
+                        "The request JSON exceeded the configured maximum length.", msg);
             case "unsafe rpc not allowed":
-                return new RpcUnsafeNotAllowedException();         // RPC unsafe
+                return new RpcUnsafeNotAllowedException(msg); // RPC unsafe
+            case "empty response":
+                return new RpcInternalException(              // Empty response internal error
+                        "The server returned an \"empty response\" error.", msg);
         }
         
         if (msgLc.startsWith("bad") || msgLc.startsWith("invalid") || msgLc.endsWith("invalid")
                 || msgLc.endsWith("required")) {
-            return new RpcInvalidArgumentException(msg + ".");    // Invalid/bad argument
+            return new RpcInvalidArgumentException(msg);      // Invalid/bad argument
         } else if (msgLc.contains("not found")) {
-            return new RpcEntityNotFoundException(msg + ".");     // Unknown referenced entity
+            return new RpcEntityNotFoundException(msg);       // Unknown referenced entity
         } else if (msgLc.endsWith("is disabled")) {
-            return new RpcFeatureDisabledException(msg + ".");    // Feature is disabled
+            return new RpcFeatureDisabledException(msg);      // Feature is disabled
         } else if (msgLc.contains("config")) {
-            return new RpcConfigForbiddenException(msg + ".");    // Config forbids request
+            return new RpcConfigForbiddenException(msg);      // Config forbids request
         } else if (msgLc.contains("json")) {
-            return new RpcInvalidRequestJsonException(msg + "."); // Disallowed/invalid JSON request
+            return new RpcInvalidRequestJsonException(msg);   // Disallowed/invalid JSON request
         } else if (msgLc.startsWith("internal")) {
-            return new RpcInternalException(msg + ".");           // Internal server error
+            return new RpcInternalException(msg);             // Internal server error
         }
         
-        return new RpcException(msg.isEmpty() ? null : (msg + ".")); // Default to base exception
+        return new RpcException(null, msg); // Default to base exception
     }
     
     

@@ -10,8 +10,12 @@ package uk.oczadly.karl.jnano.rpc.exception;
  */
 public class RpcInternalException extends RpcException {
     
-    public RpcInternalException(String message) {
-        super(message);
+    public RpcInternalException(String nodeMessage) {
+        super(null, nodeMessage);
+    }
+    
+    public RpcInternalException(String message, String nodeMessage) {
+        super(message, nodeMessage);
     }
     
 }

@@ -10,12 +10,12 @@ package uk.oczadly.karl.jnano.rpc.exception;
  */
 public class RpcConfigForbiddenException extends RpcException {
     
-    public RpcConfigForbiddenException(String message) {
-        super(message);
+    public RpcConfigForbiddenException(String nodeMessage) {
+        super(null, nodeMessage);
     }
     
-    public RpcConfigForbiddenException(String message, Throwable cause) {
-        super(message, cause);
+    public RpcConfigForbiddenException(String message, String nodeMessage) {
+        super(message, nodeMessage);
     }
     
 }

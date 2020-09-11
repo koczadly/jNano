@@ -10,12 +10,8 @@ package uk.oczadly.karl.jnano.rpc.exception;
  */
 public class RpcRequestCancelledException extends RpcException {
     
-    public RpcRequestCancelledException() {
-        this("The request was cancelled.");
-    }
-    
-    public RpcRequestCancelledException(String message) {
-        super(message);
+    public RpcRequestCancelledException(String nodeMessage) {
+        super("The request was cancelled.", nodeMessage);
     }
     
 }

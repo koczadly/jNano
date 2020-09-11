@@ -10,8 +10,8 @@ package uk.oczadly.karl.jnano.rpc.exception;
  */
 public class RpcWalletLockedException extends RpcException {
     
-    public RpcWalletLockedException() {
-        super("The accessed wallet is currently locked.");
+    public RpcWalletLockedException(String nodeMessage) {
+        super("The accessed wallet is currently locked.", nodeMessage);
     }
     
 }

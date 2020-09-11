@@ -10,8 +10,8 @@ package uk.oczadly.karl.jnano.rpc.exception;
  */
 public class RpcEntityNotFoundException extends RpcException {
     
-    public RpcEntityNotFoundException(String message) {
-        super(message);
+    public RpcEntityNotFoundException(String nodeMessage) {
+        super(null, nodeMessage);
     }
     
 }

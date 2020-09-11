@@ -11,8 +11,12 @@ package uk.oczadly.karl.jnano.rpc.exception;
  */
 public class RpcInvalidRequestJsonException extends RpcException {
     
-    public RpcInvalidRequestJsonException(String message) {
-        super(message);
+    public RpcInvalidRequestJsonException(String nodeMessage) {
+        super(null, nodeMessage);
+    }
+    
+    public RpcInvalidRequestJsonException(String message, String nodeMessage) {
+        super(message, nodeMessage);
     }
     
 }

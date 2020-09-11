@@ -10,8 +10,8 @@ package uk.oczadly.karl.jnano.rpc.exception;
  */
 public class RpcInvalidArgumentException extends RpcException {
     
-    public RpcInvalidArgumentException(String message) {
-        super(message);
+    public RpcInvalidArgumentException(String nodeMessage) {
+        super(null, nodeMessage);
     }
     
 }

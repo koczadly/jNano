@@ -11,8 +11,8 @@ package uk.oczadly.karl.jnano.rpc.exception;
  */
 public class RpcUnsafeNotAllowedException extends RpcFeatureDisabledException {
     
-    public RpcUnsafeNotAllowedException() {
-        super("The specified command is unsafe and disallowed by the node.");
+    public RpcUnsafeNotAllowedException(String nodeMessage) {
+        super("The specified command is unsafe and disallowed by the node.", nodeMessage);
     }
     
 }
