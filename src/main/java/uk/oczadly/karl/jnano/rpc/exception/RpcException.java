@@ -47,7 +47,8 @@ public class RpcException extends Exception {
         StringBuilder sb = new StringBuilder(msg.length() + 1);
         sb.append(Character.toUpperCase(msg.charAt(0)));
         sb.append(msg, 1, msg.length());
-        sb.append('.');
+        if (msg.charAt(msg.length() - 1) != '.')
+            sb.append('.');
         return sb.toString();
     }
     
