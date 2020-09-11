@@ -67,7 +67,7 @@ public final class BlockDeserializer {
         if (deserializer != null)
             return deserializer.apply(jsonObj);
         
-        throw new JsonParseException("Block type " + blockType + " is not supported by the registered deserializer.");
+        throw new JsonParseException("Block type \"" + blockType + "\" is not supported by the deserializer.");
     }
     
     
