@@ -151,7 +151,6 @@ public class WorkSolution {
             if (account != null)
                 return account.toPublicKey();
         }
-        
         throw new IllegalArgumentException("The root hash cannot be determined from the given block.");
     }
     

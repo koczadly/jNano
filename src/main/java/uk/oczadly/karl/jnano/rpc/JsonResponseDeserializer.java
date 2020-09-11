@@ -47,19 +47,16 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
             // Check for returned RPC error
             JsonElement errorElement = responseJson.get("error");
             if (errorElement != null) {
-                String errorStr = errorElement.getAsString();
+                String errorStr = errorElement.getAsString().trim();
                 if (responseClass == ResponseSuccessful.class && errorStr.equalsIgnoreCase("Empty response")) {
-                    // Fix for empty response error
-                    return (R)new ResponseSuccessful(true);
-                } else {
-                    throw parseException(errorStr);
+                    return (R)new ResponseSuccessful(true); // Fix for empty response error
                 }
+                throw parseException(errorStr);
             }
     
             // Deserialize response
             R responseObj = getGson().fromJson(responseJson, responseClass);
             populateJsonField(responseObj, responseJson);
-    
             return responseObj;
         } catch (JsonParseException ex) {
             throw new RpcInvalidResponseException(response, ex); // If unable to parse
@@ -75,7 +72,7 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
      */
     @Deprecated
     public static RpcException parseException(String msg) {
-        String msgLc = msg.toLowerCase().trim();
+        String msgLc = msg.toLowerCase();
         
         // Check and parse error type
         switch (msgLc) {
