@@ -248,7 +248,7 @@ public abstract class Block implements IBlock {
     
     @Override
     public final int hashCode() {
-        return getHash().hashCode();
+        return getHash() != null ? getHash().hashCode() : 0;
     }
     
     /**
