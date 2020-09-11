@@ -7,8 +7,8 @@ package uk.oczadly.karl.jnano;
 
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
-import uk.oczadly.karl.jnano.model.block.StateBlockBuilder;
-import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
+import uk.oczadly.karl.jnano.model.NanoAmount;
+import uk.oczadly.karl.jnano.model.block.*;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
@@ -42,10 +42,27 @@ public class TestConstants {
     }
     
     
-    public static BigInteger randBalance() {
-        return new BigInteger(127, RANDOM).add(BigInteger.ONE);
+    public static NanoAmount randBalance() {
+        return new NanoAmount(new BigInteger(127, RANDOM).add(BigInteger.ONE));
     }
     
+    
+    public static OpenBlock randOpenBlock() {
+        return new OpenBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHex(64), randAccount(),
+                randAccount());
+    }
+    
+    public static ChangeBlock randChangeBlock() {
+        return new ChangeBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHex(64), randAccount());
+    }
+    
+    public static SendBlock randSendBlock() {
+        return new SendBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHex(64), randAccount(),
+                randBalance());
+    }
+    public static ReceiveBlock randReceiveBlock() {
+        return new ReceiveBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHex(64), randHex(64));
+    }
     
     public static StateBlockBuilder randStateBlock() {
         return new StateBlockBuilder(randAccount())

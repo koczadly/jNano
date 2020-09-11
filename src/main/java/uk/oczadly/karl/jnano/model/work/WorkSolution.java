@@ -9,6 +9,8 @@ import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.rpc.request.node.RequestWorkGenerate;
@@ -67,13 +69,13 @@ public class WorkSolution {
     
     
     /**
-     * Calculates the difficulty for a given block. The block type must implement both the {@link IBlockAccount} and
-     * {@link IBlockPrevious} interfaces.
+     * Calculates the difficulty for a given block. The block type must implement either the {@link IBlockAccount} or
+     * {@link IBlockPrevious} interface, otherwise an {@link IllegalArgumentException} will be thrown.
      * @param block the block to calculate the difficulty for
-     * @param <B> the block interface types
      * @return the difficulty of this work solution for the given root hash
+     * @throws IllegalArgumentException if the block does not contain a {@code previous} or {@code account} field
      */
-    public <B extends IBlockAccount & IBlockPrevious> WorkDifficulty calculateDifficulty(B block) {
+    public WorkDifficulty calculateDifficulty(Block block) {
         return calculateDifficulty(getRoot(block));
     }
     
@@ -82,6 +84,8 @@ public class WorkSolution {
      * existing accounts, or the account's public key for the first block.
      * @param root the root hash (64 character hex string)
      * @return the difficulty of this work solution for the given root hash
+     * @see #getRoot(Block)
+     * @see #calculateDifficulty(Block)
      */
     public WorkDifficulty calculateDifficulty(String root) {
         if (root == null) throw new IllegalArgumentException("Root cannot be null.");
@@ -125,17 +129,30 @@ public class WorkSolution {
     
     
     /**
-     * Returns the root bytes for the given block, for use in work calculations.
+     * Returns the root data for the given block, for use in work calculations. The block type must implement either the
+     * {@link IBlockAccount} or {@link IBlockPrevious} interface, otherwise an {@link IllegalArgumentException} will
+     * be thrown.
      * @param block the block to calculate the root of
-     * @param <B> the block interface types
-     * @return the root bytes of the given block
+     * @return the root hash of the given block
+     * @throws IllegalArgumentException if the block does not contain a {@code previous} or {@code account} field
      */
-    public static <B extends IBlockAccount & IBlockPrevious> byte[] getRoot(B block) {
+    public static String getRoot(Block block) {
         if (block == null) throw new IllegalArgumentException("Block cannot be null.");
-    
-        return JNH.isZero(block.getPreviousBlockHash(), true) ?
-                block.getAccount().getPublicKeyBytes() :
-                JNH.ENC_16.decode(block.getPreviousBlockHash());
+        
+        // Try previous
+        if (block instanceof IBlockPrevious) {
+            String previous = ((IBlockPrevious)block).getPreviousBlockHash();
+            if (!JNH.isZero(previous, true))
+                return previous;
+        }
+        // Try account
+        if (block instanceof IBlockAccount) {
+            NanoAccount account = ((IBlockAccount)block).getAccount();
+            if (account != null)
+                return account.toPublicKey();
+        }
+        
+        throw new IllegalArgumentException("The root hash cannot be determined from the given block.");
     }
     
     

@@ -9,8 +9,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.model.block.interfaces.IBlockAccount;
-import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
@@ -159,10 +157,9 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
          * Generates work for the supplied block. The difficulty threshold will be automatically calculated based on the
          * block type and current network conditions.
          * @param block the block to generate work for
-         * @param <B>   the block interfaces
          */
-        public <B extends Block & IBlockPrevious & IBlockAccount> Builder(B block) {
-            this(JNH.ENC_16.encode(WorkSolution.getRoot(block)), block);
+        public Builder(Block block) {
+            this(WorkSolution.getRoot(block), block);
         }
     
         /**
