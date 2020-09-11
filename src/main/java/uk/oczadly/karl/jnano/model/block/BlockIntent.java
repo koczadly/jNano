@@ -14,10 +14,10 @@ public class BlockIntent {
      * Represents a BlockIntent object with all unknown values. For use with blocks that have no intent implementation.
      */
     public static final BlockIntent ALL_UNKNOWN = new BlockIntent(UncertainBool.UNKNOWN, UncertainBool.UNKNOWN,
-            UncertainBool.UNKNOWN, UncertainBool.UNKNOWN, UncertainBool.UNKNOWN);
+            UncertainBool.UNKNOWN, UncertainBool.UNKNOWN, UncertainBool.UNKNOWN, UncertainBool.UNKNOWN);
     
     
-    private final UncertainBool isSend, isReceive, isChange, isOpen, isEpoch;
+    private final UncertainBool isSend, isReceive, isChange, isOpen, isEpoch, isGenesis;
     
     /**
      * @param isSend    if the block sends funds
@@ -25,10 +25,12 @@ public class BlockIntent {
      * @param isChange  if the block changes the representative (true if isOpen is true)
      * @param isOpen    if this is the first block in the account
      * @param isEpoch   if this block is an epoch marker block
+     * @param isGenesis if this block is the genesis block for the network
      */
-    public BlockIntent(Boolean isSend, Boolean isReceive, Boolean isChange, Boolean isOpen, Boolean isEpoch) {
+    public BlockIntent(Boolean isSend, Boolean isReceive, Boolean isChange, Boolean isOpen, Boolean isEpoch,
+                       Boolean isGenesis) {
         this(UncertainBool.valueOf(isSend), UncertainBool.valueOf(isReceive), UncertainBool.valueOf(isChange),
-                UncertainBool.valueOf(isOpen), UncertainBool.valueOf(isEpoch));
+                UncertainBool.valueOf(isOpen), UncertainBool.valueOf(isEpoch), UncertainBool.valueOf(isGenesis));
     }
     
     /**
@@ -37,14 +39,17 @@ public class BlockIntent {
      * @param isChange  if the block changes the representative
      * @param isOpen    if this is the first block in the account
      * @param isEpoch   if this block is an epoch marker block
+     * @param isGenesis if this block is the genesis block for the network
      */
     public BlockIntent(UncertainBool isSend, UncertainBool isReceive, UncertainBool isChange, UncertainBool isOpen,
-                       UncertainBool isEpoch) {
+                       UncertainBool isEpoch, UncertainBool isGenesis) {
         this.isSend = UncertainBool.notNull(isSend);
         this.isReceive = UncertainBool.notNull(isReceive);
         this.isOpen = UncertainBool.notNull(isOpen);
         this.isChange = UncertainBool.notNull(isChange);
         this.isEpoch = UncertainBool.notNull(isEpoch);
+        this.isGenesis = UncertainBool.notNull(isGenesis);
+        
     }
     
     
@@ -84,6 +89,13 @@ public class BlockIntent {
     }
     
     /**
+     * @return true if this block is the genesis block for the network
+     */
+    public UncertainBool isGenesis() {
+        return isGenesis;
+    }
+    
+    /**
      * Returns whether this block has a transactional function. Note that this is not mututally exclusive to
      * {@link #isSpecial()} returning true.
      * @return true if this block has a transactional function
@@ -98,7 +110,7 @@ public class BlockIntent {
      * @return true if this block has a non-transactional function
      */
     public UncertainBool isSpecial() {
-        return UncertainBool.anyOf(isEpoch, isChange);
+        return UncertainBool.anyOf(isEpoch, isChange, isGenesis);
     }
     
     /**
@@ -106,7 +118,7 @@ public class BlockIntent {
      * @return true if this block has a function
      */
     public UncertainBool hasPurpose() {
-        return UncertainBool.anyOf(isSend, isReceive, isChange, isOpen, isEpoch);
+        return UncertainBool.anyOf(isTransactional(), isSpecial());
     }
     
     
@@ -118,6 +130,7 @@ public class BlockIntent {
                 ", isChangeRep=" + isChangeRep() +
                 ", isFirstBlock=" + isFirstBlock() +
                 ", isEpochUpgrade=" + isEpochUpgrade() +
+                ", isGenesis=" + isGenesis() +
                 ", isTransactional=" + isTransactional() +
                 ", isSpecial=" + isSpecial() +
                 ", hasPurpose=" + hasPurpose() + '}';

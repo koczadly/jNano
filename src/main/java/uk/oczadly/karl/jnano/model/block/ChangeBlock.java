@@ -30,7 +30,7 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
             json.get("previous").getAsString(),
             NanoAccount.parseAddress(json.get("representative").getAsString()));
     
-    private static final BlockIntent INTENT = new BlockIntent(false, false, true, false, false);
+    private static final BlockIntent INTENT = new BlockIntent(false, false, true, false, false, false);
     
     
     @Expose @SerializedName("previous")

@@ -32,7 +32,8 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
             NanoAccount.parseAddress(json.get("account").getAsString()),
             NanoAccount.parseAddress(json.get("representative").getAsString()));
     
-    private static final BlockIntent INTENT = new BlockIntent(false, true, true, true, false);
+    private static final BlockIntent INTENT = new BlockIntent(false, true, true, true, false, false);
+    private static final BlockIntent INTENT_GENESIS = new BlockIntent(false, true, true, true, false, true);
     
     
     @Expose @SerializedName("source")
@@ -87,6 +88,9 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     
     @Override
     public BlockIntent getIntent() {
+        if (getSourceBlockHash().equals(getAccount().toPublicKey()) && getAccount().equals(getRepresentative())) {
+            return INTENT_GENESIS; // Genesis block special case
+        }
         return INTENT;
     }
     

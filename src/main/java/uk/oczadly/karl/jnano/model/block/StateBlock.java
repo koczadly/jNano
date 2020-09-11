@@ -249,7 +249,8 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
                         BlockIntent.UncertainBool.UNKNOWN : BlockIntent.UncertainBool.ifKnown(typeKnown,
                                 subType == StateBlockSubType.CHANGE || isOpen),
                 BlockIntent.UncertainBool.valueOf(isOpen),                      // OPEN
-                BlockIntent.UncertainBool.ifKnown(typeKnown, isEpoch));         // EPOCH
+                BlockIntent.UncertainBool.ifKnown(typeKnown, isEpoch),          // EPOCH
+                BlockIntent.UncertainBool.FALSE);                               // Genesis
     }
     
     

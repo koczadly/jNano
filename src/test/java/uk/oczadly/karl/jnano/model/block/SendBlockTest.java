@@ -36,6 +36,7 @@ public class SendBlockTest {
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isFirstBlock());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isReceiveFunds());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSendFunds());
+        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isGenesis());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isTransactional());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isSpecial());
     }

@@ -106,6 +106,7 @@ public class StateBlockTest {
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isFirstBlock());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isReceiveFunds());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isSendFunds());
+        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isGenesis());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isTransactional());
         assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isSpecial());
         
@@ -118,6 +119,7 @@ public class StateBlockTest {
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isFirstBlock());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isReceiveFunds());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSendFunds());
+        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isGenesis());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isTransactional());
         assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isSpecial());
     
@@ -130,6 +132,7 @@ public class StateBlockTest {
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isFirstBlock());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isReceiveFunds());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isSendFunds());
+        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isGenesis());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isTransactional());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSpecial());
         
@@ -142,6 +145,7 @@ public class StateBlockTest {
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isFirstBlock());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isReceiveFunds());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isSendFunds());
+        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isGenesis());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isTransactional());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSpecial());
     
@@ -154,6 +158,7 @@ public class StateBlockTest {
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isFirstBlock());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isReceiveFunds());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isSendFunds());
+        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isGenesis());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isTransactional());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSpecial());
     
@@ -168,6 +173,7 @@ public class StateBlockTest {
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isFirstBlock());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isReceiveFunds());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isSendFunds());
+        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isGenesis());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isTransactional());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSpecial());
     
@@ -182,6 +188,7 @@ public class StateBlockTest {
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isFirstBlock());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isReceiveFunds());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isSendFunds());
+        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isGenesis());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isTransactional());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSpecial());
     
@@ -194,6 +201,7 @@ public class StateBlockTest {
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isFirstBlock());
         assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isReceiveFunds());
         assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isSendFunds());
+        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isGenesis());
         assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isTransactional());
         assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isSpecial());
     
@@ -207,6 +215,7 @@ public class StateBlockTest {
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isFirstBlock());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isReceiveFunds());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isSendFunds());
+        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isGenesis());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isTransactional());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSpecial());
     }

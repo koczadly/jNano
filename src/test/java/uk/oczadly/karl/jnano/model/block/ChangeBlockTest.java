@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.model.block;
 import org.junit.Test;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
+import uk.oczadly.karl.jnano.util.NanoConstants;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,14 +29,20 @@ public class ChangeBlockTest {
     
     @Test
     public void testIntent() {
+        // Standard
         BlockIntent intent = TEST_BLOCK.getIntent();
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isChangeRep());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isEpochUpgrade());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isFirstBlock());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isReceiveFunds());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isSendFunds());
+        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isGenesis());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isTransactional());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSpecial());
+        
+        // Genesis
+        assertEquals(BlockIntent.UncertainBool.TRUE,
+                NanoConstants.NANO_LIVE_NET.getGenesisBlock().getIntent().isGenesis());
     }
     
 }

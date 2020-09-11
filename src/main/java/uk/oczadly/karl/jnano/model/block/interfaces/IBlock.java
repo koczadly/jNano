@@ -64,8 +64,6 @@ public interface IBlock {
      * non-null work and signature values.
      * @return true if this block contains all mandatory fields
      */
-    default boolean isComplete() {
-        return getWorkSolution() != null && getSignature() != null;
-    }
+    boolean isComplete();
     
 }

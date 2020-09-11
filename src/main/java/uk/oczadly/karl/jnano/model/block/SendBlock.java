@@ -34,7 +34,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
             NanoAccount.parseAddress(json.get("destination").getAsString()),
             new NanoAmount(json.get("balance").getAsString()));
     
-    private static final BlockIntent INTENT = new BlockIntent(true, false, false, false, false);
+    private static final BlockIntent INTENT = new BlockIntent(true, false, false, false, false, false);
     
     
     @Expose @SerializedName("previous")

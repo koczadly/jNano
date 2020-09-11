@@ -147,6 +147,10 @@ public abstract class Block implements IBlock {
         return workSolution;
     }
     
+    @Override
+    public boolean isComplete() {
+        return getWorkSolution() != null && getSignature() != null;
+    }
     
     /**
      * @return an array of hashable byte arrays in the correct sequence, or null if not supported

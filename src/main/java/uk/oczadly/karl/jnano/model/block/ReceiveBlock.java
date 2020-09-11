@@ -29,7 +29,7 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
             json.get("previous").getAsString(),
             json.get("source").getAsString());
     
-    private static final BlockIntent INTENT = new BlockIntent(false, true, false, false, false);
+    private static final BlockIntent INTENT = new BlockIntent(false, true, false, false, false, false);
     
     
     @Expose @SerializedName("previous")
