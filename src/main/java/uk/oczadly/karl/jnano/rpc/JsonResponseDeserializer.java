@@ -48,7 +48,7 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
             JsonElement errorElement = responseJson.get("error");
             if (errorElement != null) {
                 String errorStr = errorElement.getAsString();
-                if (responseClass == ResponseSuccessful.class && errorStr.equals("Empty response")) {
+                if (responseClass == ResponseSuccessful.class && errorStr.equalsIgnoreCase("Empty response")) {
                     // Fix for empty response error
                     return (R)new ResponseSuccessful(true);
                 } else {
@@ -118,7 +118,7 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
             return new RpcInternalException(msg);             // Internal server error
         }
         
-        return new RpcException(null, msg); // Default to base exception
+        return new RpcUnrecognizedException(msg);             // Unknown exception type
     }
     
     

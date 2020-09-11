@@ -11,7 +11,7 @@
  *
  * <p>Note that the library may be unable to correctly parse the correct exception type for certain RPC exceptions,
  * due to inconsistencies with the node's response and handling of errors. In these cases, the base
- * {@link uk.oczadly.karl.jnano.rpc.exception.RpcException} class will be thrown instead.</p>
+ * {@link uk.oczadly.karl.jnano.rpc.exception.RpcUnrecognizedException} class will be thrown instead.</p>
  *
  * @author Karl Oczadly
  */
