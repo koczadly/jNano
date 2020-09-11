@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.model.block;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -25,28 +26,53 @@ public final class BlockDeserializer {
     
     
     public Map<String, Function<JsonObject, ? extends Block>> getDeserializers() {
-        return deserializers;
+        return Collections.unmodifiableMap(deserializers);
     }
     
     
+    /**
+     * Registers the supplied deserializer function to the given block type name.
+     * @param blockType the block type name to register
+     * @param deserializer the deserializer function
+     */
     public void registerDeserializer(String blockType, Function<JsonObject, ? extends Block> deserializer) {
         deserializers.put(blockType.toLowerCase(), deserializer);
     }
     
+    /**
+     * Registers the supplied deserializer function to the given block type.
+     * @param blockType the block type to register
+     * @param deserializer the deserializer function
+     */
     public void registerDeserializer(BlockType blockType, Function<JsonObject, ? extends Block> deserializer) {
         registerDeserializer(blockType.getProtocolName(), deserializer);
         blockType.getAlternateNames().forEach(n -> registerDeserializer(n, deserializer));
     }
     
+    /**
+     * Registers the block type to the default deserializer for the given type.
+     * @param blockType the block type to register
+     * @see BlockType#getDeserializerFunction()
+     */
     public void registerDeserializer(BlockType blockType) {
         registerDeserializer(blockType, blockType.getDeserializerFunction());
     }
     
     
+    /**
+     * Returns the deserializer function associated with the block type name.
+     * @param blockType the block type name
+     * @return the associated deserializer function, or null if not found
+     */
     public Function<JsonObject, ? extends Block> getDeserializer(String blockType) {
         return deserializers.get(blockType.toLowerCase());
     }
     
+    /**
+     * Returns the deserializer function associated with the block type.
+     * @param blockType the block type
+     * @return the associated deserializer function, or null if not found
+     */
     public Function<JsonObject, ? extends Block> getDeserializer(BlockType blockType) {
         return getDeserializer(blockType.getProtocolName());
     }
@@ -61,7 +87,10 @@ public final class BlockDeserializer {
      */
     @SuppressWarnings("deprecation")
     public Block deserialize(JsonObject jsonObj) {
-        String blockType = jsonObj.get("type").getAsString();
+        if (!jsonObj.has("type"))
+            throw new JsonParseException("No block type is specified.");
+        
+        String blockType = jsonObj.get("type").getAsString().toLowerCase();
         
         Function<JsonObject, ? extends Block> deserializer = getDeserializer(blockType);
         if (deserializer != null)
@@ -73,6 +102,8 @@ public final class BlockDeserializer {
     
     /**
      * Constructs a new BlockDeserializer with the default supported block deserializers.
+     * <p>The following types are supported by default: {@link StateBlock state}, {@link ChangeBlock change},
+     * {@link OpenBlock open}, {@link ReceiveBlock receive}, {@link SendBlock send}.</p>
      * @return a newly created BlockDeserializer object
      */
     public static BlockDeserializer withDefaults() {
