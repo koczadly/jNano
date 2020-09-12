@@ -94,7 +94,8 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
                 return new RpcInvalidRequestJsonException(    // JSON too long
                         "The request JSON exceeded the configured maximum length.", msg);
             case "unsafe rpc not allowed":
-                return new RpcUnsafeNotAllowedException(msg); // RPC unsafe
+                return new RpcCommandNotAllowedException(     // RPC unsafe
+                        "The specified command is unsafe and disallowed by the node.", msg);
             case "empty response":
                 return new RpcInternalException(              // Empty response internal error
                         "The server returned an \"empty response\" error.", msg);
@@ -107,6 +108,8 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
             return new RpcEntityNotFoundException(msg);       // Unknown referenced entity
         } else if (msgLc.endsWith("is disabled")) {
             return new RpcFeatureDisabledException(msg);      // Feature is disabled
+        } else if (msgLc.endsWith("not allowed")) {
+            return new RpcCommandNotAllowedException(msg);    // Command not allowed
         } else if (msgLc.contains("config")) {
             return new RpcConfigForbiddenException(msg);      // Config forbids request
         } else if (msgLc.contains("json")) {

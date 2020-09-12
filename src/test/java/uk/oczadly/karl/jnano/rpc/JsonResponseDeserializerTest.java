@@ -62,7 +62,8 @@ public class JsonResponseDeserializerTest {
         assertThrows(RpcInvalidArgumentException.class, errorJson("Bad account number"));
         assertThrows(RpcRequestCancelledException.class, errorJson("Cancelled"));
         assertThrows(RpcUnknownCommandException.class, errorJson("Unknown command"));
-        assertThrows(RpcUnsafeNotAllowedException.class, errorJson("Unsafe RPC not allowed"));
+        assertThrows(RpcCommandNotAllowedException.class, errorJson("Unsafe RPC not allowed"));
+        assertThrows(RpcCommandNotAllowedException.class, errorJson("Action sluggage not allowed"));
         assertThrows(RpcWalletLockedException.class, errorJson("Wallet is locked"));
     }
     
