@@ -5,10 +5,7 @@
 
 package uk.oczadly.karl.jnano.rpc;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -62,9 +59,9 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
      * @throws IOException if an exception occurs with the connection
      */
     public static String makeRequest(URLConnection con, String body) throws IOException {
-        try {
+        try (OutputStream os = con.getOutputStream()) {
             // Write request data
-            OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+            OutputStreamWriter writer = new OutputStreamWriter(os);
             writer.write(body);
             writer.close();
         
@@ -77,12 +74,8 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
             while ((line = inputReader.readLine()) != null) {
                 response.append(line);
             }
-            
+        
             return response.toString();
-        } finally {
-            if (con.getInputStream() != null) {
-                con.getInputStream().close();
-            }
         }
     }
 
