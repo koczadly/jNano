@@ -20,6 +20,11 @@ public class RpcInvalidResponseException extends RpcException {
     
     private final String response;
     
+    public RpcInvalidResponseException(String message, String response) {
+        super(message);
+        this.response = response;
+    }
+    
     public RpcInvalidResponseException(String response, JsonParseException source) {
         super("Unable to parse/deserialize the received JSON response.", source);
         this.response = response;

@@ -45,6 +45,7 @@ public class JsonResponseDeserializerTest {
     
     @Test
     public void testInternalExceptions() throws Exception {
+        assertThrows(RpcInvalidResponseException.class, "");
         assertThrows(RpcInvalidResponseException.class, "{420}");
         assertThrows(RpcUnrecognizedException.class, errorJson("Node is morbidly obese"));
     }

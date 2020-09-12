@@ -40,6 +40,13 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
     @Override
     @SuppressWarnings("unchecked")
     public <R extends RpcResponse> R deserialize(String response, Class<R> responseClass) throws RpcException {
+        if (response == null)
+            throw new IllegalArgumentException("Response data cannot be null.");
+        if (responseClass == null)
+            throw new IllegalArgumentException("Response class cannot be null.");
+        if (response.isEmpty())
+            throw new RpcInvalidResponseException("Received response data is empty.", response);
+        
         try {
             // Parse response into JSON
             JsonObject responseJson = JsonParser.parseString(response).getAsJsonObject();
