@@ -31,6 +31,7 @@ public final class NanoConstants {
      * @see <a href="https://nano.org">Nano official website</a>
      */
     public static final NetworkConstants NANO_LIVE_NET = new NetworkConstants(
+            new NetworkConstants.Version(21, 2),
             "Nano live", NanoAccount.DEFAULT_PREFIX,
             "1111111111111111111111111111111111111111111111111111",
             "9F0C933C8ADE004D808EA1985FA746A7E95BA2A38F867640F53EC8F180BDFE9E2C1268DEAD7C2664F356E37ABA362BC58E46D" +
@@ -43,6 +44,7 @@ public final class NanoConstants {
      * @see <a href="https://beta.nano.org">Nano beta website</a>
      */
     public static final NetworkConstants NANO_BETA_NET = new NetworkConstants(
+            new NetworkConstants.Version(21, 2),
             "Nano beta", NanoAccount.DEFAULT_PREFIX,
             "1111111111111111111111111111111111111111111111111111",
             "DB9EFAC98A28EEA048E722F91C2A2720E1D8EF2A81453C80FC53B453180C0A264CE021D38D5B4540B1BBB0C378B80F2DF7389" +
@@ -55,6 +57,7 @@ public final class NanoConstants {
      * @see <a href="https://banano.cc">Banano official website</a>
      */
     public static final NetworkConstants BANANO_LIVE_NET = new NetworkConstants(
+            new NetworkConstants.Version(20, 0),
             "Banano live", "ban",
             "1111111111111111111111111111111111111111111111111111",
             "533DCAB343547B93C4128E779848DEA5877D3278CB5EA948BB3A9AA1AE0DB293DE6D9DA4F69E8D1DDFA385F9B4C5E4F38DFA4" +
