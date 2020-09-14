@@ -344,9 +344,10 @@ public final class NanoAccount {
     public static NanoAccount parse(String str, String defaultPrefix) {
         if (str == null) throw new IllegalArgumentException("Account string cannot be null.");
         
-        if (str.length() == 64 && str.indexOf(PREFIX_SEPARATOR_CHAR) == -1) {
+        boolean hasSeparator = str.indexOf(PREFIX_SEPARATOR_CHAR) != -1;
+        if (str.length() == 64 && !hasSeparator) {
             return parsePublicKey(str, defaultPrefix); // Hex
-        } else if (str.length() == 60 || str.indexOf(PREFIX_SEPARATOR_CHAR) != -1) {
+        } else if (str.length() == 60 || hasSeparator) {
             return parseAddress(str); // Address
         } else if (str.length() == 52) {
             return parseAddressSegment(str, defaultPrefix); // Address segment
