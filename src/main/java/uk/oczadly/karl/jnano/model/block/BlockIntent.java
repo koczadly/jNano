@@ -56,42 +56,42 @@ public class BlockIntent {
     /**
      * @return true if the block sent funds
      */
-    public UncertainBool isSendFunds() {
+    public final UncertainBool isSendFunds() {
         return isSend;
     }
     
     /**
      * @return true if the block received funds
      */
-    public UncertainBool isReceiveFunds() {
+    public final UncertainBool isReceiveFunds() {
         return isReceive;
     }
     
     /**
      * @return true if the block changed the representative, or if the block is an open block
      */
-    public UncertainBool isChangeRep() {
+    public final UncertainBool isChangeRep() {
         return isChange;
     }
     
     /**
      * @return true if this is the opening block for the account
      */
-    public UncertainBool isFirstBlock() {
+    public final UncertainBool isFirstBlock() {
         return isOpen;
     }
     
     /**
      * @return true if this block is an account upgrade block
      */
-    public UncertainBool isEpochUpgrade() {
+    public final UncertainBool isEpochUpgrade() {
         return isEpoch;
     }
     
     /**
      * @return true if this block is the genesis block for the network
      */
-    public UncertainBool isGenesis() {
+    public final UncertainBool isGenesis() {
         return isGenesis;
     }
     
@@ -155,6 +155,11 @@ public class BlockIntent {
          */
         public boolean bool() {
             return this == TRUE;
+        }
+    
+        @Override
+        public String toString() {
+            return name().toLowerCase();
         }
     
         /**
