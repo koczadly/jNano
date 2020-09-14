@@ -46,7 +46,6 @@ public class StateBlockBuilderTest {
     @Test
     public void testAllValues() {
         StateBlock block = newBuilder()
-                .setHash("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97")
                 .setLinkData(DATA)
                 .setSignature("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC9734F1B28DA06C9CA246615" +
                         "9428733B971068BF154DBA2AB10372510D52E86CC97")
@@ -57,7 +56,6 @@ public class StateBlockBuilderTest {
     
         assertEquals(new NanoAmount("1337"), block.getBalance());
         assertEquals(StateBlockSubType.EPOCH, block.getSubType());
-        assertEquals("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97", block.getHash());
         assertEquals(ACCOUNT, block.getAccount());
         assertEquals("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97", block.getPreviousBlockHash());
         assertEquals(ACCOUNT, block.getRepresentative());

@@ -36,10 +36,10 @@ public enum BlockType {
     }
     
     
-    boolean isTransaction;
-    Class<? extends Block> blockClass;
-    Function<JsonObject, ? extends Block> deserializer;
-    Set<String> altNames;
+    final boolean isTransaction;
+    final Class<? extends Block> blockClass;
+    final Function<JsonObject, ? extends Block> deserializer;
+    final Set<String> altNames;
     
     BlockType(boolean isTransaction, Class<? extends Block> blockClass,
               Function<JsonObject, ? extends Block> deserializer, String...altNames) {

@@ -5,7 +5,6 @@
 
 package uk.oczadly.karl.jnano.model.block;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -18,12 +17,14 @@ import java.util.function.Function;
 
 /**
  * Represents a {@code receive} block, and the associated data.
+ *
+ * <p>Note that this is a legacy block and has since been officially deprecated. For new blocks, use
+ * {@link StateBlock state} blocks.</p>
  */
 public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource {
     
     /** A function which converts a {@link JsonObject} into a {@link ReceiveBlock} instance. */
     public static final Function<JsonObject, ReceiveBlock> DESERIALIZER = json -> new ReceiveBlock(
-            JNH.nullable(json.get("hash"), JsonElement::getAsString),
             json.get("signature").getAsString(),
             JNH.nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
             json.get("previous").getAsString(),
@@ -44,12 +45,7 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     }
     
     public ReceiveBlock(String signature, WorkSolution work, String previousBlockHash, String sourceBlockHash) {
-        this(null, signature, work, previousBlockHash, sourceBlockHash);
-    }
-    
-    protected ReceiveBlock(String hash, String signature, WorkSolution work,
-                        String previousBlockHash, String sourceBlockHash) {
-        super(BlockType.RECEIVE, hash, signature, work);
+        super(BlockType.RECEIVE, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
         if (!JNH.isValidHex(previousBlockHash, HASH_LENGTH))

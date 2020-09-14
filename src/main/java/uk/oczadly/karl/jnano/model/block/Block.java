@@ -34,9 +34,7 @@ public abstract class Block implements IBlock {
     protected static final int HASH_LENGTH = 64;
     
     
-    @Expose @SerializedName("hash")
-    private volatile String hash;
-    
+    private transient volatile String hash;
     private transient volatile byte[] hashBytes;
     
     @Expose @SerializedName("type")
@@ -58,37 +56,35 @@ public abstract class Block implements IBlock {
      * @param type the block type, as a string
      */
     protected Block(String type) {
-        this(type, null, null, null);
+        this(type, null, null);
     }
     
     /**
      * @param type the block type
      */
     protected Block(BlockType type) {
-        this(type, null, null, null);
+        this(type, null, null);
     }
     
     /**
      * @param type          the block type, as a string
-     * @param hash          the block hash, or null (for performance improvements only)
      * @param signature     the block signature
      * @param workSolution  the work solution
      */
-    protected Block(String type, String hash, String signature, WorkSolution workSolution) {
-        this(null, type, hash, signature, workSolution);
+    protected Block(String type, String signature, WorkSolution workSolution) {
+        this(null, type, signature, workSolution);
     }
     
     /**
      * @param type          the block type
-     * @param hash          the block hash, or null (for performance improvements only)
      * @param signature     the block signature
      * @param workSolution  the work solution
      */
-    protected Block(BlockType type, String hash, String signature, WorkSolution workSolution) {
-        this(type, type.getProtocolName(), hash, signature, workSolution);
+    protected Block(BlockType type, String signature, WorkSolution workSolution) {
+        this(type, type.getProtocolName(), signature, workSolution);
     }
     
-    private Block(BlockType type, String typeStr, String hash, String signature, WorkSolution workSolution) {
+    private Block(BlockType type, String typeStr, String signature, WorkSolution workSolution) {
         if (type == null && typeStr == null)
             throw new IllegalArgumentException("Block type cannot be null.");
         if (!JNH.isValidHex(hash, HASH_LENGTH))
@@ -98,16 +94,11 @@ public abstract class Block implements IBlock {
         
         this.type = typeStr.toLowerCase();
         this.typeEnum = type;
-        this.hash = hash != null ? hash.toUpperCase() : null;
         this.signature = signature != null ? signature.toUpperCase() : null;
         this.workSolution = workSolution;
     }
     
     
-    /**
-     * {@inheritDoc}
-     * Returns the block hash, or attempts to calculate it if the hash value was not present.
-     */
     @Override
     public final String getHash() {
         if (hash == null) {
@@ -173,12 +164,7 @@ public abstract class Block implements IBlock {
         if (hashBytes == null) {
             synchronized (this) {
                 if (hashBytes == null) {
-                    if (hash != null) {
-                        // Decode from existing hash string
-                        hashBytes = JNH.ENC_16.decode(hash);
-                    } else {
-                        hashBytes = calculateHashBytes();
-                    }
+                    hashBytes = calculateHashBytes();
                 }
             }
         }
@@ -226,6 +212,7 @@ public abstract class Block implements IBlock {
     
     /**
      * Fill blank or missing parameters with {@link JsonObject#addProperty(String, String)}.
+     * <p>This method should be overridden by subclasses where applicable.</p>
      * @param json the JSON object to fill
      */
     protected void fillJsonBlanks(JsonObject json) {}

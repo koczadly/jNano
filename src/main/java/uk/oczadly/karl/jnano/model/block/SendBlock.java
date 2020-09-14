@@ -5,7 +5,6 @@
 
 package uk.oczadly.karl.jnano.model.block;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -22,12 +21,14 @@ import java.util.function.Function;
 
 /**
  * Represents a {@code send} block, and the associated data.
+ *
+ * <p>Note that this is a legacy block and has since been officially deprecated. For new blocks, use
+ * {@link StateBlock state} blocks.</p>
  */
 public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlockBalance {
     
     /** A function which converts a {@link JsonObject} into a {@link SendBlock} instance. */
     public static final Function<JsonObject, SendBlock> DESERIALIZER = json -> new SendBlock(
-            JNH.nullable(json.get("hash"), JsonElement::getAsString),
             json.get("signature").getAsString(),
             new WorkSolution(json.get("work").getAsString()),
             json.get("previous").getAsString(),
@@ -54,17 +55,12 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
     @Deprecated
     public SendBlock(String signature, WorkSolution work, String previousBlockHash, NanoAccount destinationAccount,
                      BigInteger balance) {
-        this(null, signature, work, previousBlockHash, destinationAccount, new NanoAmount(balance));
+        this(signature, work, previousBlockHash, destinationAccount, new NanoAmount(balance));
     }
     
     public SendBlock(String signature, WorkSolution work, String previousBlockHash, NanoAccount destinationAccount,
                      NanoAmount balance) {
-        this(null, signature, work, previousBlockHash, destinationAccount, balance);
-    }
-    
-    protected SendBlock(String hash, String signature, WorkSolution work,
-                     String previousBlockHash, NanoAccount destinationAccount, NanoAmount balance) {
-        super(BlockType.SEND, hash, signature, work);
+        super(BlockType.SEND, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
         if (!JNH.isValidHex(previousBlockHash, HASH_LENGTH))

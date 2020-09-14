@@ -28,7 +28,6 @@ public final class StateBlockBuilder {
     private NanoAmount balance;
     private NanoAccount linkAccount;
     private String linkData;
-    private String hash;
     private String signature;
     private WorkSolution work;
     
@@ -101,7 +100,6 @@ public final class StateBlockBuilder {
         setPreviousBlockHash(block.getPreviousBlockHash());
         setRepresentativeAddress(block.getRepresentative());
         setBalance(getBalance());
-        setHash(block.getHash());
         setSignature(block.getSignature());
         setWorkSolution(block.getWorkSolution());
         setLinkData(block.getLinkData());
@@ -119,26 +117,19 @@ public final class StateBlockBuilder {
         setPreviousBlockHash(builder.getPreviousBlockHash());
         setRepresentativeAddress(builder.getRepresentativeAddress());
         setBalance(getBalance());
-        setHash(builder.getHash());
         setSignature(builder.getSignature());
         setWorkSolution(builder.getWorkSolution());
         setLinkData(builder.getLinkData());
     }
     
     
-    
-    public String getHash() {
-        return hash;
-    }
-    
     /**
      * @param hash the block hash
      * @return this builder
-     * @deprecated Leaving this value unassigned is preferred, as hashes will be computed programatically.
+     * @deprecated This method will do nothing, and the hash of the block will be computed automatically.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public StateBlockBuilder setHash(String hash) {
-        this.hash = hash;
         return this;
     }
     
@@ -293,7 +284,7 @@ public final class StateBlockBuilder {
      * @return a new instance of the {@link StateBlock} class using the configured parameters
      */
     public StateBlock build() {
-        return new StateBlock(subtype, hash, signature, work, accountAddress,
+        return new StateBlock(subtype, signature, work, accountAddress,
                 Objects.requireNonNullElse(previousBlockHash, JNH.ZEROES_64),
                 representativeAddress, balance,
                 (linkData == null && linkAccount == null) ? JNH.ZEROES_64 : linkData, linkAccount);

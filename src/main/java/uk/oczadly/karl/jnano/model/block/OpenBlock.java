@@ -5,7 +5,6 @@
 
 package uk.oczadly.karl.jnano.model.block;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -20,12 +19,14 @@ import java.util.function.Function;
 
 /**
  * Represents an {@code open} block, and the associated data.
+ *
+ * <p>Note that this is a legacy block and has since been officially deprecated. For new blocks, use
+ * {@link StateBlock state} blocks.</p>
  */
 public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBlockRepresentative {
     
     /** A function which converts a {@link JsonObject} into a {@link OpenBlock} instance. */
     public static final Function<JsonObject, OpenBlock> DESERIALIZER = json -> new OpenBlock(
-            JNH.nullable(json.get("hash"), JsonElement::getAsString),
             json.get("signature").getAsString(),
             JNH.nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
             json.get("source").getAsString(),
@@ -52,12 +53,7 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     
     public OpenBlock(String signature, WorkSolution work, String sourceBlockHash, NanoAccount accountAddress,
                      NanoAccount representativeAccount) {
-        this(null, signature, work, sourceBlockHash, accountAddress, representativeAccount);
-    }
-    
-    protected OpenBlock(String hash, String signature, WorkSolution work,
-                     String sourceBlockHash, NanoAccount accountAddress, NanoAccount representativeAccount) {
-        super(BlockType.OPEN, hash, signature, work);
+        super(BlockType.OPEN, signature, work);
     
         if (sourceBlockHash == null) throw new IllegalArgumentException("Source block hash cannot be null.");
         if (!JNH.isValidHex(sourceBlockHash, HASH_LENGTH))

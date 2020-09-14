@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.util;
 import org.junit.Test;
 import uk.oczadly.karl.jnano.TestConstants;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.*;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
@@ -52,7 +53,7 @@ public class AccountEpochTest {
         assertEquals(AccountEpoch.V2,AccountEpoch.fromEpochBlock(
                 new StateBlock(StateBlockSubType.EPOCH, null, new WorkSolution(TestConstants.randHex(16)),
                         RANDOM_ACC, TestConstants.randHex(64), RANDOM_ACC,
-                        BigInteger.TEN, AccountEpoch.V2.getIdentifier())));
+                        new NanoAmount(BigInteger.TEN), AccountEpoch.V2.getIdentifier())));
     }
 
     @Test
@@ -63,10 +64,10 @@ public class AccountEpochTest {
         blocks.add(new ChangeBlock(null, new WorkSolution(TestConstants.randHex(16)), TestConstants.randHex(64),
                 RANDOM_ACC));
         blocks.add(new StateBlock(StateBlockSubType.EPOCH, null, new WorkSolution(TestConstants.randHex(16)),
-                RANDOM_ACC, TestConstants.randHex(64), RANDOM_ACC, BigInteger.TEN,
+                RANDOM_ACC, TestConstants.randHex(64), RANDOM_ACC, new NanoAmount(BigInteger.TEN),
                 AccountEpoch.V1.getIdentifier())); // EPOCH V1
         blocks.add(new StateBlock(StateBlockSubType.SEND, null, new WorkSolution(TestConstants.randHex(16)),
-                RANDOM_ACC, TestConstants.randHex(64), RANDOM_ACC, BigInteger.TEN,
+                RANDOM_ACC, TestConstants.randHex(64), RANDOM_ACC, new NanoAmount(BigInteger.TEN),
                 AccountEpoch.V2.getIdentifier())); // EPOCH V2, but not epoch block
         
         assertEquals(AccountEpoch.V1, AccountEpoch.calculateAccountVersion(blocks));
@@ -81,9 +82,9 @@ public class AccountEpochTest {
                 RANDOM_ACC));
         blocks.add(new StateBlock(StateBlockSubType.SEND, null, new WorkSolution(TestConstants.randHex(16)),
                 RANDOM_ACC, TestConstants.randHex(64), RANDOM_ACC,
-                BigInteger.TEN, AccountEpoch.V1.getIdentifier())); // EPOCH V1, but not epoch block
-        
-        assertEquals(null, AccountEpoch.calculateAccountVersion(blocks));
+                new NanoAmount(BigInteger.TEN), AccountEpoch.V1.getIdentifier())); // EPOCH V1, but not epoch block
+    
+        assertNull(AccountEpoch.calculateAccountVersion(blocks));
     }
     
 }
