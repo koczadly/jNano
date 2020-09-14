@@ -13,7 +13,6 @@ import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
@@ -45,8 +44,7 @@ public final class NanoAccount {
     /**
      * An immutable set of permitted prefixes on the Nano network. This includes the {@link #DEFAULT_PREFIX} value.
      */
-    public static final Set<String> DEFAULT_PERMITTED_PREFIXES =
-            Collections.unmodifiableSet(Set.of(DEFAULT_PREFIX, "xrb"));
+    public static final Set<String> DEFAULT_PERMITTED_PREFIXES = Set.of(DEFAULT_PREFIX, "xrb");
     
     /**
      * <p>The zeroth index account, represented by all zeroes for the public key. This address is also the burn address
