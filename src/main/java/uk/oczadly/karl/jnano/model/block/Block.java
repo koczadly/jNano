@@ -15,6 +15,7 @@ import uk.oczadly.karl.jnano.model.block.interfaces.IBlock;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * An abstract class which represents a Nano block.
@@ -157,6 +158,11 @@ public abstract class Block implements IBlock {
      */
     protected abstract byte[][] generateHashables();
     
+    /**
+     * Calculates the hash of this block as a sequence of bytes.
+     * This method will not use the built-in cache, and will generate the hash from the sequence of hashables.
+     * @return the generated block hash, as a byte array
+     */
     protected final byte[] calculateHashBytes() {
         byte[][] hashables = generateHashables();
         if (hashables == null) return null;
@@ -243,12 +249,18 @@ public abstract class Block implements IBlock {
         if (this == o) return true;
         if (!(o instanceof Block)) return false;
         Block block = (Block)o;
-        return Arrays.equals(generateHashBytes(), block.generateHashBytes());
+        byte[] hashBytes = generateHashBytes();
+        byte[] otherHashBytes = block.generateHashBytes();
+        if (hashBytes == null || otherHashBytes == null) return false;
+        return Arrays.equals(generateHashBytes(), block.generateHashBytes())
+                && Objects.equals(getSignature(), block.getSignature())
+                && Objects.equals(getWorkSolution(), block.getWorkSolution())
+                && getTypeString().equalsIgnoreCase(block.getTypeString());
     }
     
     @Override
     public final int hashCode() {
-        return getHash() != null ? getHash().hashCode() : 0;
+        return Arrays.hashCode(generateHashBytes());
     }
     
     /**
