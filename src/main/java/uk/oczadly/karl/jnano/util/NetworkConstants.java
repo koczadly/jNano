@@ -189,12 +189,27 @@ public final class NetworkConstants {
     }
     
     static class WorkDifficultiesV2 implements WorkDifficulties {
-        private final WorkDifficulty send, receive, base;
+        private final WorkDifficulty send, receive, base, legacy;
         
-        WorkDifficultiesV2(long send, long receive) {
+        WorkDifficultiesV2(long send, long receive, long legacy) {
             this.send = new WorkDifficulty(send);
             this.receive = new WorkDifficulty(receive);
+            this.legacy = new WorkDifficulty(legacy);
             this.base = JNH.max(this.send, this.receive);
+        }
+    
+        @Override
+        public WorkDifficulty getForBlock(Block block) {
+            if (block == null) throw new IllegalArgumentException("Block cannot be null.");
+            if (block instanceof StateBlock) {
+                StateBlockSubType subtype = ((StateBlock)block).getSubType();
+                if (subtype != null) {
+                    return getForType(subtype);
+                }
+            } else {
+                return legacy;
+            }
+            return getBase();
         }
         
         @Override
