@@ -35,8 +35,8 @@ public class JNH {
     public static final String ZEROES_64 = repeatChar('0', 64);
     public static final String ZEROES_128 = repeatChar('0', 128);
     
-    public static final BigInteger BIGINT_MAX_128 = new BigInteger(1, fullByteArray(16));
-    public static final BigInteger BIGINT_MAX_256 = new BigInteger(1, fullByteArray(32));
+    public static final BigInteger BIGINT_MAX_128 = new BigInteger(1, filledByteArray(16, (byte)0xFF));
+    public static final BigInteger BIGINT_MAX_256 = new BigInteger(1, filledByteArray(32, (byte)0xFF));
     
     public static final Gson GSON = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
@@ -49,11 +49,11 @@ public class JNH {
     
     
     /**
-     * Returns a byte array filled with 1's (0xFF).
+     * Returns a new byte array filled with values.
      */
-    public static byte[] fullByteArray(int lenBytes) {
+    public static byte[] filledByteArray(int lenBytes, byte val) {
         byte[] bytes = new byte[lenBytes];
-        Arrays.fill(bytes, (byte)0xFF);
+        Arrays.fill(bytes, val);
         return bytes;
     }
     
