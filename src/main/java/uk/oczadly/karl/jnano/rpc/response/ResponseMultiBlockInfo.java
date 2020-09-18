@@ -6,11 +6,16 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
 
+import java.time.Instant;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -19,15 +24,16 @@ import java.util.Map;
 public class ResponseMultiBlockInfo extends RpcResponse {
     
     @Expose @SerializedName("blocks")
-    private Map<NanoAccount, BlockInfo> blocks;
+    private Map<String, BlockInfo> blocks = Collections.emptyMap();
     
     
     /**
-     * Map follows the structure {@code block hash -> block information}.
+     * Returns a map of all retrieved blocks.
+     * <p>The map follows the structure {@code block hash (k) -> block information (v)}.</p>
      *
      * @return a map of block hashes and information, or null if not present in the response
      */
-    public Map<NanoAccount, BlockInfo> getBlocks() {
+    public Map<String, BlockInfo> getBlocks() {
         return blocks;
     }
     
@@ -38,15 +44,22 @@ public class ResponseMultiBlockInfo extends RpcResponse {
         
         @Expose @SerializedName("amount")
         private NanoAmount amount;
-        
+    
         @Expose @SerializedName("balance")
         private NanoAmount balance;
+    
+        @Expose @SerializedName("pending")
+        private NanoAmount pending;
+    
+        @Expose @SerializedName("source_account")
+        private NanoAccount source;
         
         @Expose @SerializedName("height")
         private long height;
         
         @Expose @SerializedName("local_timestamp")
-        private long timestamp;
+        @JsonAdapter(InstantAdapter.Seconds.class)
+        private Instant timestamp;
         
         @Expose @SerializedName("confirmed")
         private boolean confirmed;
@@ -55,7 +68,7 @@ public class ResponseMultiBlockInfo extends RpcResponse {
         private Block blockContents;
         
         @Expose @SerializedName("subtype")
-        private String subtype;
+        private StateBlockSubType subtype;
         
         
         /**
@@ -87,9 +100,9 @@ public class ResponseMultiBlockInfo extends RpcResponse {
         }
         
         /**
-         * @return the local UNIX timestamp when this block was processed
+         * @return the local timestamp when this block was processed
          */
-        public long getLocalTimestamp() {
+        public Instant getLocalTimestamp() {
             return timestamp;
         }
         
@@ -110,8 +123,22 @@ public class ResponseMultiBlockInfo extends RpcResponse {
         /**
          * @return the subtype of the block
          */
-        public String getSubtype() {
+        public StateBlockSubType getSubtype() {
             return subtype;
+        }
+    
+        /**
+         * @return the pending amount
+         */
+        public NanoAmount getPending() {
+            return pending;
+        }
+    
+        /**
+         * @return the source account, or null
+         */
+        public NanoAccount getSourceAccount() {
+            return source;
         }
     }
     

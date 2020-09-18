@@ -557,7 +557,10 @@ public final class NanoAccount {
         @Override
         public NanoAccount deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
-            return parse(json.getAsString());
+            String str = json.getAsString();
+            if (str.equals("") || str.equals("0"))
+                return null;
+            return parse(str);
         }
         
         @Override

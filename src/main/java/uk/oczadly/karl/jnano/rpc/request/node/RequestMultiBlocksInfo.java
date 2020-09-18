@@ -10,6 +10,8 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseMultiBlockInfo;
 
+import java.util.Set;
+
 /**
  * This request class is used to fetch detailed information about the specified block hashes.
  * <br>Calls the RPC command {@code blocks_info}, and returns a {@link ResponseMultiBlockInfo} data object.
@@ -35,7 +37,7 @@ public class RequestMultiBlocksInfo extends RpcRequest<ResponseMultiBlockInfo> {
     private final Boolean includeNotFound;
     
     @Expose @SerializedName("hashes")
-    private final String[] blockHashes;
+    private final Set<String> blockHashes;
     
     
     /**
@@ -51,7 +53,7 @@ public class RequestMultiBlocksInfo extends RpcRequest<ResponseMultiBlockInfo> {
      */
     public RequestMultiBlocksInfo(Boolean includeNotFound, String... blockHashes) {
         super("blocks_info", ResponseMultiBlockInfo.class);
-        this.blockHashes = blockHashes;
+        this.blockHashes = Set.of(blockHashes);
         this.includeNotFound = includeNotFound;
     }
     
@@ -59,7 +61,7 @@ public class RequestMultiBlocksInfo extends RpcRequest<ResponseMultiBlockInfo> {
     /**
      * @return the requested block hashes
      */
-    public String[] getBlockHashes() {
+    public Set<String> getBlockHashes() {
         return blockHashes;
     }
     

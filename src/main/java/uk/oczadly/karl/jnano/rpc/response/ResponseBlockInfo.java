@@ -12,15 +12,18 @@ import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.BlockDeserializer;
 import uk.oczadly.karl.jnano.model.block.SendBlock;
+import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.lang.reflect.Type;
 import java.math.BigInteger;
+import java.time.Instant;
 
 /**
  * This response class contains detailed information about a block.
@@ -40,7 +43,8 @@ public class ResponseBlockInfo extends RpcResponse {
     private long height;
     
     @Expose @SerializedName("local_timestamp")
-    private long timestamp;
+    @JsonAdapter(InstantAdapter.Seconds.class)
+    private Instant timestamp;
     
     @Expose @SerializedName("confirmed")
     private boolean confirmed;
@@ -49,7 +53,7 @@ public class ResponseBlockInfo extends RpcResponse {
     private Block blockContents;
     
     @Expose @SerializedName("subtype")
-    private String subtype;
+    private StateBlockSubType subtype;
     
     
     /**
@@ -81,9 +85,9 @@ public class ResponseBlockInfo extends RpcResponse {
     }
     
     /**
-     * @return the local UNIX timestamp when this block was processed
+     * @return the local timestamp when this block was processed
      */
-    public long getLocalTimestamp() {
+    public Instant getLocalTimestamp() {
         return timestamp;
     }
     
@@ -104,7 +108,7 @@ public class ResponseBlockInfo extends RpcResponse {
     /**
      * @return the subtype of the block
      */
-    public String getSubtype() {
+    public StateBlockSubType getSubtype() {
         return subtype;
     }
     

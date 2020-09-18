@@ -44,7 +44,7 @@ public class JNH {
             .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer()) // Boolean deserializer
             .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer()) // Boolean deserializer
             .registerTypeAdapter(BigInteger.class, new BigIntSerializer())     // BigInt serializer (string)
-            .registerTypeAdapter(Instant.class, new InstantAdapter())          // Instant adapter (epoch millis)
+            .registerTypeAdapter(Instant.class, new InstantAdapter.Millis())   // Instant adapter (epoch millis)
             .create();
     
     
