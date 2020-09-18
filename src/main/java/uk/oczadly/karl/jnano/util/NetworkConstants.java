@@ -7,10 +7,7 @@ package uk.oczadly.karl.jnano.util;
 
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
-import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.model.block.OpenBlock;
-import uk.oczadly.karl.jnano.model.block.StateBlock;
-import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
+import uk.oczadly.karl.jnano.model.block.*;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
@@ -153,17 +150,26 @@ public final class NetworkConstants {
                     return getForType(subtype);
                 }
             }
-            return getBase();
+            return block.getType() != null ? getForType(block.getType()) : getBase();
         }
     
         /**
-         * Returns the minimum work difficulty threshold for a given block. Be aware that this method does
+         * Returns the minimum work difficulty threshold for a given state block type. Be aware that this method does
          * <em>not</em> factor in different difficulty epochs, and is only suitable for newly produced blocks.
-         * @param blockType the block type to compute work for
+         * @param type the block type to compute work for
          * @return the work difficulty threshold for the given block type
          */
-        default WorkDifficulty getForType(StateBlockSubType blockType) {
-            if (blockType == null) throw new IllegalArgumentException("Block type cannot be null.");
+        default WorkDifficulty getForType(StateBlockSubType type) {
+            return getForType(BlockType.STATE);
+        }
+    
+        /**
+         * Returns the minimum work difficulty threshold for a given block type. Be aware that this method does
+         * <em>not</em> factor in different difficulty epochs, and is only suitable for newly produced blocks.
+         * @param type the block type to compute work for
+         * @return the work difficulty threshold for the given block type
+         */
+        default WorkDifficulty getForType(BlockType type) {
             return getBase();
         }
     
@@ -209,7 +215,7 @@ public final class NetworkConstants {
             } else {
                 return legacy;
             }
-            return getBase();
+            return block.getType() != null ? getForType(block.getType()) : getBase();
         }
         
         @Override
@@ -222,7 +228,20 @@ public final class NetworkConstants {
                     return receive;
             }
         }
-        
+    
+        @Override
+        public WorkDifficulty getForType(BlockType type) {
+            switch (type) {
+                case SEND:
+                case RECEIVE:
+                case OPEN:
+                case CHANGE:
+                    return legacy;
+                default:
+                    return base;
+            }
+        }
+    
         @Override
         public WorkDifficulty getBase() {
             return base;

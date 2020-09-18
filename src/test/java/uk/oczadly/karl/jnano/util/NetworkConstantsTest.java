@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.util;
 
 import org.junit.Test;
 import uk.oczadly.karl.jnano.TestConstants;
+import uk.oczadly.karl.jnano.model.block.BlockType;
 import uk.oczadly.karl.jnano.model.block.StateBlockBuilder;
 import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
 
@@ -53,11 +54,16 @@ public class NetworkConstantsTest {
         assertEquals(diffReceive, diff.getForType(StateBlockSubType.RECEIVE).getAsLong());
         assertEquals(diffReceive, diff.getForType(StateBlockSubType.OPEN).getAsLong());
         assertEquals(diffReceive, diff.getForType(StateBlockSubType.EPOCH).getAsLong());
+        assertEquals(diffSend, diff.getForType(BlockType.STATE).getAsLong());
         // From legacy block
         assertEquals(diffLegacy, diff.getForBlock(TestConstants.randOpenBlock()).getAsLong());
         assertEquals(diffLegacy, diff.getForBlock(TestConstants.randChangeBlock()).getAsLong());
         assertEquals(diffLegacy, diff.getForBlock(TestConstants.randSendBlock()).getAsLong());
         assertEquals(diffLegacy, diff.getForBlock(TestConstants.randReceiveBlock()).getAsLong());
+        assertEquals(diffLegacy, diff.getForType(BlockType.OPEN).getAsLong());
+        assertEquals(diffLegacy, diff.getForType(BlockType.CHANGE).getAsLong());
+        assertEquals(diffLegacy, diff.getForType(BlockType.SEND).getAsLong());
+        assertEquals(diffLegacy, diff.getForType(BlockType.RECEIVE).getAsLong());
         // From state block
         StateBlockBuilder sb = TestConstants.randStateBlock();
         assertEquals(diffSend, diff.getForBlock(sb.setSubtype(StateBlockSubType.SEND).build()).getAsLong());
