@@ -83,7 +83,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns the value of this amount in the standard base unit.
+     * Returns the value of this amount in the standard base unit ({@link NanoUnit#BASE_UNIT}).
      * @return the value, in the base unit
      */
     public BigDecimal getAsNano() {
