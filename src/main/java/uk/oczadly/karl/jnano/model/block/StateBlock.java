@@ -111,7 +111,9 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
                       String previousBlockHash, NanoAccount representativeAddress, NanoAmount balance,
                       String linkData, NanoAccount linkAccount) {
         super(BlockType.STATE, signature, work);
-    
+        
+        if (subtype == null)
+            throw new IllegalArgumentException("Subtype cannot be null.");
         if (previousBlockHash == null)
             throw new IllegalArgumentException("Previous block hash cannot be null.");
         if (!JNH.isValidHex(previousBlockHash, HASH_LENGTH))
@@ -163,25 +165,31 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         return balance;
     }
     
-    /**
-     * {@inheritDoc}
-     * Returns the link data field, as a 64-character hexadecimal string. For blocks which aren't initialized with this
-     * field, the value will be computed.
-     */
     @Override
     public final String getLinkData() {
         return linkData;
     }
     
-    /**
-     * {@inheritDoc}
-     * Returns the link data field, encoded as a Nano account. For blocks which aren't initialized with this field,
-     * the value will be computed.
-     */
     @Override
     public final NanoAccount getLinkAsAccount() {
         return linkAccount;
     }
+    
+    @Override
+    public LinkType getLinkType() {
+        switch (subType) {
+            case SEND:
+                return LinkType.DESTINATION;
+            case RECEIVE:
+            case OPEN:
+                return LinkType.SOURCE_HASH;
+            case EPOCH:
+                return LinkType.EPOCH_IDENTIFIER;
+            default:
+                return LinkType.NOT_USED;
+        }
+    }
+    
     
     @Override
     public BlockIntent getIntent() {

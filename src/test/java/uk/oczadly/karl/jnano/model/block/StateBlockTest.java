@@ -10,6 +10,7 @@ import org.junit.Test;
 import uk.oczadly.karl.jnano.TestConstants;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlockLink;
 
 import java.math.BigInteger;
 
@@ -22,11 +23,12 @@ public class StateBlockTest {
     
     @Before
     public void setup() {
-        builder = new StateBlockBuilder(
-                NanoAccount.parseAddress("nano_3dmtrrws3pocycmbqwawk6xs7446qxa36fcncush4s1pejk16ksbmakis78m"),
-                "90204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488",
-                NanoAccount.parseAddress("nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk"),
-                new BigInteger("1234567"));
+        builder = new StateBlockBuilder()
+                .setSubtype(StateBlockSubType.SEND)
+                .setAccountAddress("nano_3dmtrrws3pocycmbqwawk6xs7446qxa36fcncush4s1pejk16ksbmakis78m")
+                .setRepresentativeAddress("nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk")
+                .setPreviousBlockHash("90204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488")
+                .setBalance(new BigInteger("1234567"));
     }
     
     @Test
@@ -176,48 +178,20 @@ public class StateBlockTest {
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isGenesis());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isTransactional());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSpecial());
+    }
     
-        // Test epoch (with unknown subtype)
-        intent = TestConstants.randStateBlock()
-                .setSubtype(null)
-                .setPreviousBlockHash(JNH.ZEROES_64)
-                .setBalance(BigInteger.ZERO)
-                .build().getIntent();
-        assertEquals(BlockIntent.UncertainBool.TRUE, intent.isChangeRep());
-        assertEquals(BlockIntent.UncertainBool.TRUE, intent.isEpochUpgrade());
-        assertEquals(BlockIntent.UncertainBool.TRUE, intent.isFirstBlock());
-        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isReceiveFunds());
-        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isSendFunds());
-        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isGenesis());
-        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isTransactional());
-        assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSpecial());
-    
-        // Test unknown subtype
-        intent = TestConstants.randStateBlock()
-                .setSubtype(null)
-                .build().getIntent();
-        assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isChangeRep());
-        assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isEpochUpgrade());
-        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isFirstBlock());
-        assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isReceiveFunds());
-        assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isSendFunds());
-        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isGenesis());
-        assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isTransactional());
-        assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isSpecial());
-    
-        // Test unknown subtype (with blank previous hash, expecting OPEN)
-        intent = TestConstants.randStateBlock()
-                .setSubtype(null)
-                .setPreviousBlockHash(JNH.ZEROES_64)
-                .build().getIntent();
-        assertEquals(BlockIntent.UncertainBool.TRUE, intent.isChangeRep());
-        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isEpochUpgrade());
-        assertEquals(BlockIntent.UncertainBool.TRUE, intent.isFirstBlock());
-        assertEquals(BlockIntent.UncertainBool.TRUE, intent.isReceiveFunds());
-        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isSendFunds());
-        assertEquals(BlockIntent.UncertainBool.FALSE, intent.isGenesis());
-        assertEquals(BlockIntent.UncertainBool.TRUE, intent.isTransactional());
-        assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSpecial());
+    @Test
+    public void testLinkType() {
+        assertEquals(IBlockLink.LinkType.DESTINATION,
+                TestConstants.randStateBlock().setSubtype(StateBlockSubType.SEND).build().getLinkType());
+        assertEquals(IBlockLink.LinkType.SOURCE_HASH,
+                TestConstants.randStateBlock().setSubtype(StateBlockSubType.RECEIVE).build().getLinkType());
+        assertEquals(IBlockLink.LinkType.SOURCE_HASH,
+                TestConstants.randStateBlock().setSubtype(StateBlockSubType.OPEN).build().getLinkType());
+        assertEquals(IBlockLink.LinkType.EPOCH_IDENTIFIER,
+                TestConstants.randStateBlock().setSubtype(StateBlockSubType.EPOCH).build().getLinkType());
+        assertEquals(IBlockLink.LinkType.NOT_USED,
+                TestConstants.randStateBlock().setSubtype(StateBlockSubType.CHANGE).build().getLinkType());
     }
     
 }
