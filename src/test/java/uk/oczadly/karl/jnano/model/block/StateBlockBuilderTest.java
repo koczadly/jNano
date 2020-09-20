@@ -65,7 +65,7 @@ public class StateBlockBuilderTest {
         assertEquals(new WorkSolution("009d175747abbc9e"), block.getWorkSolution());
         
         //TODO test JSON
-        assertNotNull(block.getJsonObject());
+        assertNotNull(block.toJsonObject());
         assertNotNull(block.toJsonString());
     }
     

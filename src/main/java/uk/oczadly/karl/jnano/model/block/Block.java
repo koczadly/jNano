@@ -173,6 +173,8 @@ public abstract class Block implements IBlock {
     
     
     /**
+     * Returns the block as a JSON string, filling blank fields.
+     * <p>Equivalent to calling {@code toJsonString(true)}.</p>
      * @return a JSON representation of this block
      */
     public final String toJsonString() {
@@ -180,25 +182,29 @@ public abstract class Block implements IBlock {
     }
     
     /**
+     * Returns the block as a JSON string.
      * @param fillBlanks if true, null properties will be filled with dummy data
      * @return a JSON representation of this block
      */
     public final String toJsonString(boolean fillBlanks) {
-        return getJsonObject(fillBlanks).toString();
+        return toJsonObject(fillBlanks).toString();
     }
     
     /**
+     * Returns the block as a JSON object, filling blank fields.
+     * <p>Equivalent to calling {@code toJsonObject(true)}.</p>
      * @return a JSON representation of this block, as a Gson {@link JsonObject}
      */
-    public final JsonObject getJsonObject() {
-        return getJsonObject(true);
+    public final JsonObject toJsonObject() {
+        return toJsonObject(true);
     }
     
     /**
+     * Returns the block as a JSON object.
      * @param fillBlanks if true, null properties will be filled with dummy data
      * @return a JSON representation of this block, as a Gson {@link JsonObject}
      */
-    public final JsonObject getJsonObject(boolean fillBlanks) {
+    public final JsonObject toJsonObject(boolean fillBlanks) {
         JsonObject json = buildJsonObject();
         if (fillBlanks) {
             if (signature == null)

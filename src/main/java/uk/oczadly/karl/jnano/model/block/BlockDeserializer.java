@@ -85,7 +85,6 @@ public final class BlockDeserializer {
      * @param jsonObj the JSON object
      * @return the deserialized block object
      */
-    @SuppressWarnings("deprecation")
     public Block deserialize(JsonObject jsonObj) {
         if (!jsonObj.has("type"))
             throw new JsonParseException("No block type is specified.");
@@ -152,7 +151,7 @@ public final class BlockDeserializer {
         
         @Override
         public JsonElement serialize(Block src, Type typeOfSrc, JsonSerializationContext context) {
-            return src.getJsonObject();
+            return src.toJsonObject();
         }
         
         @Override
