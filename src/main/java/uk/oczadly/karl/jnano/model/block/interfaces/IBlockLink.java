@@ -8,6 +8,8 @@ package uk.oczadly.karl.jnano.model.block.interfaces;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 
+import java.util.function.Function;
+
 /**
  * This interface is to be implemented by blocks which contain link data.
  */
@@ -45,15 +47,21 @@ public interface IBlockLink extends IBlock {
     enum LinkFormat {
         /** Encoded as an address.
          * @see #getLinkAsAccount() */
-        ACCOUNT,
+        ACCOUNT (b -> b.getLinkAsAccount().toAddress()),
         
         /** Encoded as a 64-character hexadecimal string.
          * @see #getLinkData() */
-        DATA,
+        DATA    (IBlockLink::getLinkData),
         
         /** The link field is not used for this block. */
-        EMPTY;
+        EMPTY   (b -> JNH.ZEROES_64);
     
+        
+        private final Function<IBlockLink, String> toStringMethod;
+        
+        LinkFormat(Function<IBlockLink, String> toStringMethod) {
+            this.toStringMethod = toStringMethod;
+        }
     
         /**
          * Returns the link data of the given block, encoded in this format (as a string).
@@ -69,13 +77,7 @@ public interface IBlockLink extends IBlock {
         public String getBlockLink(IBlockLink block) {
             if (block == null)
                 throw new IllegalArgumentException("Block cannot be null.");
-    
-            switch (this) {
-                case ACCOUNT: return block.getLinkAsAccount().toAddress();
-                case DATA:    return block.getLinkData();
-                case EMPTY:   return JNH.ZEROES_64;
-            }
-            throw new AssertionError("Unknown link format.");
+            return toStringMethod.apply(block);
         }
     }
     
