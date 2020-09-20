@@ -84,18 +84,23 @@ public final class BlockDeserializer {
      *
      * @param jsonObj the JSON object
      * @return the deserialized block object
+     * @throws BlockParseException if the block could not be parsed
      */
     public Block deserialize(JsonObject jsonObj) {
         if (!jsonObj.has("type"))
-            throw new JsonParseException("No block type is specified.");
+            throw new BlockParseException("No block type is specified.");
         
         String blockType = jsonObj.get("type").getAsString().toLowerCase();
         
         Function<JsonObject, ? extends Block> deserializer = getDeserializer(blockType);
-        if (deserializer != null)
-            return deserializer.apply(jsonObj);
-        
-        throw new JsonParseException("Block type \"" + blockType + "\" is not supported by the deserializer.");
+        if (deserializer != null) {
+            try {
+                return deserializer.apply(jsonObj);
+            } catch (Exception e) {
+                throw new BlockParseException("Could not parse block (malformed json?).", e);
+            }
+        }
+        throw new BlockParseException("Block type \"" + blockType + "\" is not supported by the deserializer.");
     }
     
     
@@ -164,6 +169,21 @@ public final class BlockDeserializer {
             return deserializer.deserialize(jsonObj);
         }
         
+    }
+    
+    
+    public static final class BlockParseException extends JsonParseException {
+        public BlockParseException(String msg) {
+            super(msg);
+        }
+        
+        public BlockParseException(String msg, Throwable cause) {
+            super(msg, cause);
+        }
+        
+        public BlockParseException(Throwable cause) {
+            super(cause);
+        }
     }
     
 }

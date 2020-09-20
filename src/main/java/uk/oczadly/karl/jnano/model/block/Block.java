@@ -262,6 +262,7 @@ public abstract class Block implements IBlock {
      * open}, {@link ReceiveBlock receive}, {@link SendBlock send}.</p>
      * @param json the json to parse from
      * @return a block object derived from the provided JSON
+     * @throws BlockDeserializer.BlockParseException if the block cannot be correctly parsed
      * @see BlockDeserializer
      */
     public static Block parse(String json) {
@@ -274,6 +275,7 @@ public abstract class Block implements IBlock {
      * open}, {@link ReceiveBlock receive}, {@link SendBlock send}.</p>
      * @param json the json to parse from
      * @return a block object derived from the provided JSON
+     * @throws BlockDeserializer.BlockParseException if the block cannot be correctly parsed
      * @see BlockDeserializer
      */
     public static Block parse(JsonObject json) {
