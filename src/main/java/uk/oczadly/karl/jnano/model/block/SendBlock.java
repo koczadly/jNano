@@ -12,7 +12,6 @@ import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockBalance;
-import uk.oczadly.karl.jnano.model.block.interfaces.IBlockLink;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
@@ -25,7 +24,7 @@ import java.util.function.Function;
  * <p>Note that this is a legacy block and has since been officially deprecated. For new blocks, use
  * {@link StateBlock state} blocks.</p>
  */
-public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlockBalance {
+public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     
     /** A function which converts a {@link JsonObject} into a {@link SendBlock} instance. */
     public static final Function<JsonObject, SendBlock> DESERIALIZER = json -> new SendBlock(
@@ -89,29 +88,6 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockLink, IBlo
     @Override
     public final NanoAmount getBalance() {
         return balance;
-    }
-    
-    
-    /**
-     * {@inheritDoc}
-     * @deprecated Implemented for compatibility with the link interface.
-     * @see #getDestinationAccount()
-     */
-    @Deprecated
-    @Override
-    public final String getLinkData() {
-        return getDestinationAccount().toPublicKey();
-    }
-    
-    /**
-     * {@inheritDoc}
-     * @deprecated Implemented for compatibility with the link interface.
-     * @see #getDestinationAccount()
-     */
-    @Deprecated
-    @Override
-    public final NanoAccount getLinkAsAccount() {
-        return getDestinationAccount();
     }
     
     @Override
