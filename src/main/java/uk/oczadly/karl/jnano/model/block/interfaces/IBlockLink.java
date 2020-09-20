@@ -63,7 +63,7 @@ public interface IBlockLink extends IBlock {
          *     <li>{@link LinkFormat#DATA} - 64-character hexadecimal</li>
          *     <li>{@link LinkFormat#EMPTY} - 64-character string of zeroes</li>
          * </ul>
-         * @param block the block to retrieve the lin kfrom
+         * @param block the block to retrieve the link from
          * @return a string representation of the link data
          */
         public String getBlockLink(IBlockLink block) {
