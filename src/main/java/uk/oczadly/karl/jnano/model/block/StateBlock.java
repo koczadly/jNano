@@ -137,7 +137,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     
     
     /**
-     * @return the subtype of the block (may be null)
+     * @return the subtype of the block
      */
     public final StateBlockSubType getSubType() {
         return subType;
@@ -190,28 +190,20 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     
     @Override
     public BlockIntent getIntent() {
-        // If OPEN subtype, or if previous hash is zeroes
         boolean isOpen = subType == StateBlockSubType.OPEN || JNH.isZero(previousBlockHash, false);
-        // If EPOCH subtype, or if an open block with zero balance
         boolean isEpoch = subType == StateBlockSubType.EPOCH || (isOpen && balance.equals(NanoAmount.ZERO));
-        // If SEND subtype
         boolean isSend = subType == StateBlockSubType.SEND;
-        // If RECEIVE subtype, or if OPEN and not EPOCH
         boolean isReceive = subType == StateBlockSubType.RECEIVE || (isOpen && !isEpoch);
-    
-        // Whether the type can be identified from the given block info
-        boolean typeKnown = subType != null || isEpoch || isReceive;
-    
+        
         return new BlockIntent(
-                BlockIntent.UncertainBool.ifKnown(typeKnown, isSend),           // SEND
-                BlockIntent.UncertainBool.ifKnown(typeKnown, isReceive),        // RECEIVE
-                // CHANGE (unknown if SEND or RECEIVE)
+                BlockIntent.UncertainBool.valueOf(isSend),
+                BlockIntent.UncertainBool.valueOf(isReceive),
                 (subType == StateBlockSubType.SEND || subType == StateBlockSubType.RECEIVE) ?
-                        BlockIntent.UncertainBool.UNKNOWN : BlockIntent.UncertainBool.ifKnown(typeKnown,
-                                subType == StateBlockSubType.CHANGE || isOpen),
-                BlockIntent.UncertainBool.valueOf(isOpen),                      // OPEN
-                BlockIntent.UncertainBool.ifKnown(typeKnown, isEpoch),          // EPOCH
-                BlockIntent.UncertainBool.FALSE);                               // Genesis
+                        BlockIntent.UncertainBool.UNKNOWN :
+                        BlockIntent.UncertainBool.valueOf(subType == StateBlockSubType.CHANGE || isOpen),
+                BlockIntent.UncertainBool.valueOf(isOpen),
+                BlockIntent.UncertainBool.valueOf(isEpoch),
+                BlockIntent.UncertainBool.FALSE);
     }
     
     @Override
