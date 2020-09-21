@@ -53,7 +53,7 @@ public interface IBlockLink extends IBlock {
          * @see #getLinkData() */
         DATA    (IBlockLink::getLinkData),
         
-        /** The link field is not used for this block. */
+        /** The link field is not used for this block. Interpreted as a 64-character string of zeroes. */
         EMPTY   (b -> JNH.ZEROES_64);
     
         
