@@ -20,13 +20,9 @@ public class TestConstants {
     
     
     public static String randHex(int len) {
-        return randHex(len, true);
-    }
-    
-    public static String randHex(int len, boolean nonZero) {
         StringBuilder sb = new StringBuilder(len);
         for (int i=0; i<len; i++)
-            sb.append(JNH.HEX_CHARS_UC[(nonZero && i == 0) ? (RANDOM.nextInt(15) + 1) : RANDOM.nextInt(16)]);
+            sb.append(JNH.HEX_CHARS_UC[(i == 0) ? (RANDOM.nextInt(15) + 1) : RANDOM.nextInt(16)]);
         return sb.toString();
     }
     

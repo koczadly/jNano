@@ -232,12 +232,10 @@ public abstract class Block implements IBlock {
         return JNH.GSON.toJsonTree(this).getAsJsonObject();
     }
     
-    
     @Override
     public final String toString() {
         return this.toJsonString();
     }
-    
     
     /**
      * Compares this block with the given object, and tests for equality with the type and hash.
@@ -275,11 +273,11 @@ public abstract class Block implements IBlock {
                 && Objects.equals(getWorkSolution(), block.getWorkSolution());
     }
     
-    
     @Override
     public final int hashCode() {
         return Arrays.hashCode(getHashBytesUnsafe());
     }
+    
     
     /**
      * Parses a block from a given JSON string using the default deserializer.
