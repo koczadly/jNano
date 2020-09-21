@@ -53,23 +53,9 @@ public abstract class Block implements IBlock {
     }
     
     /**
-     * @param type the block type, as a string
-     */
-    protected Block(String type) {
-        this(type, null, null);
-    }
-    
-    /**
-     * @param type the block type
-     */
-    protected Block(BlockType type) {
-        this(type, null, null);
-    }
-    
-    /**
      * @param type          the block type, as a string
-     * @param signature     the block signature
-     * @param workSolution  the work solution
+     * @param signature     the block signature, or null
+     * @param workSolution  the work solution, or null
      */
     protected Block(String type, String signature, WorkSolution workSolution) {
         this(null, type, signature, workSolution);
@@ -77,8 +63,9 @@ public abstract class Block implements IBlock {
     
     /**
      * @param type          the block type
-     * @param signature     the block signature
-     * @param workSolution  the work solution
+     * @param signature     the block signature, or null
+     * @param workSolution  the work solution, or null
+     * @see #Block(String, String, WorkSolution)
      */
     protected Block(BlockType type, String signature, WorkSolution workSolution) {
         this(type, type.getProtocolName(), signature, workSolution);

@@ -40,18 +40,14 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     
     
     @Expose @SerializedName("source")
-    private String sourceBlockHash;
+    private final String sourceBlockHash;
     
     @Expose @SerializedName("account")
-    private NanoAccount accountAddress;
+    private final NanoAccount accountAddress;
     
     @Expose @SerializedName("representative")
-    private NanoAccount representativeAccount;
+    private final NanoAccount representativeAccount;
     
-    
-    OpenBlock() {
-        super(BlockType.OPEN);
-    }
     
     public OpenBlock(String signature, WorkSolution work, String sourceBlockHash, NanoAccount accountAddress,
                      NanoAccount representativeAccount) {

@@ -45,30 +45,26 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     
     
     @Expose @SerializedName("account")
-    private NanoAccount accountAddress;
+    private final NanoAccount accountAddress;
     
     @Expose @SerializedName("previous")
-    private String previousBlockHash;
+    private final String previousBlockHash;
     
     @Expose @SerializedName("representative")
-    private NanoAccount representativeAddress;
+    private final NanoAccount representativeAddress;
     
     @Expose @SerializedName("balance")
-    private NanoAmount balance;
+    private final NanoAmount balance;
     
     @Expose @SerializedName("link")
-    private String linkData;
+    private final String linkData;
     
     @Expose @SerializedName("link_as_account")
-    private NanoAccount linkAccount;
+    private final NanoAccount linkAccount;
     
     @Expose @SerializedName("subtype")
-    private StateBlockSubType subType;
+    private final StateBlockSubType subType;
     
-    
-    StateBlock() {
-        super(BlockType.STATE);
-    }
     
     /**
      * Constructs a new state block.

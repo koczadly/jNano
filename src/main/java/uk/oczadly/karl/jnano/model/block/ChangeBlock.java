@@ -37,15 +37,11 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
     
     
     @Expose @SerializedName("previous")
-    private String previousBlockHash;
+    private final String previousBlockHash;
     
     @Expose @SerializedName("representative")
-    private NanoAccount representativeAccount;
+    private final NanoAccount representativeAccount;
     
-    
-    ChangeBlock() {
-        super(BlockType.CHANGE);
-    }
     
     /**
      * Constructs a change block.

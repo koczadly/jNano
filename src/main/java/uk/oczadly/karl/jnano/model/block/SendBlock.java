@@ -40,18 +40,14 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     
     
     @Expose @SerializedName("previous")
-    private String previousBlockHash;
+    private final String previousBlockHash;
     
     @Expose @SerializedName("destination")
-    private NanoAccount destinationAccount;
+    private final NanoAccount destinationAccount;
     
     @Expose @SerializedName("balance")
-    private NanoAmount balance;
+    private final NanoAmount balance;
     
-    
-    SendBlock() {
-        super(BlockType.SEND);
-    }
     
     @Deprecated
     public SendBlock(String signature, WorkSolution work, String previousBlockHash, NanoAccount destinationAccount,

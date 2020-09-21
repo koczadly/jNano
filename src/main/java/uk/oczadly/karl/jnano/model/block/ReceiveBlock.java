@@ -36,15 +36,11 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     
     
     @Expose @SerializedName("previous")
-    private String previousBlockHash;
+    private final String previousBlockHash;
     
     @Expose @SerializedName("source")
-    private String sourceBlockHash;
+    private final String sourceBlockHash;
     
-    
-    ReceiveBlock() {
-        super(BlockType.RECEIVE);
-    }
     
     public ReceiveBlock(String signature, WorkSolution work, String previousBlockHash, String sourceBlockHash) {
         super(BlockType.RECEIVE, signature, work);
