@@ -252,16 +252,16 @@ public enum NanoUnit {
     public static String toFriendlyString(BigDecimal amount, NanoUnit sourceUnit) {
         BigDecimal nanoAmount = BASE_UNIT.convertFrom(sourceUnit, amount);
         BigDecimal scaledAmount = nanoAmount.setScale(6, RoundingMode.FLOOR);
-        boolean trimmed = nanoAmount.compareTo(scaledAmount) > 0;
-        
+        boolean trimmed = nanoAmount.compareTo(scaledAmount) != 0;
+    
         String valStr;
         if (scaledAmount.compareTo(BigDecimal.ZERO) == 0) {
-            valStr = (trimmed ? ">" : "") + "0";
+            valStr = trimmed ? ">0" : "0";
         } else {
             if (trimmed) {
-                valStr = FRIENDLY_DF_FORCE.format(nanoAmount) + ((char)8230); // Ellipsis character
+                valStr = FRIENDLY_DF_FORCE.format(scaledAmount) + ((char)8230); // Ellipsis character
             } else {
-                valStr = FRIENDLY_DF.format(nanoAmount);
+                valStr = FRIENDLY_DF.format(scaledAmount);
             }
         }
         return valStr + " " + BASE_UNIT.getDisplayName();
