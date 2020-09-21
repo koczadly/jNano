@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.model.block;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -112,12 +113,7 @@ public final class BlockDeserializer {
      */
     public static BlockDeserializer withDefaults() {
         BlockDeserializer deserializer = new BlockDeserializer();
-        
-        deserializer.registerDeserializer(BlockType.STATE);
-        deserializer.registerDeserializer(BlockType.CHANGE);
-        deserializer.registerDeserializer(BlockType.OPEN);
-        deserializer.registerDeserializer(BlockType.RECEIVE);
-        deserializer.registerDeserializer(BlockType.SEND);
+        Arrays.stream(BlockType.values()).forEach(deserializer::registerDeserializer);
         return deserializer;
     }
     
