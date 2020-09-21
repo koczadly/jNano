@@ -13,8 +13,7 @@ import java.util.*;
 import java.util.function.Function;
 
 /**
- * This class represents the types of block available. Only {@link #STATE} blocks should be used from hereon, and have
- * since been deprecated on the official Nano node.
+ * This class represents the types of block available.
  */
 @JsonAdapter(BlockType.Adapter.class)
 public enum BlockType {
