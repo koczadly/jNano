@@ -112,14 +112,14 @@ public final class StateBlockBuilder {
      */
     public StateBlockBuilder(StateBlockBuilder builder) {
         this();
-        setSubtype(builder.getSubtype());
-        setAccountAddress(builder.getAccountAddress());
-        setPreviousBlockHash(builder.getPreviousBlockHash());
-        setRepresentativeAddress(builder.getRepresentativeAddress());
-        setBalance(getBalance());
-        setSignature(builder.getSignature());
-        setWorkSolution(builder.getWorkSolution());
-        setLinkData(builder.getLinkData());
+        this.subtype = builder.getSubtype();
+        this.accountAddress = builder.getAccountAddress();
+        this.previousBlockHash = builder.getPreviousBlockHash();
+        this.representativeAddress = builder.getRepresentativeAddress();
+        this.balance = builder.getBalance();
+        this.signature = builder.getSignature();
+        this.work = builder.getWorkSolution();
+        this.linkData = builder.getLinkData();
     }
     
     
