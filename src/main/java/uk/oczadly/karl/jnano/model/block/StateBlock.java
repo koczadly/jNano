@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
@@ -228,6 +229,36 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
                 JNH.leftPadByteArray(getBalance().getAsRaw().toByteArray(), 16, false),
                 getLinkAsAccount().getPublicKeyBytes()
         };
+    }
+    
+    
+    /**
+     * Parses a block from a given JSON string using the default deserializer.
+     * @param json the json to parse from
+     * @return a block object derived from the provided JSON
+     * @throws BlockDeserializer.BlockParseException if the block cannot be correctly parsed
+     * @see BlockDeserializer
+     * @see Block#parse(String)
+     */
+    public static StateBlock parse(String json) {
+        return parse(JsonParser.parseString(json).getAsJsonObject());
+    }
+    
+    /**
+     * Parses a block from a given {@link JsonObject} instance using the default deserializer.
+     * @param json the json to parse from
+     * @return a block object derived from the provided JSON
+     * @throws BlockDeserializer.BlockParseException if the block cannot be correctly parsed
+     * @see BlockDeserializer
+     * @see Block#parse(JsonObject)
+     */
+    public static StateBlock parse(JsonObject json) {
+        Block b = Block.parse(json);
+        try {
+            return (StateBlock)b;
+        } catch (ClassCastException e) {
+            throw new BlockDeserializer.BlockParseException("Block is not a state block.", e);
+        }
     }
     
 }
