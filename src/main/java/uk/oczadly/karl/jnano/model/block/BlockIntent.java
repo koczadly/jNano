@@ -5,6 +5,8 @@
 
 package uk.oczadly.karl.jnano.model.block;
 
+import java.util.Objects;
+
 /**
  * Represents a set of actions performed by a specific block.
  */
@@ -134,6 +136,24 @@ public class BlockIntent {
                 ", isTransactional=" + isTransactional() +
                 ", isSpecial=" + isSpecial() +
                 ", hasPurpose=" + hasPurpose() + '}';
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BlockIntent)) return false;
+        BlockIntent that = (BlockIntent)o;
+        return isSend == that.isSend &&
+                isReceive == that.isReceive &&
+                isChange == that.isChange &&
+                isOpen == that.isOpen &&
+                isEpoch == that.isEpoch &&
+                isGenesis == that.isGenesis;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(isSend, isReceive, isChange, isOpen, isEpoch, isGenesis);
     }
     
     
