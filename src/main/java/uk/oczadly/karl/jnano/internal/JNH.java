@@ -210,8 +210,13 @@ public class JNH {
         return clazz.isInstance(obj) ? sup.apply(clazz.cast(obj)) : def;
     }
     
-    public static <T extends Comparable<T>> T max(T obj1, T obj2) {
-        return obj1.compareTo(obj2) >= 0 ? obj1 : obj2;
+    public static <T extends Comparable<T>> T max(T...objects) {
+        T max = null;
+        for (T obj : objects) {
+            if (max == null || obj.compareTo(max) > 0)
+                max = obj;
+        }
+        return max;
     }
     
 }

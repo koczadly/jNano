@@ -5,6 +5,7 @@
 
 package uk.oczadly.karl.jnano.internal;
 
+import com.google.gson.JsonObject;
 import org.junit.Test;
 import uk.oczadly.karl.jnano.util.NanoConstants;
 
@@ -83,7 +84,7 @@ public class JNHTest {
     }
     
     @Test
-    public void testNullable() {
+    public void testInstanceOf() {
         Object obj1 = "slug", obj2 = 42;
         assertEquals(101, (int)JNH.instanceOf(obj1, String.class, 100, s -> (s.length() == 4 ? 101 : 102)));
         assertEquals(102, (int)JNH.instanceOf(obj1, String.class, 100, s -> (s.length() == 0 ? 101 : 102)));
@@ -97,4 +98,32 @@ public class JNHTest {
         assertEquals("sluggage", JNH.leftPadString("sluggage", 4, '0'));
         assertEquals("000slug", JNH.leftPadString("slug", 7, '0'));
     }
+    
+    @Test
+    public void testNullable() {
+        assertNull(JNH.nullable(null, (String o) -> o + ""));
+        assertEquals("valA", JNH.nullable("val", (String o) -> o + "A"));
+    }
+    
+    @Test
+    public void testJson() {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("val1", 101);
+    
+        // Vals
+        assertEquals("101", JNH.getJson(obj, "val1"));
+        assertEquals("101A", JNH.getJson(obj, "val1", s -> s + "A"));
+        // Nulls
+        assertNull(JNH.getJson(obj, "val2"));
+        assertNull(JNH.getJson(null, "val2"));
+        assertNull(JNH.getJson(obj, "val2", s -> s + "A"));
+        assertNull(JNH.getJson(null, "val2", s -> s + "A"));
+    }
+    
+    @Test
+    public void testMax() {
+        assertEquals(200, (int)JNH.max(4, 7, 2, 9, 200, 1));
+        assertEquals(7, (int)JNH.max(4, 7, 2, 7, 3, -4));
+    }
+    
 }
