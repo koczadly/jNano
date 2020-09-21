@@ -40,7 +40,7 @@ public class WorkSolutionTest {
         assertEquals(openBlock.getAccount().toPublicKey(), WorkSolution.getRoot(openBlock));
         
         // Error
-        Block invalidBlock = new Block("test") {
+        Block invalidBlock = new Block("test", null, null) {
             @Override
             public BlockIntent getIntent() {
                 return null;
