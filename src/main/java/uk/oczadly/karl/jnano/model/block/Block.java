@@ -104,7 +104,7 @@ public abstract class Block implements IBlock {
         if (hash == null) {
             synchronized (this) {
                 if (hash == null) {
-                    hash = JNH.ENC_16.encode(generateHashBytes());
+                    hash = JNH.ENC_16.encode(getHashBytesUnsafe());
                 }
             }
         }
@@ -115,8 +115,8 @@ public abstract class Block implements IBlock {
      * @return a 32-length array of bytes, representing the hash of this block
      */
     public final byte[] getHashBytes() {
-        generateHashBytes();
-        return Arrays.copyOf(hashBytes, hashBytes.length);
+        byte[] bytes = getHashBytesUnsafe();
+        return Arrays.copyOf(bytes, bytes.length);
     }
     
     @Override
@@ -160,7 +160,8 @@ public abstract class Block implements IBlock {
         return JNH.blake2b(32, hashables);
     }
     
-    private byte[] generateHashBytes() {
+    /** Returns the hash bytes, but does <strong>not</strong> create a copy of the array. */
+    private byte[] getHashBytesUnsafe() {
         if (hashBytes == null) {
             synchronized (this) {
                 if (hashBytes == null) {
@@ -237,23 +238,47 @@ public abstract class Block implements IBlock {
         return this.toJsonString();
     }
     
+    
+    /**
+     * Compares this block with the given object, and tests for equality with the type and hash.
+     *
+     * <p>Note that this method will only compare the types and hash fields of the block, and will not compare
+     * unhashed values, including the {@code work} and {@code signature} fields.</p>
+     *
+     * @param obj the object to compare against
+     * @return {@code true} if the objects are equal
+     * @see #contentEquals(Block)
+     */
     @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Block)) return false;
-        Block block = (Block)o;
-        byte[] hashBytes = generateHashBytes();
-        byte[] otherHashBytes = block.generateHashBytes();
-        if (hashBytes == null || otherHashBytes == null) return false;
-        return Arrays.equals(generateHashBytes(), block.generateHashBytes())
-                && Objects.equals(getSignature(), block.getSignature())
-                && Objects.equals(getWorkSolution(), block.getWorkSolution())
-                && getTypeString().equalsIgnoreCase(block.getTypeString());
+    public final boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Block)) return false; // Not a Block
+        Block block = (Block)obj;
+        if (!getTypeString().equalsIgnoreCase(block.getTypeString())) return false; // Type doesnt match
+        byte[] thisHashBytes = getHashBytesUnsafe();
+        byte[] otherHashBytes = block.getHashBytesUnsafe();
+        return thisHashBytes != null && otherHashBytes != null && Arrays.equals(thisHashBytes, otherHashBytes);
     }
+    
+    /**
+     * Compares this block with the given block, and tests for equality.
+     *
+     * <p>Unlike the {@link #equals(Object)} method, this method will additionally compare the unhashed fields which
+     * can vary without affecting the hash of the block.</p>
+     *
+     * @param block the block to compare against
+     * @return {@code true} if the blocks are equal in content
+     */
+    public boolean contentEquals(Block block) {
+        return equals(block)
+                && Objects.equals(getSignature(), block.getSignature())
+                && Objects.equals(getWorkSolution(), block.getWorkSolution());
+    }
+    
     
     @Override
     public final int hashCode() {
-        return Arrays.hashCode(generateHashBytes());
+        return Arrays.hashCode(getHashBytesUnsafe());
     }
     
     /**

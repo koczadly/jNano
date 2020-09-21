@@ -14,6 +14,7 @@ import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockSource;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -73,6 +74,15 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     @Override
     public BlockIntent getIntent() {
         return INTENT;
+    }
+    
+    @Override
+    public boolean contentEquals(Block block) {
+        if (!(block instanceof ReceiveBlock)) return false;
+        ReceiveBlock rb = (ReceiveBlock)block;
+        return super.contentEquals(rb)
+                && Objects.equals(getPreviousBlockHash(), rb.getPreviousBlockHash())
+                && Objects.equals(getSourceBlockHash(), rb.getSourceBlockHash());
     }
     
     

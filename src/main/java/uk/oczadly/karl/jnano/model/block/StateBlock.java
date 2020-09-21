@@ -16,6 +16,7 @@ import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.interfaces.*;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -191,7 +192,6 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         }
     }
     
-    
     @Override
     public BlockIntent getIntent() {
         // If OPEN subtype, or if previous hash is zeroes
@@ -216,6 +216,19 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
                 BlockIntent.UncertainBool.valueOf(isOpen),                      // OPEN
                 BlockIntent.UncertainBool.ifKnown(typeKnown, isEpoch),          // EPOCH
                 BlockIntent.UncertainBool.FALSE);                               // Genesis
+    }
+    
+    @Override
+    public boolean contentEquals(Block block) {
+        if (!(block instanceof StateBlock)) return false;
+        StateBlock sb = (StateBlock)block;
+        return super.contentEquals(sb)
+                && getSubType() == sb.getSubType()
+                && Objects.equals(getAccount(), sb.getAccount())
+                && Objects.equals(getLinkData(), sb.getLinkData())
+                && Objects.equals(getRepresentative(), sb.getRepresentative())
+                && Objects.equals(getPreviousBlockHash(), sb.getPreviousBlockHash())
+                && Objects.equals(getBalance(), sb.getBalance());
     }
     
     

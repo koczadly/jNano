@@ -17,6 +17,7 @@ import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -94,6 +95,16 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     @Override
     public BlockIntent getIntent() {
         return INTENT;
+    }
+    
+    @Override
+    public boolean contentEquals(Block block) {
+        if (!(block instanceof SendBlock)) return false;
+        SendBlock sb = (SendBlock)block;
+        return super.contentEquals(sb)
+                && Objects.equals(getBalance(), sb.getBalance())
+                && Objects.equals(getDestinationAccount(), sb.getDestinationAccount())
+                && Objects.equals(getPreviousBlockHash(), sb.getPreviousBlockHash());
     }
     
     

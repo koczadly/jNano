@@ -15,6 +15,7 @@ import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockRepresentative;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -80,6 +81,15 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
     @Override
     public BlockIntent getIntent() {
         return INTENT;
+    }
+    
+    @Override
+    public boolean contentEquals(Block block) {
+        if (!(block instanceof ChangeBlock)) return false;
+        ChangeBlock cb = (ChangeBlock)block;
+        return super.contentEquals(cb)
+                && Objects.equals(getPreviousBlockHash(), cb.getPreviousBlockHash())
+                && Objects.equals(getRepresentative(), cb.getRepresentative());
     }
     
     

@@ -16,6 +16,7 @@ import uk.oczadly.karl.jnano.model.block.interfaces.IBlockRepresentative;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockSource;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -89,6 +90,16 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
             return INTENT_GENESIS; // Genesis block special case
         }
         return INTENT;
+    }
+    
+    @Override
+    public boolean contentEquals(Block block) {
+        if (!(block instanceof OpenBlock)) return false;
+        OpenBlock ob = (OpenBlock)block;
+        return super.contentEquals(ob)
+                && Objects.equals(getAccount(), ob.getAccount())
+                && Objects.equals(getRepresentative(), ob.getRepresentative())
+                && Objects.equals(getSourceBlockHash(), ob.getSourceBlockHash());
     }
     
     
