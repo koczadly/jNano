@@ -11,20 +11,54 @@ import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SendBlockTest {
     
-    final SendBlock TEST_BLOCK = new SendBlock("9F0C933C8ADE004D808EA1985FA746A7E95BA2A38F867640F53EC8F180BDFE9E2C12" +
-            "68DEAD7C2664F356E37ABA362BC58E46DBA03E523A7B5A19E4B6EB12BB02",
-            new WorkSolution("62f05417dd3fb691"),
-            "991CF190094C00F0B68E2E5F75F6BEE95A2E0BD93CEAA4A6734DB9F19B728948",
-            NanoAccount.parseAddress("nano_3robocazheuxet5ju1gtif4cefkhfbupkykc97hfanof859ie9ajpdfhy3ez"),
-            new NanoAmount("1234567"));
+    final String TB_SIGNATURE = "DEE5EC5D771E92B5DE3C76EBFE8FE844284A3AFCA32D6183643BA1B553C75F2377A1138DB620832D6557" +
+            "C0AD46D804D577F372C592C1D05DDA10571D14872304";
+    final WorkSolution TB_WORK = new WorkSolution("8017b5301c0b822c");
+    final String TB_PREVIOUS = "91862D068AB5F836360738002EBB421B0A89996CF1AF64E1C9D400B2410BEDF0";
+    final NanoAccount TB_DESTINATION = NanoAccount.parseAddress(
+            "nano_14ghgrw1y9itsopkyscpofbpgrjr6hoy1qug4gda3utunrq11xzee9yfhtg3");
+    final NanoAmount TB_BALANCE = new NanoAmount("689999000000000000000000000000");
+    
+    final SendBlock TEST_BLOCK = new SendBlock(TB_SIGNATURE, TB_WORK, TB_PREVIOUS, TB_DESTINATION, TB_BALANCE);
+    
+    final String TEST_BLOCK_JSON = "{\n" +
+            "    \"type\": \"send\",\n" +
+            "    \"previous\": \"91862D068AB5F836360738002EBB421B0A89996CF1AF64E1C9D400B2410BEDF0\",\n" +
+            "    \"destination\": \"nano_14ghgrw1y9itsopkyscpofbpgrjr6hoy1qug4gda3utunrq11xzee9yfhtg3\",\n" +
+            "    \"balance\": \"689999000000000000000000000000\",\n" +
+            "    \"work\": \"8017b5301c0b822c\",\n" +
+            "    \"signature\": \"DEE5EC5D771E92B5DE3C76EBFE8FE844284A3AFCA32D6183643BA1B553C75F2377A1138DB620832D65" +
+            "57C0AD46D804D577F372C592C1D05DDA10571D14872304\"\n" +
+            "  }";
     
     
     @Test
+    public void testParse() {
+        SendBlock block = SendBlock.parse(TEST_BLOCK_JSON);
+        assertEquals(block, TEST_BLOCK);
+        assertEquals(TB_SIGNATURE, block.getSignature());
+        assertEquals(TB_WORK, block.getWorkSolution());
+        assertEquals(TB_PREVIOUS, block.getPreviousBlockHash());
+        assertEquals(TB_BALANCE, block.getBalance());
+        assertEquals(TB_DESTINATION, block.getDestinationAccount());
+    }
+    
+    @Test
+    public void testEquality() {
+        SendBlock b1 = SendBlock.parse(TEST_BLOCK_JSON);
+        SendBlock b2 = SendBlock.parse(TEST_BLOCK_JSON);
+        assertEquals(b1, b2);
+        assertTrue(b1.contentEquals(b2));
+        assertTrue(b2.contentEquals(b1));
+    }
+    
+    @Test
     public void testHashing() {
-        assertEquals("1DB1218A2FE2CB023E93FFDA68F6DB04EB18F6B84D905D6442EE51B3E99B4CB7", TEST_BLOCK.getHash());
+        assertEquals("8DAA2C593B4D1D0EA44DF7A84C91167E991D7EC6E08333CDCD7B7082B68B1E08", TEST_BLOCK.getHash());
     }
     
     @Test

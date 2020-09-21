@@ -11,19 +11,51 @@ import uk.oczadly.karl.jnano.model.work.WorkSolution;
 import uk.oczadly.karl.jnano.util.NanoConstants;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ChangeBlockTest {
     
-    final ChangeBlock TEST_BLOCK = new ChangeBlock("9F0C933C8ADE004D808EA1985FA746A7E95BA2A38F867640F53EC8F180BDFE9" +
-            "E2C1268DEAD7C2664F356E37ABA362BC58E46DBA03E523A7B5A19E4B6EB12BB02",
-            new WorkSolution("62f05417dd3fb691"),
-            "991CF190094C00F0B68E2E5F75F6BEE95A2E0BD93CEAA4A6734DB9F19B728948",
-            NanoAccount.parseAddress("nano_3robocazheuxet5ju1gtif4cefkhfbupkykc97hfanof859ie9ajpdfhy3ez"));
+    final String TB_SIGNATURE = "1D1A887AECC4A1C581D5CFC64E60B1AFAA6F820EB60FB581FE23D0A2C8AD5DC948311F2E872BC83B6D2" +
+            "53BDA7FEC4905E0E724006A7E2E4F5A2A6CB671695B09";
+    final WorkSolution TB_WORK = new WorkSolution("9bbddcc234c0e623");
+    final String TB_PREVIOUS = "279C791486FF3796BDEDF1B85A5349C172B4892F50BA22016C44F836BDC95993";
+    final NanoAccount TB_REP = NanoAccount.parseAddress(
+            "nano_1asau6gr8ft5ykynpkauctrq1w37sdasdymuigtxotim6kxoa3rgn3dpenis");
+    
+    final ChangeBlock TEST_BLOCK = new ChangeBlock(TB_SIGNATURE, TB_WORK, TB_PREVIOUS, TB_REP);
+    
+    final String TEST_BLOCK_JSON = "{\n" +
+            "    \"type\": \"change\",\n" +
+            "    \"previous\": \"279C791486FF3796BDEDF1B85A5349C172B4892F50BA22016C44F836BDC95993\",\n" +
+            "    \"representative\": \"nano_1asau6gr8ft5ykynpkauctrq1w37sdasdymuigtxotim6kxoa3rgn3dpenis\",\n" +
+            "    \"work\": \"9bbddcc234c0e623\",\n" +
+            "    \"signature\": \"1D1A887AECC4A1C581D5CFC64E60B1AFAA6F820EB60FB581FE23D0A2C8AD5DC948311F2E872BC83B6D2" +
+            "53BDA7FEC4905E0E724006A7E2E4F5A2A6CB671695B09\"\n" +
+            "  }";
     
     
     @Test
+    public void testParse() {
+        ChangeBlock block = ChangeBlock.parse(TEST_BLOCK_JSON);
+        assertEquals(block, TEST_BLOCK);
+        assertEquals(TB_SIGNATURE, block.getSignature());
+        assertEquals(TB_WORK, block.getWorkSolution());
+        assertEquals(TB_PREVIOUS, block.getPreviousBlockHash());
+        assertEquals(TB_REP, block.getRepresentative());
+    }
+    
+    @Test
+    public void testEquality() {
+        ChangeBlock b1 = ChangeBlock.parse(TEST_BLOCK_JSON);
+        ChangeBlock b2 = ChangeBlock.parse(TEST_BLOCK_JSON);
+        assertEquals(b1, b2);
+        assertTrue(b1.contentEquals(b2));
+        assertTrue(b2.contentEquals(b1));
+    }
+    
+    @Test
     public void testHashing() {
-        assertEquals("1D8B97BD8BD4F06FF46CA158A079C2E92CDC27EB6A95AE0B6A4F136564FB5F62", TEST_BLOCK.getHash());
+        assertEquals("91862D068AB5F836360738002EBB421B0A89996CF1AF64E1C9D400B2410BEDF0", TEST_BLOCK.getHash());
     }
     
     @Test

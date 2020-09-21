@@ -9,19 +9,50 @@ import org.junit.Test;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ReceiveBlockTest {
     
-    final ReceiveBlock TEST_BLOCK = new ReceiveBlock("9F0C933C8ADE004D808EA1985FA746A7E95BA2A38F867640F53EC8F180BDF" +
-            "E9E2C1268DEAD7C2664F356E37ABA362BC58E46DBA03E523A7B5A19E4B6EB12BB02",
-            new WorkSolution("62f05417dd3fb691"),
-            "991CF190094C00F0B68E2E5F75F6BEE95A2E0BD93CEAA4A6734DB9F19B728948",
-            "191CF190094C00F0B68E2E5F75F6BEE95A2E0BD93CEAA4A6734DB9F19B728948");
+    final String TB_SIGNATURE = "4A7BC7E8B48BFBA5ECA937511DAE541EB4672097EE3C1DB1BDE398902046057BB69B43638EC0BF25745" +
+            "F6C6D825D90264A9297CAFFA0CDB32AD3728B5A5B6507";
+    final WorkSolution TB_WORK = new WorkSolution("6671aa4926656605");
+    final String TB_SOURCE = "8876A4CB68DBFF02C79EC6B1E1F77574FCD86808184DEC69515AE25204FEE94A";
+    final String TB_PREVIOUS = "8DAA2C593B4D1D0EA44DF7A84C91167E991D7EC6E08333CDCD7B7082B68B1E08";
+    
+    final ReceiveBlock TEST_BLOCK = new ReceiveBlock(TB_SIGNATURE, TB_WORK, TB_PREVIOUS, TB_SOURCE);
+    
+    final String TEST_BLOCK_JSON = "{\n" +
+            "    \"type\": \"receive\",\n" +
+            "    \"previous\": \"8DAA2C593B4D1D0EA44DF7A84C91167E991D7EC6E08333CDCD7B7082B68B1E08\",\n" +
+            "    \"source\": \"8876A4CB68DBFF02C79EC6B1E1F77574FCD86808184DEC69515AE25204FEE94A\",\n" +
+            "    \"work\": \"6671aa4926656605\",\n" +
+            "    \"signature\": \"4A7BC7E8B48BFBA5ECA937511DAE541EB4672097EE3C1DB1BDE398902046057BB69B43638EC0BF25745" +
+            "F6C6D825D90264A9297CAFFA0CDB32AD3728B5A5B6507\"\n" +
+            "  }";
     
     
     @Test
+    public void testParse() {
+        ReceiveBlock block = ReceiveBlock.parse(TEST_BLOCK_JSON);
+        assertEquals(block, TEST_BLOCK);
+        assertEquals(TB_SIGNATURE, block.getSignature());
+        assertEquals(TB_WORK, block.getWorkSolution());
+        assertEquals(TB_SOURCE, block.getSourceBlockHash());
+        assertEquals(TB_PREVIOUS, block.getPreviousBlockHash());
+    }
+    
+    @Test
+    public void testEquality() {
+        ReceiveBlock b1 = ReceiveBlock.parse(TEST_BLOCK_JSON);
+        ReceiveBlock b2 = ReceiveBlock.parse(TEST_BLOCK_JSON);
+        assertEquals(b1, b2);
+        assertTrue(b1.contentEquals(b2));
+        assertTrue(b2.contentEquals(b1));
+    }
+    
+    @Test
     public void testHashing() {
-        assertEquals("A9F2260E1348A0922C8417A6CB2F36A90C11D7F52B24C514D22AEAD367BB1F01", TEST_BLOCK.getHash());
+        assertEquals("E4DED3970463EE415F70269CC10722473B1B381FA55CFF4D738FDDC32EF7B62D", TEST_BLOCK.getHash());
     }
     
     @Test
