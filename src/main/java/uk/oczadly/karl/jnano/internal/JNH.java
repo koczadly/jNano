@@ -7,6 +7,8 @@ package uk.oczadly.karl.jnano.internal;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.gsonadapters.ArrayTypeAdapterFactoryFix;
 import uk.oczadly.karl.jnano.internal.gsonadapters.BigIntSerializer;
@@ -189,6 +191,18 @@ public class JNH {
     
     public static <T, U> T nullable(U obj, Function<U, T> func) {
         return obj != null ? func.apply(obj) : null;
+    }
+    
+    public static <T> T getJson(JsonObject json, String key, Function<String, T> func) {
+        if (json == null) return null;
+        JsonElement element = json.get(key);
+        return element != null ? func.apply(element.getAsString()) : null;
+    }
+    
+    public static String getJson(JsonObject json, String key) {
+        if (json == null) return null;
+        JsonElement element = json.get(key);
+        return element != null ? element.getAsString() : null;
     }
     
     public static <C, R> R instanceOf(Object obj, Class<C> clazz, R def, Function<C, R> sup) {

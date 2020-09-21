@@ -30,11 +30,11 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     
     /** A function which converts a {@link JsonObject} into a {@link SendBlock} instance. */
     public static final Function<JsonObject, SendBlock> DESERIALIZER = json -> new SendBlock(
-            json.get("signature").getAsString(),
-            new WorkSolution(json.get("work").getAsString()),
-            json.get("previous").getAsString(),
-            NanoAccount.parseAddress(json.get("destination").getAsString()),
-            new NanoAmount(json.get("balance").getAsString()));
+            JNH.getJson(json, "signature"),
+            JNH.getJson(json, "work", WorkSolution::new),
+            JNH.getJson(json, "previous"),
+            JNH.getJson(json, "destination", NanoAccount::parseAddress),
+            (NanoAmount)JNH.getJson(json, "balance", NanoAmount::new));
     
     private static final BlockIntent INTENT = new BlockIntent(true, false, false, false, false, false);
     

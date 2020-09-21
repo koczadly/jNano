@@ -27,10 +27,10 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     
     /** A function which converts a {@link JsonObject} into a {@link ReceiveBlock} instance. */
     public static final Function<JsonObject, ReceiveBlock> DESERIALIZER = json -> new ReceiveBlock(
-            json.get("signature").getAsString(),
-            JNH.nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
-            json.get("previous").getAsString(),
-            json.get("source").getAsString());
+            JNH.getJson(json, "signature"),
+            JNH.getJson(json, "work", WorkSolution::new),
+            JNH.getJson(json, "previous"),
+            JNH.getJson(json, "source"));
     
     private static final BlockIntent INTENT = new BlockIntent(false, true, false, false, false, false);
     

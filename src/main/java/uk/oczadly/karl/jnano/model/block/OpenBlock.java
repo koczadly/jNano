@@ -29,11 +29,11 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     
     /** A function which converts a {@link JsonObject} into a {@link OpenBlock} instance. */
     public static final Function<JsonObject, OpenBlock> DESERIALIZER = json -> new OpenBlock(
-            json.get("signature").getAsString(),
-            JNH.nullable(json.get("work"), o -> new WorkSolution(o.getAsString())),
-            json.get("source").getAsString(),
-            NanoAccount.parseAddress(json.get("account").getAsString()),
-            NanoAccount.parseAddress(json.get("representative").getAsString()));
+            JNH.getJson(json, "signature"),
+            JNH.getJson(json, "work", WorkSolution::new),
+            JNH.getJson(json, "source"),
+            JNH.getJson(json, "account", NanoAccount::parseAddress),
+            JNH.getJson(json, "representative", NanoAccount::parseAddress));
     
     private static final BlockIntent INTENT = new BlockIntent(false, true, true, true, false, false);
     private static final BlockIntent INTENT_GENESIS = new BlockIntent(false, true, true, true, false, true);
