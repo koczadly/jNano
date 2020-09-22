@@ -8,10 +8,10 @@ package uk.oczadly.karl.jnano.callback;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import uk.oczadly.karl.jnano.callback.httpserver.HttpCallback;
 import uk.oczadly.karl.jnano.callback.httpserver.HttpRequest;
 import uk.oczadly.karl.jnano.callback.httpserver.HttpServerThread;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
@@ -123,7 +123,7 @@ public class BlockCallbackServer {
     private class HttpCallbackProcessor implements HttpCallback {
         @Override
         public void onRequest(HttpRequest request) {
-            JsonObject json = JsonParser.parseString(request.getBody()).getAsJsonObject();
+            JsonObject json = JNH.parseJson(request.getBody());
             
             Block block = gson.fromJson(json.get("block"), Block.class);
             

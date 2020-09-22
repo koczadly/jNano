@@ -6,7 +6,6 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
@@ -107,7 +106,7 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
      * @see Block#parse(String)
      */
     public static ChangeBlock parse(String json) {
-        return parse(JsonParser.parseString(json).getAsJsonObject());
+        return parse(JNH.parseJson(json));
     }
     
     /**

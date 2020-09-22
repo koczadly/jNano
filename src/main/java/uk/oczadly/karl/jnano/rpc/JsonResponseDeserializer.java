@@ -5,7 +5,10 @@
 
 package uk.oczadly.karl.jnano.rpc;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.rpc.exception.*;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
@@ -49,7 +52,7 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
         
         try {
             // Parse response into JSON
-            JsonObject responseJson = JsonParser.parseString(response).getAsJsonObject();
+            JsonObject responseJson = JNH.parseJson(response);
             
             // Check for returned RPC error
             JsonElement errorElement = responseJson.get("error");

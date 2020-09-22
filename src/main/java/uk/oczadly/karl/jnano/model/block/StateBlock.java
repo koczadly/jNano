@@ -6,7 +6,6 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
@@ -239,7 +238,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      * @see Block#parse(String)
      */
     public static StateBlock parse(String json) {
-        return parse(JsonParser.parseString(json).getAsJsonObject());
+        return parse(JNH.parseJson(json));
     }
     
     /**

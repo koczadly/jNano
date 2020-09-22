@@ -6,10 +6,10 @@
 package uk.oczadly.karl.jnano.rpc;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.junit.Test;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 
@@ -27,7 +27,7 @@ public class JsonRequestSerializerTest {
         String json = new JsonRequestSerializer().serialize(req);
         
         assertNotNull(json);
-        JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
+        JsonObject obj = JNH.parseJson(json);
         assertEquals("test_command", obj.get("action").getAsString());
         assertEquals(69, obj.get("val_a").getAsInt());
         assertEquals(420, obj.get("val_b").getAsInt());

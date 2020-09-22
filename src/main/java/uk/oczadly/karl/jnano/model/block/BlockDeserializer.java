@@ -6,6 +6,7 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.*;
+import uk.oczadly.karl.jnano.internal.JNH;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -169,7 +170,7 @@ public final class BlockDeserializer {
             // Check if string — sometimes blocks are passed as string representations
             JsonObject jsonObj = element.isJsonObject()
                     ? element.getAsJsonObject()
-                    : JsonParser.parseString(element.getAsString()).getAsJsonObject();
+                    : JNH.parseJson(element.getAsString());
             return deserializer.deserialize(jsonObj);
         }
         

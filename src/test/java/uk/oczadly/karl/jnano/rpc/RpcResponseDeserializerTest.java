@@ -6,8 +6,8 @@
 package uk.oczadly.karl.jnano.rpc;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.junit.Test;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.rpc.exception.RpcException;
 import uk.oczadly.karl.jnano.rpc.exception.RpcInvalidResponseException;
 import uk.oczadly.karl.jnano.rpc.response.ResponseVersion;
@@ -38,7 +38,7 @@ public class RpcResponseDeserializerTest {
     
     @Test
     public void testRawJsonObject() throws RpcException {
-        JsonObject json = JsonParser.parseString("{\"rpc_version\":\"123\"}").getAsJsonObject();
+        JsonObject json = JNH.parseJson("{\"rpc_version\":\"123\"}");
         
         ResponseVersion response = deserializer.deserialize(json.toString(), ResponseVersion.class);
         assertNotNull(response.getRawResponseJson());

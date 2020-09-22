@@ -6,9 +6,9 @@
 package uk.oczadly.karl.jnano.websocket;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import uk.oczadly.karl.jnano.internal.JNH;
 
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
@@ -36,7 +36,7 @@ class WebSocketHandler extends WebSocketClient {
     
     @Override
     public void onMessage(String message) {
-        JsonObject json = JsonParser.parseString(message).getAsJsonObject();
+        JsonObject json = JNH.parseJson(message);
         boolean handled = false;
         
         if (json.has("ack") && json.has("id")) {

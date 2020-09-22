@@ -5,10 +5,7 @@
 
 package uk.oczadly.karl.jnano.internal;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.gsonadapters.ArrayTypeAdapterFactoryFix;
 import uk.oczadly.karl.jnano.internal.gsonadapters.BigIntSerializer;
@@ -203,6 +200,10 @@ public class JNH {
         if (json == null) return null;
         JsonElement element = json.get(key);
         return element != null ? element.getAsString() : null;
+    }
+    
+    public static JsonObject parseJson(String json) {
+        return JsonParser.parseString(json).getAsJsonObject();
     }
     
     public static <C, R> R instanceOf(Object obj, Class<C> clazz, R def, Function<C, R> sup) {

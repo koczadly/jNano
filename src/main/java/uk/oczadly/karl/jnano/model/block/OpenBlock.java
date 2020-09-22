@@ -6,7 +6,6 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
@@ -118,7 +117,7 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
      * @see Block#parse(String)
      */
     public static OpenBlock parse(String json) {
-        return parse(JsonParser.parseString(json).getAsJsonObject());
+        return parse(JNH.parseJson(json));
     }
     
     /**
