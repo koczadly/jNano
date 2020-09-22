@@ -6,8 +6,12 @@
 package uk.oczadly.karl.jnano.model.work;
 
 import org.junit.Test;
+import uk.oczadly.karl.jnano.TestBlock;
 import uk.oczadly.karl.jnano.TestConstants;
-import uk.oczadly.karl.jnano.model.block.*;
+import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.block.ChangeBlock;
+import uk.oczadly.karl.jnano.model.block.OpenBlock;
+import uk.oczadly.karl.jnano.model.block.StateBlock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
@@ -40,18 +44,8 @@ public class WorkSolutionTest {
         assertEquals(openBlock.getAccount().toPublicKey(), WorkSolution.getRoot(openBlock));
         
         // Error
-        Block invalidBlock = new Block("test", null, null) {
-            @Override
-            public BlockIntent getIntent() {
-                return null;
-            }
-            
-            @Override
-            protected byte[][] generateHashables() {
-                return new byte[0][];
-            }
-        };
-        assertThrows(IllegalArgumentException.class,() -> WorkSolution.getRoot(invalidBlock));
+        Block invalidBlock = new TestBlock();
+        assertThrows(IllegalArgumentException.class, () -> WorkSolution.getRoot(invalidBlock));
     }
     
 }

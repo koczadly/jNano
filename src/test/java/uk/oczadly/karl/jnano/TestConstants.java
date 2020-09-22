@@ -16,7 +16,8 @@ import java.util.Random;
 
 public class TestConstants {
     
-    private static final Random RANDOM = new Random(420);
+    public static final Random RANDOM = new Random();
+    
     
     
     public static String randHex(int len) {
@@ -28,10 +29,6 @@ public class TestConstants {
     
     
     public static NanoAccount randAccount() {
-        return randAccount(NanoAccount.DEFAULT_PREFIX);
-    }
-    
-    public static NanoAccount randAccount(String prefix) {
         byte[] bytes = new byte[32];
         RANDOM.nextBytes(bytes);
         return new NanoAccount(bytes);
@@ -56,6 +53,7 @@ public class TestConstants {
         return new SendBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHex(64), randAccount(),
                 randBalance());
     }
+    
     public static ReceiveBlock randReceiveBlock() {
         return new ReceiveBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHex(64), randHex(64));
     }
@@ -70,6 +68,10 @@ public class TestConstants {
                 .setLinkData(randHex(64))
                 .setBalance(randBalance());
                 
+    }
+    
+    public static TestBlock randTestBlock() {
+        return new TestBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHex(64));
     }
 
 }

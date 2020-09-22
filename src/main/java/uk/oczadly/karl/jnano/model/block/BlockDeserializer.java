@@ -16,10 +16,13 @@ import java.util.function.Function;
 
 /**
  * This class can be used to convert raw JSON objects into the appropriate block objects.
+ *
+ * <p>To construct an instance of this class, use the {@link #withDefaults()} or {@link #withNone()} static methods.</p>
  */
 public final class BlockDeserializer {
     
     static final BlockDeserializer DEFAULT = BlockDeserializer.withDefaults();
+    
     
     private final Map<String, Function<JsonObject, ? extends Block>> deserializers = new ConcurrentHashMap<>();
     
@@ -106,9 +109,11 @@ public final class BlockDeserializer {
     
     
     /**
-     * Constructs a new BlockDeserializer with the default supported block deserializers.
+     * Constructs a new BlockDeserializer with the standard supported block types.
+     *
      * <p>The following types are supported by default: {@link StateBlock state}, {@link ChangeBlock change},
      * {@link OpenBlock open}, {@link ReceiveBlock receive}, {@link SendBlock send}.</p>
+     *
      * @return a newly created BlockDeserializer object
      */
     public static BlockDeserializer withDefaults() {
@@ -118,8 +123,11 @@ public final class BlockDeserializer {
     }
     
     /**
-     * Constructs a new BlockDeserializer without any of the default block deserializers. You will need to register
-     * new deserializers for this to work.
+     * Constructs a new BlockDeserializer without any of the default block deserializers.
+     *
+     * <p>You will need to register new deserializers for this to have any function, using the
+     * {@link #registerDeserializer(String, Function)} method.</p>
+     *
      * @return a newly created BlockDeserializer object
      */
     public static BlockDeserializer withNone() {
