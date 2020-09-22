@@ -55,7 +55,9 @@ public class TestBlock extends Block {
     
     @Override
     protected byte[][] generateHashables() {
-        return null;
+        return new byte[][] {
+                (getVal() != null ? getVal().getBytes() : new byte[0])
+        };
     }
     
     @Override
