@@ -270,8 +270,8 @@ public abstract class Block implements IBlock {
      * Parses a block from a given JSON string using the default deserializer.
      * <p>The following types are supported: {@link StateBlock state}, {@link ChangeBlock change}, {@link OpenBlock
      * open}, {@link ReceiveBlock receive}, {@link SendBlock send}.</p>
-     * @param json the json to parse from
-     * @return a block object derived from the provided JSON
+     * @param json the JSON data to parse from
+     * @return a new {@link Block} constructed from the given JSON data
      * @throws BlockDeserializer.BlockParseException if the block cannot be correctly parsed
      * @see BlockDeserializer
      */
@@ -283,8 +283,8 @@ public abstract class Block implements IBlock {
      * Parses a block from a given {@link JsonObject} instance using the default deserializer.
      * <p>The following types are supported: {@link StateBlock state}, {@link ChangeBlock change}, {@link OpenBlock
      * open}, {@link ReceiveBlock receive}, {@link SendBlock send}.</p>
-     * @param json the json to parse from
-     * @return a block object derived from the provided JSON
+     * @param json the JSON data to parse from
+     * @return a new {@link Block} constructed from the given JSON data
      * @throws BlockDeserializer.BlockParseException if the block cannot be correctly parsed
      * @see BlockDeserializer
      */

@@ -231,9 +231,9 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     
     
     /**
-     * Parses a block from a given JSON string using the default deserializer.
-     * @param json the json to parse from
-     * @return a block object derived from the provided JSON
+     * Parses a {@code state} block from a given JSON string using the default deserializer.
+     * @param json the JSON data to parse from
+     * @return a new {@link StateBlock} constructed from the given JSON data
      * @throws BlockDeserializer.BlockParseException if the block cannot be correctly parsed
      * @see BlockDeserializer
      * @see Block#parse(String)
@@ -243,9 +243,9 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     }
     
     /**
-     * Parses a block from a given {@link JsonObject} instance using the default deserializer.
-     * @param json the json to parse from
-     * @return a block object derived from the provided JSON
+     * Parses a {@code state} block from a given {@link JsonObject} instance using the default deserializer.
+     * @param json the JSON data to parse from
+     * @return a new {@link StateBlock} constructed from the given JSON data
      * @throws BlockDeserializer.BlockParseException if the block cannot be correctly parsed
      * @see BlockDeserializer
      * @see Block#parse(JsonObject)
