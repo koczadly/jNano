@@ -6,6 +6,7 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
@@ -275,7 +276,11 @@ public abstract class Block implements IBlock {
      * @see BlockDeserializer
      */
     public static Block parse(String json) {
-        return parse(JNH.parseJson(json));
+        try {
+            return parse(JNH.parseJson(json));
+        } catch (JsonParseException e) {
+            throw new BlockDeserializer.BlockParseException(e);
+        }
     }
     
     /**

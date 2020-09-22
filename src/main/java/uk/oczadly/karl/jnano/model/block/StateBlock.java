@@ -238,7 +238,12 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      * @see Block#parse(String)
      */
     public static StateBlock parse(String json) {
-        return parse(JNH.parseJson(json));
+        Block b = Block.parse(json);
+        try {
+            return (StateBlock)b;
+        } catch (ClassCastException e) {
+            throw new BlockDeserializer.BlockParseException("Block is not a state block.", e);
+        }
     }
     
     /**

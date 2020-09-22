@@ -122,7 +122,12 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
      * @see Block#parse(String)
      */
     public static SendBlock parse(String json) {
-        return parse(JNH.parseJson(json));
+        Block b = Block.parse(json);
+        try {
+            return (SendBlock)b;
+        } catch (ClassCastException e) {
+            throw new BlockDeserializer.BlockParseException("Block is not a send block.", e);
+        }
     }
     
     /**

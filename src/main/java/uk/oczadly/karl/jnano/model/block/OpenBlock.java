@@ -117,7 +117,12 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
      * @see Block#parse(String)
      */
     public static OpenBlock parse(String json) {
-        return parse(JNH.parseJson(json));
+        Block b = Block.parse(json);
+        try {
+            return (OpenBlock)b;
+        } catch (ClassCastException e) {
+            throw new BlockDeserializer.BlockParseException("Block is not an open block.", e);
+        }
     }
     
     /**

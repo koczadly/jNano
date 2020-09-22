@@ -106,7 +106,12 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
      * @see Block#parse(String)
      */
     public static ChangeBlock parse(String json) {
-        return parse(JNH.parseJson(json));
+        Block b = Block.parse(json);
+        try {
+            return (ChangeBlock)b;
+        } catch (ClassCastException e) {
+            throw new BlockDeserializer.BlockParseException("Block is not a change block.", e);
+        }
     }
     
     /**

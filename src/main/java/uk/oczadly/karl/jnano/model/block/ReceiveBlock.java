@@ -99,7 +99,12 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
      * @see Block#parse(String)
      */
     public static ReceiveBlock parse(String json) {
-        return parse(JNH.parseJson(json));
+        Block b = Block.parse(json);
+        try {
+            return (ReceiveBlock)b;
+        } catch (ClassCastException e) {
+            throw new BlockDeserializer.BlockParseException("Block is not a receive block.", e);
+        }
     }
     
     /**
