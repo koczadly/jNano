@@ -39,7 +39,7 @@ public class BlockDeserializerTest {
     @Test
     public void testDeserialize() {
         final String SIG = TestConstants.randHex(128);
-        final String WORK = TestConstants.randHex(16).toLowerCase();
+        final WorkSolution WORK = new WorkSolution(TestConstants.RANDOM.nextLong());
         final String VAL = "12345";
         
         BlockDeserializer des = BlockDeserializer.withNone();
@@ -48,20 +48,20 @@ public class BlockDeserializerTest {
         JsonObject json1 = new JsonObject();
         json1.addProperty("type", "test");
         json1.addProperty("signature", SIG);
-        json1.addProperty("work", WORK);
+        json1.addProperty("work", WORK.getAsHexadecimal());
         json1.addProperty("val", VAL);
         Block block1 = des.deserialize(json1);
         assertNotNull(block1);
         assertTrue(block1 instanceof TestBlock);
         TestBlock tb = (TestBlock)block1;
         assertEquals(SIG, tb.getSignature());
-        assertEquals(new WorkSolution(WORK), tb.getWorkSolution());
+        assertEquals(WORK, tb.getWorkSolution());
         assertEquals(VAL, tb.getVal());
         // Invalid block type
         JsonObject json2 = new JsonObject();
         json2.addProperty("type", "slug");
         json2.addProperty("signature", SIG);
-        json2.addProperty("work", WORK);
+        json2.addProperty("work", WORK.getAsHexadecimal());
         json2.addProperty("val", VAL);
         assertThrows(BlockDeserializer.BlockParseException.class, () -> des.deserialize(json2));
         // Empty json
