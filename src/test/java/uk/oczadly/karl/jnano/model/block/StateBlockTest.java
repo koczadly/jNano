@@ -5,6 +5,7 @@
 
 package uk.oczadly.karl.jnano.model.block;
 
+import com.google.gson.JsonObject;
 import org.junit.Test;
 import uk.oczadly.karl.jnano.TestConstants;
 import uk.oczadly.karl.jnano.internal.JNH;
@@ -240,6 +241,13 @@ public class StateBlockTest {
                 TestConstants.randStateBlock().setSubtype(StateBlockSubType.EPOCH).build().getLinkType());
         assertEquals(IBlockLink.LinkType.NOT_USED,
                 TestConstants.randStateBlock().setSubtype(StateBlockSubType.CHANGE).build().getLinkType());
+    }
+    
+    @Test
+    public void testToJson() {
+        JsonObject expected = JNH.parseJson(TEST_BLOCK_JSON);
+        assertEquals(expected, TEST_BLOCK.toJsonObject());
+        assertEquals(expected, JNH.parseJson(TEST_BLOCK.toJsonString()));
     }
     
 }

@@ -5,7 +5,9 @@
 
 package uk.oczadly.karl.jnano.model.block;
 
+import com.google.gson.JsonObject;
 import org.junit.Test;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
@@ -71,6 +73,13 @@ public class OpenBlockTest {
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isSendFunds());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isTransactional());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSpecial());
+    }
+    
+    @Test
+    public void testToJson() {
+        JsonObject expected = JNH.parseJson(TEST_BLOCK_JSON);
+        assertEquals(expected, TEST_BLOCK.toJsonObject());
+        assertEquals(expected, JNH.parseJson(TEST_BLOCK.toJsonString()));
     }
     
 }
