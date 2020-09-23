@@ -238,12 +238,8 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      * @see Block#parse(String)
      */
     public static StateBlock parse(String json) {
-        Block b = Block.parse(json);
-        try {
-            return (StateBlock)b;
-        } catch (ClassCastException e) {
-            throw new BlockDeserializer.BlockParseException("Block is not a state block.", e);
-        }
+        return JNH.tryRethrow(Block.parse(json), b -> (StateBlock)b,
+                e -> new BlockDeserializer.BlockParseException("Block is not a state block.", e));
     }
     
     /**
@@ -255,12 +251,8 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      * @see Block#parse(JsonObject)
      */
     public static StateBlock parse(JsonObject json) {
-        Block b = Block.parse(json);
-        try {
-            return (StateBlock)b;
-        } catch (ClassCastException e) {
-            throw new BlockDeserializer.BlockParseException("Block is not a state block.", e);
-        }
+        return JNH.tryRethrow(Block.parse(json), b -> (StateBlock)b,
+                e -> new BlockDeserializer.BlockParseException("Block is not a state block.", e));
     }
     
 }

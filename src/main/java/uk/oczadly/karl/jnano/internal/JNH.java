@@ -12,6 +12,7 @@ import uk.oczadly.karl.jnano.internal.gsonadapters.BigIntSerializer;
 import uk.oczadly.karl.jnano.internal.gsonadapters.BooleanTypeDeserializer;
 import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
 import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
+import uk.oczadly.karl.jnano.internal.utils.Functions;
 import uk.oczadly.karl.jnano.util.NanoConstants;
 
 import java.math.BigInteger;
@@ -206,6 +207,23 @@ public class JNH {
         JsonElement element = JsonParser.parseString(json);
         if (element.isJsonObject()) return element.getAsJsonObject();
         throw new JsonParseException("Not a JSON object.");
+    }
+    
+    public static <T, U> U tryRethrow(T obj, Functions.UncheckedFunction<T, U> func,
+                                      Function<Exception, ? extends RuntimeException> exceptionSupplier) {
+        try {
+            return func.apply(obj);
+        } catch (Exception e) {
+            throw exceptionSupplier.apply(e);
+        }
+    }
+    
+    public static <T> T tryRethrow(Callable<T> func, Function<Exception, ? extends RuntimeException> exceptionSupplier) {
+        try {
+            return func.call();
+        } catch (Exception e) {
+            throw exceptionSupplier.apply(e);
+        }
     }
     
     public static <C, R> R instanceOf(Object obj, Class<C> clazz, R def, Function<C, R> sup) {

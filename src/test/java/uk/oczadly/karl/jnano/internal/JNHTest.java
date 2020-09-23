@@ -6,6 +6,7 @@
 package uk.oczadly.karl.jnano.internal;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import org.junit.Test;
 import uk.oczadly.karl.jnano.util.NanoConstants;
 
@@ -106,7 +107,7 @@ public class JNHTest {
     }
     
     @Test
-    public void testJson() {
+    public void testJsonParams() {
         JsonObject obj = new JsonObject();
         obj.addProperty("val1", 101);
     
@@ -121,9 +122,29 @@ public class JNHTest {
     }
     
     @Test
+    public void testParseJson() {
+        assertEquals(123, JNH.parseJson("{\"val\":123}").get("val").getAsInt());
+        assertThrows(JsonParseException.class, () -> JNH.parseJson("\"s\""));
+        assertThrows(JsonParseException.class, () -> JNH.parseJson("\""));
+    }
+    
+    @Test
     public void testMax() {
         assertEquals(200, (int)JNH.max(4, 7, 2, 9, 200, 1));
         assertEquals(7, (int)JNH.max(4, 7, 2, 7, 3, -4));
+    }
+    
+    @SuppressWarnings("NumericOverflow")
+    @Test
+    public void testTryRethrow() {
+        // Return
+        assertEquals(123, (int)JNH.tryRethrow(() -> 123, RuntimeException::new));
+        assertEquals(246, (int)JNH.tryRethrow(123, (o) -> o * 2, RuntimeException::new));
+        // Exception
+        assertThrows(IllegalArgumentException.class, () ->
+                JNH.tryRethrow(() -> { throw new Exception(); }, IllegalArgumentException::new));
+        assertThrows(IllegalArgumentException.class, () ->
+                JNH.tryRethrow("123", (o) -> { throw new Exception(o); }, IllegalArgumentException::new));
     }
     
 }

@@ -106,12 +106,8 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
      * @see Block#parse(String)
      */
     public static ChangeBlock parse(String json) {
-        Block b = Block.parse(json);
-        try {
-            return (ChangeBlock)b;
-        } catch (ClassCastException e) {
-            throw new BlockDeserializer.BlockParseException("Block is not a change block.", e);
-        }
+        return JNH.tryRethrow(Block.parse(json), b -> (ChangeBlock)b,
+                e -> new BlockDeserializer.BlockParseException("Block is not a change block.", e));
     }
     
     /**
@@ -123,12 +119,8 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
      * @see Block#parse(JsonObject)
      */
     public static ChangeBlock parse(JsonObject json) {
-        Block b = Block.parse(json);
-        try {
-            return (ChangeBlock)b;
-        } catch (ClassCastException e) {
-            throw new BlockDeserializer.BlockParseException("Block is not a change block.", e);
-        }
+        return JNH.tryRethrow(Block.parse(json), b -> (ChangeBlock)b,
+                e -> new BlockDeserializer.BlockParseException("Block is not a change block.", e));
     }
    
 }

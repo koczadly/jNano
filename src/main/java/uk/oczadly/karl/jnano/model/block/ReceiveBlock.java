@@ -99,12 +99,8 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
      * @see Block#parse(String)
      */
     public static ReceiveBlock parse(String json) {
-        Block b = Block.parse(json);
-        try {
-            return (ReceiveBlock)b;
-        } catch (ClassCastException e) {
-            throw new BlockDeserializer.BlockParseException("Block is not a receive block.", e);
-        }
+        return JNH.tryRethrow(Block.parse(json), b -> (ReceiveBlock)b,
+                e -> new BlockDeserializer.BlockParseException("Block is not a receive block.", e));
     }
     
     /**
@@ -116,12 +112,8 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
      * @see Block#parse(JsonObject)
      */
     public static ReceiveBlock parse(JsonObject json) {
-        Block b = Block.parse(json);
-        try {
-            return (ReceiveBlock)b;
-        } catch (ClassCastException e) {
-            throw new BlockDeserializer.BlockParseException("Block is not a receive block.", e);
-        }
+        return JNH.tryRethrow(Block.parse(json), b -> (ReceiveBlock)b,
+                e -> new BlockDeserializer.BlockParseException("Block is not a receive block.", e));
     }
     
 }
