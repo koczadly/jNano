@@ -234,9 +234,11 @@ public class JNH {
     public static <T extends Comparable<T>> T max(T...objects) {
         T max = null;
         for (T obj : objects) {
-            if (max == null || obj.compareTo(max) > 0)
+            if (max == null || max.compareTo(obj) < 0)
                 max = obj;
         }
+        if (max == null)
+            throw new IllegalArgumentException("No non-null values were provided.");
         return max;
     }
     
