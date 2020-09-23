@@ -12,6 +12,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
@@ -42,8 +43,7 @@ public class ResponseBlockInfo extends RpcResponse {
     @Expose @SerializedName("height")
     private long height;
     
-    @Expose @SerializedName("local_timestamp")
-    @JsonAdapter(InstantAdapter.Seconds.class)
+    @Expose @SerializedName("local_timestamp") @JsonAdapter(InstantAdapter.Seconds.class)
     private Instant timestamp;
     
     @Expose @SerializedName("confirmed")
@@ -120,11 +120,11 @@ public class ResponseBlockInfo extends RpcResponse {
         
         public BlockAdapter() {
             deserializer.registerDeserializer("send", json -> new SendBlock(
-                    json.get("signature").getAsString(),
-                    new WorkSolution(json.get("work").getAsString()),
-                    json.get("previous").getAsString(),
-                    NanoAccount.parseAddress(json.get("destination").getAsString()),
-                    new NanoAmount(new BigInteger(json.get("balance").getAsString(), 16))
+                    JNH.getJson(json, "signature"),
+                    JNH.getJson(json, "work", WorkSolution::new),
+                    JNH.getJson(json, "previous"),
+                    JNH.getJson(json, "destination", NanoAccount::parseAddress),
+                    (NanoAmount)JNH.getJson(json, "balance", s -> new NanoAmount(new BigInteger(s, 16)))
             ));
         }
         
