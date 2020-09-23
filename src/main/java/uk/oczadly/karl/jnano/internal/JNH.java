@@ -203,7 +203,9 @@ public class JNH {
     }
     
     public static JsonObject parseJson(String json) {
-        return JsonParser.parseString(json).getAsJsonObject();
+        JsonElement element = JsonParser.parseString(json);
+        if (element.isJsonObject()) return element.getAsJsonObject();
+        throw new JsonParseException("Not a JSON object.");
     }
     
     public static <C, R> R instanceOf(Object obj, Class<C> clazz, R def, Function<C, R> sup) {
