@@ -5,31 +5,24 @@
 
 package uk.oczadly.karl.jnano.model.block;
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.*;
+import com.google.gson.annotations.JsonAdapter;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * This class contains enum instances which each represent a sub-type of state block.
  */
+@JsonAdapter(StateBlockSubType.JsonAdapter.class)
 public enum StateBlockSubType {
     
-    @SerializedName("send")
     SEND        (true,   BlockType.SEND),
-    
-    @SerializedName("receive")
     RECEIVE     (true,   BlockType.RECEIVE),
-    
-    @SerializedName("open")
     OPEN        (true,   BlockType.OPEN),
-    
-    @SerializedName("change")
     CHANGE      (false,  BlockType.CHANGE),
-    
-    @SerializedName("epoch")
     EPOCH       (false,  null);
-    
     
     /**
      * @deprecated Use {@link #CHANGE} instead
@@ -105,6 +98,21 @@ public enum StateBlockSubType {
             return valueOf(name.toUpperCase());
         } catch (IllegalArgumentException e) {
             return null;
+        }
+    }
+    
+    
+    static class JsonAdapter implements JsonDeserializer<StateBlockSubType>, JsonSerializer<StateBlockSubType> {
+        @Override
+        public JsonElement serialize(StateBlockSubType src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(src.getProtocolName());
+        }
+        @Override
+        public StateBlockSubType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            StateBlockSubType subtype = StateBlockSubType.getFromName(json.getAsString());
+            if (subtype == null) throw new JsonParseException("Unrecognized StateBlockSubType value.");
+            return subtype;
         }
     }
     
