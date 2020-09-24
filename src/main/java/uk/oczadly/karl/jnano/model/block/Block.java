@@ -11,6 +11,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlock;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
@@ -27,12 +28,6 @@ import java.util.Objects;
  */
 @JsonAdapter(BlockDeserializer.JsonAdapter.class)
 public abstract class Block implements IBlock {
-    
-    /**
-     * The length of a hash string in hexadecimal. Multiply by 4 for number of bits.
-     */
-    protected static final int HASH_LENGTH = 64;
-    
     
     private transient volatile String hash;
     private transient volatile byte[] hashBytes;
@@ -74,9 +69,9 @@ public abstract class Block implements IBlock {
     private Block(BlockType type, String typeStr, String signature, WorkSolution workSolution) {
         if (type == null && typeStr == null)
             throw new IllegalArgumentException("Block type cannot be null.");
-        if (!JNH.isValidHex(hash, HASH_LENGTH))
+        if (!JNH.isValidHex(hash, NanoConst.LEN_HASH))
             throw new IllegalArgumentException("Block hash is invalid.");
-        if (!JNH.isValidHex(signature, 128))
+        if (!JNH.isValidHex(signature, NanoConst.LEN_SIGNATURE))
             throw new IllegalArgumentException("Block signature is invalid.");
         
         this.type = typeStr.toLowerCase();

@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockBalance;
@@ -59,7 +60,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
         super(BlockType.SEND, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNH.isValidHex(previousBlockHash, HASH_LENGTH))
+        if (!JNH.isValidHex(previousBlockHash, NanoConst.LEN_HASH))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (destinationAccount == null) throw new IllegalArgumentException("Block destination account cannot be null.");
         if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");

@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockSource;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
@@ -45,10 +46,10 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
         super(BlockType.RECEIVE, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNH.isValidHex(previousBlockHash, HASH_LENGTH))
+        if (!JNH.isValidHex(previousBlockHash, NanoConst.LEN_HASH))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (sourceBlockHash == null) throw new IllegalArgumentException("Source block hash cannot be null.");
-        if (!JNH.isValidHex(sourceBlockHash, HASH_LENGTH))
+        if (!JNH.isValidHex(sourceBlockHash, NanoConst.LEN_HASH))
             throw new IllegalArgumentException("Source block hash is invalid.");
         
         this.previousBlockHash = previousBlockHash;

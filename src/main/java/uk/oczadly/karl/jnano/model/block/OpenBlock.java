@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockRepresentative;
@@ -53,7 +54,7 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
         super(BlockType.OPEN, signature, work);
     
         if (sourceBlockHash == null) throw new IllegalArgumentException("Source block hash cannot be null.");
-        if (!JNH.isValidHex(sourceBlockHash, HASH_LENGTH))
+        if (!JNH.isValidHex(sourceBlockHash, NanoConst.LEN_HASH))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (accountAddress == null) throw new IllegalArgumentException("Block account cannot be null.");
         if (representativeAccount == null) throw new IllegalArgumentException("Block representative cannot be null.");

@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockRepresentative;
@@ -54,7 +55,7 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
         super(BlockType.CHANGE, signature, workSolution);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNH.isValidHex(previousBlockHash, HASH_LENGTH))
+        if (!JNH.isValidHex(previousBlockHash, NanoConst.LEN_HASH))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (representativeAccount == null) throw new IllegalArgumentException("Block representative cannot be null.");
         

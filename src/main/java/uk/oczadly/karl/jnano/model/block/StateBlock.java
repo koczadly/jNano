@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.interfaces.*;
@@ -110,14 +111,14 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
             throw new IllegalArgumentException("Subtype cannot be null.");
         if (previousBlockHash == null)
             throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNH.isValidHex(previousBlockHash, HASH_LENGTH))
+        if (!JNH.isValidHex(previousBlockHash, NanoConst.LEN_HASH))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (representativeAddress == null) throw new IllegalArgumentException("Block representative cannot be null.");
         if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");
         if (accountAddress == null) throw new IllegalArgumentException("Block account cannot be null.");
         if (linkAccount == null && linkData == null) // If no data field is specified
             throw new IllegalArgumentException("Link data/account cannot be null.");
-        if (!JNH.isValidHex(linkData, HASH_LENGTH))
+        if (!JNH.isValidHex(linkData, NanoConst.LEN_HASH))
             throw new IllegalArgumentException("Link data is invalid.");
         if (linkAccount != null && linkData != null && !linkAccount.toPublicKey().equals(linkData))
             throw new IllegalArgumentException("Both link types were specified, but their values did not match.");

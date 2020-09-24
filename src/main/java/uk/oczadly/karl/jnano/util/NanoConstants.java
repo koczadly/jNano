@@ -6,11 +6,13 @@
 package uk.oczadly.karl.jnano.util;
 
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
+import java.util.Set;
 
 /**
  * This class contains a set of static constant values. Any values which represent a state of the network are for
@@ -24,7 +26,7 @@ public final class NanoConstants {
      * The maximum possible balance value, in raw units. This does not account for burned or undistributed funds, but
      * is simply the number of units which are generated within the genesis block.
      */
-    public static final BigInteger MAX_BALANCE_RAW = JNH.BIGINT_MAX_128;
+    public static final BigInteger MAX_BALANCE_RAW = NanoConst.MAX_BALANCE;
     
     /**
      * Constants representing the official live Nano network.
@@ -65,6 +67,9 @@ public final class NanoConstants {
             new WorkSolution("fa055f79fa56abcf"), "1bananobh5rat99qfgt1ptpieie5swmoth87thi74qgbfrij7dcg",
             new NetworkConstants.WorkDifficultiesV1(0xfffffe0000000000L));
     
+    /** An immutable set of <em>all</em> available network constant instances.
+     * <p>Currently contains: {@link #NANO_LIVE_NET}, {@link #NANO_BETA_NET} and {@link #BANANO_LIVE_NET}.</p>*/
+    public static final Set<NetworkConstants> ALL_NETWORKS = Set.of(NANO_LIVE_NET, NANO_BETA_NET, BANANO_LIVE_NET);
     
     /**
      * Returns a {@link NetworkConstants} instance for the specified network by matching the genesis block hash.
@@ -74,16 +79,14 @@ public final class NanoConstants {
     public static NetworkConstants getNetworkFromGenesisHash(String hash) {
         if (hash == null)
             throw new IllegalArgumentException("Block hash cannot be null.");
-        if (!JNH.isValidHex(hash, 64))
+        if (!JNH.isValidHex(hash, NanoConst.LEN_HASH))
             throw new IllegalArgumentException("Block hash is not a valid 64-character hex string.");
         
         hash = hash.toUpperCase();
-        if (NANO_LIVE_NET.getNetworkIdentifier().equals(hash))
-            return NANO_LIVE_NET;
-        if (NANO_BETA_NET.getNetworkIdentifier().equals(hash))
-            return NANO_BETA_NET;
-        if (BANANO_LIVE_NET.getNetworkIdentifier().equals(hash))
-            return BANANO_LIVE_NET;
+        for (NetworkConstants net : ALL_NETWORKS) {
+            if (net.getNetworkIdentifier().equals(hash))
+                return net;
+        }
         return null;
     }
     
