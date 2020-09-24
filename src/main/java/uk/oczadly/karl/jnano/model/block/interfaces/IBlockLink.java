@@ -47,14 +47,14 @@ public interface IBlockLink extends IBlock {
     enum LinkFormat {
         /** Encoded as an address.
          * @see #getLinkAsAccount() */
-        ACCOUNT (b -> b.getLinkAsAccount().toAddress()),
+        ACCOUNT  (b -> b.getLinkAsAccount().toAddress()),
         
         /** Encoded as a 64-character hexadecimal string.
          * @see #getLinkData() */
-        DATA    (IBlockLink::getLinkData),
+        HEX_DATA (IBlockLink::getLinkData),
         
         /** The link field is not used for this block. Interpreted as a 64-character string of zeroes. */
-        EMPTY   (b -> JNH.ZEROES_64);
+        EMPTY    (b -> JNH.ZEROES_64);
     
         
         private final Function<IBlockLink, String> toStringMethod;
@@ -68,7 +68,7 @@ public interface IBlockLink extends IBlock {
          * <p>The following formats are used:</p>
          * <ul>
          *     <li>{@link LinkFormat#ACCOUNT} - the full address ({@link NanoAccount#toAddress()})</li>
-         *     <li>{@link LinkFormat#DATA} - 64-character hexadecimal</li>
+         *     <li>{@link LinkFormat#HEX_DATA} - 64-character hexadecimal</li>
          *     <li>{@link LinkFormat#EMPTY} - 64-character string of zeroes</li>
          * </ul>
          * @param block the block to retrieve the link from
@@ -89,10 +89,10 @@ public interface IBlockLink extends IBlock {
         DESTINATION         (LinkFormat.ACCOUNT),
         
         /** A hash of the source block for an incoming transaction. */
-        SOURCE_HASH         (LinkFormat.DATA),
+        SOURCE_HASH         (LinkFormat.HEX_DATA),
         
         /** An identification code of an epoch block. */
-        EPOCH_IDENTIFIER    (LinkFormat.DATA),
+        EPOCH_IDENTIFIER    (LinkFormat.HEX_DATA),
         
         /** The link field is unused. */
         NOT_USED            (LinkFormat.EMPTY);
