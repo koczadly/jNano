@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.rpc.request.conversion;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseAmount;
 import uk.oczadly.karl.jnano.util.NanoUnit;
@@ -15,11 +16,13 @@ import java.math.BigInteger;
 
 /**
  * This request class is used to convert between the various currency units.
- * <br>Calls the appropriate RPC command, and returns a {@link ResponseAmount} data object.
  *
- * @see NanoUnit
+ * <p>Calls the appropriate RPC command, and returns a {@link ResponseAmount} data object.</p>
+ *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#unit-conversion-rpcs">Official RPC documentation</a>
- * @deprecated Use the Java-based {@link NanoUnit} utility class instead for efficiency
+ * @see NanoAmount
+ * @see NanoUnit
+ * @deprecated Use the built-in {@link NanoAmount} or {@link NanoUnit} utility classes instead for efficiency
  */
 @Deprecated
 public class RequestConvertUnits extends RpcRequest<ResponseAmount> {
@@ -27,7 +30,7 @@ public class RequestConvertUnits extends RpcRequest<ResponseAmount> {
     @Expose @SerializedName("amount")
     private final BigInteger amount;
     
-    private final Conversion conversion;
+    private final transient Conversion conversion;
     
     
     /**
