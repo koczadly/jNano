@@ -209,8 +209,8 @@ public class JNH {
         throw new JsonParseException("Not a JSON object.");
     }
     
-    public static <T, U> U tryRethrow(T obj, Functions.UncheckedFunction<T, U> func,
-                                      Function<Exception, ? extends RuntimeException> exceptionSupplier) {
+    public static <T, U, E extends Throwable> U tryRethrow(T obj, Functions.UncheckedFunction<T, U> func,
+                                                           Function<Exception, E> exceptionSupplier) throws E {
         try {
             return func.apply(obj);
         } catch (Exception e) {
@@ -218,7 +218,8 @@ public class JNH {
         }
     }
     
-    public static <T> T tryRethrow(Callable<T> func, Function<Exception, ? extends RuntimeException> exceptionSupplier) {
+    public static <T, E extends Throwable> T tryRethrow(Callable<T> func,
+                                                        Function<Exception, E> exceptionSupplier) throws E {
         try {
             return func.call();
         } catch (Exception e) {

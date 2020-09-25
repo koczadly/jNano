@@ -82,12 +82,9 @@ public final class NanoConstants {
         if (!JNH.isValidHex(hash, NanoConst.LEN_HASH))
             throw new IllegalArgumentException("Block hash is not a valid 64-character hex string.");
         
-        hash = hash.toUpperCase();
-        for (NetworkConstants net : ALL_NETWORKS) {
-            if (net.getNetworkIdentifier().equals(hash))
-                return net;
-        }
-        return null;
+        return ALL_NETWORKS.stream()
+                .filter(net -> net.getNetworkIdentifier().equalsIgnoreCase(hash))
+                .findFirst().orElse(null);
     }
     
     
