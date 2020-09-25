@@ -9,6 +9,7 @@ import org.junit.Test;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class NanoConstantsTest {
     
@@ -31,6 +32,8 @@ public class NanoConstantsTest {
                 "991CF190094C00F0B68E2E5F75F6BEE95A2E0BD93CEAA4A6734DB9F19B728948"));
         assertEquals(NanoConstants.BANANO_LIVE_NET, NanoConstants.getNetworkFromGenesisHash(
                 "F61A79F286ABC5CC01D3D09686F0567812B889A5C63ADE0E82DD30F3B2D96463"));
+        assertNull(NanoConstants.getNetworkFromGenesisHash(
+                "A61A79F286ABC5CC01D3D09686F0567812B889A5C63ADE0E82DD30F3B2D96463"));
     }
     
 }
