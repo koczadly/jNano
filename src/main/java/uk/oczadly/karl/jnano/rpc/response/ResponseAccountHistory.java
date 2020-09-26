@@ -38,6 +38,8 @@ public class ResponseAccountHistory extends RpcResponse {
     }
     
     /**
+     * Returns a list of historical blocks.
+     * <p><strong>NOTE: </strong> epoch blocks are incorrectly represented and will respond with inaccurate data.</p>
      * @return a list of blocks within this account
      */
     public List<Block> getHistory() {
@@ -60,6 +62,15 @@ public class ResponseAccountHistory extends RpcResponse {
      */
     public String getNextBlockHash() {
         return nextHash;
+    }
+    
+    /**
+     * @return the previous or next block hash in the search sequence, or null
+     * @see #getNextBlockHash()
+     * @see #getPreviousBlockHash()
+     */
+    public String getSequenceBlockHash() {
+        return previousHash != null ? previousHash : nextHash;
     }
     
 }

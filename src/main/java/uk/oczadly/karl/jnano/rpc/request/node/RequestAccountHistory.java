@@ -46,7 +46,7 @@ public class RequestAccountHistory extends RpcRequest<ResponseAccountHistory> {
      * @param account the account's address
      */
     public RequestAccountHistory(String account) {
-        this(account, null);
+        this(account, -1);
     }
     
     /**
