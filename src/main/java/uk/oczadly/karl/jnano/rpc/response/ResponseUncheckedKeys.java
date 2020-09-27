@@ -6,9 +6,12 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
 import uk.oczadly.karl.jnano.model.block.Block;
 
+import java.time.Instant;
 import java.util.Set;
 
 /**
@@ -35,8 +38,8 @@ public class ResponseUncheckedKeys extends RpcResponse {
         @Expose @SerializedName("hash")
         private String blockHash;
         
-        @Expose @SerializedName("modified_timestamp")
-        private int modifiedTimestamp;
+        @Expose @SerializedName("modified_timestamp") @JsonAdapter(InstantAdapter.Seconds.class)
+        private Instant modifiedTimestamp;
         
         @Expose @SerializedName("contents")
         private Block block;
@@ -59,7 +62,7 @@ public class ResponseUncheckedKeys extends RpcResponse {
         /**
          * @return the UNIX timestamp when this block was last modified/processed
          */
-        public int getModifiedTimestamp() {
+        public Instant getModifiedTimestamp() {
             return modifiedTimestamp;
         }
         
