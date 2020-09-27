@@ -24,7 +24,7 @@ public class ResponseNodeId extends RpcResponse {
     private NanoAccount asAccount;
     
     @Expose @SerializedName("node_id")
-    private NanoAccount nodeId;
+    private String nodeId;
     
     
     public String getPrivateKey() {
@@ -39,7 +39,7 @@ public class ResponseNodeId extends RpcResponse {
         return asAccount;
     }
     
-    public NanoAccount getNodeId() {
+    public String getNodeId() {
         return nodeId;
     }
     
