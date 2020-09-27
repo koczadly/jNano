@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAccount;
+import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.util.Map;
 
@@ -17,7 +18,7 @@ import java.util.Map;
 public class ResponseWalletWork extends RpcResponse {
     
     @Expose @SerializedName("works")
-    private Map<NanoAccount, String> work;
+    private Map<NanoAccount, WorkSolution> work;
     
     
     /**
@@ -25,7 +26,7 @@ public class ResponseWalletWork extends RpcResponse {
      *
      * @return a map of pre-computed work
      */
-    public Map<NanoAccount, String> getWork() {
+    public Map<NanoAccount, WorkSolution> getWork() {
         return work;
     }
     
@@ -33,7 +34,7 @@ public class ResponseWalletWork extends RpcResponse {
      * @param accountAddress a local account's address
      * @return a pre-computed work solution, or null if no work has been pre-computed
      */
-    public String getWork(NanoAccount accountAddress) {
+    public WorkSolution getWork(NanoAccount accountAddress) {
         return this.work.get(accountAddress);
     }
     
