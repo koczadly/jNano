@@ -6,16 +6,20 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
 import uk.oczadly.karl.jnano.model.block.Block;
+
+import java.time.Instant;
 
 /**
  * This response class contains a block and a timestamp.
  */
 public class ResponseBlock extends RpcResponse {
     
-    @Expose @SerializedName("modified_timestamp")
-    private Integer timestamp;
+    @Expose @SerializedName("modified_timestamp") @JsonAdapter(InstantAdapter.Seconds.class)
+    private Instant timestamp;
     
     @Expose @SerializedName("contents")
     private Block block;
@@ -24,7 +28,7 @@ public class ResponseBlock extends RpcResponse {
     /**
      * @return the UNIX timestamp when this block was last modified locally
      */
-    public Integer getModifiedTimestamp() {
+    public Instant getModifiedTimestamp() {
         return timestamp;
     }
     
