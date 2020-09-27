@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 /**
  * This response class contains information given when changing a wallet's seed.
@@ -14,7 +15,7 @@ import com.google.gson.annotations.SerializedName;
 public class ResponseWalletChangeSeed extends RpcResponse {
     
     @Expose @SerializedName("last_restored_account")
-    private String lastAccount;
+    private NanoAccount lastAccount;
     
     @Expose @SerializedName("restored_count")
     private int restoredCount;
@@ -23,7 +24,7 @@ public class ResponseWalletChangeSeed extends RpcResponse {
     /**
      * @return the address of the last account to be restored
      */
-    public String getLastAccount() {
+    public NanoAccount getLastAccount() {
         return lastAccount;
     }
     
