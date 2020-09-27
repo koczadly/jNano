@@ -54,11 +54,11 @@ public class ResponseBootstrapStatus extends RpcResponse {
     
     
     public static class Connections {
-        @Expose @SerializedName("clients") private int clients;
-        @Expose @SerializedName("connections") private int connections;
-        @Expose @SerializedName("idle") private int idle;
+        @Expose @SerializedName("clients")            private int clients;
+        @Expose @SerializedName("connections")        private int connections;
+        @Expose @SerializedName("idle")               private int idle;
         @Expose @SerializedName("target_connections") private int targetConnections;
-        @Expose @SerializedName("pulls") private int pulls;
+        @Expose @SerializedName("pulls")              private int pulls;
     
         public int getClients() {
             return clients;
@@ -82,25 +82,25 @@ public class ResponseBootstrapStatus extends RpcResponse {
     }
     
     public static class Attempt {
-        @Expose @SerializedName("id") private String id;
-        @Expose @SerializedName("mode") private BootstrapMode mode;
-        @Expose @SerializedName("started") private boolean started;
-        @Expose @SerializedName("pulling") private int pulling;
-        @Expose @SerializedName("total_blocks") private long totalBlocks;
-        @Expose @SerializedName("frontier_pulls") private int frontierPulls;
-        @Expose @SerializedName("frontiers_received") private boolean frontiersReceived;
-        @Expose @SerializedName("frontiers_confirmed") private boolean frontiersConfirmed;
+        @Expose @SerializedName("id")                             private String id;
+        @Expose @SerializedName("mode")                           private BootstrapMode mode;
+        @Expose @SerializedName("started")                        private boolean started;
+        @Expose @SerializedName("pulling")                        private int pulling;
+        @Expose @SerializedName("total_blocks")                   private long totalBlocks;
+        @Expose @SerializedName("frontier_pulls")                 private int frontierPulls;
+        @Expose @SerializedName("frontiers_received")             private boolean frontiersReceived;
+        @Expose @SerializedName("frontiers_confirmed")            private boolean frontiersConfirmed;
         @Expose @SerializedName("frontiers_confirmation_pending") private boolean frontiersConfirmationPending;
-        @Expose @SerializedName("requeued_pulls") private int requeuedPulls;
-        @Expose @SerializedName("lazy_blocks") private int lazyBlocks;
-        @Expose @SerializedName("lazy_state_backlog") private int lazyStateBacklog;
-        @Expose @SerializedName("lazy_balances") private int lazyBalances;
-        @Expose @SerializedName("lazy_destinations") private int lazyDestinations;
-        @Expose @SerializedName("lazy_undefined_links") private int lazyUndefinedLinks;
-        @Expose @SerializedName("lazy_pulls") private int lazyPulls;
-        @Expose @SerializedName("lazy_keys") private int lazyKeys;
-        @Expose @SerializedName("lazy_key_1") private String lazyKey1;
-        @Expose @SerializedName("duration") private long duration;
+        @Expose @SerializedName("requeued_pulls")                 private int requeuedPulls;
+        @Expose @SerializedName("lazy_blocks")                    private int lazyBlocks;
+        @Expose @SerializedName("lazy_state_backlog")             private int lazyStateBacklog;
+        @Expose @SerializedName("lazy_balances")                  private int lazyBalances;
+        @Expose @SerializedName("lazy_destinations")              private int lazyDestinations;
+        @Expose @SerializedName("lazy_undefined_links")           private int lazyUndefinedLinks;
+        @Expose @SerializedName("lazy_pulls")                     private int lazyPulls;
+        @Expose @SerializedName("lazy_keys")                      private int lazyKeys;
+        @Expose @SerializedName("lazy_key_1")                     private String lazyKey1;
+        @Expose @SerializedName("duration")                       private long duration;
     
         public String getId() {
             return id;

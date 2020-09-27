@@ -6,6 +6,7 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.block.Block;
 
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.Map;
  */
 public class ResponseBlocksMap extends RpcResponse {
     
-    @Expose
+    @Expose @SerializedName("blocks")
     private Map<String, Block> blocks;
     
     

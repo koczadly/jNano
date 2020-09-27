@@ -16,10 +16,7 @@ import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
-import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.model.block.BlockDeserializer;
-import uk.oczadly.karl.jnano.model.block.SendBlock;
-import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
+import uk.oczadly.karl.jnano.model.block.*;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.lang.reflect.Type;
@@ -119,7 +116,7 @@ public class ResponseBlockInfo extends RpcResponse {
         BlockDeserializer deserializer = BlockDeserializer.withDefaults();
         
         public BlockAdapter() {
-            deserializer.registerDeserializer("send", json -> new SendBlock(
+            deserializer.registerDeserializer(BlockType.SEND,json -> new SendBlock(
                     JNH.getJson(json, "signature"),
                     JNH.getJson(json, "work", WorkSolution::new),
                     JNH.getJson(json, "previous"),
