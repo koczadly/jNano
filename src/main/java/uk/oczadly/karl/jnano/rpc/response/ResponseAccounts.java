@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import uk.oczadly.karl.jnano.internal.gsonadapters.SingleValueJsonAdapter;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.util.Set;
 
@@ -18,13 +19,13 @@ import java.util.Set;
 public class ResponseAccounts extends RpcResponse {
     
     @Expose
-    private Set<String> accounts;
+    private Set<NanoAccount> accounts;
     
     
     /**
      * @return a set of account addresses
      */
-    public Set<String> getAccounts() {
+    public Set<NanoAccount> getAccounts() {
         return accounts;
     }
     
