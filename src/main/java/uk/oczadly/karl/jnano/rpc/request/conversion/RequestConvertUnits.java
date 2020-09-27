@@ -10,6 +10,7 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseAmount;
+import uk.oczadly.karl.jnano.rpc.response.ResponseAmountInt;
 import uk.oczadly.karl.jnano.util.NanoUnit;
 
 import java.math.BigInteger;
@@ -25,7 +26,7 @@ import java.math.BigInteger;
  * @deprecated Use the built-in {@link NanoAmount} or {@link NanoUnit} utility classes instead for efficiency.
  */
 @Deprecated
-public class RequestConvertUnits extends RpcRequest<ResponseAmount> {
+public class RequestConvertUnits extends RpcRequest<ResponseAmountInt> {
     
     @Expose @SerializedName("amount")
     private final BigInteger amount;
@@ -46,7 +47,7 @@ public class RequestConvertUnits extends RpcRequest<ResponseAmount> {
      * @param amount     the quantity of the origin currency
      */
     public RequestConvertUnits(Conversion conversion, BigInteger amount) {
-        super(conversion.name().toLowerCase(), ResponseAmount.class);
+        super(conversion.name().toLowerCase(), ResponseAmountInt.class);
         this.conversion = conversion;
         this.amount = amount;
     }
