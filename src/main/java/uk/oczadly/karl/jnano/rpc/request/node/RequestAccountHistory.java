@@ -46,7 +46,7 @@ public class RequestAccountHistory extends RpcRequest<ResponseAccountHistory> {
      * @param account the account's address
      */
     public RequestAccountHistory(String account) {
-        this(account, -1);
+        this(account, null);
     }
     
     /**
@@ -117,6 +117,18 @@ public class RequestAccountHistory extends RpcRequest<ResponseAccountHistory> {
      */
     public String[] getAccountFilters() {
         return accountFilter;
+    }
+    
+    
+    /**
+     * Constructs the next request when using pagination.
+     * @param prevReq the previous request
+     * @param prevRes the previous response data
+     * @return the next request for pagination
+     */
+    public static RequestAccountHistory nextPage(RequestAccountHistory prevReq, ResponseAccountHistory prevRes) {
+        return new RequestAccountHistory(prevReq.account, prevReq.transactionCount, prevRes.getSequenceBlockHash(), 0,
+                prevReq.reverse, prevReq.accountFilter);
     }
     
 }
