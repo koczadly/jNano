@@ -6,10 +6,13 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -45,8 +48,8 @@ public class ResponseWalletHistory extends RpcResponse {
         @Expose @SerializedName("hash")
         private String hash;
         
-        @Expose @SerializedName("local_timestamp")
-        private int localTimestamp;
+        @Expose @SerializedName("local_timestamp") @JsonAdapter(InstantAdapter.Seconds.class)
+        private Instant localTimestamp;
         
         
         /**
@@ -87,7 +90,7 @@ public class ResponseWalletHistory extends RpcResponse {
         /**
          * @return the local UNIX timestamp of when the transaction took place
          */
-        public int getLocalTimestamp() {
+        public Instant getLocalTimestamp() {
             return localTimestamp;
         }
     }
