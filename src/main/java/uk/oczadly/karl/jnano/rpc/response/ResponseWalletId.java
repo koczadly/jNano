@@ -16,14 +16,14 @@ import uk.oczadly.karl.jnano.internal.gsonadapters.SingleValueJsonAdapter;
 public class ResponseWalletId extends RpcResponse {
     
     @Expose
-    private String walletId;
+    private String wallet;
     
     
     /**
      * @return the wallet's ID
      */
     public String getWalletId() {
-        return walletId;
+        return wallet;
     }
     
 }
