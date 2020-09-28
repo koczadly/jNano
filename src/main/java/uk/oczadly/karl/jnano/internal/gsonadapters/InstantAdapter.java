@@ -31,7 +31,8 @@ public final class InstantAdapter {
         @Override
         public Instant deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
-            return Instant.ofEpochSecond(json.getAsLong());
+            long val = json.getAsLong();
+            return val != 0 ? Instant.ofEpochSecond(val) : null;
         }
     
         @Override

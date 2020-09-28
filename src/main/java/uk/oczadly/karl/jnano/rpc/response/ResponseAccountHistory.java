@@ -6,10 +6,14 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
 import uk.oczadly.karl.jnano.model.NanoAccount;
-import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.NanoAmount;
+import uk.oczadly.karl.jnano.model.block.BlockType;
 
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -17,17 +21,10 @@ import java.util.List;
  */
 public class ResponseAccountHistory extends RpcResponse {
     
-    @Expose @SerializedName("account")
-    private NanoAccount account;
-    
-    @Expose @SerializedName("history")
-    private List<Block> history;
-    
-    @Expose @SerializedName("previous")
-    private String previousHash;
-    
-    @Expose @SerializedName("next")
-    private String nextHash;
+    @Expose @SerializedName("account")  private NanoAccount account;
+    @Expose @SerializedName("history")  private List<BlockInfo> history;
+    @Expose @SerializedName("previous") private String previousHash;
+    @Expose @SerializedName("next")     private String nextHash;
     
     
     /**
@@ -39,10 +36,8 @@ public class ResponseAccountHistory extends RpcResponse {
     
     /**
      * Returns a list of historical blocks.
-     * <p><strong>NOTE: </strong> epoch blocks are incorrectly represented and will respond with inaccurate data.</p>
-     * @return a list of blocks within this account
      */
-    public List<Block> getHistory() {
+    public List<BlockInfo> getHistory() {
         return history;
     }
     
@@ -71,6 +66,42 @@ public class ResponseAccountHistory extends RpcResponse {
      */
     public String getSequenceBlockHash() {
         return previousHash != null ? previousHash : nextHash;
+    }
+    
+    
+    public static class BlockInfo {
+        @Expose @SerializedName("type")             private BlockType type;
+        @Expose @SerializedName("account")          private NanoAccount account;
+        @Expose @SerializedName("amount")           private NanoAmount amount;
+        @Expose @SerializedName("local_timestamp") @JsonAdapter(InstantAdapter.Seconds.class)
+        private Instant timestamp;
+        @Expose @SerializedName("height")           private int height;
+        @Expose @SerializedName("hash")             private String hash;
+    
+    
+        public BlockType getType() {
+            return type;
+        }
+    
+        public NanoAccount getAccount() {
+            return account;
+        }
+    
+        public NanoAmount getAmount() {
+            return amount;
+        }
+    
+        public Instant getTimestamp() {
+            return timestamp;
+        }
+    
+        public int getHeight() {
+            return height;
+        }
+    
+        public String getHash() {
+            return hash;
+        }
     }
     
 }

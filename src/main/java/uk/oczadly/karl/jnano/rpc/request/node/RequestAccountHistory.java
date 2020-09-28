@@ -18,10 +18,6 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseAccountHistory;
  */
 public class RequestAccountHistory extends RpcRequest<ResponseAccountHistory> {
     
-    @Expose @SerializedName("raw")
-    private final boolean raw = true;
-    
-    
     @Expose @SerializedName("account")
     private final String account;
     
