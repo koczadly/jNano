@@ -46,10 +46,10 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
         super(BlockType.RECEIVE, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNH.isValidHex(previousBlockHash, NanoConst.LEN_HASH))
+        if (!JNH.isValidHex(previousBlockHash, NanoConst.LEN_HASH_H))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (sourceBlockHash == null) throw new IllegalArgumentException("Source block hash cannot be null.");
-        if (!JNH.isValidHex(sourceBlockHash, NanoConst.LEN_HASH))
+        if (!JNH.isValidHex(sourceBlockHash, NanoConst.LEN_HASH_H))
             throw new IllegalArgumentException("Source block hash is invalid.");
         
         this.previousBlockHash = previousBlockHash;

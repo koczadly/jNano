@@ -54,7 +54,7 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
         super(BlockType.OPEN, signature, work);
     
         if (sourceBlockHash == null) throw new IllegalArgumentException("Source block hash cannot be null.");
-        if (!JNH.isValidHex(sourceBlockHash, NanoConst.LEN_HASH))
+        if (!JNH.isValidHex(sourceBlockHash, NanoConst.LEN_HASH_H))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (accountAddress == null) throw new IllegalArgumentException("Block account cannot be null.");
         if (representativeAccount == null) throw new IllegalArgumentException("Block representative cannot be null.");

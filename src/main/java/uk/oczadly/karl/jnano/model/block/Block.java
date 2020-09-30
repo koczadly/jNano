@@ -69,9 +69,9 @@ public abstract class Block implements IBlock {
     private Block(BlockType type, String typeStr, String signature, WorkSolution workSolution) {
         if (type == null && typeStr == null)
             throw new IllegalArgumentException("Block type cannot be null.");
-        if (!JNH.isValidHex(hash, NanoConst.LEN_HASH))
+        if (!JNH.isValidHex(hash, NanoConst.LEN_HASH_H))
             throw new IllegalArgumentException("Block hash is invalid.");
-        if (!JNH.isValidHex(signature, NanoConst.LEN_SIGNATURE))
+        if (!JNH.isValidHex(signature, NanoConst.LEN_SIGNATURE_H))
             throw new IllegalArgumentException("Block signature is invalid.");
         
         this.type = typeStr.toLowerCase();

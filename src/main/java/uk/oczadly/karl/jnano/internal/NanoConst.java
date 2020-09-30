@@ -14,10 +14,10 @@ public class NanoConst {
     
     public static final BigInteger MAX_BALANCE = JNH.BIGINT_MAX_128;
     
-    public static final int BLEN_HASH = 32;
-    public static final int LEN_HASH = BLEN_HASH * 2;
+    public static final int LEN_HASH_B = 32;
+    public static final int LEN_HASH_H = LEN_HASH_B * 2;
     
-    public static final int BLEN_SIGNATURE = 64;
-    public static final int LEN_SIGNATURE = BLEN_SIGNATURE * 2;
+    public static final int LEN_SIGNATURE_B = 64;
+    public static final int LEN_SIGNATURE_H = LEN_SIGNATURE_B * 2;
 
 }

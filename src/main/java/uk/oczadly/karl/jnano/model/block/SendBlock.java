@@ -60,7 +60,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
         super(BlockType.SEND, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNH.isValidHex(previousBlockHash, NanoConst.LEN_HASH))
+        if (!JNH.isValidHex(previousBlockHash, NanoConst.LEN_HASH_H))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (destinationAccount == null) throw new IllegalArgumentException("Block destination account cannot be null.");
         if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");

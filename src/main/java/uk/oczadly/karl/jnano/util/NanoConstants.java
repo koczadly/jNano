@@ -79,7 +79,7 @@ public final class NanoConstants {
     public static NetworkConstants getNetworkFromGenesisHash(String hash) {
         if (hash == null)
             throw new IllegalArgumentException("Block hash cannot be null.");
-        if (!JNH.isValidHex(hash, NanoConst.LEN_HASH))
+        if (!JNH.isValidHex(hash, NanoConst.LEN_HASH_H))
             throw new IllegalArgumentException("Block hash is not a valid 64-character hex string.");
         
         return ALL_NETWORKS.stream()

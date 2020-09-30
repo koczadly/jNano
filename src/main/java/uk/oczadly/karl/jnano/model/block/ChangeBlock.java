@@ -55,7 +55,7 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
         super(BlockType.CHANGE, signature, workSolution);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNH.isValidHex(previousBlockHash, NanoConst.LEN_HASH))
+        if (!JNH.isValidHex(previousBlockHash, NanoConst.LEN_HASH_H))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (representativeAccount == null) throw new IllegalArgumentException("Block representative cannot be null.");
         

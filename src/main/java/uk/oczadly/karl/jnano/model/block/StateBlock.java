@@ -111,14 +111,14 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
             throw new IllegalArgumentException("Subtype cannot be null.");
         if (previousBlockHash == null)
             throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNH.isValidHex(previousBlockHash, NanoConst.LEN_HASH))
+        if (!JNH.isValidHex(previousBlockHash, NanoConst.LEN_HASH_H))
             throw new IllegalArgumentException("Previous block hash is invalid.");
         if (representativeAddress == null) throw new IllegalArgumentException("Block representative cannot be null.");
         if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");
         if (accountAddress == null) throw new IllegalArgumentException("Block account cannot be null.");
         if (linkAccount == null && linkData == null) // If no data field is specified
             throw new IllegalArgumentException("Link data/account cannot be null.");
-        if (!JNH.isValidHex(linkData, NanoConst.LEN_HASH))
+        if (!JNH.isValidHex(linkData, NanoConst.LEN_HASH_H))
             throw new IllegalArgumentException("Link data is invalid.");
         if (linkAccount != null && linkData != null && !linkAccount.toPublicKey().equals(linkData))
             throw new IllegalArgumentException("Both link types were specified, but their values did not match.");
