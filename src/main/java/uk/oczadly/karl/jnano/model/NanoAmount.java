@@ -34,7 +34,10 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * A single Nano unit ({@code 1 Nano}).
      * <p>This value is based on the current {@link NanoUnit#BASE_UNIT} constant value.</p>
      */
-    public static final NanoAmount ONE_NANO = new NanoAmount(BigInteger.ONE, NanoUnit.BASE_UNIT);
+    public static final NanoAmount ONE_NANO = NanoAmount.valueOf(BigInteger.ONE, NanoUnit.BASE_UNIT);
+    
+    /** A single Nano unit ({@code 1 raw}). */
+    public static final NanoAmount ONE_RAW = NanoAmount.valueOf(BigInteger.ONE);
     
     
     private final BigInteger rawValue;
@@ -145,6 +148,67 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     @Override
     public int compareTo(NanoAmount o) {
         return rawValue.compareTo(o.rawValue);
+    }
+    
+    
+    /**
+     * Returns a NanoAmount whose value is ({@code this + amount}).
+     * @param amount the amount to add
+     * @return {@code this + amount}
+     */
+    public NanoAmount add(NanoAmount amount) {
+        return new NanoAmount(rawValue.add(amount.rawValue));
+    }
+    
+    /**
+     * Returns a NanoAmount whose value is ({@code this - amount}).
+     * @param amount the amount to subtract
+     * @return {@code this - amount}
+     */
+    public NanoAmount subtract(NanoAmount amount) {
+        return new NanoAmount(rawValue.subtract(amount.rawValue));
+    }
+    
+    /**
+     * Returns a NanoAmount whose value is ({@code this * amount}).
+     * @param amount the amount to multiply by
+     * @return {@code this * amount}
+     */
+    public NanoAmount multiply(NanoAmount amount) {
+        return new NanoAmount(rawValue.multiply(amount.rawValue));
+    }
+    
+    /**
+     * Returns a NanoAmount whose value is ({@code this * val}).
+     * @param val the amount to multiply by
+     * @return {@code this * val}
+     */
+    public NanoAmount multiply(int val) {
+        return new NanoAmount(rawValue.multiply(BigInteger.valueOf(val)));
+    }
+    
+    /**
+     * Returns a NanoAmount whose value is ({@code this / amount}).
+     * <p>Note that this method will round down if this raw value is odd.</p>
+     *
+     * @param amount the amount to divide by
+     * @return {@code this / amount}
+     * @throws ArithmeticException if {@code amount} is zero.
+     */
+    public NanoAmount divide(NanoAmount amount) {
+        return new NanoAmount(rawValue.divide(amount.rawValue));
+    }
+    
+    /**
+     * Returns a NanoAmount whose value is ({@code this / val}).
+     * <p>Note that this method will round down if this raw value is odd.</p>
+     *
+     * @param val the amount to divide by
+     * @return {@code this / val}
+     * @throws ArithmeticException if {@code val} is zero.
+     */
+    public NanoAmount divide(int val) {
+        return new NanoAmount(rawValue.divide(BigInteger.valueOf(val)));
     }
     
     
