@@ -35,28 +35,30 @@ import java.text.DecimalFormat;
  *          .convertFromInt(NanoUnit.MICRO, BigInteger.valueOf(250));
  *   System.out.println("250 unano = " + conv2.toString() + " raw"); // Prints 250 unano = 250000000000000000000 raw
  * </pre>
+ *
+ * @see NanoAmount
  */
 public enum NanoUnit {
     
     /**
      * The largest divisor, equivalent to {@code 10^33} raw.
      */
-    GIGA(33, "Gnano", "Gxrb"),
+    GIGA(33,  "Gnano", "Gxrb"),
     
     /**
      * The 2nd largest divisor, equivalent to {@code 10^30} raw.
      */
-    MEGA(30, "Nano", "Mxrb"),
+    MEGA(30,  "Nano",  "Mxrb"),
     
     /**
      * The 3rd largest divisor, equivalent to {@code 10^27} raw.
      */
-    KILO(27, "knano", "kxrb"),
+    KILO(27,  "knano", "kxrb"),
     
     /**
      * The 4th largest divisor, equivalent to {@code 10^24} raw.
      */
-    XRB(24, "nano", "xrb"),
+    XRB(24,   "nano",  "xrb"),
     
     /**
      * The 5th largest divisor, equivalent to {@code 10^21} raw.
@@ -71,7 +73,7 @@ public enum NanoUnit {
     /**
      * The smallest possible representable unit.
      */
-    RAW(0, "raw", "raw");
+    RAW(0,    "raw",   "raw");
     
     
     /**
