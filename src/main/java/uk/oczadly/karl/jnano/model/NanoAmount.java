@@ -266,12 +266,12 @@ public final class NanoAmount implements Comparable<NanoAmount> {
         @Override
         public NanoAmount deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
-            return NanoAmount.valueOf(json.getAsString());
+            return valueOf(json.getAsString());
         }
         
         @Override
         public JsonElement serialize(NanoAmount src, Type typeOfSrc, JsonSerializationContext context) {
-            return new JsonPrimitive(src.rawValue.toString());
+            return new JsonPrimitive(src.toRawString());
         }
     }
     
