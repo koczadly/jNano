@@ -36,7 +36,10 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      */
     public static final NanoAmount ONE_NANO = NanoAmount.valueOf(BigInteger.ONE, NanoUnit.BASE_UNIT);
     
-    /** A single Nano unit ({@code 1 raw}). */
+    /**
+     * A single raw unit ({@code 1 raw}).
+     * <p>This is the smallest representable quantity of Nano possible.</p>
+     */
     public static final NanoAmount ONE_RAW = NanoAmount.valueOf(BigInteger.ONE);
     
     
