@@ -109,7 +109,7 @@ public class JNH {
      */
     public static boolean isValidHex(String str, int len) {
         if (str == null) return true;
-        if (str.length() != len) return false;
+        if (len > 0 && str.length() != len) return false;
         return REGEX_HEX_MATCH.matcher(str).matches();
     }
     

@@ -56,8 +56,10 @@ public class JNHTest {
     public void testIsValidHex() {
         assertTrue(JNH.isValidHex(null, 2));
         assertTrue(JNH.isValidHex("AB", 2));
+        assertTrue(JNH.isValidHex("AB", -1));
         assertFalse(JNH.isValidHex("AS", 2));
         assertFalse(JNH.isValidHex("AB", 4));
+        assertFalse(JNH.isValidHex("AS", -1));
     }
     
     @Test
