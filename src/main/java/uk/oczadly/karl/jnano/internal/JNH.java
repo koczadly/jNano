@@ -20,11 +20,15 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 /**
  * JNano Helper class.
  */
 public class JNH {
+    
+    private static final Pattern REGEX_HEX_MATCH = Pattern.compile("[0-9A-Fa-f]+");
+    
     
     public static final char[] HEX_CHARS_UC = "0123456789ABCDEF".toCharArray();
     
@@ -106,7 +110,7 @@ public class JNH {
     public static boolean isValidHex(String str, int len) {
         if (str == null) return true;
         if (str.length() != len) return false;
-        return str.matches("[0-9A-Fa-f]+");
+        return REGEX_HEX_MATCH.matcher(str).matches();
     }
     
     /**
