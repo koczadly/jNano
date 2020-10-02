@@ -12,8 +12,7 @@ import uk.oczadly.karl.jnano.util.NanoUnit;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author Karl Oczadly
@@ -72,13 +71,21 @@ public class NanoAmountTest {
     }
     
     @Test
-    public void testArithmetic() {
+    public void testAdd() {
         assertEquals(NanoAmount.valueOf("567"), NanoAmount.valueOf("456").add(NanoAmount.valueOf("111")));
+        assertThrows(ArithmeticException.class, () -> NanoAmount.MAX_VALUE.add(NanoAmount.ONE_RAW));
+    }
+    
+    @Test
+    public void testSubtract() {
         assertEquals(NanoAmount.valueOf("345"), NanoAmount.valueOf("456").subtract(NanoAmount.valueOf("111")));
-        assertEquals(NanoAmount.valueOf("912"), NanoAmount.valueOf("456").multiply(NanoAmount.valueOf("2")));
-        assertEquals(NanoAmount.valueOf("912"), NanoAmount.valueOf("456").multiply(2));
-        assertEquals(NanoAmount.valueOf("228"), NanoAmount.valueOf("456").divide(NanoAmount.valueOf("2")));
-        assertEquals(NanoAmount.valueOf("228"), NanoAmount.valueOf("456").divide(2));
+        assertThrows(ArithmeticException.class, () -> NanoAmount.ZERO.subtract(NanoAmount.ONE_RAW));
+    }
+    
+    @Test
+    public void testDifference() {
+        assertEquals(NanoAmount.valueOf("400"), NanoAmount.valueOf("500").difference(NanoAmount.valueOf("100")));
+        assertEquals(NanoAmount.valueOf("400"), NanoAmount.valueOf("100").difference(NanoAmount.valueOf("500")));
     }
     
 }
