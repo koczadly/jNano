@@ -183,13 +183,14 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      *
      * @param amount the amount to subtract
      * @return {@code this - amount}
-     * @throws ArithmeticException if the resulting amount is below zero
+     * @throws ArithmeticException if {@code amount} is greater than this
      */
     public NanoAmount subtract(NanoAmount amount) {
-        BigInteger newVal = rawValue.subtract(amount.rawValue);
-        if (newVal.compareTo(BigInteger.ZERO) < 0)
+        if (this.compareTo(amount) < 0)
             throw new ArithmeticException("Resulting NanoAmount is negative.");
-        return new NanoAmount(newVal);
+        if (this.equals(amount))
+            return ZERO;
+        return new NanoAmount(rawValue.subtract(amount.rawValue));
     }
     
     /**
