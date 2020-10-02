@@ -243,6 +243,21 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
+     * Returns a {@link NanoAmount} instance that represents the given amount and unit.
+     *
+     * @param val  the numeric (integer or decimal) value
+     * @param unit the denominaton of the {@code val} amount
+     * @return a {@link NanoAmount} instance representing the given value
+     *
+     * @throws NumberFormatException if val is not a valid decimal number
+     * @throws ArithmeticException if the source {@code val} has too many decimal digits for the specified
+     * {@code unit}
+     */
+    public static NanoAmount valueOf(String val, NanoUnit unit) {
+        return valueOf(new BigDecimal(val), unit);
+    }
+    
+    /**
      * Returns a {@link NanoAmount} instance that represents the given raw amount.
      *
      * @param raw the numeric value, in raw
@@ -257,10 +272,10 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      *
      * @param raw the numeric value, in raw
      * @return a {@link NanoAmount} instance representing the given value
-     * @throws NumberFormatException if the string is not a valid integer value
+     * @throws NumberFormatException if val is not a valid integer
      */
     public static NanoAmount valueOf(String raw) {
-        return new NanoAmount(new BigInteger(raw));
+        return valueOf(new BigInteger(raw));
     }
     
     
