@@ -168,11 +168,13 @@ public enum NanoUnit {
      * @param sourceUnit   the source unit to convert from
      * @return the converted value in this unit
      *
-     * @throws ArithmeticException if the conversion would result in a loss of information
+     * @throws ArithmeticException if the conversion would result in a loss of information, or if the {@code
+     * sourceAmount} has too many decimal digits for the specified {@code sourceUnit}
      */
     public BigInteger convertFromInt(NanoUnit sourceUnit, BigDecimal sourceAmount) {
+        BigDecimal decimalVal = this.convertFrom(sourceUnit, sourceAmount);
         try {
-            return this.convertFrom(sourceUnit, sourceAmount).toBigIntegerExact();
+            return decimalVal.toBigIntegerExact();
         } catch (ArithmeticException e) {
             throw new ArithmeticException(
                     String.format("Converting %s %s to %s is not permitted, as fractional amounts would be truncated." +
@@ -200,6 +202,8 @@ public enum NanoUnit {
      * @param sourceAmount the source amount to convert from
      * @param sourceUnit   the source unit to convert from
      * @return the converted value in this unit
+     * @throws ArithmeticException if the {@code sourceAmount} has too many decimal digits for the specified
+     * {@code sourceUnit}
      */
     public BigDecimal convertFrom(NanoUnit sourceUnit, BigDecimal sourceAmount) {
         // Argument checks
@@ -209,15 +213,22 @@ public enum NanoUnit {
             throw new IllegalArgumentException("Source unit cannot be null");
         if (sourceAmount.compareTo(BigDecimal.ZERO) < 0)
             throw new IllegalArgumentException("Source amount cannot be negative");
-        
-        if (sourceUnit == this)
-            return sourceAmount; // Same unit
-        
-        if (sourceUnit.exponent > this.exponent) { // Source is higher, multiply (shift right)
-            return sourceAmount.movePointRight(sourceUnit.exponent - this.exponent).stripTrailingZeros();
-        } else { // Source is lower, divide (shift left)
-            return sourceAmount.movePointLeft(this.exponent - sourceUnit.exponent).stripTrailingZeros();
+        sourceAmount = sourceAmount.stripTrailingZeros();
+        if (sourceAmount.scale() > sourceUnit.exponent)
+            throw new ArithmeticException("Source amount scale is too large for the specified source unit.");
+    
+        BigDecimal result;
+        if (sourceUnit == this) {
+            // Same unit
+            result = sourceAmount;
+        } else if (sourceUnit.exponent > this.exponent) {
+            // Source is higher, multiply (shift decimal right)
+            result = sourceAmount.movePointRight(sourceUnit.exponent - this.exponent);
+        } else {
+            // Source is lower, divide (shift decimal left)
+            result = sourceAmount.movePointLeft(this.exponent - sourceUnit.exponent);
         }
+        return result.setScale(this.exponent, RoundingMode.FLOOR);
     }
     
     /**

@@ -235,6 +235,8 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @param val  the numeric value
      * @param unit the denominaton of the {@code val} amount
      * @return a {@link NanoAmount} instance representing the given value
+     * @throws ArithmeticException if the source {@code val} has too many decimal digits for the specified
+     * {@code unit}
      */
     public static NanoAmount valueOf(BigDecimal val, NanoUnit unit) {
         return new NanoAmount(NanoUnit.RAW.convertFromInt(unit, val));
