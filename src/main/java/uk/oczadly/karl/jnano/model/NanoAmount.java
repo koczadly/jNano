@@ -172,6 +172,9 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @throws ArithmeticException if the resulting amount is above the maximum possible balance
      */
     public NanoAmount add(NanoAmount amount) {
+        if (amount.equals(ZERO))
+            return this;
+        
         BigInteger newVal = rawValue.add(amount.rawValue);
         if (newVal.compareTo(MAX_VALUE.getAsRaw()) > 0)
             throw new ArithmeticException("Resulting NanoAmount is greater than the possible representable amount.");
