@@ -202,6 +202,8 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     /**
      * Returns the absolute difference between this and {@code other}.
      *
+     * <p>This is equivalent to performing {@code abs(this - other)} on the integer value of both NanoAmounts.</p>
+     *
      * @param other the other value to calculate the difference between
      * @return the absolute difference between this and {@code other}
      */
