@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.model.block;
 import com.google.gson.JsonObject;
 import org.junit.Test;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
@@ -17,10 +18,10 @@ import static org.junit.Assert.assertTrue;
 
 public class SendBlockTest {
     
-    final String TB_SIGNATURE = "DEE5EC5D771E92B5DE3C76EBFE8FE844284A3AFCA32D6183643BA1B553C75F2377A1138DB620832D6557" +
-            "C0AD46D804D577F372C592C1D05DDA10571D14872304";
+    final HexData TB_SIGNATURE = new HexData("DEE5EC5D771E92B5DE3C76EBFE8FE844284A3AFCA32D6183643BA1B553C75F2377A113" +
+            "8DB620832D6557C0AD46D804D577F372C592C1D05DDA10571D14872304");
     final WorkSolution TB_WORK = new WorkSolution("8017b5301c0b822c");
-    final String TB_PREVIOUS = "91862D068AB5F836360738002EBB421B0A89996CF1AF64E1C9D400B2410BEDF0";
+    final HexData TB_PREVIOUS = new HexData("91862D068AB5F836360738002EBB421B0A89996CF1AF64E1C9D400B2410BEDF0");
     final NanoAccount TB_DESTINATION = NanoAccount.parseAddress(
             "nano_14ghgrw1y9itsopkyscpofbpgrjr6hoy1qug4gda3utunrq11xzee9yfhtg3");
     final NanoAmount TB_BALANCE = new NanoAmount("689999000000000000000000000000");
@@ -60,7 +61,8 @@ public class SendBlockTest {
     
     @Test
     public void testHashing() {
-        assertEquals("8DAA2C593B4D1D0EA44DF7A84C91167E991D7EC6E08333CDCD7B7082B68B1E08", TEST_BLOCK.getHash());
+        assertEquals("8DAA2C593B4D1D0EA44DF7A84C91167E991D7EC6E08333CDCD7B7082B68B1E08",
+                TEST_BLOCK.getHash().toHexString());
     }
     
     @Test

@@ -10,11 +10,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.interfaces.*;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -28,13 +30,13 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     /** A function which converts a {@link JsonObject} into a {@link StateBlock} instance. */
     public static final Function<JsonObject, StateBlock> DESERIALIZER = json -> new StateBlock(
             JNH.getJson(json, "subtype", StateBlockSubType::getFromName),
-            JNH.getJson(json, "signature"),
+            JNH.getJson(json, "signature", HexData::new),
             JNH.getJson(json, "work", WorkSolution::new),
             JNH.getJson(json, "account", NanoAccount::parseAddress),
-            JNH.getJson(json, "previous"),
+            JNH.getJson(json, "previous", HexData::new),
             JNH.getJson(json, "representative", NanoAccount::parseAddress),
-            JNH.getJson(json, "balance", NanoAmount::new),
-            JNH.getJson(json, "link"),
+            JNH.getJson(json, "balance", NanoAmount::valueOf),
+            JNH.getJson(json, "link", HexData::new),
             JNH.getJson(json, "link_as_account", NanoAccount::parseAddress));
     
     /** Prefix for block hashing. */
@@ -45,7 +47,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     private final NanoAccount accountAddress;
     
     @Expose @SerializedName("previous")
-    private final String previousBlockHash;
+    private final HexData previousBlockHash;
     
     @Expose @SerializedName("representative")
     private final NanoAccount representativeAddress;
@@ -54,7 +56,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     private final NanoAmount balance;
     
     @Expose @SerializedName("link")
-    private final String linkData;
+    private final HexData linkData;
     
     @Expose @SerializedName("link_as_account")
     private final NanoAccount linkAccount;
@@ -76,8 +78,49 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      * @param link                  the link data for this transaction, encoded as a hexadecimal string
      * @see StateBlockBuilder
      */
+    @Deprecated(forRemoval = true)
     public StateBlock(StateBlockSubType subtype, String signature, WorkSolution work, NanoAccount accountAddress,
                       String previousBlockHash, NanoAccount representativeAddress, NanoAmount balance, String link) {
+        this(subtype, new HexData(signature), work, accountAddress, new HexData(previousBlockHash),
+                representativeAddress, balance, new HexData(link), null);
+    }
+    
+    /**
+     * Constructs a new state block.
+     *
+     * @param subtype               the block's subtype
+     * @param signature             the block verification signature
+     * @param work                  the computed work solution
+     * @param accountAddress        the account's address
+     * @param previousBlockHash     the previous block's hash
+     * @param representativeAddress the representative address of this account
+     * @param balance               the balance of the account after this transaction, in raw
+     * @param link                  the link data for this transaction, encoded as an account
+     * @see StateBlockBuilder
+     */
+    @Deprecated(forRemoval = true)
+    public StateBlock(StateBlockSubType subtype, String signature, WorkSolution work, NanoAccount accountAddress,
+                      String previousBlockHash, NanoAccount representativeAddress, NanoAmount balance,
+                      NanoAccount link) {
+        this(subtype, new HexData(signature), work, accountAddress, new HexData(previousBlockHash),
+                representativeAddress, balance, null, link);
+    }
+    
+    /**
+     * Constructs a new state block.
+     *
+     * @param subtype               the block's subtype
+     * @param signature             the block verification signature
+     * @param work                  the computed work solution
+     * @param accountAddress        the account's address
+     * @param previousBlockHash     the previous block's hash
+     * @param representativeAddress the representative address of this account
+     * @param balance               the balance of the account after this transaction, in raw
+     * @param link                  the link data for this transaction, encoded as a hexadecimal string
+     * @see StateBlockBuilder
+     */
+    public StateBlock(StateBlockSubType subtype, HexData signature, WorkSolution work, NanoAccount accountAddress,
+                      HexData previousBlockHash, NanoAccount representativeAddress, NanoAmount balance, HexData link) {
         this(subtype, signature, work, accountAddress, previousBlockHash, representativeAddress,
                 balance, link, null);
     }
@@ -95,41 +138,41 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      * @param link                  the link data for this transaction, encoded as an account
      * @see StateBlockBuilder
      */
-    public StateBlock(StateBlockSubType subtype, String signature, WorkSolution work, NanoAccount accountAddress,
-                      String previousBlockHash, NanoAccount representativeAddress, NanoAmount balance,
+    public StateBlock(StateBlockSubType subtype, HexData signature, WorkSolution work, NanoAccount accountAddress,
+                      HexData previousBlockHash, NanoAccount representativeAddress, NanoAmount balance,
                       NanoAccount link) {
         this(subtype, signature, work, accountAddress, previousBlockHash, representativeAddress,
                 balance, null, link);
     }
     
-    StateBlock(StateBlockSubType subtype, String signature, WorkSolution work, NanoAccount accountAddress,
-                      String previousBlockHash, NanoAccount representativeAddress, NanoAmount balance,
-                      String linkData, NanoAccount linkAccount) {
+    StateBlock(StateBlockSubType subtype, HexData signature, WorkSolution work, NanoAccount accountAddress,
+               HexData previousBlockHash, NanoAccount representativeAddress, NanoAmount balance, HexData linkData,
+               NanoAccount linkAccount) {
         super(BlockType.STATE, signature, work);
         
         if (subtype == null)
             throw new IllegalArgumentException("Subtype cannot be null.");
-        if (previousBlockHash == null)
-            throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNH.isValidHex(previousBlockHash, NanoConst.LEN_HASH_H))
-            throw new IllegalArgumentException("Previous block hash is invalid.");
+        if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
+        if (!JNH.isValidLength(previousBlockHash, NanoConst.LEN_HASH_B))
+            throw new IllegalArgumentException("Previous block hash is an invalid length.");
         if (representativeAddress == null) throw new IllegalArgumentException("Block representative cannot be null.");
         if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");
         if (accountAddress == null) throw new IllegalArgumentException("Block account cannot be null.");
         if (linkAccount == null && linkData == null) // If no data field is specified
             throw new IllegalArgumentException("Link data/account cannot be null.");
-        if (!JNH.isValidHex(linkData, NanoConst.LEN_HASH_H))
-            throw new IllegalArgumentException("Link data is invalid.");
-        if (linkAccount != null && linkData != null && !linkAccount.toPublicKey().equals(linkData))
+        if (!JNH.isValidLength(linkData, NanoConst.LEN_HASH_B))
+            throw new IllegalArgumentException("Link data is an invalid length.");
+        if (linkAccount != null && linkData != null &&
+                !Arrays.equals(linkAccount.getPublicKeyBytes(), linkData.toByteArray()))
             throw new IllegalArgumentException("Both link types were specified, but their values did not match.");
         
         this.subType = subtype;
         this.accountAddress = accountAddress;
-        this.previousBlockHash = previousBlockHash.toUpperCase();
+        this.previousBlockHash = previousBlockHash;
         this.representativeAddress = representativeAddress;
         this.balance = balance;
-        this.linkData = linkData != null ? linkData.toUpperCase() : linkAccount.toPublicKey();
-        this.linkAccount = linkAccount != null ? linkAccount : NanoAccount.parsePublicKey(linkData);
+        this.linkData = linkData != null ? linkData : new HexData(linkAccount.toPublicKey(), NanoConst.LEN_HASH_B);
+        this.linkAccount = linkAccount != null ? linkAccount : NanoAccount.parsePublicKey(linkData.toHexString());
     }
     
     
@@ -146,7 +189,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     }
     
     @Override
-    public final String getPreviousBlockHash() {
+    public final HexData getPreviousBlockHash() {
         return previousBlockHash;
     }
     
@@ -161,7 +204,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     }
     
     @Override
-    public final String getLinkData() {
+    public final HexData getLinkData() {
         return linkData;
     }
     
@@ -222,7 +265,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         return new byte[][] {
                 HASH_PREAMBLE_BYTES,
                 getAccount().getPublicKeyBytes(),
-                JNH.ENC_16.decode(getPreviousBlockHash()),
+                getPreviousBlockHash().toByteArray(),
                 getRepresentative().getPublicKeyBytes(),
                 JNH.leftPadByteArray(getBalance().getAsRaw().toByteArray(), 16, false),
                 getLinkAsAccount().getPublicKeyBytes()

@@ -71,8 +71,8 @@ public class JNHTest {
     
     @Test
     public void testIsZero() {
-        assertTrue(JNH.isZero(null, true));
-        assertFalse(JNH.isZero(null, false));
+        assertTrue(JNH.isZero((String)null, true));
+        assertFalse(JNH.isZero((String)null, false));
         assertTrue(JNH.isZero("", true));
         assertTrue(JNH.isZero("0", true));
         assertTrue(JNH.isZero("00000", true));

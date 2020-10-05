@@ -9,6 +9,7 @@ import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockAccount;
@@ -141,9 +142,9 @@ public class WorkSolution {
         
         // Try previous
         if (block instanceof IBlockPrevious) {
-            String previous = ((IBlockPrevious)block).getPreviousBlockHash();
+            HexData previous = ((IBlockPrevious)block).getPreviousBlockHash();
             if (!JNH.isZero(previous, true))
-                return previous;
+                return previous.toHexString();
         }
         // Try account
         if (block instanceof IBlockAccount) {

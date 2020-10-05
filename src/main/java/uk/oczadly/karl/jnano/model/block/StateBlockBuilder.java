@@ -6,6 +6,8 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.NanoConst;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
@@ -23,12 +25,12 @@ public final class StateBlockBuilder {
     
     private StateBlockSubType subtype;
     private NanoAccount accountAddress;
-    private String previousBlockHash;
+    private HexData previousBlockHash;
     private NanoAccount representativeAddress;
     private NanoAmount balance;
     private NanoAccount linkAccount;
-    private String linkData;
-    private String signature;
+    private HexData linkData;
+    private HexData signature;
     private WorkSolution work;
     
     
@@ -112,14 +114,15 @@ public final class StateBlockBuilder {
      */
     public StateBlockBuilder(StateBlockBuilder builder) {
         this();
-        this.subtype = builder.getSubtype();
-        this.accountAddress = builder.getAccountAddress();
-        this.previousBlockHash = builder.getPreviousBlockHash();
-        this.representativeAddress = builder.getRepresentativeAddress();
-        this.balance = builder.getBalance();
-        this.signature = builder.getSignature();
-        this.work = builder.getWorkSolution();
-        this.linkData = builder.getLinkData();
+        this.subtype = builder.subtype;
+        this.accountAddress = builder.accountAddress;
+        this.previousBlockHash = builder.previousBlockHash;
+        this.representativeAddress = builder.representativeAddress;
+        this.balance = builder.balance;
+        this.signature = builder.signature;
+        this.work = builder.work;
+        this.linkData = builder.linkData;
+        this.linkAccount = builder.linkAccount;
     }
     
     
@@ -135,10 +138,14 @@ public final class StateBlockBuilder {
     
     
     public String getSignature() {
-        return signature;
+        return signature.toHexString();
     }
     
     public StateBlockBuilder setSignature(String signature) {
+        return setSignature(signature != null ? new HexData(signature, NanoConst.LEN_SIGNATURE_B) : null);
+    }
+    
+    public StateBlockBuilder setSignature(HexData signature) {
         this.signature = signature;
         return this;
     }
@@ -188,10 +195,15 @@ public final class StateBlockBuilder {
     
     
     public String getPreviousBlockHash() {
-        return previousBlockHash;
+        return previousBlockHash.toHexString();
     }
     
     public StateBlockBuilder setPreviousBlockHash(String previousBlockHash) {
+        return setPreviousBlockHash(previousBlockHash != null
+                ? new HexData(previousBlockHash, NanoConst.LEN_HASH_B) : null);
+    }
+    
+    public StateBlockBuilder setPreviousBlockHash(HexData previousBlockHash) {
         this.previousBlockHash = previousBlockHash;
         return this;
     }
@@ -231,7 +243,7 @@ public final class StateBlockBuilder {
     
     
     public String getLinkData() {
-        return linkData;
+        return linkData.toHexString();
     }
     
     public NanoAccount getLinkAccount() {
@@ -256,6 +268,14 @@ public final class StateBlockBuilder {
      * @return this builder
      */
     public StateBlockBuilder setLinkData(String linkData) {
+        return setLinkData(linkData != null ? new HexData(linkData, NanoConst.LEN_HASH_B) : null);
+    }
+    
+    /**
+     * @param linkData the link data, in hexadecimal format
+     * @return this builder
+     */
+    public StateBlockBuilder setLinkData(HexData linkData) {
         this.linkData = linkData;
         this.linkAccount = null;
         return this;
@@ -266,7 +286,7 @@ public final class StateBlockBuilder {
      * @return this builder
      */
     public StateBlockBuilder setLinkAccount(String linkAccount) {
-        return setLinkAccount(linkAccount != null ? NanoAccount.parseAddress(linkAccount) : null);
+        return setLinkAccount((NanoAccount)JNH.nullable(linkAccount, NanoAccount::parse));
     }
     
     /**
@@ -285,9 +305,9 @@ public final class StateBlockBuilder {
      */
     public StateBlock build() {
         return new StateBlock(subtype, signature, work, accountAddress,
-                Objects.requireNonNullElse(previousBlockHash, JNH.ZEROES_64),
+                Objects.requireNonNullElse(previousBlockHash, JNH.ZEROES_64_HD),
                 representativeAddress, balance,
-                (linkData == null && linkAccount == null) ? JNH.ZEROES_64 : linkData, linkAccount);
+                (linkData == null && linkAccount == null) ? JNH.ZEROES_64_HD : linkData, linkAccount);
     }
     
 }

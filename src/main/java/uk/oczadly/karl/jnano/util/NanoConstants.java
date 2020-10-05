@@ -118,6 +118,6 @@ public final class NanoConstants {
      * @deprecated Use constants offered in {@link #NANO_LIVE_NET}.
      */
     @Deprecated(forRemoval = true)
-    public static final String BLOCK_HASH_GENESIS = BLOCK_GENESIS_LIVE.getHash();
+    public static final String BLOCK_HASH_GENESIS = BLOCK_GENESIS_LIVE.getHash().toHexString();
     
 }

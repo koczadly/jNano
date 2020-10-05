@@ -6,6 +6,7 @@
 package uk.oczadly.karl.jnano.util;
 
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.*;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
@@ -38,8 +39,8 @@ public final class NetworkConstants {
         this.addressPrefix = addressPrefix;
         this.burnAddress = NanoAccount.parseAddressSegment(burnAddressSegment, addressPrefix);
         NanoAccount genesisAccount = NanoAccount.parseAddressSegment(genBlockAccountSeg, addressPrefix);
-        this.genesisBlock = new OpenBlock(genBlockSig, genBlockWork, genesisAccount.toPublicKey(), genesisAccount,
-                genesisAccount);
+        this.genesisBlock = new OpenBlock(new HexData(genBlockSig), genBlockWork,
+                new HexData(genesisAccount.toPublicKey()), genesisAccount, genesisAccount);
         this.workDifficulty = workDifficulty;
     }
     
@@ -82,7 +83,7 @@ public final class NetworkConstants {
      * @return the network identifier
      */
     public String getNetworkIdentifier() {
-        return getGenesisBlock().getHash();
+        return getGenesisBlock().getHash().toHexString();
     }
     
     /**

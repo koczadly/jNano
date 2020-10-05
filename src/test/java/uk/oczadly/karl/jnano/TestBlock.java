@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.BlockIntent;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
@@ -24,7 +25,7 @@ import java.util.function.Function;
 public class TestBlock extends Block {
     
     public static final Function<JsonObject, TestBlock> DESERIALIZER = json -> new TestBlock(
-            JNH.getJson(json, "signature"),
+            JNH.getJson(json, "signature", HexData::new),
             JNH.getJson(json, "work", WorkSolution::new),
             JNH.getJson(json, "val"));
     
@@ -42,7 +43,7 @@ public class TestBlock extends Block {
         this(null, null, val);
     }
     
-    public TestBlock(String signature, WorkSolution workSolution, String val) {
+    public TestBlock(HexData signature, WorkSolution workSolution, String val) {
         super("test", signature, workSolution);
         this.val = val;
     }

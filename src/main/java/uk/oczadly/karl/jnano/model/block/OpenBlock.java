@@ -10,6 +10,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockRepresentative;
@@ -29,9 +30,9 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     
     /** A function which converts a {@link JsonObject} into a {@link OpenBlock} instance. */
     public static final Function<JsonObject, OpenBlock> DESERIALIZER = json -> new OpenBlock(
-            JNH.getJson(json, "signature"),
+            (HexData)JNH.getJson(json, "signature", HexData::new),
             JNH.getJson(json, "work", WorkSolution::new),
-            JNH.getJson(json, "source"),
+            JNH.getJson(json, "source", HexData::new),
             JNH.getJson(json, "account", NanoAccount::parseAddress),
             JNH.getJson(json, "representative", NanoAccount::parseAddress));
     
@@ -40,7 +41,7 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     
     
     @Expose @SerializedName("source")
-    private final String sourceBlockHash;
+    private final HexData sourceBlockHash;
     
     @Expose @SerializedName("account")
     private final NanoAccount accountAddress;
@@ -49,13 +50,19 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     private final NanoAccount representativeAccount;
     
     
+    @Deprecated(forRemoval = true)
     public OpenBlock(String signature, WorkSolution work, String sourceBlockHash, NanoAccount accountAddress,
+                     NanoAccount representativeAccount) {
+        this(new HexData(signature), work, new HexData(sourceBlockHash), accountAddress, representativeAccount);
+    }
+    
+    public OpenBlock(HexData signature, WorkSolution work, HexData sourceBlockHash, NanoAccount accountAddress,
                      NanoAccount representativeAccount) {
         super(BlockType.OPEN, signature, work);
     
         if (sourceBlockHash == null) throw new IllegalArgumentException("Source block hash cannot be null.");
-        if (!JNH.isValidHex(sourceBlockHash, NanoConst.LEN_HASH_H))
-            throw new IllegalArgumentException("Previous block hash is invalid.");
+        if (!JNH.isValidLength(sourceBlockHash, NanoConst.LEN_HASH_B))
+            throw new IllegalArgumentException("Source block hash is an invalid length.");
         if (accountAddress == null) throw new IllegalArgumentException("Block account cannot be null.");
         if (representativeAccount == null) throw new IllegalArgumentException("Block representative cannot be null.");
         
@@ -66,7 +73,7 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     
     
     @Override
-    public final String getSourceBlockHash() {
+    public final HexData getSourceBlockHash() {
         return sourceBlockHash;
     }
     
@@ -82,7 +89,8 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     
     @Override
     public BlockIntent getIntent() {
-        if (getSourceBlockHash().equals(getAccount().toPublicKey()) && getAccount().equals(getRepresentative())) {
+        if (getSourceBlockHash().toHexString().equals(getAccount().toPublicKey())
+                && getAccount().equals(getRepresentative())) {
             return INTENT_GENESIS; // Genesis block special case
         }
         return INTENT;
@@ -102,7 +110,7 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     @Override
     protected byte[][] generateHashables() {
         return new byte[][] {
-                JNH.ENC_16.decode(getSourceBlockHash()),
+                getSourceBlockHash().toByteArray(),
                 getRepresentative().getPublicKeyBytes(),
                 getAccount().getPublicKeyBytes()
         };

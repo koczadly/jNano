@@ -5,6 +5,7 @@
 
 package uk.oczadly.karl.jnano.util;
 
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.StateBlock;
@@ -41,15 +42,15 @@ public enum AccountEpoch {
     static {
         for (AccountEpoch e : AccountEpoch.values()) {
             VER_MAP.put(e.getVersion(), e);
-            ID_MAP.put(e.getIdentifier(), e);
+            ID_MAP.put(e.getIdentifier().toHexString().toUpperCase(), e);
         }
     }
     
-    String id;
+    HexData id;
     NanoAccount signerAcc;
     
     AccountEpoch(String id, NanoAccount signerAcc) {
-        this.id = id;
+        this.id = new HexData(id);
         this.signerAcc = signerAcc;
     }
     
@@ -64,7 +65,7 @@ public enum AccountEpoch {
     /**
      * @return the identifier (block {@code link} data) of this epoch upgrade
      */
-    public String getIdentifier() {
+    public HexData getIdentifier() {
         return id;
     }
     
@@ -83,6 +84,15 @@ public enum AccountEpoch {
      */
     public static AccountEpoch fromVersion(int ver) {
         return VER_MAP.get(ver);
+    }
+    
+    /**
+     * Returns the appropriate epoch transition from a given identifier.
+     * @param id the identifier of the epoch transition (link data value)
+     * @return the related epoch transition, or null if not found
+     */
+    public static AccountEpoch fromIdentifier(HexData id) {
+        return fromIdentifier(id.toHexString());
     }
     
     /**

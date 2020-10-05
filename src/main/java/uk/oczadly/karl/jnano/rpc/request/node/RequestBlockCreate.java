@@ -185,14 +185,14 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
         public Builder(StateBlock block) {
             this.balance = block.getBalance().getAsRaw();
             this.representative = block.getRepresentative();
-            this.previous = block.getPreviousBlockHash();
+            this.previous = block.getPreviousBlockHash().toHexString();
             this.account = block.getAccount();
             if (block.getSubType() == StateBlockSubType.SEND) {
                 this.destination = block.getLinkAsAccount();
             } else if (block.getSubType() == StateBlockSubType.RECEIVE) {
-                this.sourceBlock = block.getLinkData();
+                this.sourceBlock = block.getLinkData().toHexString();
             } else {
-                this.link = block.getLinkData();
+                this.link = block.getLinkData().toHexString();
             }
             this.work = block.getWorkSolution().getAsHexadecimal();
         }

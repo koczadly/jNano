@@ -10,6 +10,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockBalance;
@@ -30,17 +31,17 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     
     /** A function which converts a {@link JsonObject} into a {@link SendBlock} instance. */
     public static final Function<JsonObject, SendBlock> DESERIALIZER = json -> new SendBlock(
-            JNH.getJson(json, "signature"),
+            (HexData)JNH.getJson(json, "signature", HexData::new),
             JNH.getJson(json, "work", WorkSolution::new),
-            JNH.getJson(json, "previous"),
+            JNH.getJson(json, "previous", HexData::new),
             JNH.getJson(json, "destination", NanoAccount::parseAddress),
-            (NanoAmount)JNH.getJson(json, "balance", NanoAmount::new));
+            JNH.getJson(json, "balance", NanoAmount::valueOf));
     
     private static final BlockIntent INTENT = new BlockIntent(true, false, false, false, false, false);
     
     
     @Expose @SerializedName("previous")
-    private final String previousBlockHash;
+    private final HexData previousBlockHash;
     
     @Expose @SerializedName("destination")
     private final NanoAccount destinationAccount;
@@ -49,19 +50,25 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     private final NanoAmount balance;
     
     
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public SendBlock(String signature, WorkSolution work, String previousBlockHash, NanoAccount destinationAccount,
                      BigInteger balance) {
         this(signature, work, previousBlockHash, destinationAccount, new NanoAmount(balance));
     }
     
+    @Deprecated(forRemoval = true)
     public SendBlock(String signature, WorkSolution work, String previousBlockHash, NanoAccount destinationAccount,
+                     NanoAmount balance) {
+        this(new HexData(signature), work, new HexData(previousBlockHash), destinationAccount, balance);
+    }
+    
+    public SendBlock(HexData signature, WorkSolution work, HexData previousBlockHash, NanoAccount destinationAccount,
                      NanoAmount balance) {
         super(BlockType.SEND, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNH.isValidHex(previousBlockHash, NanoConst.LEN_HASH_H))
-            throw new IllegalArgumentException("Previous block hash is invalid.");
+        if (!JNH.isValidLength(previousBlockHash, NanoConst.LEN_HASH_B))
+            throw new IllegalArgumentException("Previous block hash is an invalid length.");
         if (destinationAccount == null) throw new IllegalArgumentException("Block destination account cannot be null.");
         if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");
         
@@ -72,7 +79,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     
     
     @Override
-    public final String getPreviousBlockHash() {
+    public final HexData getPreviousBlockHash() {
         return previousBlockHash;
     }
     
@@ -107,7 +114,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     @Override
     protected byte[][] generateHashables() {
         return new byte[][] {
-                JNH.ENC_16.decode(getPreviousBlockHash()),
+                getPreviousBlockHash().toByteArray(),
                 getDestinationAccount().getPublicKeyBytes(),
                 JNH.leftPadByteArray(getBalance().getAsRaw().toByteArray(), 16, false)
         };

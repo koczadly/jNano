@@ -6,6 +6,7 @@
 package uk.oczadly.karl.jnano;
 
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.*;
@@ -19,6 +20,10 @@ public class TestConstants {
     public static final Random RANDOM = new Random();
     
     
+    
+    public static HexData randHexData(int len) {
+        return new HexData(randHex(len));
+    }
     
     public static String randHex(int len) {
         StringBuilder sb = new StringBuilder(len);
@@ -41,37 +46,37 @@ public class TestConstants {
     
     
     public static OpenBlock randOpenBlock() {
-        return new OpenBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHex(64), randAccount(),
+        return new OpenBlock(randHexData(128), new WorkSolution(RANDOM.nextLong()), randHexData(64), randAccount(),
                 randAccount());
     }
     
     public static ChangeBlock randChangeBlock() {
-        return new ChangeBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHex(64), randAccount());
+        return new ChangeBlock(randHexData(128), new WorkSolution(RANDOM.nextLong()), randHexData(64), randAccount());
     }
     
     public static SendBlock randSendBlock() {
-        return new SendBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHex(64), randAccount(),
+        return new SendBlock(randHexData(128), new WorkSolution(RANDOM.nextLong()), randHexData(64), randAccount(),
                 randBalance());
     }
     
     public static ReceiveBlock randReceiveBlock() {
-        return new ReceiveBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHex(64), randHex(64));
+        return new ReceiveBlock(randHexData(128), new WorkSolution(RANDOM.nextLong()), randHexData(64), randHexData(64));
     }
     
     public static StateBlockBuilder randStateBlock() {
         return new StateBlockBuilder(randAccount())
                 .setSubtype(StateBlockSubType.values()[RANDOM.nextInt(StateBlockSubType.values().length)])
                 .setRepresentativeAddress(randAccount())
-                .setPreviousBlockHash(randHex(64))
-                .setSignature(randHex(128))
+                .setPreviousBlockHash(randHexData(64))
+                .setSignature(randHexData(128))
                 .setWorkSolution(new WorkSolution(RANDOM.nextLong()))
-                .setLinkData(randHex(64))
+                .setLinkData(randHexData(64))
                 .setBalance(randBalance());
                 
     }
     
     public static TestBlock randTestBlock() {
-        return new TestBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHex(64));
+        return new TestBlock(randHexData(128), new WorkSolution(RANDOM.nextLong()), randHex(64));
     }
 
 }

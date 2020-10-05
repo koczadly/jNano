@@ -46,28 +46,28 @@ public class AccountEpochTest {
     @Test
     public void testFromBlock() {
         // Not epoch
-        assertNull(AccountEpoch.fromEpochBlock(new OpenBlock(null, new WorkSolution(TestConstants.randHex(16)), TestConstants.randHex(64),
-                RANDOM_ACC, RANDOM_ACC)));
+        assertNull(AccountEpoch.fromEpochBlock(new OpenBlock(null, new WorkSolution(TestConstants.randHex(16)),
+                TestConstants.randHexData(64), RANDOM_ACC, RANDOM_ACC)));
         
         // Epoch V2
         assertEquals(AccountEpoch.V2,AccountEpoch.fromEpochBlock(
                 new StateBlock(StateBlockSubType.EPOCH, null, new WorkSolution(TestConstants.randHex(16)),
-                        RANDOM_ACC, TestConstants.randHex(64), RANDOM_ACC,
+                        RANDOM_ACC, TestConstants.randHexData(64), RANDOM_ACC,
                         new NanoAmount(BigInteger.TEN), AccountEpoch.V2.getIdentifier())));
     }
 
     @Test
     public void testCalcAccountWithEpoch() {
         List<Block> blocks = new ArrayList<>();
-        blocks.add(new OpenBlock(null, new WorkSolution(TestConstants.randHex(16)), TestConstants.randHex(64),
+        blocks.add(new OpenBlock(null, new WorkSolution(TestConstants.randHex(16)), TestConstants.randHexData(64),
                 RANDOM_ACC, RANDOM_ACC));
-        blocks.add(new ChangeBlock(null, new WorkSolution(TestConstants.randHex(16)), TestConstants.randHex(64),
+        blocks.add(new ChangeBlock(null, new WorkSolution(TestConstants.randHex(16)), TestConstants.randHexData(64),
                 RANDOM_ACC));
         blocks.add(new StateBlock(StateBlockSubType.EPOCH, null, new WorkSolution(TestConstants.randHex(16)),
-                RANDOM_ACC, TestConstants.randHex(64), RANDOM_ACC, new NanoAmount(BigInteger.TEN),
+                RANDOM_ACC, TestConstants.randHexData(64), RANDOM_ACC, new NanoAmount(BigInteger.TEN),
                 AccountEpoch.V1.getIdentifier())); // EPOCH V1
         blocks.add(new StateBlock(StateBlockSubType.SEND, null, new WorkSolution(TestConstants.randHex(16)),
-                RANDOM_ACC, TestConstants.randHex(64), RANDOM_ACC, new NanoAmount(BigInteger.TEN),
+                RANDOM_ACC, TestConstants.randHexData(64), RANDOM_ACC, new NanoAmount(BigInteger.TEN),
                 AccountEpoch.V2.getIdentifier())); // EPOCH V2, but not epoch block
         
         assertEquals(AccountEpoch.V1, AccountEpoch.calculateAccountVersion(blocks));
@@ -76,13 +76,13 @@ public class AccountEpochTest {
     @Test
     public void testCalcAccountWithoutEpoch() {
         List<Block> blocks = new ArrayList<>();
-        blocks.add(new OpenBlock(null, new WorkSolution(TestConstants.randHex(16)), TestConstants.randHex(64),
+        blocks.add(new OpenBlock(null, new WorkSolution(TestConstants.randHex(16)), TestConstants.randHexData(64),
                 RANDOM_ACC, RANDOM_ACC));
-        blocks.add(new ChangeBlock(null, new WorkSolution(TestConstants.randHex(16)), TestConstants.randHex(64),
+        blocks.add(new ChangeBlock(null, new WorkSolution(TestConstants.randHex(16)), TestConstants.randHexData(64),
                 RANDOM_ACC));
         blocks.add(new StateBlock(StateBlockSubType.SEND, null, new WorkSolution(TestConstants.randHex(16)),
-                RANDOM_ACC, TestConstants.randHex(64), RANDOM_ACC,
-                new NanoAmount(BigInteger.TEN), AccountEpoch.V1.getIdentifier())); // EPOCH V1, but not epoch block
+                RANDOM_ACC, TestConstants.randHexData(64), RANDOM_ACC, new NanoAmount(BigInteger.TEN),
+                AccountEpoch.V1.getIdentifier())); // EPOCH V1, but not epoch block
     
         assertNull(AccountEpoch.calculateAccountVersion(blocks));
     }

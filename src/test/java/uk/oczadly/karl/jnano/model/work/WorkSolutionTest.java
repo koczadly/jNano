@@ -29,14 +29,14 @@ public class WorkSolutionTest {
     public void testRootHash() {
         // Previous
         ChangeBlock changeBlock = TestConstants.randChangeBlock();
-        assertEquals(changeBlock.getPreviousBlockHash(), WorkSolution.getRoot(changeBlock));
+        assertEquals(changeBlock.getPreviousBlockHash().toHexString(), WorkSolution.getRoot(changeBlock));
     
         // Previous
         StateBlock stateBlock = TestConstants.randStateBlock().build();
-        assertEquals(stateBlock.getPreviousBlockHash(), WorkSolution.getRoot(stateBlock));
+        assertEquals(stateBlock.getPreviousBlockHash().toHexString(), WorkSolution.getRoot(stateBlock));
     
         // Account
-        stateBlock = TestConstants.randStateBlock().setPreviousBlockHash(null).build();
+        stateBlock = TestConstants.randStateBlock().setPreviousBlockHash((String)null).build();
         assertEquals(stateBlock.getAccount().toPublicKey(), WorkSolution.getRoot(stateBlock));
     
         // Account

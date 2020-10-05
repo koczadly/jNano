@@ -12,10 +12,10 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlock;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -29,15 +29,14 @@ import java.util.Objects;
 @JsonAdapter(BlockDeserializer.JsonAdapter.class)
 public abstract class Block implements IBlock {
     
-    private transient volatile String hash;
-    private transient volatile byte[] hashBytes;
+    private transient volatile HexData hash;
     
     @Expose @SerializedName("type")
     private final String type;
     private transient final BlockType typeEnum;
     
     @Expose @SerializedName("signature")
-    private final String signature;
+    private final HexData signature;
     
     @Expose @SerializedName("work")
     private final WorkSolution workSolution;
@@ -52,7 +51,7 @@ public abstract class Block implements IBlock {
      * @param signature     the block signature, or null
      * @param workSolution  the work solution, or null
      */
-    protected Block(String type, String signature, WorkSolution workSolution) {
+    protected Block(String type, HexData signature, WorkSolution workSolution) {
         this(null, type, signature, workSolution);
     }
     
@@ -60,33 +59,31 @@ public abstract class Block implements IBlock {
      * @param type          the block type
      * @param signature     the block signature, or null
      * @param workSolution  the work solution, or null
-     * @see #Block(String, String, WorkSolution)
+     * @see #Block(String, HexData, WorkSolution)
      */
-    protected Block(BlockType type, String signature, WorkSolution workSolution) {
+    protected Block(BlockType type, HexData signature, WorkSolution workSolution) {
         this(type, type.getProtocolName(), signature, workSolution);
     }
     
-    private Block(BlockType type, String typeStr, String signature, WorkSolution workSolution) {
+    private Block(BlockType type, String typeStr, HexData signature, WorkSolution workSolution) {
         if (type == null && typeStr == null)
             throw new IllegalArgumentException("Block type cannot be null.");
-        if (!JNH.isValidHex(hash, NanoConst.LEN_HASH_H))
-            throw new IllegalArgumentException("Block hash is invalid.");
-        if (!JNH.isValidHex(signature, NanoConst.LEN_SIGNATURE_H))
-            throw new IllegalArgumentException("Block signature is invalid.");
+        if (!JNH.isValidLength(signature, NanoConst.LEN_SIGNATURE_B))
+            throw new IllegalArgumentException("Block signature is an invalid length.");
         
         this.type = typeStr.toLowerCase();
         this.typeEnum = type;
-        this.signature = signature != null ? signature.toUpperCase() : null;
+        this.signature = signature;
         this.workSolution = workSolution;
     }
     
     
     @Override
-    public final String getHash() {
+    public final HexData getHash() {
         if (hash == null) {
             synchronized (this) {
                 if (hash == null) {
-                    hash = JNH.ENC_16.encode(getHashBytesUnsafe());
+                    hash = new HexData(calculateHashBytes(), NanoConst.LEN_HASH_B);
                 }
             }
         }
@@ -95,10 +92,11 @@ public abstract class Block implements IBlock {
     
     /**
      * @return a 32-length array of bytes, representing the hash of this block
+     * @deprecated Use of {@link HexData#toByteArray()} on {@link #getHash()} is preferred.
      */
+    @Deprecated
     public final byte[] getHashBytes() {
-        byte[] bytes = getHashBytesUnsafe();
-        return Arrays.copyOf(bytes, bytes.length);
+        return getHash().toByteArray();
     }
     
     @Override
@@ -112,7 +110,7 @@ public abstract class Block implements IBlock {
     }
     
     @Override
-    public final String getSignature() {
+    public final HexData getSignature() {
         return signature;
     }
     
@@ -140,18 +138,6 @@ public abstract class Block implements IBlock {
         byte[][] hashables = generateHashables();
         if (hashables == null) return null;
         return JNH.blake2b(32, hashables);
-    }
-    
-    /** Returns the hash bytes, but does <strong>not</strong> create a copy of the array. */
-    private byte[] getHashBytesUnsafe() {
-        if (hashBytes == null) {
-            synchronized (this) {
-                if (hashBytes == null) {
-                    hashBytes = calculateHashBytes();
-                }
-            }
-        }
-        return hashBytes;
     }
     
     
@@ -235,9 +221,7 @@ public abstract class Block implements IBlock {
         if (!(obj instanceof Block)) return false; // Not a Block
         Block block = (Block)obj;
         if (!getTypeString().equalsIgnoreCase(block.getTypeString())) return false; // Type doesnt match
-        byte[] thisHashBytes = getHashBytesUnsafe();
-        byte[] otherHashBytes = block.getHashBytesUnsafe();
-        return thisHashBytes != null && otherHashBytes != null && Arrays.equals(thisHashBytes, otherHashBytes);
+        return getHash() != null && block.getHash() != null && Objects.equals(getHash(), block.getHash());
     }
     
     /**
@@ -257,7 +241,7 @@ public abstract class Block implements IBlock {
     
     @Override
     public final int hashCode() {
-        return Arrays.hashCode(getHashBytesUnsafe());
+        return getHash().hashCode();
     }
     
     

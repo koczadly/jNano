@@ -5,6 +5,7 @@
 
 package uk.oczadly.karl.jnano.model.block.interfaces;
 
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.BlockIntent;
 import uk.oczadly.karl.jnano.model.block.BlockType;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
@@ -38,14 +39,14 @@ public interface IBlock {
      * Returns the 64-character hexadecimal hash of this block.
      * @return the block hash
      */
-    String getHash();
+    HexData getHash();
     
     /**
      * Returns the 128-character hexadecimal signature which verifies the ownership and approval of this block by the
      * account owner.
      * @return the signature of this block (may be null)
      */
-    String getSignature();
+    HexData getSignature();
     
     /**
      * Returns the work solution of this block.

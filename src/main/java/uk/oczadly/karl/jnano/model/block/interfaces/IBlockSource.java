@@ -5,6 +5,8 @@
 
 package uk.oczadly.karl.jnano.model.block.interfaces;
 
+import uk.oczadly.karl.jnano.model.HexData;
+
 /**
  * This interface is to be implemented by blocks which contain a source block hash.
  */
@@ -15,6 +17,6 @@ public interface IBlockSource extends IBlock {
      * funds sent from the source {@code send} block).
      * @return the hash of the source block
      */
-    String getSourceBlockHash();
+    HexData getSourceBlockHash();
     
 }

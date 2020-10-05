@@ -6,6 +6,7 @@
 package uk.oczadly.karl.jnano.model.block.interfaces;
 
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.util.function.Function;
@@ -29,7 +30,7 @@ public interface IBlockLink extends IBlock {
      * @return the link data, encoded as a hexadecimal string
      * @see #getLinkType()
      */
-    String getLinkData();
+    HexData getLinkData();
     
     /**
      * Returns the type of data encoded by the link field in this block.
@@ -51,7 +52,7 @@ public interface IBlockLink extends IBlock {
         
         /** Encoded as a 64-character hexadecimal string.
          * @see #getLinkData() */
-        HEX_DATA (IBlockLink::getLinkData),
+        HEX_DATA (b -> b.getLinkData().toHexString()),
         
         /** The link field is not used for this block. Interpreted as a 64-character string of zeroes. */
         EMPTY    (b -> JNH.ZEROES_64);

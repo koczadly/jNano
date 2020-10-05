@@ -54,7 +54,7 @@ public class BlockDeserializerTest {
         assertNotNull(block1);
         assertTrue(block1 instanceof TestBlock);
         TestBlock tb = (TestBlock)block1;
-        assertEquals(SIG, tb.getSignature());
+        assertEquals(SIG, tb.getSignature().toHexString());
         assertEquals(WORK, tb.getWorkSolution());
         assertEquals(VAL, tb.getVal());
         // Invalid block type

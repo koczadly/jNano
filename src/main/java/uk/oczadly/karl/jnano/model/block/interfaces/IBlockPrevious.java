@@ -5,6 +5,8 @@
 
 package uk.oczadly.karl.jnano.model.block.interfaces;
 
+import uk.oczadly.karl.jnano.model.HexData;
+
 /**
  * This interface is to be implemented by blocks which contain a previous block hash.
  */
@@ -15,6 +17,6 @@ public interface IBlockPrevious extends IBlock {
      * may return null or an empty string of zeroes.
      * @return the previous block hash
      */
-    String getPreviousBlockHash();
+    HexData getPreviousBlockHash();
 
 }

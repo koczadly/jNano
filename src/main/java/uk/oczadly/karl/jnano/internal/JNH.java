@@ -13,6 +13,7 @@ import uk.oczadly.karl.jnano.internal.gsonadapters.BooleanTypeDeserializer;
 import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
 import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
 import uk.oczadly.karl.jnano.internal.utils.Functions;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.util.NanoConstants;
 
 import java.math.BigInteger;
@@ -36,8 +37,11 @@ public class JNH {
     public static final BaseEncoder ENC_32 = new BaseEncoder("13456789abcdefghijkmnopqrstuwxyz");
     
     public static final String ZEROES_16 = repeatChar('0', 16);
+    public static final HexData ZEROES_16_HD = new HexData(ZEROES_16);
     public static final String ZEROES_64 = repeatChar('0', 64);
+    public static final HexData ZEROES_64_HD = new HexData(ZEROES_64);
     public static final String ZEROES_128 = repeatChar('0', 128);
+    public static final HexData ZEROES_128_HD = new HexData(ZEROES_128);
     
     public static final BigInteger BIGINT_MAX_128 = new BigInteger(1, filledByteArray(16, (byte)0xFF));
     public static final BigInteger BIGINT_MAX_256 = new BigInteger(1, filledByteArray(32, (byte)0xFF));
@@ -114,6 +118,13 @@ public class JNH {
     }
     
     /**
+     * @return true if data is null, or data.length() == len
+     */
+    public static boolean isValidLength(HexData data, int len) {
+        return data == null || data.length() == len;
+    }
+    
+    /**
      * @return true if the BigInt is null or is within the correct range
      */
     public static boolean isBalanceValid(BigInteger raw) {
@@ -131,6 +142,21 @@ public class JNH {
         if (str != null) {
             for (char c : str.toCharArray()) {
                 if (c != '0') return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * @param data the data
+     * @param allowNull if true, the method will return true for null data arg
+     * @return true if the string is null, empty or filled with zeroes
+     */
+    public static boolean isZero(HexData data, boolean allowNull) {
+        if (data == null && !allowNull) return false;
+        if (data != null) {
+            for (byte b : data.toByteArray()) {
+                if (b != (byte)0) return false;
             }
         }
         return true;

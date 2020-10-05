@@ -10,6 +10,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockRepresentative;
@@ -28,16 +29,16 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
     
     /** A function which converts a {@link JsonObject} into a {@link ChangeBlock} instance. */
     public static final Function<JsonObject, ChangeBlock> DESERIALIZER = json -> new ChangeBlock(
-            JNH.getJson(json, "signature"),
+            (HexData)JNH.getJson(json, "signature", HexData::new),
             JNH.getJson(json, "work", WorkSolution::new),
-            JNH.getJson(json, "previous"),
+            JNH.getJson(json, "previous", HexData::new),
             JNH.getJson(json, "representative", NanoAccount::parseAddress));
     
     private static final BlockIntent INTENT = new BlockIntent(false, false, true, false, false, false);
     
     
     @Expose @SerializedName("previous")
-    private final String previousBlockHash;
+    private final HexData previousBlockHash;
     
     @Expose @SerializedName("representative")
     private final NanoAccount representativeAccount;
@@ -49,14 +50,28 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
      * @param workSolution
      * @param previousBlockHash
      * @param representativeAccount
+     * @see #ChangeBlock(HexData, WorkSolution, HexData, NanoAccount)
      */
+    @Deprecated(forRemoval = true)
     public ChangeBlock(String signature, WorkSolution workSolution, String previousBlockHash,
+                       NanoAccount representativeAccount) {
+        this(new HexData(signature), workSolution, new HexData(previousBlockHash), representativeAccount);
+    }
+    
+    /**
+     * Constructs a change block.
+     * @param signature
+     * @param workSolution
+     * @param previousBlockHash
+     * @param representativeAccount
+     */
+    public ChangeBlock(HexData signature, WorkSolution workSolution, HexData previousBlockHash,
                        NanoAccount representativeAccount) {
         super(BlockType.CHANGE, signature, workSolution);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNH.isValidHex(previousBlockHash, NanoConst.LEN_HASH_H))
-            throw new IllegalArgumentException("Previous block hash is invalid.");
+        if (!JNH.isValidLength(previousBlockHash, NanoConst.LEN_HASH_B))
+            throw new IllegalArgumentException("Previous block hash is an invalid length.");
         if (representativeAccount == null) throw new IllegalArgumentException("Block representative cannot be null.");
         
         this.previousBlockHash = previousBlockHash;
@@ -65,7 +80,7 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
     
     
     @Override
-    public final String getPreviousBlockHash() {
+    public final HexData getPreviousBlockHash() {
         return previousBlockHash;
     }
     
@@ -92,7 +107,7 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
     @Override
     protected byte[][] generateHashables() {
         return new byte[][] {
-                JNH.ENC_16.decode(getPreviousBlockHash()),
+                getPreviousBlockHash().toByteArray(),
                 getRepresentative().getPublicKeyBytes()
         };
     }

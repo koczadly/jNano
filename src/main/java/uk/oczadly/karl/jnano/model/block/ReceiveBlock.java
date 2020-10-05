@@ -10,6 +10,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockSource;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
@@ -27,30 +28,35 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     
     /** A function which converts a {@link JsonObject} into a {@link ReceiveBlock} instance. */
     public static final Function<JsonObject, ReceiveBlock> DESERIALIZER = json -> new ReceiveBlock(
-            JNH.getJson(json, "signature"),
+            (HexData)JNH.getJson(json, "signature", HexData::new),
             JNH.getJson(json, "work", WorkSolution::new),
-            JNH.getJson(json, "previous"),
-            JNH.getJson(json, "source"));
+            JNH.getJson(json, "previous", HexData::new),
+            JNH.getJson(json, "source", HexData::new));
     
     private static final BlockIntent INTENT = new BlockIntent(false, true, false, false, false, false);
     
     
     @Expose @SerializedName("previous")
-    private final String previousBlockHash;
+    private final HexData previousBlockHash;
     
     @Expose @SerializedName("source")
-    private final String sourceBlockHash;
+    private final HexData sourceBlockHash;
     
     
+    @Deprecated(forRemoval = true)
     public ReceiveBlock(String signature, WorkSolution work, String previousBlockHash, String sourceBlockHash) {
+        this(new HexData(signature), work, new HexData(previousBlockHash), new HexData(sourceBlockHash));
+    }
+    
+    public ReceiveBlock(HexData signature, WorkSolution work, HexData previousBlockHash, HexData sourceBlockHash) {
         super(BlockType.RECEIVE, signature, work);
     
         if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNH.isValidHex(previousBlockHash, NanoConst.LEN_HASH_H))
-            throw new IllegalArgumentException("Previous block hash is invalid.");
+        if (!JNH.isValidLength(previousBlockHash, NanoConst.LEN_HASH_B))
+            throw new IllegalArgumentException("Previous block hash is an invalid length.");
         if (sourceBlockHash == null) throw new IllegalArgumentException("Source block hash cannot be null.");
-        if (!JNH.isValidHex(sourceBlockHash, NanoConst.LEN_HASH_H))
-            throw new IllegalArgumentException("Source block hash is invalid.");
+        if (!JNH.isValidLength(sourceBlockHash, NanoConst.LEN_HASH_B))
+            throw new IllegalArgumentException("Source block hash is an invalid length.");
         
         this.previousBlockHash = previousBlockHash;
         this.sourceBlockHash = sourceBlockHash;
@@ -58,12 +64,12 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     
     
     @Override
-    public final String getPreviousBlockHash() {
+    public final HexData getPreviousBlockHash() {
         return previousBlockHash;
     }
     
     @Override
-    public final String getSourceBlockHash() {
+    public final HexData getSourceBlockHash() {
         return sourceBlockHash;
     }
     
@@ -85,8 +91,8 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     @Override
     protected byte[][] generateHashables() {
         return new byte[][] {
-                JNH.ENC_16.decode(getPreviousBlockHash()),
-                JNH.ENC_16.decode(getSourceBlockHash())
+                getPreviousBlockHash().toByteArray(),
+                getSourceBlockHash().toByteArray()
         };
     }
     

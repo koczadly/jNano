@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import org.junit.Test;
 import uk.oczadly.karl.jnano.TestConstants;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockLink;
@@ -20,15 +21,15 @@ import static org.junit.Assert.*;
 
 public class StateBlockTest {
     
-    final String TB_SIGNATURE = "BC226F03E73CDA9706748494DBB1D0B78CE244BE5C66BCF4EBF88FBAF0937A4BEACE5E610B12278ADC6" +
-            "322BB6F0297CFB1D1CBF6D51FB331F2B25E0AD4A4A60C";
+    final HexData TB_SIGNATURE = new HexData("BC226F03E73CDA9706748494DBB1D0B78CE244BE5C66BCF4EBF88FBAF0937A4BEACE5" +
+            "E610B12278ADC6322BB6F0297CFB1D1CBF6D51FB331F2B25E0AD4A4A60C");
     final WorkSolution TB_WORK = new WorkSolution("508bc946fe6d22e7");
     final NanoAccount TB_ACCOUNT = NanoAccount.parseAddress(
             "nano_3dmtrrws3pocycmbqwawk6xs7446qxa36fcncush4s1pejk16ksbmakis78m");
     final NanoAccount TB_REP = NanoAccount.parseAddress(
             "nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk");
-    final String TB_PREVIOUS = "90204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488";
-    final String TB_LINK = "65706F636820763220626C6F636B000000000000000000000000000000000000";
+    final HexData TB_PREVIOUS = new HexData("90204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488");
+    final HexData TB_LINK = new HexData("65706F636820763220626C6F636B000000000000000000000000000000000000");
     final NanoAmount TB_BALANCE = new NanoAmount("1234567");
     final StateBlockSubType TB_SUBTYPE = StateBlockSubType.SEND;
     
@@ -81,7 +82,7 @@ public class StateBlockTest {
         
         // Hash
         assertEquals("AC762C4D4E8501026152DA37FBFB00D5A5FB55CDD85835CA4A2354717512203C",
-                block.getHash());
+                block.getHash().toHexString());
         
         // Account link
         assertEquals(NanoAccount.parseAddress("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"),
@@ -102,21 +103,25 @@ public class StateBlockTest {
     @Test
     public void testCalcLinkData() {
         StateBlock block = new StateBlockBuilder(TEST_BUILDER)
-                .setLinkAccount(NanoAccount.parseAddress("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
+                .setLinkAccount(NanoAccount.parseAddress(
+                        "nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
                 .build();
         
         // Account link
-        assertEquals("80204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488", block.getLinkData());
+        assertEquals("80204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488",
+                block.getLinkData().toHexString());
     }
     
     @Test
     public void testEquality() {
         StateBlock block1 = new StateBlockBuilder(TEST_BUILDER)
-                .setLinkAccount(NanoAccount.parseAddress("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
+                .setLinkAccount(NanoAccount.parseAddress(
+                        "nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
                 .build();
         
         StateBlock block2 = new StateBlockBuilder(TEST_BUILDER)
-                .setLinkAccount(NanoAccount.parseAddress("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
+                .setLinkAccount(NanoAccount.parseAddress(
+                        "nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
                 .build();
         
         StateBlock block3 = new StateBlockBuilder(TEST_BUILDER)
@@ -141,7 +146,7 @@ public class StateBlockTest {
                 .setLinkData("62204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488")
                 .build();
         
-        assertEquals("3D49EFB46E7716220B5E83A7830F543CC4A3EE50E53183D1E3BE81B2A50B5EFE", b.getHash());
+        assertEquals("3D49EFB46E7716220B5E83A7830F543CC4A3EE50E53183D1E3BE81B2A50B5EFE", b.getHash().toHexString());
     }
     
     @Test

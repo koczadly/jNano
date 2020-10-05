@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.model.block;
 
 import org.junit.Test;
 import uk.oczadly.karl.jnano.TestConstants;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import static org.junit.Assert.*;
@@ -19,7 +20,7 @@ public class BlockTest {
     @Test
     public void testHash() {
         Block block = new MockBlock();
-        assertEquals("11C0E79B71C3976CCD0C02D1310E2516C08EDC9D8B6F57CCD680D63A4D8E72DA", block.getHash());
+        assertEquals("11C0E79B71C3976CCD0C02D1310E2516C08EDC9D8B6F57CCD680D63A4D8E72DA", block.getHash().toHexString());
     }
     
     @Test
@@ -27,7 +28,7 @@ public class BlockTest {
         final String SIG = TestConstants.randHex(128);
         final WorkSolution WORK = new WorkSolution(TestConstants.RANDOM.nextLong());
         Block block = new MockBlock(SIG, WORK);
-        assertEquals(SIG, block.getSignature());
+        assertEquals(SIG, block.getSignature().toHexString());
         assertEquals(WORK, block.getWorkSolution());
         assertEquals("test", block.getTypeString());
         assertNull(block.getType());
@@ -62,7 +63,7 @@ public class BlockTest {
         }
     
         protected MockBlock(String signature, WorkSolution workSolution) {
-            super("test", signature, workSolution);
+            super("test", signature != null ? new HexData(signature) : null, workSolution);
         }
     
         @Override

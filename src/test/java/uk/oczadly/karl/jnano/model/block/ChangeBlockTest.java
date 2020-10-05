@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.model.block;
 import com.google.gson.JsonObject;
 import org.junit.Test;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 import uk.oczadly.karl.jnano.util.NanoConstants;
@@ -17,10 +18,10 @@ import static org.junit.Assert.assertTrue;
 
 public class ChangeBlockTest {
     
-    final String TB_SIGNATURE = "1D1A887AECC4A1C581D5CFC64E60B1AFAA6F820EB60FB581FE23D0A2C8AD5DC948311F2E872BC83B6D2" +
-            "53BDA7FEC4905E0E724006A7E2E4F5A2A6CB671695B09";
+    final HexData TB_SIGNATURE = new HexData("1D1A887AECC4A1C581D5CFC64E60B1AFAA6F820EB60FB581FE23D0A2C8AD5DC948311" +
+            "F2E872BC83B6D253BDA7FEC4905E0E724006A7E2E4F5A2A6CB671695B09");
     final WorkSolution TB_WORK = new WorkSolution("9bbddcc234c0e623");
-    final String TB_PREVIOUS = "279C791486FF3796BDEDF1B85A5349C172B4892F50BA22016C44F836BDC95993";
+    final HexData TB_PREVIOUS = new HexData("279C791486FF3796BDEDF1B85A5349C172B4892F50BA22016C44F836BDC95993");
     final NanoAccount TB_REP = NanoAccount.parseAddress(
             "nano_1asau6gr8ft5ykynpkauctrq1w37sdasdymuigtxotim6kxoa3rgn3dpenis");
     
@@ -57,7 +58,8 @@ public class ChangeBlockTest {
     
     @Test
     public void testHashing() {
-        assertEquals("91862D068AB5F836360738002EBB421B0A89996CF1AF64E1C9D400B2410BEDF0", TEST_BLOCK.getHash());
+        assertEquals("91862D068AB5F836360738002EBB421B0A89996CF1AF64E1C9D400B2410BEDF0",
+                TEST_BLOCK.getHash().toHexString());
     }
     
     @Test

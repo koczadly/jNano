@@ -57,11 +57,12 @@ public class StateBlockBuilderTest {
         assertEquals(new NanoAmount("1337"), block.getBalance());
         assertEquals(StateBlockSubType.EPOCH, block.getSubType());
         assertEquals(ACCOUNT, block.getAccount());
-        assertEquals("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97", block.getPreviousBlockHash());
+        assertEquals("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97",
+                block.getPreviousBlockHash().toHexString());
         assertEquals(ACCOUNT, block.getRepresentative());
-        assertEquals(DATA, block.getLinkData());
+        assertEquals(DATA, block.getLinkData().toHexString());
         assertEquals("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC9734F1B28DA06C9CA24661594" +
-                "28733B971068BF154DBA2AB10372510D52E86CC97", block.getSignature());
+                "28733B971068BF154DBA2AB10372510D52E86CC97", block.getSignature().toHexString());
         assertEquals(new WorkSolution("009d175747abbc9e"), block.getWorkSolution());
         
         //TODO test JSON
@@ -73,17 +74,17 @@ public class StateBlockBuilderTest {
     public void testLinkFormats() {
         // Data
         StateBlock b1 = newBuilder().setLinkAccount(ACCOUNT).setLinkData(DATA).build();
-        assertEquals(DATA, b1.getLinkData());
+        assertEquals(DATA, b1.getLinkData().toHexString());
         assertEquals(b1.getLinkAsAccount(), ACCOUNT);
     
         // Account
         StateBlock b2 = newBuilder().setLinkData(DATA).setLinkAccount(ACCOUNT).build();
         assertEquals(ACCOUNT, b2.getLinkAsAccount());
-        assertEquals(b2.getLinkData(), DATA);
+        assertEquals(b2.getLinkData().toHexString(), DATA);
         
         // Null should default to 000000...
-        assertEquals(JNH.ZEROES_64, newBuilder().build().getLinkData());
-        assertEquals(JNH.ZEROES_64, newBuilder().setLinkData(null).build().getLinkData());
+        assertEquals(JNH.ZEROES_64, newBuilder().build().getLinkData().toHexString());
+        assertEquals(JNH.ZEROES_64, newBuilder().setLinkData((String)null).build().getLinkData().toHexString());
     }
     
 }
