@@ -72,6 +72,25 @@ public class HexData {
         this.valHex = JNH.ENC_16.encode(valBytes);
     }
     
+    /**
+     * Constructs a HexData object with a given byte array. If the given byte array is shorter than the length,
+     * then it will be prepended with zeroes.
+     *
+     * @param bytes the array of bytes to construct from
+     * @param length the length of the data in bytes
+     */
+    public HexData(byte[] bytes, int length) {
+        if (bytes == null)
+            throw new IllegalArgumentException("'bytes' array cannot be null.");
+        if (length < 0)
+            throw new IllegalArgumentException("'length' must be zero or greater.");
+        if (bytes.length > length)
+            throw new IllegalArgumentException("'bytes' array is longer than 'length'.");
+        this.valBytes = JNH.leftPadByteArray(Arrays.copyOf(bytes, bytes.length), length, false);
+        this.byteLength = length;
+        this.valHex = JNH.ENC_16.encode(valBytes);
+    }
+    
     
     /**
      * Returns the value of this object, encoded as an uppercase hexadecimal string.

@@ -26,6 +26,17 @@ public class HexDataTest {
     }
     
     @Test
+    public void testConstructBytesLength() {
+        byte[] bytes = new byte[] {(byte)0xCA, (byte)0xFE, (byte)0xBA, (byte)0xBE};
+        byte[] bytesZero = new byte[] {0, (byte)0xCA, (byte)0xFE, (byte)0xBA, (byte)0xBE};
+        HexData data = new HexData(bytes, 5);
+        
+        assertArrayEquals(bytesZero, data.toByteArray());
+        assertEquals("00CAFEBABE", data.toHexString());
+        assertEquals(5, data.length());
+    }
+    
+    @Test
     public void testConstructString() {
         HexData data = new HexData("CAFEBABE");
         
