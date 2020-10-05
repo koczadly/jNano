@@ -221,7 +221,7 @@ public abstract class Block implements IBlock {
         if (!(obj instanceof Block)) return false; // Not a Block
         Block block = (Block)obj;
         if (!getTypeString().equalsIgnoreCase(block.getTypeString())) return false; // Type doesnt match
-        return getHash() != null && block.getHash() != null && Objects.equals(getHash(), block.getHash());
+        return getHash() != null && block.getHash() != null && getHash().equals(block.getHash());
     }
     
     /**
@@ -257,6 +257,8 @@ public abstract class Block implements IBlock {
     public static Block parse(String json) {
         try {
             return parse(JNH.parseJson(json));
+        } catch (BlockDeserializer.BlockParseException e) {
+            throw e;
         } catch (JsonParseException e) {
             throw new BlockDeserializer.BlockParseException(e);
         }
