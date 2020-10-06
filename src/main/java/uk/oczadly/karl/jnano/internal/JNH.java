@@ -162,6 +162,16 @@ public class JNH {
         return true;
     }
     
+    public static String removeLeadingZeroes(String str) {
+        StringBuilder sb = new StringBuilder();
+        boolean skippedZeroes = false;
+        for (char c : str.toCharArray()) {
+            if (c != '0') skippedZeroes = true;
+            if (skippedZeroes) sb.append(c);
+        }
+        return sb.toString();
+    }
+    
     public static String repeatChar(char c, int length) {
         StringBuilder sb = new StringBuilder(length);
         for (int i=0; i<length; i++)

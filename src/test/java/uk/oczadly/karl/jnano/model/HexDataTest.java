@@ -38,7 +38,7 @@ public class HexDataTest {
     
     @Test
     public void testConstructString() {
-        HexData data = new HexData("CAFEBABE");
+        HexData data = new HexData("CAFEbabe");
         
         assertArrayEquals(new byte[] {(byte)0xCA, (byte)0xFE, (byte)0xBA, (byte)0xBE}, data.toByteArray());
         assertEquals("CAFEBABE", data.toHexString());
@@ -64,6 +64,19 @@ public class HexDataTest {
         assertEquals(o1.hashCode(), o2.hashCode());
         assertNotEquals(o1, o3);
         assertNotEquals(o2, o3);
+    }
+    
+    @Test
+    public void testValueEquality() {
+        HexData o1 = new HexData("CAFE");
+        HexData o2 = new HexData("00CAFE");
+        assertTrue(o1.equalsValue("CAFE"));
+        assertTrue(o1.equalsValue("000CAFE"));
+        assertTrue(o2.equalsValue("CAFE"));
+        assertTrue(o2.equalsValue("000CAFE"));
+        assertFalse(o1.equalsValue(""));
+        assertFalse(o1.equalsValue("BABE"));
+        assertFalse(o1.equalsValue("SLUG"));
     }
     
     @Test

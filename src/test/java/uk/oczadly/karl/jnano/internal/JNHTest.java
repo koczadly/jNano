@@ -149,4 +149,11 @@ public class JNHTest {
                 JNH.tryRethrow("123", (o) -> { throw new Exception(o); }, IllegalArgumentException::new));
     }
     
+    @Test
+    public void testRemoveLeadingZeroes() {
+        assertEquals("100", JNH.removeLeadingZeroes("000100"));
+        assertEquals("1001", JNH.removeLeadingZeroes("0001001"));
+        assertEquals("100", JNH.removeLeadingZeroes("100"));
+    }
+    
 }

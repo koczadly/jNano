@@ -137,6 +137,35 @@ public class HexData {
     }
     
     
+    /**
+     * Returns whether this hexadecimal object is equal to the given hexadecimal value.
+     *
+     * <p>This method will ignore all leading zeroes for this object and the given argument. The {@code hex} argument
+     * is case-insensitive, and will simply return false if it is not a valid hexadecimal string.</p>
+     *
+     * @param hex the hexadecimal value to compare with
+     * @return true if the string matches
+     */
+    public final boolean equalsValue(String hex) {
+        if (hex == null) throw new IllegalArgumentException("Hex value cannot be null.");
+        String thisHex = JNH.removeLeadingZeroes(toHexString());
+        String thatHex = JNH.removeLeadingZeroes(hex);
+        return thisHex.equalsIgnoreCase(thatHex);
+    }
+    
+    /**
+     * Returns whether this hexadecimal object is equal to the given hexadecimal value.
+     *
+     * <p>This method will ignore all leading zeroes for this object and the given argument.</p>
+     *
+     * @param hex the hexadecimal value to compare with
+     * @return true if the string matches
+     */
+    public final boolean equalsValue(HexData hex) {
+        if (hex == null) throw new IllegalArgumentException("Hex value cannot be null.");
+        return equalsValue(hex.toHexString());
+    }
+    
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
