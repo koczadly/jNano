@@ -123,7 +123,8 @@ public class HexData {
     }
     
     /**
-     * Returns the length of this data as a number of bytes.
+     * Returns the length of this data as a number of bytes, including leading zeroes.
+     *
      * @return the length in bytes
      */
     public final int length() {
@@ -183,6 +184,8 @@ public class HexData {
         if (hex == null)
             throw new IllegalArgumentException("Hex value cannot be null.");
         hex = hex.startsWith("0x") ? hex.substring(2) : hex; // Preprocess hex string
+        if (hex.isEmpty())
+            throw new IllegalArgumentException("Hex string cannot be empty.");
         if (hex.length() % 2 != 0)
             hex = "0" + hex;
         if (!JNH.isValidHex(hex, -1))
