@@ -167,6 +167,15 @@ public class HexData {
         return equalsValue(hex.toHexString());
     }
     
+    /**
+     * Checks for equality with the given object.
+     *
+     * <p>This method will include leading zeroes in the comparison. For comparing the held value and ignoring
+     * leading zeroes, use {@link #equalsValue(HexData)}.</p>
+     *
+     * @param o the object to compare with
+     * @return true, if the two objects have matching data
+     */
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
