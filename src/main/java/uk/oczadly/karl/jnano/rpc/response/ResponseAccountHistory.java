@@ -9,6 +9,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.BlockType;
@@ -23,8 +24,8 @@ public class ResponseAccountHistory extends RpcResponse {
     
     @Expose @SerializedName("account")  private NanoAccount account;
     @Expose @SerializedName("history")  private List<BlockInfo> history;
-    @Expose @SerializedName("previous") private String previousHash;
-    @Expose @SerializedName("next")     private String nextHash;
+    @Expose @SerializedName("previous") private HexData previousHash;
+    @Expose @SerializedName("next")     private HexData nextHash;
     
     
     /**
@@ -46,7 +47,7 @@ public class ResponseAccountHistory extends RpcResponse {
      *
      * @see #getNextBlockHash()
      */
-    public String getPreviousBlockHash() {
+    public HexData getPreviousBlockHash() {
         return previousHash;
     }
     
@@ -55,7 +56,7 @@ public class ResponseAccountHistory extends RpcResponse {
      *
      * @see #getPreviousBlockHash()
      */
-    public String getNextBlockHash() {
+    public HexData getNextBlockHash() {
         return nextHash;
     }
     
@@ -64,7 +65,7 @@ public class ResponseAccountHistory extends RpcResponse {
      * @see #getNextBlockHash()
      * @see #getPreviousBlockHash()
      */
-    public String getSequenceBlockHash() {
+    public HexData getSequenceBlockHash() {
         return previousHash != null ? previousHash : nextHash;
     }
     
@@ -76,7 +77,7 @@ public class ResponseAccountHistory extends RpcResponse {
         @Expose @SerializedName("local_timestamp") @JsonAdapter(InstantAdapter.Seconds.class)
         private Instant timestamp;
         @Expose @SerializedName("height")           private int height;
-        @Expose @SerializedName("hash")             private String hash;
+        @Expose @SerializedName("hash")             private HexData hash;
     
     
         public BlockType getType() {
@@ -99,7 +100,7 @@ public class ResponseAccountHistory extends RpcResponse {
             return height;
         }
     
-        public String getHash() {
+        public HexData getHash() {
             return hash;
         }
     }

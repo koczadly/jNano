@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 
 import java.util.List;
@@ -63,7 +64,7 @@ public class ResponseConfirmationHistory extends RpcResponse {
     
     public static class Confirmation {
         @Expose @SerializedName("hash")
-        private String hash;
+        private HexData hash;
         
         @Expose @SerializedName("duration")
         private int duration;
@@ -81,7 +82,7 @@ public class ResponseConfirmationHistory extends RpcResponse {
         /**
          * @return the block's hash
          */
-        public String getHash() {
+        public HexData getHash() {
             return hash;
         }
         

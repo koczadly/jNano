@@ -9,6 +9,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 
@@ -43,12 +44,13 @@ public class ResponseWalletHistory extends RpcResponse {
         private NanoAmount amount;
         
         @Expose @SerializedName("block_account")
-        private String block_account;
+        private NanoAccount block_account;
         
         @Expose @SerializedName("hash")
-        private String hash;
+        private HexData hash;
         
-        @Expose @SerializedName("local_timestamp") @JsonAdapter(InstantAdapter.Seconds.class)
+        @Expose @SerializedName("local_timestamp")
+        @JsonAdapter(InstantAdapter.Seconds.class)
         private Instant localTimestamp;
         
         
@@ -76,14 +78,14 @@ public class ResponseWalletHistory extends RpcResponse {
         /**
          * @return the address of the account which created the block
          */
-        public String getBlockAccount() {
+        public NanoAccount getBlockAccount() {
             return block_account;
         }
         
         /**
          * @return the hash of the block
          */
-        public String getHash() {
+        public HexData getHash() {
             return hash;
         }
         

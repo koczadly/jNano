@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 
 /**
@@ -22,7 +23,7 @@ public class ResponseTelemetry extends RpcResponse {
     @Expose @SerializedName("peer_count") private int peerCount;
     @Expose @SerializedName("protocol_version") private int protocolVersion;
     @Expose @SerializedName("uptime") private long uptime;
-    @Expose @SerializedName("genesis_block") private String genesisBlockHash;
+    @Expose @SerializedName("genesis_block") private HexData genesisBlockHash;
     @Expose @SerializedName("major_version") private int majorVersion;
     @Expose @SerializedName("minor_version") private int minorVersion;
     @Expose @SerializedName("patch_version") private int patchVersion;
@@ -64,7 +65,7 @@ public class ResponseTelemetry extends RpcResponse {
         return uptime;
     }
     
-    public String getGenesisBlockHash() {
+    public HexData getGenesisBlockHash() {
         return genesisBlockHash;
     }
     

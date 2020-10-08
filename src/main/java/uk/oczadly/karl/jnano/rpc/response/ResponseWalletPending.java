@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 
@@ -18,7 +19,7 @@ import java.util.Map;
 public class ResponseWalletPending extends RpcResponse {
     
     @Expose @SerializedName("blocks")
-    private Map<NanoAccount, Map<String, PendingBlock>> blocks;
+    private Map<NanoAccount, Map<HexData, PendingBlock>> blocks;
     
     
     /**
@@ -26,7 +27,7 @@ public class ResponseWalletPending extends RpcResponse {
      *
      * @return a map of pending blocks
      */
-    public Map<NanoAccount, Map<String, PendingBlock>> getPendingBlocks() {
+    public Map<NanoAccount, Map<HexData, PendingBlock>> getPendingBlocks() {
         return blocks;
     }
     
@@ -36,8 +37,8 @@ public class ResponseWalletPending extends RpcResponse {
      * @param accountAddress a local account's address
      * @return a map of pending blocks, or null if not present in the response
      */
-    public Map<String, PendingBlock> getPendingBlocks(NanoAccount accountAddress) {
-        return this.blocks.get(accountAddress);
+    public Map<HexData, PendingBlock> getPendingBlocks(NanoAccount accountAddress) {
+        return blocks.get(accountAddress);
     }
     
     

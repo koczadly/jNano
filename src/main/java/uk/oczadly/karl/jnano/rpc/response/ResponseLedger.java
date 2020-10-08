@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 
@@ -41,13 +42,13 @@ public class ResponseLedger extends RpcResponse {
     
     public static class AccountInfo {
         @Expose @SerializedName("frontier")
-        private String frontierBlockHash;
+        private HexData frontierBlockHash;
         
         @Expose @SerializedName("open_block")
-        private String openBlockHash;
+        private HexData openBlockHash;
         
         @Expose @SerializedName("representative_block")
-        private String representativeBlockHash;
+        private HexData representativeBlockHash;
         
         @Expose @SerializedName("balance")
         private NanoAmount balance;
@@ -71,21 +72,21 @@ public class ResponseLedger extends RpcResponse {
         /**
          * @return the frontier (head) block hash
          */
-        public String getFrontierBlockHash() {
+        public HexData getFrontierBlockHash() {
             return frontierBlockHash;
         }
         
         /**
          * @return the open (first) block hash
          */
-        public String getOpenBlockHash() {
+        public HexData getOpenBlockHash() {
             return openBlockHash;
         }
         
         /**
          * @return the hash of the last block to set this account's representative
          */
-        public String getRepresentativeBlockHash() {
+        public HexData getRepresentativeBlockHash() {
             return representativeBlockHash;
         }
         

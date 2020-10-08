@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import uk.oczadly.karl.jnano.internal.gsonadapters.SingleValueJsonAdapter;
+import uk.oczadly.karl.jnano.model.HexData;
 
 import java.util.Set;
 
@@ -18,13 +19,13 @@ import java.util.Set;
 public class ResponseBlockHashes extends RpcResponse {
     
     @Expose
-    private Set<String> blockHashes;
+    private Set<HexData> blockHashes;
     
     
     /**
      * @return a set of block hashes
      */
-    public Set<String> getBlockHashes() {
+    public Set<HexData> getBlockHashes() {
         return blockHashes;
     }
     

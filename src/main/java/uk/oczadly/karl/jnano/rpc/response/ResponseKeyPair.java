@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 
 /**
@@ -15,19 +16,19 @@ import uk.oczadly.karl.jnano.model.NanoAccount;
 public class ResponseKeyPair extends RpcResponse {
     
     @Expose @SerializedName("private")
-    private String privateKey;
+    private HexData privateKey;
     
     @Expose @SerializedName("public")
-    private String publicKey;
+    private HexData publicKey;
     
     @Expose @SerializedName("account")
-    private String accountAddress;
+    private NanoAccount accountAddress;
     
     
     /**
      * @return the private key
      */
-    public String getPrivateKey() {
+    public HexData getPrivateKey() {
         return privateKey;
     }
     
@@ -36,7 +37,7 @@ public class ResponseKeyPair extends RpcResponse {
      * @deprecated use {@link #getAddress()}
      */
     @Deprecated
-    public String getPublicKey() {
+    public HexData getPublicKey() {
         return publicKey;
     }
     
@@ -46,14 +47,14 @@ public class ResponseKeyPair extends RpcResponse {
      */
     @Deprecated
     public String getAccountAddress() {
-        return accountAddress;
+        return getAddress().toAddress();
     }
     
     /**
      * @return an {@link NanoAccount} object representing the account returned
      */
     public NanoAccount getAddress() {
-        return NanoAccount.parseAddress(getAccountAddress());
+        return accountAddress;
     }
     
 }

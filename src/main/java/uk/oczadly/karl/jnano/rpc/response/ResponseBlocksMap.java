@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.Block;
 
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.Map;
 public class ResponseBlocksMap extends RpcResponse {
     
     @Expose @SerializedName("blocks")
-    private Map<String, Block> blocks;
+    private Map<HexData, Block> blocks;
     
     
     /**
@@ -25,7 +26,7 @@ public class ResponseBlocksMap extends RpcResponse {
      *
      * @return a list of blocks
      */
-    public Map<String, Block> getBlocks() {
+    public Map<HexData, Block> getBlocks() {
         return blocks;
     }
     
@@ -34,7 +35,15 @@ public class ResponseBlocksMap extends RpcResponse {
      * @return the block's contents
      */
     public Block getBlock(String blockHash) {
-        return this.blocks.get(blockHash.toUpperCase());
+        return getBlock(new HexData(blockHash));
+    }
+    
+    /**
+     * @param blockHash the block's hash
+     * @return the block's contents
+     */
+    public Block getBlock(HexData blockHash) {
+        return blocks.get(blockHash);
     }
     
 }

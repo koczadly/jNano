@@ -9,6 +9,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
@@ -24,7 +25,7 @@ import java.util.Map;
 public class ResponseMultiBlockInfo extends RpcResponse {
     
     @Expose @SerializedName("blocks")
-    private Map<String, BlockInfo> blocks = Collections.emptyMap();
+    private Map<HexData, BlockInfo> blocks = Collections.emptyMap();
     
     
     /**
@@ -33,7 +34,7 @@ public class ResponseMultiBlockInfo extends RpcResponse {
      *
      * @return a map of block hashes and information, or null if not present in the response
      */
-    public Map<String, BlockInfo> getBlocks() {
+    public Map<HexData, BlockInfo> getBlocks() {
         return blocks;
     }
     

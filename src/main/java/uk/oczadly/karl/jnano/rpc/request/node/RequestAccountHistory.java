@@ -123,8 +123,8 @@ public class RequestAccountHistory extends RpcRequest<ResponseAccountHistory> {
      * @return the next request for pagination
      */
     public static RequestAccountHistory nextPage(RequestAccountHistory prevReq, ResponseAccountHistory prevRes) {
-        return new RequestAccountHistory(prevReq.account, prevReq.transactionCount, prevRes.getSequenceBlockHash(), 0,
-                prevReq.reverse, prevReq.accountFilter);
+        return new RequestAccountHistory(prevReq.account, prevReq.transactionCount,
+                prevRes.getSequenceBlockHash().toHexString(), 0, prevReq.reverse, prevReq.accountFilter);
     }
     
 }

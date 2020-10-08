@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.Block;
 
 /**
@@ -18,7 +19,7 @@ public class ResponseSignature extends RpcResponse {
     private Block block;
     
     @Expose @SerializedName("signature")
-    private String signature;
+    private HexData signature;
     
     
     /**
@@ -31,7 +32,7 @@ public class ResponseSignature extends RpcResponse {
     /**
      * @return the signature of the block
      */
-    public String getSignature() {
+    public HexData getSignature() {
         return signature;
     }
     

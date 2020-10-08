@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 
@@ -16,7 +17,7 @@ import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 public class ResponseBlockCreate extends RpcResponse {
     
     @Expose @SerializedName("hash")
-    private String blockHash;
+    private HexData blockHash;
     
     @Expose @SerializedName("difficulty")
     private WorkDifficulty difficulty;
@@ -28,7 +29,7 @@ public class ResponseBlockCreate extends RpcResponse {
     /**
      * @return the block's hash
      */
-    public String getBlockHash() {
+    public HexData getBlockHash() {
         return blockHash;
     }
     

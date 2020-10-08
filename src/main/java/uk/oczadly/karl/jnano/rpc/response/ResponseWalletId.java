@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.rpc.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import uk.oczadly.karl.jnano.internal.gsonadapters.SingleValueJsonAdapter;
+import uk.oczadly.karl.jnano.model.HexData;
 
 /**
  * This response class contains a single wallet ID string.
@@ -16,13 +17,13 @@ import uk.oczadly.karl.jnano.internal.gsonadapters.SingleValueJsonAdapter;
 public class ResponseWalletId extends RpcResponse {
     
     @Expose
-    private String wallet;
+    private HexData wallet;
     
     
     /**
      * @return the wallet's ID
      */
-    public String getWalletId() {
+    public HexData getWalletId() {
         return wallet;
     }
     

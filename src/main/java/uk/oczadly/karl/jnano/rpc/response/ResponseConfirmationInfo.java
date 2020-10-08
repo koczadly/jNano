@@ -7,6 +7,8 @@ package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.HexData;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
 
@@ -21,13 +23,13 @@ public class ResponseConfirmationInfo extends RpcResponse {
     private int announcements;
     
     @Expose @SerializedName("last_winner")
-    private String lastWinner;
+    private HexData lastWinner;
     
     @Expose @SerializedName("total_tally")
     private NanoAmount totalTally;
     
     @Expose @SerializedName("blocks")
-    private Map<String, BlockConfirmation> blocks;
+    private Map<HexData, BlockConfirmation> blocks;
     
     
     /**
@@ -40,7 +42,7 @@ public class ResponseConfirmationInfo extends RpcResponse {
     /**
      * @return the last winning block hash
      */
-    public String getLastWinner() {
+    public HexData getLastWinner() {
         return lastWinner;
     }
     
@@ -56,7 +58,7 @@ public class ResponseConfirmationInfo extends RpcResponse {
      *
      * @return a map of confirmations.
      */
-    public Map<String, BlockConfirmation> getBlocks() {
+    public Map<HexData, BlockConfirmation> getBlocks() {
         return blocks;
     }
     
@@ -69,7 +71,7 @@ public class ResponseConfirmationInfo extends RpcResponse {
         private Block blockContents;
         
         @Expose @SerializedName("representatives")
-        private Map<String, NanoAmount> representatives;
+        private Map<NanoAccount, NanoAmount> representatives;
         
         
         /**
@@ -91,7 +93,7 @@ public class ResponseConfirmationInfo extends RpcResponse {
          *
          * @return a map of representatives who voted on this block
          */
-        public Map<String, NanoAmount> getRepresentatives() {
+        public Map<NanoAccount, NanoAmount> getRepresentatives() {
             return representatives;
         }
     }
