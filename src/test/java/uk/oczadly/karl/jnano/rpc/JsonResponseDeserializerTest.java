@@ -28,7 +28,8 @@ public class JsonResponseDeserializerTest {
         ResponseBlockHash res = deserializer.deserialize(json, ResponseBlockHash.class);
         
         assertNotNull(res);
-        assertEquals(res.getBlockHash(),"6AACA0D90E760840A3418F6C961423A15501DD693B96C9A7327CBD93D2B7D6EC");
+        assertEquals(res.getBlockHash().toHexString(),
+                "6AACA0D90E760840A3418F6C961423A15501DD693B96C9A7327CBD93D2B7D6EC");
         assertNotNull(res.getRawResponseJson());
     }
     
