@@ -12,6 +12,7 @@ import uk.oczadly.karl.jnano.callback.httpserver.HttpCallback;
 import uk.oczadly.karl.jnano.callback.httpserver.HttpRequest;
 import uk.oczadly.karl.jnano.callback.httpserver.HttpServerThread;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
@@ -129,7 +130,7 @@ public class BlockCallbackServer {
             
             BlockData blockData = new BlockData(request.getBody(),
                     NanoAccount.parse(json.get("account").getAsString()),
-                    json.get("hash").getAsString(),
+                    JNH.getJson(json, "hash", HexData::new),
                     block,
                     gson.fromJson(json.get("subtype"), BlockType.class),
                     json.has("is_send")

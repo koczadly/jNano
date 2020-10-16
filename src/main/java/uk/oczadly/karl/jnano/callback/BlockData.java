@@ -5,6 +5,7 @@
 
 package uk.oczadly.karl.jnano.callback;
 
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
@@ -16,14 +17,15 @@ import uk.oczadly.karl.jnano.model.block.BlockType;
  */
 public class BlockData {
     
-    private final String rawJson, blockHash;
+    private final String rawJson;
+    private final HexData blockHash;
     private final NanoAccount account;
     private final Block block;
     private final BlockType subtype;
     private final boolean isSend;
     private final NanoAmount amount;
     
-    public BlockData(String rawJson, NanoAccount account, String blockHash, Block block, BlockType subtype,
+    public BlockData(String rawJson, NanoAccount account, HexData blockHash, Block block, BlockType subtype,
                      boolean isSend, NanoAmount amount) {
         this.rawJson = rawJson;
         this.account = account;
@@ -53,7 +55,7 @@ public class BlockData {
     /**
      * @return the identifying hash of the block
      */
-    public String getBlockHash() {
+    public HexData getBlockHash() {
         return blockHash;
     }
     
