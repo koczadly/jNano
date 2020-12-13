@@ -18,9 +18,11 @@ import java.util.Set;
 
 /**
  * <p>This class represents an immutable Nano account address string. A wide range of Java-based utilities are provided
- * through the methods of this class, without needing to configure or connect to an external node.</p>
+ * through the methods of this class without needing to connect to a node.</p>
+ *
  * <p>To instantiate this class, use the provided static methods (eg. {@link #parse(String)}), or use the
  * constructor to clone an existing object.</p>
+ *
  * <p>Using the built-in JSON adapter, this class will call {@link #parse(String)} for deserializing, allowing
  * accounts encoded in either address or public key formats. When serializing this class, the {@link #toAddress()}
  * method will be used to convert into address format.</p>
@@ -150,7 +152,7 @@ public final class NanoAccount {
     }
     
     /**
-     * @return an array of bytes which represent the public key of this address
+     * @return an array of bytes which represent the checksum of this address
      */
     public byte[] getChecksumBytes() {
         if (checksumBytes == null) {
