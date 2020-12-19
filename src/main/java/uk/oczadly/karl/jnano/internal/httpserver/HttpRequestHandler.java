@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.callback.httpserver;
+package uk.oczadly.karl.jnano.internal.httpserver;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;

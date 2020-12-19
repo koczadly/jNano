@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.callback.httpserver;
+package uk.oczadly.karl.jnano.internal.httpserver;
 
 import java.io.IOException;
 import java.net.ServerSocket;
