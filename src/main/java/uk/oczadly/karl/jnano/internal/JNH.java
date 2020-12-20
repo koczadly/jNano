@@ -14,6 +14,7 @@ import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
 import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
 import uk.oczadly.karl.jnano.internal.utils.Functions;
 import uk.oczadly.karl.jnano.model.HexData;
+import uk.oczadly.karl.jnano.model.block.BlockDeserializer;
 import uk.oczadly.karl.jnano.util.NanoConstants;
 
 import java.math.BigInteger;
@@ -30,6 +31,8 @@ public class JNH {
     
     private static final Pattern REGEX_HEX_MATCH = Pattern.compile("[0-9A-Fa-f]+");
     
+    
+    public static final BlockDeserializer BLOCK_DESERIALIZER = BlockDeserializer.withDefaults();
     
     public static final char[] HEX_CHARS_UC = "0123456789ABCDEF".toCharArray();
     

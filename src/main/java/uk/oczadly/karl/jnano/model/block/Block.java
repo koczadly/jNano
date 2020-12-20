@@ -274,7 +274,7 @@ public abstract class Block implements IBlock {
      * @see BlockDeserializer
      */
     public static Block parse(JsonObject json) {
-        return BlockDeserializer.DEFAULT.deserialize(json);
+        return JNH.BLOCK_DESERIALIZER.deserialize(json);
     }
     
 }

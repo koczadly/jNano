@@ -17,6 +17,7 @@ import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.BlockType;
+import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -126,13 +127,19 @@ public class BlockCallbackServer {
         public void onRequest(HttpRequest request) {
             JsonObject json = JNH.parseJson(request.getBody());
             
-            Block block = gson.fromJson(json.get("block"), Block.class);
+            BlockType subtype = gson.fromJson(json.get("subtype"), BlockType.class);
+            
+            JsonObject blockJson = JNH.parseJson(json.get("block").getAsString());
+            // Manually add subtype property for parsing (not included automatically)
+            if (blockJson.get("type").getAsString().equals(BlockType.STATE.getProtocolName()))
+                blockJson.addProperty("subtype", StateBlockSubType.getFromLegacyType(subtype).getProtocolName());
+            Block block = JNH.BLOCK_DESERIALIZER.deserialize(blockJson);
             
             BlockData blockData = new BlockData(request.getBody(),
                     NanoAccount.parse(json.get("account").getAsString()),
                     JNH.getJson(json, "hash", HexData::new),
                     block,
-                    gson.fromJson(json.get("subtype"), BlockType.class),
+                    subtype,
                     json.has("is_send")
                             ? json.get("is_send").getAsBoolean()
                             : block.getType() == BlockType.SEND,

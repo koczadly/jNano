@@ -33,7 +33,6 @@ public class HttpRequestHandler implements Runnable {
             if (!request[0].equalsIgnoreCase("POST")) return; // Ignore non-post
             
             int contentLength = -1;
-            
             String s;
             while ((s = reader.readLine()) != null) {
                 if (s.equals("")) {

@@ -22,9 +22,6 @@ import java.util.function.Function;
  */
 public final class BlockDeserializer {
     
-    static final BlockDeserializer DEFAULT = BlockDeserializer.withDefaults();
-    
-    
     private final Map<String, Function<JsonObject, ? extends Block>> deserializers = new ConcurrentHashMap<>();
     
     private BlockDeserializer() {}
@@ -147,7 +144,7 @@ public final class BlockDeserializer {
         
         /** With the default block deserializer. */
         public JsonAdapter() {
-            this(DEFAULT);
+            this(JNH.BLOCK_DESERIALIZER);
         }
     
         /**

@@ -30,12 +30,10 @@ public class HttpServerThread extends Thread {
         while (!Thread.interrupted()) {
             try {
                 Socket socket = this.socket.accept(); // Listen for requests
-                
                 socket.setSoTimeout(10000);
                 socket.setKeepAlive(false);
-                
-                this.executorService.submit(
-                        new HttpRequestHandler(socket, this.callbackListener)); // Start new thread for client
+                // Start new thread for client
+                this.executorService.submit(new HttpRequestHandler(socket, this.callbackListener));
             } catch (IOException e) {
                 e.printStackTrace();
             }
