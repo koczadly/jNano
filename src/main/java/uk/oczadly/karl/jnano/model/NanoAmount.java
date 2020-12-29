@@ -239,7 +239,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns a {@link NanoAmount} instance that represents the given raw amount.
+     * Returns a {@link NanoAmount} instance that represents the given Nano amount.
      *
      * @param raw the numeric value, in raw (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
@@ -247,6 +247,36 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      */
     public static NanoAmount valueOfRaw(String raw) {
         return valueOfRaw(new BigInteger(raw));
+    }
+    
+    /**
+     * Returns a {@link NanoAmount} instance that represents the given Nano amount.
+     *
+     * @param val the numeric value, in Nanos (must be zero or positive)
+     * @return a {@link NanoAmount} instance representing the given value
+     */
+    public static NanoAmount valueOfNano(BigInteger val) {
+        return valueOf(val, NanoUnit.BASE_UNIT);
+    }
+    
+    /**
+     * Returns a {@link NanoAmount} instance that represents the given Nano amount.
+     *
+     * @param val the numeric value, in Nanos (must be zero or positive)
+     * @return a {@link NanoAmount} instance representing the given value
+     */
+    public static NanoAmount valueOfNano(BigDecimal val) {
+        return valueOf(val, NanoUnit.BASE_UNIT);
+    }
+    
+    /**
+     * Returns a {@link NanoAmount} instance that represents the given Nano amount.
+     *
+     * @param val the numeric value, in Nanos (must be zero or positive)
+     * @return a {@link NanoAmount} instance representing the given value
+     */
+    public static NanoAmount valueOfNano(long val) {
+        return valueOf(val, NanoUnit.BASE_UNIT);
     }
     
     
