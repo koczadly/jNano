@@ -110,7 +110,7 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
                 return new RpcInternalException(              // Empty response internal error
                         "The server returned an \"empty response\" error.", msg);
         }
-        
+        // Try parse from prefix/suffix
         if (msgLc.startsWith("bad") || msgLc.startsWith("invalid") || msgLc.endsWith("invalid")
                 || msgLc.endsWith("required")) {
             return new RpcInvalidArgumentException(msg);      // Invalid/bad argument
@@ -127,8 +127,8 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
         } else if (msgLc.startsWith("internal")) {
             return new RpcInternalException(msg);             // Internal server error
         }
-        
-        return new RpcUnrecognizedException(msg);             // Unknown exception type
+        // Couldn't parse, unknown exception type
+        return new RpcUnrecognizedException(msg);
     }
     
     
