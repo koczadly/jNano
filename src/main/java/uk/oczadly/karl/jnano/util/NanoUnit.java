@@ -14,10 +14,8 @@ import java.text.DecimalFormat;
 
 /**
  * <p>This class represents the currency units and denominations used to represent an amount of Nano, and can be
- * used to locally convert between the different units.</p>
- *
- * <p>Alternatively, you can use the {@link NanoAmount} for representing a quantity of
- * Nano.</p>
+ * used to locally convert between the different units. Alternatively, you can use the {@link NanoAmount} class to
+ * represent a quantity of Nano and perform unit conversions.</p>
  *
  * <p>If you are intending to parse or display an amount of Nano to the user, it is recommended that you use the
  * {@link #BASE_UNIT} constant, rather than explicitly specifying the unit. This constant represents the unit that users
@@ -28,7 +26,7 @@ import java.text.DecimalFormat;
  *   // Convert 1.337 knano (KILO) to the base unit (currently MEGA, or "Nano")
  *   BigDecimal conv1 = NanoUnit.BASE_UNIT
  *          .convertFrom(NanoUnit.KILO, new BigDecimal("1.337"));
- *   System.out.println("1.337 knano = " + conv1.toPlainString() + " Nano"); // Prints "1337 knano = 0.001337 Nano"
+ *   System.out.println(conv1.toPlainString()); // Prints "0.001337"
  *
  *   // Convert 250 unano (MICRO) to raw (RAW)
  *   BigInteger conv2 = NanoUnit.RAW
@@ -144,9 +142,13 @@ public enum NanoUnit {
     
     /**
      * <p>Converts the specified unit and amount into this unit.</p>
+     *
      * <p>If you are converting from a smaller unit and fractional digits are lost, then an {@link ArithmeticException}
      * will be thrown. If you wish to bypass this, use {@link #convertFrom(NanoUnit, BigInteger)} and transform
      * the retrieved value into a BigInteger using the {@link BigDecimal#toBigInteger()} method.</p>
+     *
+     * <p>The {@link NanoAmount} class and it's provided conversion methods are recommended over this method for better
+     * code clarity.</p>
      *
      * @param sourceAmount the source amount to convert from
      * @param sourceUnit   the source unit to convert from
@@ -160,9 +162,13 @@ public enum NanoUnit {
     
     /**
      * <p>Converts the specified unit and amount into this unit.</p>
+     *
      * <p>If you are converting from a smaller unit and fractional digits are lost, then an {@link ArithmeticException}
      * will be thrown. If you wish to bypass this, use {@link #convertFrom(NanoUnit, BigDecimal)} and transform
      * the retrieved value into a BigInteger using the {@link BigDecimal#toBigInteger()} method.</p>
+     *
+     * <p>The {@link NanoAmount} class and it's provided conversion methods are recommended over this method for better
+     * code clarity.</p>
      *
      * @param sourceAmount the source amount to convert from
      * @param sourceUnit   the source unit to convert from
@@ -188,6 +194,9 @@ public enum NanoUnit {
     /**
      * Converts the specified unit and amount into this unit.
      *
+     * <p>The {@link NanoAmount} class and it's provided conversion methods are recommended over this method for better
+     * code clarity.</p>
+     *
      * @param sourceAmount the source amount to convert from
      * @param sourceUnit   the source unit to convert from
      * @return the converted value in this unit
@@ -198,6 +207,9 @@ public enum NanoUnit {
     
     /**
      * Converts the specified unit and amount into this unit.
+     *
+     * <p>The {@link NanoAmount} class and it's provided conversion methods are recommended over this method for better
+     * code clarity.</p>
      *
      * @param sourceAmount the source amount to convert from
      * @param sourceUnit   the source unit to convert from
@@ -241,6 +253,7 @@ public enum NanoUnit {
      *
      * <p>This value should not be used for any computations, and should only be used for displaying quantities of
      * the currency to a user.</p>
+     *
      * @param rawAmount the amount of raw to convert from
      * @return a friendly string of a given currency amount
      */
@@ -258,6 +271,7 @@ public enum NanoUnit {
      *
      * <p>This value should not be used for any computations, and should only be used for displaying quantities of
      * the currency to a user.</p>
+     *
      * @param amount     the amount to convert from
      * @param sourceUnit the source unit of the amount to convert from
      * @return a friendly string of a given currency amount
