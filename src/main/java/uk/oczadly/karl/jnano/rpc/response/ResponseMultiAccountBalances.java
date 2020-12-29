@@ -65,7 +65,7 @@ public class ResponseMultiAccountBalances extends RpcResponse {
          * @return the total balance of this account
          */
         public NanoAmount getTotal() {
-            return new NanoAmount(pending.getAsRaw().add(pocketed.getAsRaw()));
+            return NanoAmount.valueOfRaw(pending.getAsRaw().add(pocketed.getAsRaw()));
         }
     }
     

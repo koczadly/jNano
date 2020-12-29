@@ -144,7 +144,7 @@ public class BlockCallbackServer {
                             ? json.get("is_send").getAsBoolean()
                             : block.getType() == BlockType.SEND,
                     (block.getType().isTransaction() && json.has("amount"))
-                            ? new NanoAmount(json.get("amount").getAsString())
+                            ? NanoAmount.valueOfRaw(json.get("amount").getAsString())
                             : null);
             
             notifyListeners(blockData, request.getPath(), request.getClientAddr()); // Notify listeners

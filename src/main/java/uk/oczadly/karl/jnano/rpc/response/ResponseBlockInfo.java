@@ -121,7 +121,7 @@ public class ResponseBlockInfo extends RpcResponse {
                     JNH.getJson(json, "work", WorkSolution::new),
                     JNH.getJson(json, "previous"),
                     JNH.getJson(json, "destination", NanoAccount::parseAddress),
-                    (NanoAmount)JNH.getJson(json, "balance", s -> new NanoAmount(new BigInteger(s, 16)))
+                    (NanoAmount)JNH.getJson(json, "balance", s -> NanoAmount.valueOfRaw(new BigInteger(s, 16)))
             ));
         }
         

@@ -30,7 +30,7 @@ public class StateBlockTest {
             "nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk");
     final HexData TB_PREVIOUS = new HexData("90204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488");
     final HexData TB_LINK = new HexData("65706F636820763220626C6F636B000000000000000000000000000000000000");
-    final NanoAmount TB_BALANCE = new NanoAmount("1234567");
+    final NanoAmount TB_BALANCE = NanoAmount.valueOfRaw("1234567");
     final StateBlockSubType TB_SUBTYPE = StateBlockSubType.SEND;
     
     final StateBlockBuilder TEST_BUILDER = new StateBlockBuilder()

@@ -35,7 +35,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
             JNH.getJson(json, "account", NanoAccount::parseAddress),
             JNH.getJson(json, "previous", HexData::new),
             JNH.getJson(json, "representative", NanoAccount::parseAddress),
-            JNH.getJson(json, "balance", NanoAmount::valueOf),
+            JNH.getJson(json, "balance", NanoAmount::valueOfRaw),
             JNH.getJson(json, "link", HexData::new),
             JNH.getJson(json, "link_as_account", NanoAccount::parseAddress));
     

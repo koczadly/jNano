@@ -19,15 +19,15 @@ import static org.junit.Assert.*;
  */
 public class NanoAmountTest {
     
-    NanoAmount VAL_A = NanoAmount.valueOf("1230000000000000000000000000000");
-    NanoAmount VAL_B = NanoAmount.valueOf("1230000000000000000000000000001");
-    NanoAmount VAL_C = NanoAmount.valueOf("1230000000000000000000000000000");
+    NanoAmount VAL_A = NanoAmount.valueOfRaw("1230000000000000000000000000000");
+    NanoAmount VAL_B = NanoAmount.valueOfRaw("1230000000000000000000000000001");
+    NanoAmount VAL_C = NanoAmount.valueOfRaw("1230000000000000000000000000000");
     
     
     @Test
     public void testValueOf() {
-        assertEquals(new BigInteger("27"), NanoAmount.valueOf("27").getAsRaw());
-        assertEquals(new BigInteger("27"), NanoAmount.valueOf(new BigInteger("27")).getAsRaw());
+        assertEquals(new BigInteger("27"), NanoAmount.valueOfRaw("27").getAsRaw());
+        assertEquals(new BigInteger("27"), NanoAmount.valueOfRaw(new BigInteger("27")).getAsRaw());
         assertEquals(new BigInteger("27000000000000000000000000000000"),
                 NanoAmount.valueOf(27, NanoUnit.MEGA).getAsRaw());
         assertEquals(new BigInteger("27000000000000000000000000000000"),
@@ -38,8 +38,8 @@ public class NanoAmountTest {
     
     @Test
     public void testGetAsRaw() {
-        assertEquals(NanoAmount.valueOf("1230000000000000000000000000000").getAsRaw(), VAL_A.getAsRaw());
-        assertEquals(NanoAmount.valueOf("1230000000000000000000000000001").getAsRaw(), VAL_B.getAsRaw());
+        assertEquals(NanoAmount.valueOfRaw("1230000000000000000000000000000").getAsRaw(), VAL_A.getAsRaw());
+        assertEquals(NanoAmount.valueOfRaw("1230000000000000000000000000001").getAsRaw(), VAL_B.getAsRaw());
     }
     
     @Test
@@ -72,20 +72,20 @@ public class NanoAmountTest {
     
     @Test
     public void testAdd() {
-        assertEquals(NanoAmount.valueOf("567"), NanoAmount.valueOf("456").add(NanoAmount.valueOf("111")));
+        assertEquals(NanoAmount.valueOfRaw("567"), NanoAmount.valueOfRaw("456").add(NanoAmount.valueOfRaw("111")));
         assertThrows(ArithmeticException.class, () -> NanoAmount.MAX_VALUE.add(NanoAmount.ONE_RAW));
     }
     
     @Test
     public void testSubtract() {
-        assertEquals(NanoAmount.valueOf("345"), NanoAmount.valueOf("456").subtract(NanoAmount.valueOf("111")));
+        assertEquals(NanoAmount.valueOfRaw("345"), NanoAmount.valueOfRaw("456").subtract(NanoAmount.valueOfRaw("111")));
         assertThrows(ArithmeticException.class, () -> NanoAmount.ZERO.subtract(NanoAmount.ONE_RAW));
     }
     
     @Test
     public void testDifference() {
-        assertEquals(NanoAmount.valueOf("400"), NanoAmount.valueOf("500").difference(NanoAmount.valueOf("100")));
-        assertEquals(NanoAmount.valueOf("400"), NanoAmount.valueOf("100").difference(NanoAmount.valueOf("500")));
+        assertEquals(NanoAmount.valueOfRaw("400"), NanoAmount.valueOfRaw("500").difference(NanoAmount.valueOfRaw("100")));
+        assertEquals(NanoAmount.valueOfRaw("400"), NanoAmount.valueOfRaw("100").difference(NanoAmount.valueOfRaw("500")));
     }
     
 }

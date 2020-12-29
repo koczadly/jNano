@@ -187,7 +187,7 @@ public class BlockAdapterTest {
                 block.getAccount().toAddress());
         assertEquals("C798CFF4F1131204F65C4D22C3E6316F26F380EE0616AADBABEA1268FD75FB05",
                 block.getLinkData().toHexString());
-        assertEquals(new NanoAmount("420"),
+        assertEquals(NanoAmount.valueOfRaw("420"),
                 block.getBalance());
         assertEquals(StateBlockSubType.SEND, block.getSubType());
     }

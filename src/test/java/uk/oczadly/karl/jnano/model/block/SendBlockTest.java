@@ -24,7 +24,7 @@ public class SendBlockTest {
     final HexData TB_PREVIOUS = new HexData("91862D068AB5F836360738002EBB421B0A89996CF1AF64E1C9D400B2410BEDF0");
     final NanoAccount TB_DESTINATION = NanoAccount.parseAddress(
             "nano_14ghgrw1y9itsopkyscpofbpgrjr6hoy1qug4gda3utunrq11xzee9yfhtg3");
-    final NanoAmount TB_BALANCE = new NanoAmount("689999000000000000000000000000");
+    final NanoAmount TB_BALANCE = NanoAmount.valueOfRaw("689999000000000000000000000000");
     
     final SendBlock TEST_BLOCK = new SendBlock(TB_SIGNATURE, TB_WORK, TB_PREVIOUS, TB_DESTINATION, TB_BALANCE);
     

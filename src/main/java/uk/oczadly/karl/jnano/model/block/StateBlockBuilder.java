@@ -233,7 +233,7 @@ public final class StateBlockBuilder {
     }
     
     public StateBlockBuilder setBalance(BigInteger balance) {
-        return setBalance(new NanoAmount(balance));
+        return setBalance(NanoAmount.valueOfRaw(balance));
     }
     
     public StateBlockBuilder setBalance(NanoAmount balance) {

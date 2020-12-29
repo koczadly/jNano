@@ -17,10 +17,11 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 /**
- * This class is used to represent a quantity of Nano, for use as a transactional amount or account balance.
+ * This class is used to represent a quantity of Nano, for use as a transactional amount or account balance. Only
+ * unsigned values are supported, so this class cannot be used to represent a negative amount.
  *
- * <p>A NanoAmount can only be used to represent positive or zero values, and cannot represent a negative amount or
- * balance.</p>
+ * <p>To obtain an instance of this class, use one of the provided static {@code valueOf} methods, or one of the
+ * constant field values. This class also supports built-in Gson serialization and deserialization as a raw value.</p>
  *
  * @author Karl Oczadly
  */
@@ -51,44 +52,9 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     /**
      * Creates a NanoAmount from a given {@code raw} value.
      *
-     * @param rawValue the raw value, as a string
-     * @deprecated {@link #valueOfRaw(String)} is preferred for clarity
-     */
-    @Deprecated
-    public NanoAmount(String rawValue) {
-        this(new BigInteger(rawValue));
-    }
-    
-    /**
-     * Creates a NanoAmount from a given value and unit.
-     *
-     * @param value the value
-     * @param unit  the unit of the value
-     * @deprecated {@link #valueOf(BigInteger, NanoUnit)} is preferred for clarity
-     */
-    @Deprecated
-    public NanoAmount(BigInteger value, NanoUnit unit) {
-        this(NanoUnit.RAW.convertFromInt(unit, value));
-    }
-    
-    /**
-     * Creates a NanoAmount from a given value and unit.
-     *
-     * @param value the value
-     * @param unit  the unit of the value
-     * @deprecated {@link #valueOf(BigDecimal, NanoUnit)} is preferred for clarity
-     */
-    @Deprecated
-    public NanoAmount(BigDecimal value, NanoUnit unit) {
-        this(NanoUnit.RAW.convertFromInt(unit, value));
-    }
-    
-    /**
-     * Creates a NanoAmount from a given {@code raw} value.
-     *
      * @param rawValue the raw value
      */
-    public NanoAmount(BigInteger rawValue) {
+    private NanoAmount(BigInteger rawValue) {
         if (rawValue == null)
             throw new IllegalArgumentException("Raw value cannot be null.");
         if (!JNH.isBalanceValid(rawValue))

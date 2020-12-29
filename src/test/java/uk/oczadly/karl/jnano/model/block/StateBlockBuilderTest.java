@@ -54,7 +54,7 @@ public class StateBlockBuilderTest {
     
         assertEquals(BlockType.STATE, block.getType());
     
-        assertEquals(new NanoAmount("1337"), block.getBalance());
+        assertEquals(NanoAmount.valueOfRaw("1337"), block.getBalance());
         assertEquals(StateBlockSubType.EPOCH, block.getSubType());
         assertEquals(ACCOUNT, block.getAccount());
         assertEquals("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97",

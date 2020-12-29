@@ -41,7 +41,7 @@ public class TestConstants {
     
     
     public static NanoAmount randBalance() {
-        return new NanoAmount(new BigInteger(127, RANDOM).add(BigInteger.ONE));
+        return NanoAmount.valueOfRaw(new BigInteger(127, RANDOM).add(BigInteger.ONE));
     }
     
     

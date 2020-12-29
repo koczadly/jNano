@@ -35,7 +35,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
             JNH.getJson(json, "work", WorkSolution::new),
             JNH.getJson(json, "previous", HexData::new),
             JNH.getJson(json, "destination", NanoAccount::parseAddress),
-            JNH.getJson(json, "balance", NanoAmount::valueOf));
+            JNH.getJson(json, "balance", NanoAmount::valueOfRaw));
     
     private static final BlockIntent INTENT = new BlockIntent(true, false, false, false, false, false);
     
@@ -53,7 +53,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     @Deprecated(forRemoval = true)
     public SendBlock(String signature, WorkSolution work, String previousBlockHash, NanoAccount destinationAccount,
                      BigInteger balance) {
-        this(signature, work, previousBlockHash, destinationAccount, new NanoAmount(balance));
+        this(signature, work, previousBlockHash, destinationAccount, NanoAmount.valueOfRaw(balance));
     }
     
     @Deprecated(forRemoval = true)
