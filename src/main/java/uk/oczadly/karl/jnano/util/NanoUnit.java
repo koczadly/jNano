@@ -28,12 +28,12 @@ import java.text.DecimalFormat;
  *   // Convert 1.337 knano (KILO) to the base unit (currently MEGA, or "Nano")
  *   BigDecimal conv1 = NanoUnit.BASE_UNIT
  *          .convertFrom(NanoUnit.KILO, new BigDecimal("1.337"));
- *   System.out.println("1337 knano = " + conv1.toPlainString() + " Nano"); // Prints 1337 knano = 0.001337 Nano
+ *   System.out.println("1.337 knano = " + conv1.toPlainString() + " Nano"); // Prints "1337 knano = 0.001337 Nano"
  *
  *   // Convert 250 unano (MICRO) to raw (RAW)
  *   BigInteger conv2 = NanoUnit.RAW
  *          .convertFromInt(NanoUnit.MICRO, BigInteger.valueOf(250));
- *   System.out.println("250 unano = " + conv2.toString() + " raw"); // Prints 250 unano = 250000000000000000000 raw
+ *   System.out.println("250 unano = " + conv2.toString() + " raw"); // "Prints 250 unano = 250000000000000000000 raw"
  * </pre>
  *
  * @see NanoAmount
@@ -41,32 +41,32 @@ import java.text.DecimalFormat;
 public enum NanoUnit {
     
     /**
-     * The largest divisor, equivalent to {@code 10^33} raw.
+     * The largest divisor, equivalent to 10<sup>33</sup> raw.
      */
     GIGA(33,  "Gnano", "Gxrb"),
     
     /**
-     * The 2nd largest divisor, equivalent to {@code 10^30} raw.
+     * The 2nd largest divisor, equivalent to 10<sup>30</sup> raw.
      */
     MEGA(30,  "Nano",  "Mxrb"),
     
     /**
-     * The 3rd largest divisor, equivalent to {@code 10^27} raw.
+     * The 3rd largest divisor, equivalent to 10<sup>27</sup> raw.
      */
     KILO(27,  "knano", "kxrb"),
     
     /**
-     * The 4th largest divisor, equivalent to {@code 10^24} raw.
+     * The 4th largest divisor, equivalent to 10<sup>24</sup> raw.
      */
     XRB(24,   "nano",  "xrb"),
     
     /**
-     * The 5th largest divisor, equivalent to {@code 10^21} raw.
+     * The 5th largest divisor, equivalent to 10<sup>21</sup> raw.
      */
     MILLI(21, "mnano", "mxrb"),
     
     /**
-     * The 6th largest divisor, equivalent to {@code 10^18} raw.
+     * The 6th largest divisor, equivalent to 10<sup>18</sup> raw.
      */
     MICRO(18, "μnano", "uxrb"),
     
