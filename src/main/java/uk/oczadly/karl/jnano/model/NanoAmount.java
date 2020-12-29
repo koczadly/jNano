@@ -43,7 +43,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * A single raw unit ({@code 1 raw}).
      * <p>This is the smallest representable quantity of Nano possible.</p>
      */
-    public static final NanoAmount ONE_RAW = NanoAmount.valueOf(BigInteger.ONE);
+    public static final NanoAmount ONE_RAW = NanoAmount.valueOfRaw(BigInteger.ONE);
     
     
     private final BigInteger rawValue;
@@ -52,7 +52,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * Creates a NanoAmount from a given {@code raw} value.
      *
      * @param rawValue the raw value, as a string
-     * @deprecated {@link #valueOf(String)} is preferred for clarity
+     * @deprecated {@link #valueOfRaw(String)} is preferred for clarity
      */
     @Deprecated
     public NanoAmount(String rawValue) {
@@ -208,7 +208,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @return the absolute difference between this and {@code other}
      */
     public NanoAmount difference(NanoAmount other) {
-        return valueOf(rawValue.subtract(other.rawValue).abs());
+        return valueOfRaw(rawValue.subtract(other.rawValue).abs());
     }
     
     
@@ -268,7 +268,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @param raw the numeric value, in raw (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
      */
-    public static NanoAmount valueOf(BigInteger raw) {
+    public static NanoAmount valueOfRaw(BigInteger raw) {
         return new NanoAmount(raw);
     }
     
@@ -279,8 +279,8 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @return a {@link NanoAmount} instance representing the given value
      * @throws NumberFormatException if val is not a valid integer
      */
-    public static NanoAmount valueOf(String raw) {
-        return valueOf(new BigInteger(raw));
+    public static NanoAmount valueOfRaw(String raw) {
+        return valueOfRaw(new BigInteger(raw));
     }
     
     
@@ -288,7 +288,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
         @Override
         public NanoAmount deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
-            return valueOf(json.getAsString());
+            return valueOfRaw(json.getAsString());
         }
         
         @Override
