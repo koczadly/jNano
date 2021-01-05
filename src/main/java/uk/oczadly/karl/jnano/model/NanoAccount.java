@@ -17,11 +17,13 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * <p>This class represents an immutable Nano account address string. A wide range of Java-based utilities are provided
- * through the methods of this class without needing to connect to a node.</p>
+ * <p>This is an immutable class which represents an individual Nano account address. A wide range of Java-based
+ * utilities are provided through the methods of this class without needing to connect or depend on an external
+ * node.</p>
  *
- * <p>To instantiate this class, use the provided static methods (eg. {@link #parse(String)}), or use the
- * constructor to clone an existing object.</p>
+ * <p>To instantiate this class, use the provided static parsing methods (eg. {@link #parse(String)}), or use one of
+ * the constructors to create from a byte array. The prefix of an address can be changed (or removed) using the
+ * {@link #withPrefix(String)} method, which will return a copy of the class using the new prefix.</p>
  *
  * <p>Using the built-in JSON adapter, this class will call {@link #parse(String)} for deserializing, allowing
  * accounts encoded in either address or public key formats. When serializing this class, the {@link #toAddress()}
@@ -371,8 +373,8 @@ public final class NanoAccount {
         
         int separatorIndex = address.lastIndexOf(PREFIX_SEPARATOR_CHAR);
         
-        if ((separatorIndex == -1 && address.length() != 60)
-                || (separatorIndex != -1 && (address.length() - separatorIndex - 1) != 60))
+        if ((separatorIndex == -1 && address.length() != 60) // No prefix
+                || (separatorIndex != -1 && (address.length() - separatorIndex - 1) != 60)) // With prefix
             throw new AddressFormatException("Address/checksum segment is not the right length.");
         
         return parseAddressSegment(
@@ -531,10 +533,10 @@ public final class NanoAccount {
     }
     
     /** Helper method to calculate bytes from an encoded address. */
-    private static byte[] calculateKeyBytes(String str, BaseEncoder decoder) {
+    private static byte[] calculateKeyBytes(String encodedData, BaseEncoder decoder) {
         byte[] keyBytes;
         try {
-            keyBytes = decoder.decode(str);
+            keyBytes = decoder.decode(encodedData);
         } catch (IllegalArgumentException e) { // Catch illegal characters
             throw new AddressFormatException(e);
         }
