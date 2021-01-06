@@ -15,6 +15,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * <p>This is an immutable class which represents an individual Nano account address. A wide range of Java-based
@@ -33,6 +34,7 @@ import java.util.Set;
 public final class NanoAccount {
     
     private static final BigInteger MAX_INDEX_VAL = JNH.BIGINT_MAX_256;
+    private static final Pattern PREFIX_VALIDATE_PATTERN = Pattern.compile("^[0-9A-Za-z]*$");
     
     /**
      * The character which separates the prefix from the address string.
@@ -546,7 +548,7 @@ public final class NanoAccount {
     }
     
     private static void validatePrefix(String prefix) {
-        if (prefix != null && !prefix.isEmpty() && !prefix.matches("[0-9A-Za-z]+"))
+        if (prefix != null && !PREFIX_VALIDATE_PATTERN.matcher(prefix).matches())
             throw new AddressFormatException("Address prefix contains an illegal character.");
     }
     
