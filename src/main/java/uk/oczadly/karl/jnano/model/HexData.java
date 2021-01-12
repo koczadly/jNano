@@ -27,6 +27,9 @@ import java.util.Arrays;
 @JsonAdapter(HexData.JsonAdapter.class)
 public class HexData {
     
+    /** Constant HexData object representing a value of zero. */
+    public static final HexData ZERO = new HexData(new byte[] {0});
+    
     private final String valHex;
     private final int byteLength;
     private volatile byte[] valBytes;
@@ -111,12 +114,12 @@ public class HexData {
         return Arrays.copyOf(valBytes, valBytes.length);
     }
     
+    /** Returns the value as a byte array, without copying the cached value. */
     private byte[] _toByteArray() {
         if (valBytes == null) {
             synchronized (this) {
-                if (valBytes == null) {
+                if (valBytes == null)
                     valBytes = JNH.ENC_16.decode(toHexString());
-                }
             }
         }
         return valBytes;
@@ -168,6 +171,14 @@ public class HexData {
     }
     
     /**
+     * Returns true if this value is zero (regardless of how many bytes or characters are used).
+     * @return true if this value is zero
+     */
+    public final boolean isZero() {
+        return equalsValue(ZERO);
+    }
+    
+    /**
      * Checks for equality with the given object.
      *
      * <p>This method will include leading zeroes in the comparison. For comparing the held value and ignoring
@@ -175,6 +186,8 @@ public class HexData {
      *
      * @param o the object to compare with
      * @return true, if the two objects have matching data
+     * 
+     * @see #equalsValue(HexData)
      */
     @Override
     public final boolean equals(Object o) {
