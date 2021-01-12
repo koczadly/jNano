@@ -24,12 +24,6 @@ public enum StateBlockSubType {
     CHANGE      (false,  BlockType.CHANGE),
     EPOCH       (false,  null);
     
-    /**
-     * @deprecated Use {@link #CHANGE} instead
-     */
-    @Deprecated(forRemoval = true)
-    public static final StateBlockSubType CHANGE_REP = CHANGE;
-    
     
     static final Map<BlockType, StateBlockSubType> LEGACY_LOOKUP_MAP = new HashMap<>();
     
