@@ -140,13 +140,13 @@ public class WorkSolution {
     public static String getRoot(Block block) {
         if (block == null) throw new IllegalArgumentException("Block cannot be null.");
         
-        // Try previous
+        // Try 'previous'
         if (block instanceof IBlockPrevious) {
             HexData previous = ((IBlockPrevious)block).getPreviousBlockHash();
-            if (!JNH.isZero(previous, true))
+            if (previous != null && !previous.isZero())
                 return previous.toHexString();
         }
-        // Try account
+        // Try 'account'
         if (block instanceof IBlockAccount) {
             NanoAccount account = ((IBlockAccount)block).getAccount();
             if (account != null)
