@@ -55,7 +55,7 @@ public interface IBlock {
     WorkSolution getWorkSolution();
     
     /**
-     * Returns an object containing details on the purpose and actions of this block.
+     * Returns an object containing details on the context and purpose of this block.
      * @return the intent of this block
      */
     BlockIntent getIntent();

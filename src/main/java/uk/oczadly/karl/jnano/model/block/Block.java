@@ -82,9 +82,8 @@ public abstract class Block implements IBlock {
     public final HexData getHash() {
         if (hash == null) {
             synchronized (this) {
-                if (hash == null) {
+                if (hash == null)
                     hash = new HexData(calculateHashBytes(), NanoConst.LEN_HASH_B);
-                }
             }
         }
         return hash;
@@ -125,7 +124,7 @@ public abstract class Block implements IBlock {
     }
     
     /**
-     * @return an array of hashable byte arrays in the correct sequence, or null if not supported
+     * @return an array of hashable byte arrays in the correct sequence
      */
     protected abstract byte[][] generateHashables();
     
@@ -135,9 +134,7 @@ public abstract class Block implements IBlock {
      * @return the generated block hash, as a byte array
      */
     protected final byte[] calculateHashBytes() {
-        byte[][] hashables = generateHashables();
-        if (hashables == null) return null;
-        return JNH.blake2b(32, hashables);
+        return JNH.blake2b(32, generateHashables());
     }
     
     
