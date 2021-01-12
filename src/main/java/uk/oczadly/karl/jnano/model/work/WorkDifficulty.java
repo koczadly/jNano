@@ -18,14 +18,10 @@ import java.util.Objects;
 @JsonAdapter(WorkDifficulty.WorkDifficultyJsonAdapter.class)
 public final class WorkDifficulty implements Comparable<WorkDifficulty> {
     
-    /**
-     * The maximum possible work difficulty, represented as {@code ffffffffffffffff}.
-     */
+    /** The maximum possible work difficulty, represented by {@code ffffffffffffffff}. */
     public static final WorkDifficulty MAX_VALUE = new WorkDifficulty(-1);
     
-    /**
-     * The minimum possible work difficulty (no work), represented as {@code 0000000000000000}.
-     */
+    /** The minimum possible work difficulty (no work), represented by {@code 0000000000000000}. */
     public static final WorkDifficulty MIN_VALUE = new WorkDifficulty(0);
     
     
@@ -101,19 +97,32 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
     
     /**
      * Calculates the difficulty multiplier between the given base difficulty value and this difficulty.
-     * @param baseDifficulty the base difficulty value to calculate from
+     *
+     * <p>The base difficulty is the reference point that this difficulty is compared to. If this difficulty is
+     * larger ("<i>more difficult</i>") than the supplied {@code baseDiff}, then the result will be larger than
+     * {@code 1}.</p>
+     *
+     * <p>The returned difficulty multiplier is based on the required time to compute a work value. A multiplier of
+     * {@code 3} would mean that on average, it statistically took 3 times longer to compute the work solution than a
+     * solution at the base difficulty.</p>
+     *
+     * @param baseDiff the base difficulty value to calculate from
      * @return the difficulty multiplier
      */
-    public double calculateMultiplier(WorkDifficulty baseDifficulty) {
-        if (baseDifficulty == null)
+    public double calculateMultiplier(WorkDifficulty baseDiff) {
+        if (baseDiff == null)
             throw new IllegalArgumentException("Base difficulty cannot be null.");
         
-        if (longVal == baseDifficulty.longVal) return 1;
-        return (double)(~baseDifficulty.longVal) / (~longVal);
+        if (longVal == baseDiff.longVal) return 1;
+        return (double)(~baseDiff.longVal) / (~longVal);
     }
     
     /**
      * Multiplies this difficulty by the given multiplier.
+     *
+     * <p>The difficulty multiplier is based on the required time to compute a work value. Multiplying by {@code 3}
+     * would mean that on average, it should take 3 times longer to compute the work solution.</p>
+     *
      * @param multiplier the value to multiply the difficulty by
      * @return the calculated absolute difficulty
      */
@@ -123,7 +132,7 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
         
         if (multiplier == 0) return MIN_VALUE;
         if (multiplier == 1) return this;
-        return new WorkDifficulty(~((long)((~longVal) / multiplier)));
+        return new WorkDifficulty(~(long)(~longVal / multiplier));
     }
     
     

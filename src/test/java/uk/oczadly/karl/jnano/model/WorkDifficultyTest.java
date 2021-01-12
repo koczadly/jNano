@@ -33,7 +33,8 @@ public class WorkDifficultyTest {
     
     @Test
     public void testMultiplyCalculation() {
-        double multiplier = new WorkDifficulty(TEST_WORK_2).calculateMultiplier(new WorkDifficulty(TEST_WORK_1));
+        double multiplier = new WorkDifficulty(TEST_WORK_2)
+                .calculateMultiplier(new WorkDifficulty(TEST_WORK_1));
         assertEquals(64, multiplier, 1e-6);
     }
     
