@@ -179,10 +179,10 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     
     
     /**
-     * Returns a {@link NanoAmount} instance that represents the given amount and unit.
+     * Returns a NanoAmount instance that represents the given amount and unit.
      *
      * @param val  the numeric value (must be zero or positive)
-     * @param unit the denominaton of the {@code val} amount
+     * @param unit the denomination of the {@code val} amount
      * @return a {@link NanoAmount} instance representing the given value
      */
     public static NanoAmount valueOf(long val, NanoUnit unit) {
@@ -190,10 +190,10 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns a {@link NanoAmount} instance that represents the given amount and unit.
+     * Returns a NanoAmount instance that represents the given amount and unit.
      *
      * @param val  the numeric value (must be zero or positive)
-     * @param unit the denominaton of the {@code val} amount
+     * @param unit the denomination of the {@code val} amount
      * @return a {@link NanoAmount} instance representing the given value
      */
     public static NanoAmount valueOf(BigInteger val, NanoUnit unit) {
@@ -201,10 +201,10 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns a {@link NanoAmount} instance that represents the given amount and unit.
+     * Returns a NanoAmount instance that represents the given amount and unit.
      *
      * @param val  the numeric value (must be zero or positive)
-     * @param unit the denominaton of the {@code val} amount
+     * @param unit the denomination of the {@code val} amount
      * @return a {@link NanoAmount} instance representing the given value
      * @throws ArithmeticException if the source {@code val} has too many decimal digits for the specified
      * {@code unit}
@@ -214,10 +214,10 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns a {@link NanoAmount} instance that represents the given amount and unit.
+     * Returns a NanoAmount instance that represents the given amount and unit.
      *
      * @param val  the numeric (integer or decimal) value (must be zero or positive)
-     * @param unit the denominaton of the {@code val} amount
+     * @param unit the denomination of the {@code val} amount
      * @return a {@link NanoAmount} instance representing the given value
      *
      * @throws NumberFormatException if val is not a valid decimal number
@@ -229,7 +229,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns a {@link NanoAmount} instance that represents the given raw amount.
+     * Returns a NanoAmount instance that represents the given {@link NanoUnit#RAW raw} amount.
      *
      * @param raw the numeric value, in raw (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
@@ -239,7 +239,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns a {@link NanoAmount} instance that represents the given Nano amount.
+     * Returns a NanoAmount instance that represents the given {@link NanoUnit#RAW raw} amount.
      *
      * @param raw the numeric value, in raw (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
@@ -250,7 +250,11 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns a {@link NanoAmount} instance that represents the given Nano amount.
+     * Returns a NanoAmount instance representing the given Nano amount.
+     *
+     * <p>Note that this method uses the {@link NanoUnit#BASE_UNIT base unit}, which may change in the future if the
+     * official Nano divisor or unit system is modified. If you need to specify a fixed value, use the
+     * {@link #valueOf(BigInteger, NanoUnit)} method instead.</p>
      *
      * @param val the numeric value, in Nanos (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
@@ -260,7 +264,11 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns a {@link NanoAmount} instance that represents the given Nano amount.
+     * Returns a NanoAmount instance representing the given Nano amount.
+     *
+     * <p>Note that this method uses the {@link NanoUnit#BASE_UNIT base unit}, which may change in the future if the
+     * official Nano divisor or unit system is modified. If you need to specify a fixed value, use the
+     * {@link #valueOf(BigDecimal, NanoUnit)} method instead.</p>
      *
      * @param val the numeric value, in Nanos (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
@@ -270,7 +278,11 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns a {@link NanoAmount} instance that represents the given Nano amount.
+     * Returns a NanoAmount instance representing the given Nano amount.
+     *
+     * <p>Note that this method uses the {@link NanoUnit#BASE_UNIT base unit}, which may change in the future if the
+     * official Nano divisor or unit system is modified. If you need to specify a fixed value, use the
+     * {@link #valueOf(long, NanoUnit)} method instead.</p>
      *
      * @param val the numeric value, in Nanos (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
