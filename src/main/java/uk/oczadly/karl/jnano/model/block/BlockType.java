@@ -9,7 +9,9 @@ import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -45,7 +47,7 @@ public enum BlockType {
         this.isTransaction = isTransaction;
         this.blockClass = blockClass;
         this.deserializer = deserializer;
-        this.altNames = Collections.unmodifiableSet(new HashSet<>(List.of(altNames)));
+        this.altNames = Set.of(altNames);
     }
     
     
