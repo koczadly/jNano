@@ -164,7 +164,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
             throw new IllegalArgumentException("Link data is an invalid length.");
         if (linkAccount != null && linkData != null &&
                 !Arrays.equals(linkAccount.getPublicKeyBytes(), linkData.toByteArray()))
-            throw new IllegalArgumentException("Both link types were specified, but their values did not match.");
+            throw new IllegalArgumentException("Link data mismatch.");
         
         this.subType = subtype;
         this.accountAddress = accountAddress;
