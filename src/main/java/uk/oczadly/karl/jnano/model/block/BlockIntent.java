@@ -8,7 +8,15 @@ package uk.oczadly.karl.jnano.model.block;
 import java.util.Objects;
 
 /**
- * Represents a set of actions performed by a specific block.
+ * This class is used to represent contextual information about a specific block (typically retrieved using the
+ * {@link Block#getIntent()} method).
+ *
+ * <p>The getter methods each return an {@link UncertainBool} (provided nested class). For most use-cases, you can
+ * simply call {@link UncertainBool#bool()} to retrieve the primitive boolean equivalent. This wrapper class is used
+ * to support {@link UncertainBool#UNKNOWN indeterminate} response values, where the status cannot be determined
+ * from the given block type or data. For instance, whether the account's representative was changed cannot be
+ * determined for a {@link StateBlock state block} which also has a transactional intent — to calculate this, we'd
+ * need to know the previous block for the account, which is outside the scope of this classes functionality.</p>
  */
 public class BlockIntent {
     
@@ -158,8 +166,8 @@ public class BlockIntent {
     
     
     /**
-     * Represents a boolean state value, with the addition of the {@link #UNKNOWN} value in cases of uncertainty. In
-     * most cases, calling {@link #bool()} on the value will suffice.
+     * Represents a boolean state value, with the addition of the {@link #UNKNOWN} value in cases where the status
+     * could not be determined. In most cases, calling {@link #bool()} on the value will suffice.
      */
     public enum UncertainBool {
         /** Equivalent to {@code true}. */
