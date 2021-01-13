@@ -75,7 +75,7 @@ public interface IBlockLink extends IBlock {
          * @param block the block to retrieve the link from
          * @return a string representation of the link data
          */
-        public String getBlockLink(IBlockLink block) {
+        public String format(IBlockLink block) {
             if (block == null)
                 throw new IllegalArgumentException("Block cannot be null.");
             return toStringMethod.apply(block);

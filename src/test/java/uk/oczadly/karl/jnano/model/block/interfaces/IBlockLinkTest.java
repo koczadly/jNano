@@ -20,9 +20,9 @@ public class IBlockLinkTest {
     @Test
     public void testLinkFormat() {
         StateBlock sb = TestConstants.randStateBlock().build();
-        assertEquals(sb.getLinkAsAccount().toAddress(), IBlockLink.LinkFormat.ACCOUNT.getBlockLink(sb));
-        assertEquals(sb.getLinkData().toHexString(), IBlockLink.LinkFormat.HEX_DATA.getBlockLink(sb));
-        assertEquals(JNH.ZEROES_64, IBlockLink.LinkFormat.EMPTY.getBlockLink(sb));
+        assertEquals(sb.getLinkAsAccount().toAddress(), IBlockLink.LinkFormat.ACCOUNT.format(sb));
+        assertEquals(sb.getLinkData().toHexString(), IBlockLink.LinkFormat.HEX_DATA.format(sb));
+        assertEquals(JNH.ZEROES_64, IBlockLink.LinkFormat.EMPTY.format(sb));
     }
     
 }
