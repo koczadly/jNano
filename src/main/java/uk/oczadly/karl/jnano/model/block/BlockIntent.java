@@ -78,7 +78,7 @@ public class BlockIntent {
     }
     
     /**
-     * @return true if the block changed the representative, or if the block is an open block
+     * @return true if the block changed the representative, or if the block is the first in the account ("open")
      */
     public final UncertainBool isChangeRep() {
         return isChange;
@@ -106,8 +106,15 @@ public class BlockIntent {
     }
     
     /**
-     * Returns whether this block has a transactional function. Note that this is not mututally exclusive to
+     * Returns whether this block has a transactional function. Note that this is not mutually exclusive to
      * {@link #isSpecial()} returning true.
+     *
+     * <p>Transactional functions include the following actions:</p>
+     * <ul>
+     *     <li>Sending funds ({@link #isSendFunds()})</li>
+     *     <li>Receiving funds ({@link #isReceiveFunds()})</li>
+     * </ul>
+     *
      * @return true if this block has a transactional function
      */
     public UncertainBool isTransactional() {
@@ -115,8 +122,16 @@ public class BlockIntent {
     }
     
     /**
-     * Returns whether this block has a special (non-transactional) function. Note that this is not mututally
+     * Returns whether this block has a special (non-transactional) function. Note that this is not mutually
      * exclusive to {@link #isTransactional()} returning true.
+     *
+     * <p>Special functions include the following actions:</p>
+     * <ul>
+     *     <li>Account epoch upgrades ({@link #isEpochUpgrade()})</li>
+     *     <li>Representative changes ({@link #isChangeRep()})</li>
+     *     <li>Genesis blocks ({@link #isGenesis()})</li>
+     * </ul>
+     *
      * @return true if this block has a non-transactional function
      */
     public UncertainBool isSpecial() {
@@ -124,7 +139,7 @@ public class BlockIntent {
     }
     
     /**
-     * Returns whether this block has a functional purpose (eg. transacting funds, modifying an account parameter).
+     * Returns whether this block has any functional purpose (eg. transacting funds, modifying an account parameter).
      * @return true if this block has a function
      */
     public UncertainBool hasPurpose() {
