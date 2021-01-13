@@ -56,7 +56,7 @@ public class BlockAdapterTest {
         assertNotNull(block.toJsonString());
         
         assertEquals("700DC6DF005DF78706A2C721D3EAA3755CC5209151D4BBD7EEB1D6FF77A068F8",
-                block.getPreviousBlockHash().toHexString());
+                block.getPrevHash().toHexString());
         assertEquals("nano_3deo53mkqduhn6gu55nf4jnmx8dorugsrjfnteywbedcswpsit3zz4u5urg3",
                 block.getDestinationAccount().toAddress());
         assertEquals("1036304679954330940296402126272", block.getBalance().getAsRaw().toString());
@@ -87,7 +87,7 @@ public class BlockAdapterTest {
         assertNotNull(block.toJsonString());
         
         assertEquals("CC3A488D508F816D12D20E72F04BD097C58049C6CF88E972793BDFB5AFB5FE98",
-                block.getPreviousBlockHash().toHexString());
+                block.getPrevHash().toHexString());
         assertEquals("4501D8473E3F1F5BD09713B9E6C0F8C3B37CB8E3C0A28D78399EF46006A84AF2",
                 block.getSourceBlockHash().toHexString());
     }
@@ -149,7 +149,7 @@ public class BlockAdapterTest {
         assertNotNull(block.toJsonString());
         
         assertEquals("D8D494F97BB0519B45B5386157DA7E736381E912A64727522695463040371C25",
-                block.getPreviousBlockHash().toHexString());
+                block.getPrevHash().toHexString());
         assertEquals("nano_3pczxuorp48td8645bs3m6c3xotxd3idskrenmi65rbrga5zmkemzhwkaznh",
                 block.getRepresentative().toAddress());
     }
@@ -180,7 +180,7 @@ public class BlockAdapterTest {
         assertNotNull(block.toJsonString());
         
         assertEquals("707CAA0DBEB16C486EE37C03409D663ACE501D2985CC72ACD6903CECACF3189C",
-                block.getPreviousBlockHash().toHexString());
+                block.getPrevHash().toHexString());
         assertEquals("nano_3rw4un6ys57hrb39sy1qx8qy5wukst1iiponztrz9qiz6qqa55kxzx4491or",
                 block.getRepresentative().toAddress());
         assertEquals("nano_3jwrszth46rk1mu7rmb4rhm54us8yg1gw3ipodftqtikf5yqdyr7471nsg1k",

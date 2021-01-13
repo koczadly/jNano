@@ -58,9 +58,9 @@ public class StateBlockBuilderTest {
         assertEquals(StateBlockSubType.EPOCH, block.getSubType());
         assertEquals(ACCOUNT, block.getAccount());
         assertEquals("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97",
-                block.getPreviousBlockHash().toHexString());
+                block.getPrevHash().toHexString());
         assertEquals(ACCOUNT, block.getRepresentative());
-        assertEquals(DATA, block.getLinkData().toHexString());
+        assertEquals(DATA, block.getLink().asHex().toString());
         assertEquals("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC9734F1B28DA06C9CA24661594" +
                 "28733B971068BF154DBA2AB10372510D52E86CC97", block.getSignature().toHexString());
         assertEquals(new WorkSolution("009d175747abbc9e"), block.getWorkSolution());
@@ -74,17 +74,17 @@ public class StateBlockBuilderTest {
     public void testLinkFormats() {
         // Data
         StateBlock b1 = newBuilder().setLinkAccount(ACCOUNT).setLinkData(DATA).build();
-        assertEquals(DATA, b1.getLinkData().toHexString());
-        assertEquals(b1.getLinkAsAccount(), ACCOUNT);
+        assertEquals(DATA, b1.getLink().asHex().toString());
+        assertEquals(ACCOUNT, b1.getLink().asAccount());
     
         // Account
         StateBlock b2 = newBuilder().setLinkData(DATA).setLinkAccount(ACCOUNT).build();
-        assertEquals(ACCOUNT, b2.getLinkAsAccount());
-        assertEquals(b2.getLinkData().toHexString(), DATA);
+        assertEquals(DATA, b2.getLink().asHex().toString());
+        assertEquals(ACCOUNT, b2.getLink().asAccount());
         
         // Null should default to 000000...
-        assertEquals(JNH.ZEROES_64, newBuilder().build().getLinkData().toHexString());
-        assertEquals(JNH.ZEROES_64, newBuilder().setLinkData((String)null).build().getLinkData().toHexString());
+        assertEquals(JNH.ZEROES_64_HD, newBuilder().build().getLink().asHex());
+        assertEquals(JNH.ZEROES_64_HD, newBuilder().setLinkData((String)null).build().getLink().asHex());
     }
     
 }

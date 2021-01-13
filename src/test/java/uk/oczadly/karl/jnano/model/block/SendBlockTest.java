@@ -45,7 +45,7 @@ public class SendBlockTest {
         assertEquals(block, TEST_BLOCK);
         assertEquals(TB_SIGNATURE, block.getSignature());
         assertEquals(TB_WORK, block.getWorkSolution());
-        assertEquals(TB_PREVIOUS, block.getPreviousBlockHash());
+        assertEquals(TB_PREVIOUS, block.getPrevHash());
         assertEquals(TB_BALANCE, block.getBalance());
         assertEquals(TB_DESTINATION, block.getDestinationAccount());
     }

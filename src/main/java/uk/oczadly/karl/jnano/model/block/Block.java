@@ -199,7 +199,7 @@ public abstract class Block implements IBlock {
     
     @Override
     public final String toString() {
-        return this.toJsonString();
+        return toJsonString();
     }
     
     /**

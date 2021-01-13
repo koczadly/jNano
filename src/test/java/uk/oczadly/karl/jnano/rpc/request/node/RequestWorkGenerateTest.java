@@ -19,7 +19,7 @@ public class RequestWorkGenerateTest {
         // With provided previous hash
         StateBlock sb1 = TestConstants.randStateBlock().build();
         RequestWorkGenerate req1 = new RequestWorkGenerate.Builder(sb1).build();
-        assertEquals(sb1.getPreviousBlockHash().toHexString(), req1.getRootHash());
+        assertEquals(sb1.getPrevHash().toHexString(), req1.getRootHash());
     
         // Test with no previous hash
         StateBlock sb2 = TestConstants.randStateBlock()

@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
- * <p>This class represents a connection to a specified Nano node endpoint, with the main purpose of sending and
+ * <p>This class represents a connection to a specified Nano node endpoint, with the main intent of sending and
  * queuing RPC requests.</p>
  *
  * <p>To use this class, set the endpoint address and port in the constructor, or use the provided {@link Builder} class

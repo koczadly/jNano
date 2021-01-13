@@ -41,7 +41,7 @@ public class ReceiveBlockTest {
         assertEquals(TB_SIGNATURE, block.getSignature());
         assertEquals(TB_WORK, block.getWorkSolution());
         assertEquals(TB_SOURCE, block.getSourceBlockHash());
-        assertEquals(TB_PREVIOUS, block.getPreviousBlockHash());
+        assertEquals(TB_PREVIOUS, block.getPrevHash());
     }
     
     @Test

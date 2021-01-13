@@ -99,7 +99,7 @@ public final class StateBlockBuilder {
         this();
         setSubtype(block.getSubType());
         setAccountAddress(block.getAccount());
-        setPreviousBlockHash(block.getPreviousBlockHash());
+        setPreviousBlockHash(block.getPrevHash());
         setRepresentativeAddress(block.getRepresentative());
         setBalance(getBalance());
         setSignature(block.getSignature());
@@ -248,6 +248,23 @@ public final class StateBlockBuilder {
     
     public NanoAccount getLinkAccount() {
         return linkAccount;
+    }
+    
+    /**
+     * @param linkData the link data (intent is ignored)
+     * @return this builder
+     */
+    public StateBlockBuilder setLink(LinkData linkData) {
+        switch (linkData.getType()) {
+            case ACCOUNT:
+                return setLinkAccount(linkData.asAccount());
+            case HEXADECIMAl:
+                return setLinkData(linkData.asHex());
+            case UNUSED:
+                return setLinkData(JNH.ZEROES_64_HD);
+            default:
+                throw new AssertionError("Unexpected link type.");
+        }
     }
     
     /**

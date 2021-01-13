@@ -139,7 +139,7 @@ public class BlockIntent {
     }
     
     /**
-     * Returns whether this block has any functional purpose (eg. transacting funds, modifying an account parameter).
+     * Returns whether this block has any functional intent (eg. transacting funds, modifying an account parameter).
      * @return true if this block has a function
      */
     public UncertainBool hasPurpose() {

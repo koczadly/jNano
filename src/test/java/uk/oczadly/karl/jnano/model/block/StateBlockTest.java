@@ -12,7 +12,6 @@ import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
-import uk.oczadly.karl.jnano.model.block.interfaces.IBlockLink;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
@@ -69,9 +68,9 @@ public class StateBlockTest {
         assertEquals(TB_SUBTYPE, block.getSubType());
         assertEquals(TB_ACCOUNT, block.getAccount());
         assertEquals(TB_REP, block.getRepresentative());
-        assertEquals(TB_PREVIOUS, block.getPreviousBlockHash());
+        assertEquals(TB_PREVIOUS, block.getPrevHash());
         assertEquals(TB_BALANCE, block.getBalance());
-        assertEquals(TB_LINK, block.getLinkData());
+        assertEquals(TB_LINK, block.getLink().asHex());
     }
     
     @Test
@@ -86,30 +85,7 @@ public class StateBlockTest {
         
         // Account link
         assertEquals(NanoAccount.parseAddress("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"),
-                block.getLinkAsAccount());
-    }
-    
-    @Test
-    public void testCalcLinkAccount() {
-        StateBlock block = new StateBlockBuilder(TEST_BUILDER)
-                .setLinkData("80204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488")
-                .build();
-        
-        // Account link
-        assertEquals(NanoAccount.parseAddress("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"),
-                block.getLinkAsAccount());
-    }
-    
-    @Test
-    public void testCalcLinkData() {
-        StateBlock block = new StateBlockBuilder(TEST_BUILDER)
-                .setLinkAccount(NanoAccount.parseAddress(
-                        "nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
-                .build();
-        
-        // Account link
-        assertEquals("80204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488",
-                block.getLinkData().toHexString());
+                block.getLink().asAccount());
     }
     
     @Test
@@ -147,6 +123,30 @@ public class StateBlockTest {
                 .build();
         
         assertEquals("3D49EFB46E7716220B5E83A7830F543CC4A3EE50E53183D1E3BE81B2A50B5EFE", b.getHash().toHexString());
+    }
+    
+    @Test
+    public void testLink() {
+        // Send
+        assertEquals(LinkData.Intent.DESTINATION_ACCOUNT,
+                TestConstants.randStateBlock()
+                        .setSubtype(StateBlockSubType.SEND)
+                        .build().getLink().getIntent());
+        // Receive
+        assertEquals(LinkData.Intent.SOURCE_HASH,
+                TestConstants.randStateBlock()
+                        .setSubtype(StateBlockSubType.RECEIVE)
+                        .build().getLink().getIntent());
+        // Epoch
+        assertEquals(LinkData.Intent.EPOCH_IDENTIFIER,
+                TestConstants.randStateBlock()
+                        .setSubtype(StateBlockSubType.EPOCH)
+                        .build().getLink().getIntent());
+        // Change
+        assertEquals(LinkData.Intent.UNUSED,
+                TestConstants.randStateBlock()
+                        .setSubtype(StateBlockSubType.CHANGE)
+                        .build().getLink().getIntent());
     }
     
     @Test
@@ -232,20 +232,6 @@ public class StateBlockTest {
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isGenesis());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isTransactional());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isSpecial());
-    }
-    
-    @Test
-    public void testLinkType() {
-        assertEquals(IBlockLink.LinkType.DESTINATION,
-                TestConstants.randStateBlock().setSubtype(StateBlockSubType.SEND).build().getLinkType());
-        assertEquals(IBlockLink.LinkType.SOURCE_HASH,
-                TestConstants.randStateBlock().setSubtype(StateBlockSubType.RECEIVE).build().getLinkType());
-        assertEquals(IBlockLink.LinkType.SOURCE_HASH,
-                TestConstants.randStateBlock().setSubtype(StateBlockSubType.OPEN).build().getLinkType());
-        assertEquals(IBlockLink.LinkType.EPOCH_IDENTIFIER,
-                TestConstants.randStateBlock().setSubtype(StateBlockSubType.EPOCH).build().getLinkType());
-        assertEquals(IBlockLink.LinkType.NOT_USED,
-                TestConstants.randStateBlock().setSubtype(StateBlockSubType.CHANGE).build().getLinkType());
     }
     
     @Test

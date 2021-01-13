@@ -17,6 +17,6 @@ public interface IBlockPrevious extends IBlock {
      * may return null or an empty string of zeroes.
      * @return the previous block hash
      */
-    HexData getPreviousBlockHash();
+    HexData getPrevHash();
 
 }
