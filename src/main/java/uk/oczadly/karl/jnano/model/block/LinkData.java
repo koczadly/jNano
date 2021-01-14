@@ -6,7 +6,6 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import uk.oczadly.karl.jnano.internal.JNH;
-import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 
@@ -20,6 +19,8 @@ import java.util.function.Function;
  * <p>Convenience methods are supplied to retrieve the data in different formats.</p>
  */
 public class LinkData {
+    
+    private static final int SIZE = 32;
 
     private final Intent intent;
     private final HexData hex;
@@ -44,13 +45,13 @@ public class LinkData {
                 throw new IllegalArgumentException("Link data/account fields cannot be null.");
             hex = JNH.ZEROES_64_HD; // Allow null for both values if unused
         }
-        if (!JNH.isValidLength(hex, NanoConst.LEN_HASH_B))
+        if (!JNH.isValidLength(hex, SIZE))
             throw new IllegalArgumentException("Link data is an invalid length.");
         if (hex != null && account != null && !Arrays.equals(account.getPublicKeyBytes(), hex.toByteArray()))
             throw new IllegalArgumentException("Link data mismatch.");
         
         this.intent = intent;
-        this.hex = hex != null ? hex : new HexData(account.getPublicKeyBytes(), NanoConst.LEN_HASH_B);
+        this.hex = hex != null ? hex : new HexData(account.getPublicKeyBytes(), SIZE);
         this.account = account != null ? account : new NanoAccount(hex.toByteArray());
     }
     
