@@ -80,7 +80,7 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
     
     
     @Override
-    public final HexData getPrevHash() {
+    public final HexData getPreviousBlockHash() {
         return previousBlockHash;
     }
     
@@ -99,7 +99,7 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
         if (!(block instanceof ChangeBlock)) return false;
         ChangeBlock cb = (ChangeBlock)block;
         return super.contentEquals(cb)
-                && Objects.equals(getPrevHash(), cb.getPrevHash())
+                && Objects.equals(getPreviousBlockHash(), cb.getPreviousBlockHash())
                 && Objects.equals(getRepresentative(), cb.getRepresentative());
     }
     
@@ -107,7 +107,7 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
     @Override
     protected byte[][] generateHashables() {
         return new byte[][] {
-                getPrevHash().toByteArray(),
+                getPreviousBlockHash().toByteArray(),
                 getRepresentative().getPublicKeyBytes()
         };
     }

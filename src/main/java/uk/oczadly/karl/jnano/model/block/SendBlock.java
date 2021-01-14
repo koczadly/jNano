@@ -79,7 +79,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     
     
     @Override
-    public final HexData getPrevHash() {
+    public final HexData getPreviousBlockHash() {
         return previousBlockHash;
     }
     
@@ -107,14 +107,14 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
         return super.contentEquals(sb)
                 && Objects.equals(getBalance(), sb.getBalance())
                 && Objects.equals(getDestinationAccount(), sb.getDestinationAccount())
-                && Objects.equals(getPrevHash(), sb.getPrevHash());
+                && Objects.equals(getPreviousBlockHash(), sb.getPreviousBlockHash());
     }
     
     
     @Override
     protected byte[][] generateHashables() {
         return new byte[][] {
-                getPrevHash().toByteArray(),
+                getPreviousBlockHash().toByteArray(),
                 getDestinationAccount().getPublicKeyBytes(),
                 JNH.leftPadByteArray(getBalance().getAsRaw().toByteArray(), 16, false)
         };

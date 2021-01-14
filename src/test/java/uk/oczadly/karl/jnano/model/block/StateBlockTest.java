@@ -68,7 +68,7 @@ public class StateBlockTest {
         assertEquals(TB_SUBTYPE, block.getSubType());
         assertEquals(TB_ACCOUNT, block.getAccount());
         assertEquals(TB_REP, block.getRepresentative());
-        assertEquals(TB_PREVIOUS, block.getPrevHash());
+        assertEquals(TB_PREVIOUS, block.getPreviousBlockHash());
         assertEquals(TB_BALANCE, block.getBalance());
         assertEquals(TB_LINK, block.getLink().asHex());
     }

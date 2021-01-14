@@ -58,7 +58,7 @@ public class StateBlockBuilderTest {
         assertEquals(StateBlockSubType.EPOCH, block.getSubType());
         assertEquals(ACCOUNT, block.getAccount());
         assertEquals("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97",
-                block.getPrevHash().toHexString());
+                block.getPreviousBlockHash().toHexString());
         assertEquals(ACCOUNT, block.getRepresentative());
         assertEquals(DATA, block.getLink().asHex().toString());
         assertEquals("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC9734F1B28DA06C9CA24661594" +

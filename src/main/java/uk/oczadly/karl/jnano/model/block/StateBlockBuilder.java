@@ -99,7 +99,7 @@ public final class StateBlockBuilder {
         this();
         setSubtype(block.getSubType());
         setAccountAddress(block.getAccount());
-        setPreviousBlockHash(block.getPrevHash());
+        setPreviousBlockHash(block.getPreviousBlockHash());
         setRepresentativeAddress(block.getRepresentative());
         setBalance(getBalance());
         setSignature(block.getSignature());

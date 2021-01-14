@@ -142,7 +142,7 @@ public class WorkSolution {
         
         // Try 'previous'
         if (block instanceof IBlockPrevious) {
-            HexData previous = ((IBlockPrevious)block).getPrevHash();
+            HexData previous = ((IBlockPrevious)block).getPreviousBlockHash();
             if (previous != null && !previous.isZero())
                 return previous.toHexString();
         }

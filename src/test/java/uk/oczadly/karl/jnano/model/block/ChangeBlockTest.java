@@ -43,7 +43,7 @@ public class ChangeBlockTest {
         assertEquals(block, TEST_BLOCK);
         assertEquals(TB_SIGNATURE, block.getSignature());
         assertEquals(TB_WORK, block.getWorkSolution());
-        assertEquals(TB_PREVIOUS, block.getPrevHash());
+        assertEquals(TB_PREVIOUS, block.getPreviousBlockHash());
         assertEquals(TB_REP, block.getRepresentative());
     }
     

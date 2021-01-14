@@ -176,6 +176,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     
     
     /**
+     * Returns the block's sub-type.
      * @return the subtype of the block
      */
     public final StateBlockSubType getSubType() {
@@ -188,7 +189,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     }
     
     @Override
-    public final HexData getPrevHash() {
+    public final HexData getPreviousBlockHash() {
         return prevHash;
     }
     
@@ -234,7 +235,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
                 && Objects.equals(getAccount(), sb.getAccount())
                 && Objects.equals(getLink(), sb.getLink())
                 && Objects.equals(getRepresentative(), sb.getRepresentative())
-                && Objects.equals(getPrevHash(), sb.getPrevHash())
+                && Objects.equals(getPreviousBlockHash(), sb.getPreviousBlockHash())
                 && Objects.equals(getBalance(), sb.getBalance());
     }
     
@@ -244,7 +245,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         return new byte[][] {
                 HASH_PREAMBLE,
                 getAccount().getPublicKeyBytes(),
-                getPrevHash().toByteArray(),
+                getPreviousBlockHash().toByteArray(),
                 getRepresentative().getPublicKeyBytes(),
                 JNH.leftPadByteArray(getBalance().getAsRaw().toByteArray(), 16, false),
                 getLink().asByteArray()

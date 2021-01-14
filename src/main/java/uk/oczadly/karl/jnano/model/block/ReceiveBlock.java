@@ -64,7 +64,7 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     
     
     @Override
-    public final HexData getPrevHash() {
+    public final HexData getPreviousBlockHash() {
         return previousBlockHash;
     }
     
@@ -83,7 +83,7 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
         if (!(block instanceof ReceiveBlock)) return false;
         ReceiveBlock rb = (ReceiveBlock)block;
         return super.contentEquals(rb)
-                && Objects.equals(getPrevHash(), rb.getPrevHash())
+                && Objects.equals(getPreviousBlockHash(), rb.getPreviousBlockHash())
                 && Objects.equals(getSourceBlockHash(), rb.getSourceBlockHash());
     }
     
@@ -91,7 +91,7 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     @Override
     protected byte[][] generateHashables() {
         return new byte[][] {
-                getPrevHash().toByteArray(),
+                getPreviousBlockHash().toByteArray(),
                 getSourceBlockHash().toByteArray()
         };
     }
