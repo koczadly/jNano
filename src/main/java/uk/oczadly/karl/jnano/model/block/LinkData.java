@@ -130,15 +130,24 @@ public class LinkData {
      * This enum represents the different types and formats of link data.
      */
     public enum Type {
-        /** Encoded as an address.
-         * @see LinkData#asAccount() */
+        /**
+         * Encoded as an account address.
+         * <p>When formatting, this will output an account, complete with prefix and checksum.</p>
+         * @see LinkData#asAccount()
+         */
         ACCOUNT     (l -> l.asAccount().toAddress()),
         
-        /** Encoded as a 64-character hexadecimal string.
-         * @see LinkData#asHex() */
+        /**
+         * Encoded as a 64-character hexadecimal string.
+         * <p>When formatting, this will output a 64-character hexadecimal string.</p>
+         * @see LinkData#asHex()
+         */
         HEXADECIMAL (l -> l.asHex().toHexString()),
         
-        /** The link field is not used for this block. */
+        /**
+         * The link field is not used for this block.
+         * <p>When formatting, this will simply output "N/A".</p>
+         */
         UNUSED      (b -> "N/A");
         
         
@@ -149,12 +158,7 @@ public class LinkData {
         
         /**
          * Returns the link data of the given block, encoded in this format (as a string).
-         * <p>The following formats are used:</p>
-         * <ul>
-         *     <li>{@link Type#ACCOUNT} - the full address ({@link NanoAccount#toAddress()})</li>
-         *     <li>{@link Type#HEXADECIMAL} - 64-character hexadecimal</li>
-         *     <li>{@link Type#UNUSED} - "N/A"</li>
-         * </ul>
+         *
          * @param data the link data to format
          * @return a string representation of the link data
          */
@@ -165,19 +169,31 @@ public class LinkData {
     }
     
     /**
-     * This enum contains constants which represent the different types of information that the link data can represent.
+     * This enum contains the possible values of data that a link field can represent.
      */
     public enum Intent {
-        /** A destination address for an outgoing transaction. */
+        /**
+         * A destination address for an outgoing transaction.
+         * <p>This intent is represented by the {@link Type#ACCOUNT} format.</p>
+         */
         DESTINATION_ACCOUNT (Type.ACCOUNT),
         
-        /** A hash of the source block for an incoming transaction. */
+        /**
+         * A hash of the source block for an incoming transaction.
+         * <p>This intent is represented by the {@link Type#HEXADECIMAL} format.</p>
+         */
         SOURCE_HASH         (Type.HEXADECIMAL),
         
-        /** An identification value of an epoch upgrade. */
+        /**
+         * An identification value of an epoch upgrade (usually a hex-encoded block of text).
+         * <p>This intent is represented by the {@link Type#HEXADECIMAL} format.</p>
+         * */
         EPOCH_IDENTIFIER    (Type.HEXADECIMAL),
         
-        /** The link field is not used to represent any data. */
+        /**
+         * The link field is not used to represent any data.
+         * <p>This intent is represented by the {@link Type#UNUSED} format.</p>
+         */
         UNUSED              (Type.UNUSED);
         
         final Type type;
