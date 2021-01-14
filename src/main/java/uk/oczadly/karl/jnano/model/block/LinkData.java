@@ -136,7 +136,7 @@ public class LinkData {
         
         /** Encoded as a 64-character hexadecimal string.
          * @see LinkData#asHex() */
-        HEXADECIMAl (l -> l.asHex().toHexString()),
+        HEXADECIMAL (l -> l.asHex().toHexString()),
         
         /** The link field is not used for this block. */
         UNUSED      (b -> "N/A");
@@ -152,7 +152,7 @@ public class LinkData {
          * <p>The following formats are used:</p>
          * <ul>
          *     <li>{@link Type#ACCOUNT} - the full address ({@link NanoAccount#toAddress()})</li>
-         *     <li>{@link Type#HEXADECIMAl} - 64-character hexadecimal</li>
+         *     <li>{@link Type#HEXADECIMAL} - 64-character hexadecimal</li>
          *     <li>{@link Type#UNUSED} - "N/A"</li>
          * </ul>
          * @param data the link data to format
@@ -172,10 +172,10 @@ public class LinkData {
         DESTINATION_ACCOUNT (Type.ACCOUNT),
         
         /** A hash of the source block for an incoming transaction. */
-        SOURCE_HASH         (Type.HEXADECIMAl),
+        SOURCE_HASH         (Type.HEXADECIMAL),
         
         /** An identification value of an epoch upgrade. */
-        EPOCH_IDENTIFIER    (Type.HEXADECIMAl),
+        EPOCH_IDENTIFIER    (Type.HEXADECIMAL),
         
         /** The link field is not used to represent any data. */
         UNUSED              (Type.UNUSED);

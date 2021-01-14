@@ -258,7 +258,7 @@ public final class StateBlockBuilder {
         switch (linkData.getType()) {
             case ACCOUNT:
                 return setLinkAccount(linkData.asAccount());
-            case HEXADECIMAl:
+            case HEXADECIMAL:
                 return setLinkData(linkData.asHex());
             case UNUSED:
                 return setLinkData(JNH.ZEROES_64_HD);
