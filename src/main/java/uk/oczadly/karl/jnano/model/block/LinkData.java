@@ -25,6 +25,16 @@ public class LinkData {
     private final HexData hex;
     private final NanoAccount account;
     
+    /**
+     * Constructs a new LinkData.
+     *
+     * <p>Either one of the {@code hex} or {@code account} values may be null, or both can be null if the intent
+     * indicates an unused value.</p>
+     *
+     * @param intent  the intent
+     * @param hex     the link data, as hex
+     * @param account the link data, as an account
+     */
     public LinkData(Intent intent, HexData hex, NanoAccount account) {
         // Validate arguments
         if (intent == null)
@@ -71,7 +81,7 @@ public class LinkData {
     
     
     /**
-     * Returns the intent of the link data that this link data represents.
+     * Returns the intent of the data that this link field represents (eg. destination account, source hash).
      * @return the link intent
      */
     public final Intent getIntent() {
@@ -79,7 +89,7 @@ public class LinkData {
     }
     
     /**
-     * Returns the type of data represented by this link field.
+     * Returns the type of data represented by this link field (eg. hexadecimal, account).
      * @return the data type
      */
     public final Type getType() {
