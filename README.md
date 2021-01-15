@@ -23,7 +23,7 @@ This project is hosted on [Maven Central](https://search.maven.org/artifact/uk.o
 <dependency>
     <groupId>uk.oczadly.karl</groupId>
     <artifactId>jnano</artifactId>
-    <version>2.9.0-V21.2</version>
+    <version>2.9.1-V21.2</version>
 </dependency>
 ```
 
