@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * re-create another instance. Note that calling {@link #connect()} after disconnecting from an existing connection
  * will reset all of the subscriptions and option parameters.</p>
  *
- * <p>It is recommended to use the {@link #setWsObserver(WsObserver)} method to listen for network and uncaught
+ * <p>It is recommended to use the {@link #setObserver(WsObserver)} method to listen for network and uncaught
  * exceptions, as well as receiving other miscellaneous network events WebSocket events.</p>
  *
  * <p>Below is an example of how this class should be utilised in a standard scenario:</p>
@@ -126,7 +126,7 @@ public final class NanoWebSocketClient {
      * @param wsObserver the socket listener
      * @throws IllegalStateException if the socket is currently open
      */
-    public void setWsObserver(WsObserver wsObserver) {
+    public void setObserver(WsObserver wsObserver) {
         if (isOpen())
             throw new IllegalStateException("The socket listener cannot be updated while the WebSocket is open.");
         
@@ -136,7 +136,7 @@ public final class NanoWebSocketClient {
     /**
      * @return the socket listener object
      */
-    public WsObserver getWsObserver() {
+    public WsObserver getObserver() {
         return wsObserver;
     }
     

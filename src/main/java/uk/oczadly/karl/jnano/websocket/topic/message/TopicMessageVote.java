@@ -9,16 +9,18 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.gsonadapters.UnsignedLongAdapter;
+import uk.oczadly.karl.jnano.model.HexData;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import java.util.List;
 
 public class TopicMessageVote {
     
     @Expose @SerializedName("account")
-    private String account;
+    private NanoAccount account;
     
     @Expose @SerializedName("signature")
-    private String signature;
+    private HexData signature;
     
     @Expose @SerializedName("sequence")
     @JsonAdapter(UnsignedLongAdapter.class)
@@ -31,32 +33,54 @@ public class TopicMessageVote {
     private Type type;
     
     
-    public String getAccount() {
+    /**
+     * Returns the representative account which voted for this election.
+     * @return the representative account which voted for this election
+     */
+    public NanoAccount getAccount() {
         return account;
     }
     
-    public String getSignature() {
+    /**
+     * Returns the verification signature signed by the representative.
+     * @returnthe the signature signed by the representative
+     */
+    public HexData getSignature() {
         return signature;
     }
     
+    /**
+     * Returns the current vote sequence of the representative.
+     * @return the vote sequence
+     */
     public long getSequence() {
         return sequence;
     }
     
+    /**
+     * Returns a list of block hashes which the representative is voting for.
+     * @return a list of block hashes being voted for
+     */
     public List<String> getBlockHashes() {
         return blocks;
     }
     
+    /**
+     * Returns the type of vote.
+     * @return the type of vote
+     */
     public Type getType() {
         return type;
     }
     
     
-    
     public enum Type {
-        @SerializedName("vote")          VOTE,
-        @SerializedName("replay")        REPLAY,
-        @SerializedName("indeterminate") INDETERMINATE
+        /** The first time the vote has been seen. */
+        VOTE,
+        /** The vote has been seen before. */
+        REPLAY,
+        /** Could not be determined due to lack of an associated election. */
+        INDETERMINATE
     }
     
 }

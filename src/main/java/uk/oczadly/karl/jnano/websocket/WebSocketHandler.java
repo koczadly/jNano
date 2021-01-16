@@ -26,7 +26,7 @@ class WebSocketHandler extends WebSocketClient {
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         // Notify socket observer
-        WsObserver observer = client.getWsObserver();
+        WsObserver observer = client.getObserver();
         if (observer != null) {
             client.getListenerExecutor().submit(() -> {
                 observer.onOpen(handshakedata.getHttpStatus());
@@ -36,36 +36,40 @@ class WebSocketHandler extends WebSocketClient {
     
     @Override
     public void onMessage(String message) {
-        JsonObject json = JNH.parseJson(message);
-        boolean handled = false;
+        try {
+            JsonObject json = JNH.parseJson(message);
+            boolean handled = false;
+    
+            if (json.has("ack") && json.has("id")) {
+                // Acknowledgement response
+                long id = Long.parseLong(json.get("id").getAsString(), 16);
+                CountDownLatch latch = client.getRequestTrackers().remove(id);
+                if (latch != null && latch.getCount() > 0) {
+                    latch.countDown(); // Trigger
+                    handled = true;
+                }
+            } else if (json.has("message")) {
+                // New message
+                Topic<?> wsTopic = client.getTopics().get(json.get("topic").getAsString());
         
-        if (json.has("ack") && json.has("id")) {
-            // Acknowledgement response
-            long id = Long.parseLong(json.get("id").getAsString(), 16);
-            CountDownLatch latch = client.getRequestTrackers().remove(id);
-            if (latch != null && latch.getCount() > 0) {
-                latch.countDown(); // Trigger
-                handled = true;
+                if (wsTopic != null) {
+                    client.getListenerExecutor().submit(() -> {
+                        wsTopic.notifyListeners(json);
+                    });
+                    handled = true;
+                }
             }
-        } else if (json.has("message")) {
-            // New message
-            Topic<?> wsTopic = client.getTopics().get(json.get("topic").getAsString());
-            
-            if (wsTopic != null) {
+    
+            // Notify socket observer
+            WsObserver observer = client.getObserver();
+            if (observer != null) {
+                boolean finalHandled = handled;
                 client.getListenerExecutor().submit(() -> {
-                    wsTopic.notifyListeners(json);
+                    observer.onMessage(json, finalHandled);
                 });
-                handled = true;
             }
-        }
-        
-        // Notify socket observer
-        WsObserver observer = client.getWsObserver();
-        if (observer != null) {
-            boolean finalHandled = handled;
-            client.getListenerExecutor().submit(() -> {
-                observer.onMessage(json, finalHandled);
-            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     
@@ -80,7 +84,7 @@ class WebSocketHandler extends WebSocketClient {
         client.getRequestTrackers().clear();
     
         // Notify socket observer
-        WsObserver observer = client.getWsObserver();
+        WsObserver observer = client.getObserver();
         if (observer != null) {
             client.getListenerExecutor().submit(() -> {
                 observer.onClose(code, reason, remote);
@@ -91,7 +95,7 @@ class WebSocketHandler extends WebSocketClient {
     @Override
     public void onError(Exception ex) {
         // Notify socket observer
-        WsObserver observer = client.getWsObserver();
+        WsObserver observer = client.getObserver();
         if (observer != null) {
             client.getListenerExecutor().submit(() -> {
                 observer.onSocketError(ex);

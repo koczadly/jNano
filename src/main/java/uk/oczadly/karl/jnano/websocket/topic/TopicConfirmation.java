@@ -9,56 +9,45 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.websocket.NanoWebSocketClient;
-import uk.oczadly.karl.jnano.websocket.Topic;
 import uk.oczadly.karl.jnano.websocket.TopicWithUpdateParams;
 import uk.oczadly.karl.jnano.websocket.topic.message.TopicMessageConfirmation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The {@code confirmation} WebSocket topic.
- * <p>This topic supports both subscription and update parameters with the use of the {@link SubParams} and
- * {@link UpdateParams} subclasses.</p>
+ * <p>This topic supports both subscription and update parameters with the use of the {@link SubArgs} and
+ * {@link UpdateArgs} subclasses.</p>
  * <p>Received data messages will be encoded in the {@link TopicMessageConfirmation} class.</p>
  *
  * @see <a href="https://docs.nano.org/integration-guides/websockets/#confirmation">
  *     Official WebSocket documentation</a>
  */
-public class TopicConfirmation extends Topic<TopicMessageConfirmation>
-        implements TopicWithUpdateParams<TopicConfirmation.SubParams, TopicConfirmation.UpdateParams> {
+public class TopicConfirmation extends TopicWithUpdateParams<TopicMessageConfirmation, TopicConfirmation.SubArgs,
+        TopicConfirmation.UpdateArgs> {
     
     public TopicConfirmation(NanoWebSocketClient client) {
         super("confirmation", client, TopicMessageConfirmation.class);
     }
     
-    @Override
-    public void subscribe(SubParams params) {
-        _subscribe(params);
-    }
     
-    @Override
-    public boolean subscribeBlocking(long timeout, SubParams params) throws InterruptedException {
-        return _subscribeBlocking(timeout, params);
+    public enum ConfirmationType {
+        ALL,
+        ACTIVE,
+        INACTIVE,
+        ACTIVE_QUORUM,
+        ACTIVE_CONFIRMATION_HEIGHT
     }
-    
-    @Override
-    public void update(UpdateParams params) {
-        _update(params);
-    }
-    
-    @Override
-    public boolean updateBlocking(long timeout, UpdateParams params) throws InterruptedException {
-        return _updateBlocking(timeout, params);
-    }
-    
     
     /**
      * The configuration parameters when subscribing to this topic.
      */
-    public static final class SubParams {
+    public static final class SubArgs {
         @Expose @SerializedName("confirmation_type")
-        private TopicMessageConfirmation.ConfirmationType type;
+        private ConfirmationType type;
         
         @Expose @SerializedName("all_local_accounts")
         private Boolean allLocalAccounts;
@@ -71,54 +60,73 @@ public class TopicConfirmation extends Topic<TopicMessageConfirmation>
         
         @Expose @SerializedName("include_election_info")
         private Boolean includeElectionInfo;
-        
-        
-        public TopicMessageConfirmation.ConfirmationType getConfirmationType() {
-            return type;
-        }
-        
-        public SubParams setConfirmationType(TopicMessageConfirmation.ConfirmationType type) {
+    
+    
+        /**
+         * Sets the filter for the confirmation type.
+         * @param type the confirmation type, or null for default behaviour
+         * @return this argument builder
+         */
+        public SubArgs filterConfirmationType(ConfirmationType type) {
             this.type = type;
             return this;
         }
-        
-        public Boolean getAllLocalAccounts() {
-            return allLocalAccounts;
-        }
-        
-        public SubParams setAllLocalAccounts(Boolean allLocalAccounts) {
-            this.allLocalAccounts = allLocalAccounts;
-            return this;
-        }
-        
-        public List<NanoAccount> getAccounts() {
-            return accounts;
-        }
-        
-        public SubParams setAccounts(List<NanoAccount> accounts) {
+    
+        /**
+         * Sets the accounts filter. Only confirmed blocks held by these accounts will trigger a notification.
+         * @param accounts a list of account addresses, or null to disable the filter
+         * @return this argument builder
+         */
+        public SubArgs filterAccounts(List<NanoAccount> accounts) {
             this.accounts = accounts;
             return this;
         }
-        
-        public SubParams setAccounts(NanoAccount... accounts) {
-            return setAccounts(Arrays.asList(accounts));
+    
+        /**
+         * Sets the accounts filter. Only confirmed blocks held by these accounts will trigger a notification.
+         * @param accounts an array of account addresses
+         * @return this argument builder
+         */
+        public SubArgs filterAccounts(NanoAccount... accounts) {
+            return filterAccounts(Arrays.asList(accounts));
         }
-        
-        public Boolean getIncludeBlock() {
-            return includeBlock;
+    
+        /**
+         * Sets the accounts filter. Only confirmed blocks held by these accounts will trigger a notification.
+         * @param accounts a list of account addresses (parsed using {@link NanoAccount#parse(String)})
+         * @return this argument builder
+         */
+        public SubArgs filterAccounts(String... accounts) {
+            return filterAccounts(
+                    Arrays.stream(accounts)
+                            .map(NanoAccount::parse)
+                            .collect(Collectors.toList()));
         }
-        
-        public SubParams setIncludeBlock(Boolean includeBlock) {
-            this.includeBlock = includeBlock;
+    
+        /**
+         * Enables the accounts filter, and includes all accounts from the Node's local wallets.
+         * @return this argument builder
+         */
+        public SubArgs includeLocalAccounts() {
+            this.allLocalAccounts = true;
             return this;
         }
-        
-        public Boolean getIncludeElectionInfo() {
-            return includeElectionInfo;
+    
+        /**
+         * Enables the block contents being included in the messages.
+         * @return this argument builder
+         */
+        public SubArgs includeBlockContents() {
+            this.includeBlock = true;
+            return this;
         }
-        
-        public SubParams setIncludeElectionInfo(Boolean includeElectionInfo) {
-            this.includeElectionInfo = includeElectionInfo;
+    
+        /**
+         * Enables the election information being included in the messages.
+         * @return this argument builder
+         */
+        public SubArgs includeElectionInfo() {
+            this.includeElectionInfo = true;
             return this;
         }
     }
@@ -126,38 +134,74 @@ public class TopicConfirmation extends Topic<TopicMessageConfirmation>
     /**
      * The configuration parameters when updating this topic's configuration.
      */
-    public static final class UpdateParams {
+    public static final class UpdateArgs {
         @Expose @SerializedName("accounts_add")
-        private List<NanoAccount> accountsAdd;
+        private final List<NanoAccount> accountsAdd = new ArrayList<>();
         
         @Expose @SerializedName("accounts_del")
-        private List<NanoAccount> accountsRemove;
-        
-        
-        public List<NanoAccount> getAccountsAdd() {
-            return accountsAdd;
-        }
-        
-        public UpdateParams setAccountsAdd(List<NanoAccount> accountsAdd) {
-            this.accountsAdd = accountsAdd;
+        private final List<NanoAccount> accountsRemove = new ArrayList<>();
+    
+    
+        /**
+         * Adds a list of accounts to the accounts filter.
+         * @param accounts the accounts to add to the filter
+         * @return this argument builder
+         */
+        public UpdateArgs addAccountsFilter(List<NanoAccount> accounts) {
+            this.accountsAdd.addAll(accounts);
             return this;
         }
-        
-        public UpdateParams setAccountsAdd(NanoAccount... accountsAdd) {
-            return setAccountsAdd(Arrays.asList(accountsAdd));
+    
+        /**
+         * Adds a list of accounts to the accounts filter.
+         * @param accounts the accounts to add to the filter
+         * @return this argument builder
+         */
+        public UpdateArgs addAccountsFilter(NanoAccount... accounts) {
+            return addAccountsFilter(Arrays.asList(accounts));
         }
-        
-        public List<NanoAccount> getAccountsRemove() {
-            return accountsRemove;
+    
+        /**
+         * Adds a list of accounts to the accounts filter.
+         * @param accounts the accounts to add to the filter (parsed using {@link NanoAccount#parse(String)})
+         * @return this argument builder
+         */
+        public UpdateArgs addAccountsFilter(String... accounts) {
+            return addAccountsFilter(
+                    Arrays.stream(accounts)
+                            .map(NanoAccount::parse)
+                            .collect(Collectors.toList()));
         }
-        
-        public UpdateParams setAccountsRemove(List<NanoAccount> accountsRemove) {
-            this.accountsRemove = accountsRemove;
+    
+        /**
+         * Removes a list of accounts from the accounts filter.
+         * @param accounts the accounts to remove from the filter
+         * @return this argument builder
+         */
+        public UpdateArgs removeAccountsFilter(List<NanoAccount> accounts) {
+            this.accountsRemove.addAll(accounts);
             return this;
         }
-        
-        public UpdateParams setAccountsRemove(NanoAccount... accountsAdd) {
-            return setAccountsRemove(Arrays.asList(accountsAdd));
+    
+        /**
+         * Removes a list of accounts from the accounts filter.
+         * @param accounts the accounts to remove from the filter
+         * @return this argument builder
+         */
+        public UpdateArgs removeAccountsFilter(NanoAccount... accounts) {
+            return removeAccountsFilter(Arrays.asList(accounts));
+        }
+    
+        /**
+         * Removes a list of accounts from the accounts filter.
+         * @param accounts the accounts to remove from the filter (parsed using {@link NanoAccount#parse(String)})
+         * @return this argument builder
+         */
+        public UpdateArgs removeAccountsFilter(String... accounts) {
+            return removeAccountsFilter(
+                    Arrays.stream(accounts)
+                            .map(NanoAccount::parse)
+                            .collect(Collectors.toList()));
         }
     }
     

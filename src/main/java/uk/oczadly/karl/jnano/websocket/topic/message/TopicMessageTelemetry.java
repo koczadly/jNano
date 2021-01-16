@@ -7,12 +7,13 @@ package uk.oczadly.karl.jnano.websocket.topic.message;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 
-import java.net.InetAddress;
 import java.time.Instant;
 
+//TODO: Add method javadocs
 public class TopicMessageTelemetry {
     
     @Expose @SerializedName("block_count")
@@ -67,10 +68,10 @@ public class TopicMessageTelemetry {
     private NanoAccount nodeId;
     
     @Expose @SerializedName("signature")
-    private String signature;
+    private HexData signature;
     
     @Expose @SerializedName("address")
-    private InetAddress address;
+    private String address;
     
     @Expose @SerializedName("port")
     private int port;
@@ -144,11 +145,11 @@ public class TopicMessageTelemetry {
         return nodeId;
     }
     
-    public String getSignature() {
+    public HexData getSignature() {
         return signature;
     }
     
-    public InetAddress getAddress() {
+    public String getAddress() {
         return address;
     }
     

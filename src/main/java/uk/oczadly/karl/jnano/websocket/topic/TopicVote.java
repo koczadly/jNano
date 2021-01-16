@@ -9,46 +9,33 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.websocket.NanoWebSocketClient;
-import uk.oczadly.karl.jnano.websocket.Topic;
-import uk.oczadly.karl.jnano.websocket.TopicWithSubscribeParams;
+import uk.oczadly.karl.jnano.websocket.TopicWithSubParams;
 import uk.oczadly.karl.jnano.websocket.topic.message.TopicMessageVote;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The {@code vote} WebSocket topic.
- * <p>This topic supports subscription parameters with the use of the {@link SubParams} subclass, but does not
+ * <p>This topic supports subscription parameters with the use of the {@link SubArgs} subclass, but does not
  * support updating of these parameters.</p>
  * <p>Received data messages will be encoded in the {@link TopicMessageVote} class.</p>
  *
  * @see <a href="https://docs.nano.org/integration-guides/websockets/#votes">
  *     Official WebSocket documentation</a>
  */
-public class TopicVote extends Topic<TopicMessageVote>
-        implements TopicWithSubscribeParams<TopicVote.SubParams> {
+public class TopicVote extends TopicWithSubParams<TopicMessageVote, TopicVote.SubArgs> {
     
     public TopicVote(NanoWebSocketClient client) {
         super("vote", client, TopicMessageVote.class);
     }
     
     
-    @Override
-    public void subscribe(SubParams params) {
-        _subscribe(params);
-    }
-    
-    @Override
-    public boolean subscribeBlocking(long timeout, SubParams params) throws InterruptedException {
-        return _subscribeBlocking(timeout, params);
-    }
-    
-    
-    
     /**
      * The configuration parameters when subscribing to this topic.
      */
-    public static final class SubParams {
+    public static final class SubArgs {
         @Expose @SerializedName("representatives")
         private List<NanoAccount> representatives;
         
@@ -57,36 +44,57 @@ public class TopicVote extends Topic<TopicMessageVote>
         
         @Expose @SerializedName("include_indeterminate")
         private Boolean includeIndeterminate;
-        
-        
-        public List<NanoAccount> getRepresentatives() {
-            return representatives;
-        }
-        
-        public SubParams setRepresentatives(List<NanoAccount> representatives) {
+    
+    
+        /**
+         * Sets the representatives filter. Only votes by the specified representative accounts will trigger a
+         * notification.
+         * @param representatives a list of representative addresses, or null to disable the filter
+         * @return this argument builder
+         */
+        public SubArgs filterRepresentatives(List<NanoAccount> representatives) {
             this.representatives = representatives;
             return this;
         }
-        
-        public SubParams setRepresentatives(NanoAccount... representatives) {
-            return setRepresentatives(Arrays.asList(representatives));
+    
+        /**
+         * Sets the representatives filter. Only votes by the specified representative accounts will trigger a
+         * notification.
+         * @param representatives an array of representative addresses
+         * @return this argument builder
+         */
+        public SubArgs filterRepresentatives(NanoAccount... representatives) {
+            return filterRepresentatives(Arrays.asList(representatives));
         }
-        
-        public Boolean getIncludeReplays() {
-            return includeReplays;
+    
+        /**
+         * Sets the representatives filter. Only votes by the specified representative accounts will trigger a
+         * notification.
+         * @param representatives an array of representative addresses (parsed using {@link NanoAccount#parse(String)})
+         * @return this argument builder
+         */
+        public SubArgs filterRepresentatives(String... representatives) {
+            return filterRepresentatives(
+                    Arrays.stream(representatives)
+                            .map(NanoAccount::parse)
+                            .collect(Collectors.toList()));
         }
-        
-        public SubParams setIncludeReplays(Boolean includeReplays) {
-            this.includeReplays = includeReplays;
+    
+        /**
+         * Enables replay votes to be included.
+         * @return this argument builder
+         */
+        public SubArgs includeReplays() {
+            this.includeReplays = true;
             return this;
         }
-        
-        public Boolean getIncludeIndeterminate() {
-            return includeIndeterminate;
-        }
-        
-        public SubParams setIncludeIndeterminate(Boolean includeIndeterminate) {
-            this.includeIndeterminate = includeIndeterminate;
+    
+        /**
+         * Enables indeterminate votes to be included.
+         * @return this argument builder
+         */
+        public SubArgs includeIndeterminate() {
+            this.includeIndeterminate = true;
             return this;
         }
     }

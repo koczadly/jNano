@@ -7,14 +7,16 @@ package uk.oczadly.karl.jnano.websocket.topic.message;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.HexData;
 
 public class TopicMessageStoppedElection {
     
     @Expose @SerializedName("hash")
-    private String hash;
+    private HexData hash;
     
     
-    public String getHash() {
+    // TODO: add javadoc
+    public HexData getHash() {
         return hash;
     }
     

@@ -7,17 +7,18 @@ package uk.oczadly.karl.jnano.websocket.topic.message;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.HexData;
 
 public class TopicMessageBootstrap {
     
     @Expose @SerializedName("reason")
-    private String reason;
+    private Reason reason;
     
     @Expose @SerializedName("id")
-    private String id;
+    private HexData id;
     
     @Expose @SerializedName("mode")
-    private String mode;
+    private Mode mode;
     
     @Expose @SerializedName("total_blocks")
     private Integer totalBlocks;
@@ -26,23 +27,58 @@ public class TopicMessageBootstrap {
     private Integer duration;
     
     
-    public String getReason() {
+    /**
+     * Returns the reason of the bootstrap status update.
+     * @return the reason of the bootstrap status update
+     */
+    public Reason getReason() {
         return reason;
     }
     
-    public String getId() {
+    /**
+     * Returns the ID of the bootstrap connection.
+     * @return the ID of the bootstrap connection
+     */
+    public HexData getId() {
         return id;
     }
     
-    public String getMode() {
+    /**
+     * Returns the bootstrapping mode.
+     * @return the bootstrapping mode
+     */
+    public Mode getMode() {
         return mode;
     }
     
-    public Integer getTotalBlocks() {
+    /**
+     * Returns the number of blocks synced from this connection.
+     * <p>This method will throw an {@link IllegalStateException} if the reason is not {@link Reason#EXITED EXITED}.</p>
+     * @return the number of blocks synced from this connection
+     */
+    public int getTotalBlocks() {
+        if (reason != Reason.EXITED)
+            throw new IllegalStateException("Total blocks value only available for exited bootstraps.");
         return totalBlocks;
     }
     
-    public Integer getDuration() {
+    /**
+     * Returns the duration of this connection in seconds.
+     * <p>This method will throw an {@link IllegalStateException} if the reason is not {@link Reason#EXITED EXITED}.</p>
+     * @return the duration of this connection in seconds
+     */
+    public int getDuration() {
+        if (reason != Reason.EXITED)
+            throw new IllegalStateException("Duration value only available for exited bootstraps.");
         return duration;
+    }
+    
+    
+    public enum Reason {
+        STARTED, EXITED
+    }
+    
+    public enum Mode {
+        LEGACY, LAZY, WALLET_LAZY;
     }
 }

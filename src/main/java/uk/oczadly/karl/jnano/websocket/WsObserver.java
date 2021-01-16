@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 
 public interface WsObserver {
     
+    /** A simple implementation that outputs status updates to the console. */
     WsObserver DEFAULT = new WsObserver() {
         @Override
         public void onOpen(int httpStatus) {

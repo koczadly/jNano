@@ -15,6 +15,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Topic<M> {
     
+    protected static final String ACTION_SUBSCRIBE = "subscribe";
+    protected static final String ACTION_UNSUBSCRIBE = "unsubscribe";
+    
     private final String topicName;
     private final Class<M> classMessage;
     private final NanoWebSocketClient client;
@@ -80,7 +83,7 @@ public class Topic<M> {
      * @throws IllegalStateException if the WebSocket is not currently open
      */
     public final void subscribe() {
-        _subscribe(null);
+        processRequest(createJson(ACTION_SUBSCRIBE));
     }
     
     /**
@@ -89,7 +92,9 @@ public class Topic<M> {
      * <p>This method will block indefinitely and wait for the associated acknowledgement message to be received before
      * continuing and returning true, false if the WebSocket closed, or throw an {@link InterruptedException} if the
      * thread is interrupted.</p>
-     * @return true if the action completed successfully, false if the WS is closed
+     *
+     * @return true if the action completed successfully, false if the socket is closed
+     *
      * @throws IllegalStateException if the WebSocket is not currently open
      * @throws InterruptedException if the thread is interrupted
      */
@@ -102,24 +107,28 @@ public class Topic<M> {
      * before you call this method.</p>
      * <p>This method will block and wait for the associated acknowledgement message to be received before
      * continuing and returning true, false if the WebSocket closed or the timeout period expires, or throw an
+     *
      * {@link InterruptedException} if the thread is interrupted.</p>
      * @param timeout the timeout in milliseconds, or zero for no timeout
-     * @return true if the action completed successfully, false if the WS is closed or the timeout expires
+     * @return true if the action completed successfully, false if the socket is closed or the timeout expires
+     *
      * @throws IllegalStateException if the WebSocket is not currently open
      * @throws InterruptedException if the thread is interrupted
      */
     public final boolean subscribeBlocking(long timeout) throws InterruptedException {
-        return _subscribeBlocking(timeout, null);
+        return processRequest(createJson(ACTION_SUBSCRIBE), timeout);
     }
+    
     
     /**
      * <p>Unsubscribes from this topic without any options or configurations. The underlying WebSocket <em>must</em> be
      * open before you call this method.</p>
      * <p>This method will process asynchronously and will not block the thread or verify completion.</p>
+     *
      * @throws IllegalStateException if the WebSocket is not currently open
      */
     public final void unsubscribe() {
-        client.processRequest(createJson("unsubscribe"));
+        processRequest(createJson(ACTION_UNSUBSCRIBE));
     }
     
     /**
@@ -128,7 +137,9 @@ public class Topic<M> {
      * <p>This method will block indefinitely and wait for the associated acknowledgement message to be received before
      * continuing and returning true, false if the WebSocket closed, or throw an {@link InterruptedException} if the
      * thread is interrupted.</p>
-     * @return true if the action completed successfully, false if the WS is closed
+     *
+     * @return true if the action completed successfully, false if the socket is closed
+     *
      * @throws IllegalStateException if the WebSocket is not currently open
      * @throws InterruptedException if the thread is interrupted
      */
@@ -142,30 +153,35 @@ public class Topic<M> {
      * <p>This method will block and wait for the associated acknowledgement message to be received before
      * continuing and returning true, false if the WebSocket closed or the timeout period expires, or throw an
      * {@link InterruptedException} if the thread is interrupted.</p>
+     *
      * @param timeout the timeout in milliseconds, or zero for no timeout
-     * @return true if the action completed successfully, false if the WS is closed or the timeout expires
+     * @return true if the action completed successfully, false if the socket is closed or the timeout expires
+     *
      * @throws IllegalStateException if the WebSocket is not currently open
      * @throws InterruptedException if the thread is interrupted
      */
     public final boolean unsubscribeBlocking(long timeout) throws InterruptedException {
-        return client.processRequestAck(createJson("unsubscribe"), timeout);
+        return processRequest(createJson(ACTION_UNSUBSCRIBE), timeout);
     }
     
     
-    protected final void _subscribe(Object options) {
-        client.processRequest(createJson("subscribe", options));
+    /**
+     * Processes an asynchronous request.
+     * @param request the request object
+     */
+    protected final void processRequest(JsonObject request) {
+        client.processRequest(request);
     }
     
-    protected final boolean _subscribeBlocking(long timeout, Object options) throws InterruptedException {
-        return client.processRequestAck(createJson("subscribe", options), timeout);
-    }
-    
-    protected final void _update(Object options) {
-        client.processRequest(createJson("update", options));
-    }
-    
-    protected final boolean _updateBlocking(long timeout, Object options) throws InterruptedException {
-        return client.processRequestAck(createJson("update", options), timeout);
+    /**
+     * Processes a synchronous (blocking) request.
+     * @param request the request object
+     * @param timeout the time out in millis, or {@code 0} for no timeout
+     * @return {@code true} if the request succeeded
+     * @throws InterruptedException if the thread is interrupted
+     */
+    protected final boolean processRequest(JsonObject request, long timeout) throws InterruptedException {
+        return client.processRequestAck(request, timeout);
     }
     
     
@@ -183,7 +199,7 @@ public class Topic<M> {
             try {
                 listener.onMessage(message, context);
             } catch (Exception e) {
-                WsObserver wsObserver = client.getWsObserver();
+                WsObserver wsObserver = client.getObserver();
                 if (wsObserver != null) {
                     wsObserver.onHandlerError(e); // Notify socket listener of exception
                 }
@@ -204,17 +220,4 @@ public class Topic<M> {
         return json;
     }
     
-    /**
-     * Creates a template {@link JsonObject} for building requests.
-     * @param action  the action of the request
-     * @param options an object containing a set of serializable options
-     * @return the json object
-     */
-    protected final JsonObject createJson(String action, Object options) {
-        JsonObject json = createJson(action);
-        if (options != null)
-            json.add("options", getClient().getGson().toJsonTree(options));
-        return json;
-    }
-
 }
