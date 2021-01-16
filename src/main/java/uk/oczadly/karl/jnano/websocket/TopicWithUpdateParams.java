@@ -23,7 +23,7 @@ public class TopicWithUpdateParams<M, S, U> extends TopicWithSubParams<M, S> {
      *
      * @throws IllegalStateException if the WebSocket is not currently open
      */
-    public final void update(S args) {
+    public final void update(U args) {
         processRequest(createJson(ACTION_UPDATE, args));
     }
     
@@ -40,7 +40,7 @@ public class TopicWithUpdateParams<M, S, U> extends TopicWithSubParams<M, S> {
      * @throws IllegalStateException if the WebSocket is not currently open
      * @throws InterruptedException if the thread is interrupted
      */
-    public final boolean updateBlocking(S args) throws InterruptedException {
+    public final boolean updateBlocking(U args) throws InterruptedException {
         return updateBlocking(0, args);
     }
     
@@ -58,7 +58,7 @@ public class TopicWithUpdateParams<M, S, U> extends TopicWithSubParams<M, S> {
      * @throws IllegalStateException if the WebSocket is not currently open
      * @throws InterruptedException if the thread is interrupted
      */
-    public final boolean updateBlocking(long timeout, S args) throws InterruptedException {
+    public final boolean updateBlocking(long timeout, U args) throws InterruptedException {
         return processRequest(createJson(ACTION_SUBSCRIBE, args), timeout);
     }
     
