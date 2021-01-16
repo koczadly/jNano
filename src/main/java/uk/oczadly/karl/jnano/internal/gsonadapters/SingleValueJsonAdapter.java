@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SingleValueJsonAdapter implements JsonDeserializer<Object> {
     
-    private static Map<Class<?>, Field> FIELD_MAP = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, Field> FIELD_MAP = new ConcurrentHashMap<>();
     
     
     @SuppressWarnings("deprecation")

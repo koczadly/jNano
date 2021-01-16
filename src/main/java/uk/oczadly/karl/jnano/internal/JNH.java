@@ -7,10 +7,7 @@ package uk.oczadly.karl.jnano.internal;
 
 import com.google.gson.*;
 import com.rfksystems.blake2b.Blake2b;
-import uk.oczadly.karl.jnano.internal.gsonadapters.ArrayTypeAdapterFactoryFix;
-import uk.oczadly.karl.jnano.internal.gsonadapters.BigIntSerializer;
-import uk.oczadly.karl.jnano.internal.gsonadapters.BooleanTypeDeserializer;
-import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
+import uk.oczadly.karl.jnano.internal.gsonadapters.*;
 import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
 import uk.oczadly.karl.jnano.internal.utils.Functions;
 import uk.oczadly.karl.jnano.model.HexData;
@@ -51,6 +48,7 @@ public class JNH {
     
     public static final Gson GSON = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
+            .registerTypeAdapterFactory(new EnumTypeAdapterFactory())          // Case-insensitive enums
             .registerTypeAdapterFactory(new ArrayTypeAdapterFactoryFix())      // Empty array hotfix
             .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer()) // Boolean deserializer
             .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer()) // Boolean deserializer
