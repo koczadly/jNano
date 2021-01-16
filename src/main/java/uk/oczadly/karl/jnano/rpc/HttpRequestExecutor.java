@@ -8,7 +8,6 @@ package uk.oczadly.karl.jnano.rpc;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 
 /**
  * The standard implementation of {@link RpcRequestExecutor}, which submits requests through an HTTP POST request.
@@ -33,7 +32,7 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
     }
     
     /**
-     * @param allowErrors whether HTTP errors should be forwarded to the deserializer
+     * @param allowErrors if true, non-200 HTTP codes will still be parsed instead of throwing an exception
      */
     public HttpRequestExecutor(boolean allowErrors) {
         this.allowErrors = allowErrors;
@@ -68,7 +67,7 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
         setRequestHeaders(con);
         
         // Submit
-        return makeRequest(con, request, allowErrors);
+        return makeRequest(con, request);
     }
     
     /**
@@ -80,19 +79,7 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
         con.setRequestProperty("Content-Type", "application/json");
     }
     
-    
-    /**
-     * Makes a request to a configured {@link URLConnection}.
-     * @param con  the connection
-     * @param body the request body
-     * @return the returned data, as a {@link String}
-     * @throws IOException if an exception occurs with the connection
-     */
-    public static String makeRequest(HttpURLConnection con, String body) throws IOException {
-        return makeRequest(con, body, true);
-    }
-    
-    private static String makeRequest(HttpURLConnection con, String body, boolean allowErrors) throws IOException {
+    protected final String makeRequest(HttpURLConnection con, String body) throws IOException {
         try (OutputStream os = con.getOutputStream()) {
             // Write request data
             OutputStreamWriter writer = new OutputStreamWriter(os);
