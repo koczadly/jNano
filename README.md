@@ -91,15 +91,17 @@ The following will create a WebSocket listener which connects to port 7078 on lo
 ```java
 NanoWebSocketClient ws = new NanoWebSocketClient(); // Defaults to localhost:7078
 ws.connect(); // Connect to the websocket
-
 // Register a listener for block confirmations
 ws.getTopics().topicConfirmedBlocks().registerListener((message, context) -> {
     // Print the hash of all confirmed blocks
     System.out.println("Confirmed block: " + message.getHash());
 });
-
-// Subscribe to the block confirmations topic
-ws.getTopics().topicConfirmedBlocks().subscribeBlocking();
+// Subscribe to the block confirmations topic (and specify an account filter)
+ws.getTopics().topicConfirmedBlocks().subscribeBlocking(
+        new TopicConfirmation.SubArgs()
+                .filterAccounts("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz")
+                .includeBlockContents()
+);
 ```
 
 
