@@ -24,8 +24,9 @@ public class RpcRequestSerializerTest {
                 JsonParser.parseString(serializer.serialize(new RequestVersion())));
         
         // With param
-        assertEquals(JsonParser.parseString("{\"action\":\"account_balance\", \"account\":\"123\"}"),
-                JsonParser.parseString(serializer.serialize(new RequestAccountBalance("123"))));
+        final String acc = "nano_3pg8khw8gs94c1qeq9741n99ubrut8sj3n9kpntim1rm35h4wdzirofazmwt";
+        assertEquals(JsonParser.parseString("{\"action\":\"account_balance\", \"account\":\"" + acc + "\"}"),
+                JsonParser.parseString(serializer.serialize(new RequestAccountBalance(acc))));
     }
     
 }
