@@ -59,7 +59,7 @@ public class TopicWithUpdateParams<M, S, U> extends TopicWithSubParams<M, S> {
      * @throws InterruptedException if the thread is interrupted
      */
     public final boolean updateBlocking(long timeout, U args) throws InterruptedException {
-        return processRequest(createJson(ACTION_SUBSCRIBE, args), timeout);
+        return processRequest(createJson(ACTION_UPDATE, args), timeout);
     }
     
 }
