@@ -46,7 +46,7 @@ The following example will define a node on `localhost:7076` (default for the pa
  addresses and ports can be specified using the constructor arguments. Alternatively, the nested [Builder](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk/oczadly/karl/jnano/rpc/RpcQueryNode.Builder.html)
  class can be used to construct instances with additional control over the object.
 ```java
-RpcQueryNode node = new RpcQueryNode();
+RpcQueryNode rpc = new RpcQueryNode();
 ```
 ##### Synchronous (blocking) queries
 This example will print an account's balance to the console using a synchronous (blocking) call.
@@ -56,7 +56,7 @@ RequestAccountBalance request = new RequestAccountBalance(
         "nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz");
 
 // Execute the request and obtain the result
-ResponseBalance balance = node.processRequest(request);
+ResponseBalance balance = rpc.processRequest(request);
 
 // Handle the result object however you wish (eg. print the balance)
 System.out.println("Account balance: " + balance.getTotal());
@@ -65,7 +65,7 @@ System.out.println("Account balance: " + balance.getTotal());
 This example will execute the query in a separate thread, and print the node version to the console. Alternatively,
  you can retrieve the `Future` response object returned by the method instead of using a [QueryCallback](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk/oczadly/karl/jnano/rpc/QueryCallback.html).
 ```java
-node.processRequestAsync(new RequestVersion(), new QueryCallback<>() {
+rpc.processRequestAsync(new RequestVersion(), new QueryCallback<>() {
     @Override
     public void onResponse(ResponseVersion response, RequestVersion request) {
         // Successful, handle the response
