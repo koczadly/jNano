@@ -43,7 +43,7 @@ public class TopicMessageVote {
     
     /**
      * Returns the verification signature signed by the representative.
-     * @returnthe the signature signed by the representative
+     * @return the the signature signed by the representative
      */
     public HexData getSignature() {
         return signature;
