@@ -38,36 +38,45 @@ Before using this library, you will need to configure the node correctly. Make s
 ### Examples
 *More detailed examples can be found on the associated [wiki pages](https://github.com/koczadly/jNano/wiki/).*
 
-#### Creating a node object
-The following will define a node on `localhost:7076` (default for the empty constructor). Other addresses and ports
- can be specified within the constructor.
+#### Executing RPC queries
+To make queries to an external Nano node through the RPC system, you will need to use [RpcQueryNode](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk/oczadly/karl/jnano/rpc/RpcQueryNode.html)
+ class.
+
+The following example will define a node on `localhost:7076` (default for the parameterless constructor). Other
+ addresses and ports can be specified using the constructor arguments. Alternatively, the nested [Builder](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk/oczadly/karl/jnano/rpc/RpcQueryNode.Builder.html)
+ class can be used to construct instances with additional control over the object.
 ```java
 RpcQueryNode node = new RpcQueryNode();
 ```
-#### Executing synchronous requests
+##### Synchronous (blocking) queries
 This example will print an account's balance to the console using a synchronous (blocking) call.
 ```java
+// Construct the request
 RequestAccountBalance request = new RequestAccountBalance("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz");
+// Execute the request and obtain the result
 ResponseBalance balance = node.processRequest(request);
-
+// Handle the result object however you wish (eg. print the balance)
 System.out.println("Account balance: " + balance.getTotal());
 ```
-#### Executing asynchronous requests
+##### Asynchronous queries
 This example will print the node version to the console.
 ```java
 node.processRequestAsync(new RequestVersion(), new QueryCallback<>() {
     @Override
     public void onResponse(ResponseVersion response, RequestVersion request) {
+        // Successful, handle the response
         System.out.println("Version: " + response.getNodeVendor());
     }
     
     @Override
     public void onFailure(RpcException ex, RequestVersion request) {
+        // An RPC error occured
         ex.printStackTrace();
     }
     
     @Override
     public void onFailure(IOException ex, RequestVersion request) {
+        // An IO (network) error occured
         ex.printStackTrace();
     }
 });
@@ -89,27 +98,15 @@ ws.getTopics().topicConfirmedBlocks().subscribe(new TopicConfirmation.SubParams(
         .setAccounts(NanoAccount.parse("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz")));
 ```
 
-#### Listening for real-time blocks (callback server)
-The following will create a callback server on port 8080, and print the hash and type of all new blocks to the
- console. The node will need to be configured to send to your application's listening address and port for this to work.
-```java
-BlockCallbackServer server = new BlockCallbackServer(8080);
-server.registerListener((block, target, node) -> {
-    System.out.println("Block hash: " + block.getBlockHash());
-    System.out.println("Block type: " + block.getSubtype());
-});
-server.start();
-```
-
 
 ## Dependencies
-The following dependencies are required, and are handled automatically through Maven:
+This project uses the following dependencies, which are included automatically through Maven:
 - [Gson 2.8.6](https://github.com/google/gson)
 - [blake2b 1.0.0](https://github.com/rfksystems/blake2b)
 - [Java-WebSocket 1.5.1](https://github.com/TooTallNate/Java-WebSocket)
 
 ---
 
-<sup><sup>If you found this library useful and would like to support me, my Nano address is 
-<b>nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz</b> - 
-any amount would be greatly appreciated :D</sup></sup>
+<sup><sup>If you found this library useful and would like to support my work, donations may be sent to 
+<b>[nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz](nano:nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz)</b>
+\- any amount would be greatly appreciated :D</sup></sup>
