@@ -51,10 +51,13 @@ RpcQueryNode node = new RpcQueryNode();
 ##### Synchronous (blocking) queries
 This example will print an account's balance to the console using a synchronous (blocking) call.
 ```java
-// Construct the request
-RequestAccountBalance request = new RequestAccountBalance("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz");
+// Construct the request (with arguments)
+RequestAccountBalance request = new RequestAccountBalance(
+        "nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz");
+
 // Execute the request and obtain the result
 ResponseBalance balance = node.processRequest(request);
+
 // Handle the result object however you wish (eg. print the balance)
 System.out.println("Account balance: " + balance.getTotal());
 ```
@@ -86,17 +89,17 @@ node.processRequestAsync(new RequestVersion(), new QueryCallback<>() {
 The following will create a WebSocket listener which connects to port 7078 on localhost. For each new block confirmed
  by the node, the hash will be printed to the console.
 ```java
-NanoWebSocketClient ws = new NanoWebSocketClient(); // Defaults to endpoint localhost:7078
+NanoWebSocketClient ws = new NanoWebSocketClient(); // Defaults to localhost:7078
 ws.connect(); // Connect to the websocket
 
 // Register a listener for block confirmations
 ws.getTopics().topicConfirmedBlocks().registerListener((message, context) -> {
-    System.out.println("New block: " + message.getHash()); // Print the hash of all new blocks
+    // Print the hash of all confirmed blocks
+    System.out.println("Confirmed block: " + message.getHash());
 });
 
-// Subscribe to the block confirmations topic, and specify an account filter
-ws.getTopics().topicConfirmedBlocks().subscribe(new TopicConfirmation.SubParams()
-        .setAccounts(NanoAccount.parse("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz")));
+// Subscribe to the block confirmations topic
+ws.getTopics().topicConfirmedBlocks().subscribeBlocking();
 ```
 
 
