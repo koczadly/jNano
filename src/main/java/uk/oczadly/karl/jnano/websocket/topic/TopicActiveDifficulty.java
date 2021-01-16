@@ -20,7 +20,7 @@ import uk.oczadly.karl.jnano.websocket.topic.message.TopicMessageActiveDifficult
 public class TopicActiveDifficulty extends Topic<TopicMessageActiveDifficulty> {
     
     public TopicActiveDifficulty(NanoWebSocketClient client) {
-        super("active_difficulty", client, TopicMessageActiveDifficulty.class);
+        super("active_difficulty", TopicMessageActiveDifficulty.class, client);
     }
     
 }

@@ -30,7 +30,7 @@ public class TopicConfirmation extends TopicWithUpdateParams<TopicMessageConfirm
         TopicConfirmation.UpdateArgs> {
     
     public TopicConfirmation(NanoWebSocketClient client) {
-        super("confirmation", client, TopicMessageConfirmation.class);
+        super("confirmation", TopicMessageConfirmation.class, client);
     }
     
     

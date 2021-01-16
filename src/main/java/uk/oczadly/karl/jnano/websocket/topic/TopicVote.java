@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class TopicVote extends TopicWithSubParams<TopicMessageVote, TopicVote.SubArgs> {
     
     public TopicVote(NanoWebSocketClient client) {
-        super("vote", client, TopicMessageVote.class);
+        super("vote", TopicMessageVote.class, client);
     }
     
     

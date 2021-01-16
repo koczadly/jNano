@@ -20,7 +20,7 @@ import uk.oczadly.karl.jnano.websocket.topic.message.TopicMessageBootstrap;
 public class TopicBootstrap extends Topic<TopicMessageBootstrap> {
     
     public TopicBootstrap(NanoWebSocketClient client) {
-        super("bootstrap", client, TopicMessageBootstrap.class);
+        super("bootstrap", TopicMessageBootstrap.class, client);
     }
     
 }

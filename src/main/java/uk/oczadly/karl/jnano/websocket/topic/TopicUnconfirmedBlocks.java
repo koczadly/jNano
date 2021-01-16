@@ -20,7 +20,7 @@ import uk.oczadly.karl.jnano.websocket.Topic;
 public class TopicUnconfirmedBlocks extends Topic<Block> {
     
     public TopicUnconfirmedBlocks(NanoWebSocketClient client) {
-        super("new_unconfirmed_block", client, Block.class);
+        super("new_unconfirmed_block", Block.class, client);
     }
     
 }

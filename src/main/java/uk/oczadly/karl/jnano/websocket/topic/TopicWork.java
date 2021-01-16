@@ -20,7 +20,7 @@ import uk.oczadly.karl.jnano.websocket.topic.message.TopicMessageWork;
 public class TopicWork extends Topic<TopicMessageWork> {
     
     public TopicWork(NanoWebSocketClient client) {
-        super("work", client, TopicMessageWork.class);
+        super("work", TopicMessageWork.class, client);
     }
     
 }

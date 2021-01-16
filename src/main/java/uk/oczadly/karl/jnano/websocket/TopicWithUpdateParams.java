@@ -9,8 +9,8 @@ public class TopicWithUpdateParams<M, S, U> extends TopicWithSubParams<M, S> {
     
     protected static final String ACTION_UPDATE = "update";
     
-    public TopicWithUpdateParams(String topicName, NanoWebSocketClient client, Class<M> classMessage) {
-        super(topicName, client, classMessage);
+    public TopicWithUpdateParams(String topicName, Class<M> classMessage, NanoWebSocketClient client) {
+        super(topicName, classMessage, client);
     }
     
     

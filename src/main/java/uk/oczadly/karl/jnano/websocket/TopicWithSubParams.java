@@ -9,8 +9,8 @@ import com.google.gson.JsonObject;
 
 public class TopicWithSubParams<M, S> extends Topic<M> {
     
-    public TopicWithSubParams(String topicName, NanoWebSocketClient client, Class<M> classMessage) {
-        super(topicName, client, classMessage);
+    public TopicWithSubParams(String topicName, Class<M> classMessage, NanoWebSocketClient client) {
+        super(topicName, classMessage, client);
     }
     
     

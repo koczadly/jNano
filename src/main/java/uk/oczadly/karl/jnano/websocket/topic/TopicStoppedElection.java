@@ -20,7 +20,7 @@ import uk.oczadly.karl.jnano.websocket.topic.message.TopicMessageStoppedElection
 public class TopicStoppedElection extends Topic<TopicMessageStoppedElection> {
     
     public TopicStoppedElection(NanoWebSocketClient client) {
-        super("stopped_election", client, TopicMessageStoppedElection.class);
+        super("stopped_election", TopicMessageStoppedElection.class, client);
     }
     
 }

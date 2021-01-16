@@ -20,7 +20,7 @@ import uk.oczadly.karl.jnano.websocket.topic.message.TopicMessageTelemetry;
 public class TopicTelemetry extends Topic<TopicMessageTelemetry> {
     
     public TopicTelemetry(NanoWebSocketClient client) {
-        super("telemetry", client, TopicMessageTelemetry.class);
+        super("telemetry", TopicMessageTelemetry.class, client);
     }
     
 }

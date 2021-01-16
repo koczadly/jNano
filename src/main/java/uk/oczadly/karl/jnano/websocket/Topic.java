@@ -23,7 +23,7 @@ public class Topic<M> {
     private final NanoWebSocketClient client;
     private final CopyOnWriteArrayList<TopicListener<M>> listeners = new CopyOnWriteArrayList<>();
     
-    public Topic(String topicName, NanoWebSocketClient client, Class<M> classMessage) {
+    public Topic(String topicName, Class<M> classMessage, NanoWebSocketClient client) {
         this.topicName = topicName;
         this.client = client;
         this.classMessage = classMessage;
