@@ -59,7 +59,8 @@ ResponseBalance balance = node.processRequest(request);
 System.out.println("Account balance: " + balance.getTotal());
 ```
 ##### Asynchronous queries
-This example will print the node version to the console.
+This example will execute the query in a separate thread, and print the node version to the console. Alternatively,
+ you can retrieve the `Future` response object returned by the method instead of using a [QueryCallback](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk/oczadly/karl/jnano/rpc/QueryCallback.html).
 ```java
 node.processRequestAsync(new RequestVersion(), new QueryCallback<>() {
     @Override
