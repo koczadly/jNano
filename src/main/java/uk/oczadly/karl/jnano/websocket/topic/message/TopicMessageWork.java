@@ -10,6 +10,8 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
+import java.util.List;
+
 public class TopicMessageWork {
     
     @Expose @SerializedName("success")
@@ -26,6 +28,9 @@ public class TopicMessageWork {
     
     @Expose @SerializedName("result")
     private Result result;
+    
+    @Expose @SerializedName("bad_peers")
+    private List<String> badPeers;
     
     
     /**
@@ -68,6 +73,14 @@ public class TopicMessageWork {
         return result;
     }
     
+    /**
+     * Returns a list of IP/ports of "bad" peers. These are work generation peers which were unresponsive, or
+     * returned an incorrect work solution.
+     * @return a list of bad peers
+     */
+    public List<String> getBadPeers() {
+        return badPeers;
+    }
     
     public enum Reason {
         SUCCESS, CANCELLED, FAILURE
