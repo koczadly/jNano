@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.websocket.topic.message;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
@@ -88,7 +89,7 @@ public class TopicMessageWork {
     
     public static class Request {
         @Expose @SerializedName("hash")
-        private String hash;
+        private HexData hash;
         
         @Expose @SerializedName("difficulty")
         private WorkDifficulty difficulty;
@@ -104,7 +105,7 @@ public class TopicMessageWork {
          * The root hash of the work generation request.
          * @return the root hash
          */
-        public String getHash() {
+        public HexData getHash() {
             return hash;
         }
     
