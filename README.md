@@ -90,16 +90,21 @@ The following will create a WebSocket listener which connects to port 7078 on lo
  by the node, the hash will be printed to the console.
 ```java
 NanoWebSocketClient ws = new NanoWebSocketClient(); // Defaults to localhost:7078
-ws.connect(); // Connect to the websocket
+ws.connect(); // Connect to the endpoint
+
 // Register a listener for block confirmations
 ws.getTopics().topicConfirmedBlocks().registerListener((message, context) -> {
-    // Print the hash of all confirmed blocks
-    System.out.println("Confirmed block: " + message.getHash());
+    // Print the hash and type of all confirmed blocks
+    System.out.printf("Confirmed block: %s (%s)%n",
+            message.getHash(), message.getBlock().getType());
 });
+
 // Subscribe to the block confirmations topic (and specify an account filter)
 ws.getTopics().topicConfirmedBlocks().subscribeBlocking(
         new TopicConfirmation.SubArgs()
-                .filterAccounts("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz")
+                .filterAccounts(
+                        "nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz",
+                        "nano_1ipx847tk8o46pwxt5qjdbncjqcbwcc1rrmqnkztrfjy5k7z4imsrata9est")
                 .includeBlockContents()
 );
 ```
