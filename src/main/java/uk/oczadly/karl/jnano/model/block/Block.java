@@ -134,7 +134,7 @@ public abstract class Block implements IBlock {
      * @return the generated block hash, as a byte array
      */
     protected final byte[] calculateHashBytes() {
-        return JNH.blake2b(32, generateHashables());
+        return JNH.blake2b(NanoConst.LEN_HASH_B, generateHashables());
     }
     
     
