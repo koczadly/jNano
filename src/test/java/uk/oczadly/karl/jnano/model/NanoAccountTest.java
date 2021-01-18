@@ -16,10 +16,11 @@ import static org.junit.Assert.*;
 public class NanoAccountTest {
     
     static final String ACC_1_PREFIX = "ban";
-    static final String ACC_1_ADDR = "ban_38qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qwax3wk9c";
-    static final String ACC_1_ADDRSEG = "38qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6q";
-    static final String ACC_1_CHECKSUM = "wax3wk9c";
-    static final String ACC_1_PUBKEY = "9AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97";
+    static final String ACC_1_ADDR = "ban_34ft1hnisrgngfwsnaiutkyzaktincmbp1xwwngjmeh36w7j6yfx7bzrjbxt";
+    static final String ACC_1_ADDRSEG = "34ft1hnisrgngfwsnaiutkyzaktincmbp1xwwngjmeh36w7j6yfx";
+    static final String ACC_1_CHECKSUM = "7bzrjbxt";
+    static final String ACC_1_PUBKEY = "89BA03E90CE1D473799A221BD4BDF44B50A2A69B03BCE51D19B1E1270B1279BD";
+    static final String ACC_1_PRIVKEY = "9AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97";
     
     static final String ACC_2_PREFIX = NanoAccount.DEFAULT_PREFIX;
     static final String ACC_2_ADDR = NanoAccount.DEFAULT_PREFIX +
@@ -43,6 +44,12 @@ public class NanoAccountTest {
                 () -> NanoAccount.parse("bumbaclaaat"));
         assertThrows(NanoAccount.AddressFormatException.class,
                 () -> NanoAccount.parse("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"));
+    }
+    
+    @Test
+    public void testDerive() {
+        NanoAccount acc = NanoAccount.fromPrivateKey(new HexData(ACC_1_PRIVKEY));
+        assertEquals(ACC_1_PUBKEY, acc.toPublicKey());
     }
     
     @Test

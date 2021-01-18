@@ -7,9 +7,11 @@ package uk.oczadly.karl.jnano.model;
 
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
+import uk.oczadly.karl.jnano.internal.Ed25519Blake2b;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
+import uk.oczadly.karl.jnano.util.WalletUtil;
 
 import java.lang.reflect.Type;
 import java.math.BigInteger;
@@ -83,7 +85,8 @@ public final class NanoAccount {
     }
     
     /**
-     * Constructs an AccountAddress instance from a positive integer index, using the default prefix.
+     * Constructs an AccountAddress instance from a positive integer index, using the
+     * {@link #DEFAULT_PREFIX default prefix}.
      * @param index the integer representation of this account
      * @see #parse(String)
      */
@@ -104,7 +107,8 @@ public final class NanoAccount {
     }
     
     /**
-     * Constructs an AccountAddress instance from an array of key bytes, using the default prefix.
+     * Constructs an AccountAddress instance from an array of key bytes, using the
+     * {@link #DEFAULT_PREFIX default prefix}.
      * @param keyBytes an array of 32 bytes representing the key
      * @see #parse(String)
      */
@@ -323,7 +327,7 @@ public final class NanoAccount {
      * checksum and no prefix; for these addresses, a null prefix will be used when creating the object.</p>
      *
      * @param str the account address string
-     * @return the created address object
+     * @return the created account object
      * @throws AddressFormatException if the address does not meet the required format criteria
      * @see #parse(String, String)
      */
@@ -346,7 +350,7 @@ public final class NanoAccount {
      *
      * @param str           the account address string
      * @param defaultPrefix the default protocol identifier prefix (without separator), or null for no prefix
-     * @return the created address object
+     * @return the created account object
      * @throws AddressFormatException if the address does not meet the required format criteria
      */
     public static NanoAccount parse(String str, String defaultPrefix) {
@@ -368,7 +372,7 @@ public final class NanoAccount {
      * checksum, along with an optional prefix (eg.
      * {@code nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz}).
      * @param address the account address string
-     * @return the created address object
+     * @return the created account object
      * @throws AddressFormatException if the address does not meet the required format criteria
      */
     public static NanoAccount parseAddress(String address) {
@@ -388,11 +392,11 @@ public final class NanoAccount {
     }
     
     /**
-     * Creates a new {@link NanoAccount} from a given address segment, using the default prefix. The segment excludes
-     * the initial prefix and checksum (the last 8 characters), (eg.
+     * Creates a new {@link NanoAccount} from a given address segment, using the {@link #DEFAULT_PREFIX default prefix}.
+     * The segment excludes the initial prefix and checksum (the last 8 characters), (eg.
      * {@code 34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6q}).
      * @param address the 52-character account address segment
-     * @return the created address object
+     * @return the created account object
      * @throws AddressFormatException if the address does not meet the required format criteria
      */
     public static NanoAccount parseAddressSegment(String address) {
@@ -404,7 +408,7 @@ public final class NanoAccount {
      * prefix and checksum (the last 8 characters), (eg. {@code 34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6q}).
      * @param address the 52-character account address segment
      * @param prefix  the protocol identifier prefix (without separator), or null for no prefix
-     * @return the created address object
+     * @return the created account object
      * @throws AddressFormatException if the address does not meet the required format criteria
      */
     public static NanoAccount parseAddressSegment(String address, String prefix) {
@@ -418,7 +422,7 @@ public final class NanoAccount {
      * @param address  the 52-character account address segment
      * @param prefix   the protocol identifier prefix to use (without separator), or null for no prefix
      * @param checksum the 8-character checksum to compare, or null for no comparison
-     * @return the created address object
+     * @return the created account object
      * @throws AddressFormatException if the address does not meet the required format criteria
      */
     public static NanoAccount parseAddressSegment(String address, String prefix, String checksum) {
@@ -446,10 +450,11 @@ public final class NanoAccount {
     }
     
     /**
-     * Creates a new {@link NanoAccount} from a given public key, using the default prefix. This consists of a
-     * 64-character hexadecimal string (eg. {@code 8AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97}).
+     * Creates a new {@link NanoAccount} from a given public key, using the {@link #DEFAULT_PREFIX default prefix}.
+     * This consists of a 64-character hexadecimal string (eg.
+     * {@code 8AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97}).
      * @param key the public key of the account, encoded in hexadecimal
-     * @return the created address object
+     * @return the created account object
      * @throws AddressFormatException if the address does not meet the required format criteria
      */
     public static NanoAccount parsePublicKey(String key) {
@@ -461,7 +466,7 @@ public final class NanoAccount {
      * hexadecimal string (eg. {@code 8AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97}).
      * @param key    the public key of the account, encoded in hexadecimal
      * @param prefix the protocol identifier prefix to use (without separator), or null for no prefix
-     * @return the created address object
+     * @return the created account object
      * @throws AddressFormatException if the address does not meet the required format criteria
      */
     public static NanoAccount parsePublicKey(String key, String prefix) {
@@ -470,6 +475,39 @@ public final class NanoAccount {
         
         key = key.toUpperCase();
         return new NanoAccount(prefix, calculateKeyBytes(key, JNH.ENC_16), null, key, null);
+    }
+    
+    
+    /**
+     * Derives and creates a new {@link NanoAccount} from a given private key, and uses the the {@link #DEFAULT_PREFIX
+     * default prefix}.
+     *
+     * @param privKey the private key
+     * @return the created account object
+     *
+     * @see WalletUtil#deriveKeyFromSeed(HexData)
+     */
+    public static NanoAccount fromPrivateKey(HexData privKey) {
+        return fromPrivateKey(privKey, DEFAULT_PREFIX);
+    }
+    
+    /**
+     * Derives and creates a new {@link NanoAccount} from a given private key, and uses the specified prefix.
+     *
+     * @param privKey the private key
+     * @param prefix  the protocol identifier prefix to use (without separator), or null for no prefix
+     * @return the created account object
+     *
+     * @see WalletUtil#deriveKeyFromSeed(HexData)
+     */
+    public static NanoAccount fromPrivateKey(HexData privKey, String prefix) {
+        if (privKey == null)
+            throw new IllegalArgumentException("Private key cannot be null.");
+        if (privKey.length() != NanoConst.LEN_KEY_B)
+            throw new IllegalArgumentException("Invalid private key length.");
+        
+        byte[] pubKey = Ed25519Blake2b.derivePublicKey(privKey.toByteArray());
+        return new NanoAccount(pubKey, prefix);
     }
     
     
