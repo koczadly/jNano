@@ -201,6 +201,15 @@ public class JNH {
                 (byte)(val & 0xFF)
         };
     }
+    
+    public static byte[] intToBytes(int val) {
+        return new byte[] {
+                (byte)((val >> 24) & 0xFF),
+                (byte)((val >> 16) & 0xFF),
+                (byte)((val >> 8 ) & 0xFF),
+                (byte)(val & 0xFF)
+        };
+    }
         
     public static long bytesToLong(byte[] bytes) {
         if (bytes.length > 8)

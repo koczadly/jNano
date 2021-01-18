@@ -70,6 +70,11 @@ public class JNHTest {
     }
     
     @Test
+    public void testByteInt() {
+        assertArrayEquals(new byte[] {5, 6, 7, -26}, JNH.intToBytes(84281318));
+    }
+    
+    @Test
     public void testIsZero() {
         assertTrue(JNH.isZero((String)null, true));
         assertFalse(JNH.isZero((String)null, false));
