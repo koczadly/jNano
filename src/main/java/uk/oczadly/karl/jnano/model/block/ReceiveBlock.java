@@ -87,15 +87,12 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
                 && Objects.equals(getSourceBlockHash(), rb.getSourceBlockHash());
     }
     
-    
     @Override
-    protected byte[][] generateHashables() {
-        return new byte[][] {
+    protected byte[] calculateHash() {
+        return hashBlake2b(
                 getPreviousBlockHash().toByteArray(),
-                getSourceBlockHash().toByteArray()
-        };
+                getSourceBlockHash().toByteArray());
     }
-    
     
     /**
      * Parses a {@code receive} block from a given JSON string using the default deserializer.

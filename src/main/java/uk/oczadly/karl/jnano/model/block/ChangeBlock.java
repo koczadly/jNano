@@ -103,13 +103,11 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
                 && Objects.equals(getRepresentative(), cb.getRepresentative());
     }
     
-    
     @Override
-    protected byte[][] generateHashables() {
-        return new byte[][] {
+    protected byte[] calculateHash() {
+        return hashBlake2b(
                 getPreviousBlockHash().toByteArray(),
-                getRepresentative().getPublicKeyBytes()
-        };
+                getRepresentative().getPublicKeyBytes());
     }
     
     

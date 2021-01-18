@@ -106,14 +106,12 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
                 && Objects.equals(getSourceBlockHash(), ob.getSourceBlockHash());
     }
     
-    
     @Override
-    protected byte[][] generateHashables() {
-        return new byte[][] {
+    protected byte[] calculateHash() {
+        return hashBlake2b(
                 getSourceBlockHash().toByteArray(),
                 getRepresentative().getPublicKeyBytes(),
-                getAccount().getPublicKeyBytes()
-        };
+                getAccount().getPublicKeyBytes());
     }
     
     

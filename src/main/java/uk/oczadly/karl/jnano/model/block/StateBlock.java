@@ -239,17 +239,15 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
                 && Objects.equals(getBalance(), sb.getBalance());
     }
     
-    
     @Override
-    protected byte[][] generateHashables() {
-        return new byte[][] {
+    protected byte[] calculateHash() {
+        return hashBlake2b(
                 HASH_PREAMBLE,
                 getAccount().getPublicKeyBytes(),
                 getPreviousBlockHash().toByteArray(),
                 getRepresentative().getPublicKeyBytes(),
                 JNH.leftPadByteArray(getBalance().getAsRaw().toByteArray(), 16, false),
-                getLink().asByteArray()
-        };
+                getLink().asByteArray());
     }
     
     @Override

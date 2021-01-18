@@ -20,8 +20,13 @@ import java.util.Objects;
 
 /**
  * An abstract class which represents a Nano block.
+ *
+ * <p>Blocks are semi-immutable; optional fields, such as the signature and work values, may be updated and changed
+ * through the use of setters. All other fields, however, should be immutable after construction.</p>
+ *
  * <p>For a concrete version of this class, use {@link StateBlock} (or {@link SendBlock}, {@link ReceiveBlock},
  * {@link ChangeBlock} and {@link OpenBlock} for legacy types).</p>
+ *
  * <p>To convert a JSON string/object to a Block instance, use the {@link #parse(JsonObject)} static method or the
  * {@link BlockDeserializer} class. This class can automatically be serialized and deserialized by Gson, as a
  * built-in JSON adapter is provided and automatically registered.</p>
@@ -36,10 +41,10 @@ public abstract class Block implements IBlock {
     private transient final BlockType typeEnum;
     
     @Expose @SerializedName("signature")
-    private final HexData signature;
+    private HexData signature;
     
     @Expose @SerializedName("work")
-    private final WorkSolution workSolution;
+    private WorkSolution workSolution;
     
     
     private Block() {
@@ -68,13 +73,10 @@ public abstract class Block implements IBlock {
     private Block(BlockType type, String typeStr, HexData signature, WorkSolution workSolution) {
         if (type == null && typeStr == null)
             throw new IllegalArgumentException("Block type cannot be null.");
-        if (!JNH.isValidLength(signature, NanoConst.LEN_SIGNATURE_B))
-            throw new IllegalArgumentException("Block signature is an invalid length.");
-        
         this.type = typeStr.toLowerCase();
         this.typeEnum = type;
-        this.signature = signature;
-        this.workSolution = workSolution;
+        setSignature(signature);
+        setWorkSolution(workSolution);
     }
     
     
@@ -83,7 +85,7 @@ public abstract class Block implements IBlock {
         if (hash == null) {
             synchronized (this) {
                 if (hash == null)
-                    hash = new HexData(calculateHashBytes(), NanoConst.LEN_HASH_B);
+                    hash = new HexData(calculateHash(), NanoConst.LEN_HASH_B);
             }
         }
         return hash;
@@ -97,6 +99,14 @@ public abstract class Block implements IBlock {
     public final byte[] getHashBytes() {
         return getHash().toByteArray();
     }
+    
+    /**
+     * Calculates the hash of this block as a sequence of bytes.
+     * <p>For classes implementing the block, you could use the supplied {@link Block#hashBlake2b(byte[]...)} helper
+     * method.</p>
+     * @return the generated block hash, as a byte array
+     */
+    protected abstract byte[] calculateHash();
     
     @Override
     public final BlockType getType() {
@@ -113,30 +123,33 @@ public abstract class Block implements IBlock {
         return signature;
     }
     
+    /**
+     * Sets or updates the signature for this block.
+     * @param signature the new signature, or null (will render the block incomplete)
+     */
+    public void setSignature(HexData signature) {
+        if (signature != null && signature.length() != NanoConst.LEN_SIGNATURE_B)
+            throw new IllegalArgumentException("Block signature is an invalid length.");
+        this.signature = signature;
+    }
+    
     @Override
     public final WorkSolution getWorkSolution() {
         return workSolution;
+    }
+    
+    /**
+     * Sets or updates the work solution for this block.
+     * @param work the new work value, or null (will render the block incomplete)
+     */
+    public void setWorkSolution(WorkSolution work) {
+        this.workSolution = work;
     }
     
     @Override
     public boolean isComplete() {
         return getWorkSolution() != null && getSignature() != null;
     }
-    
-    /**
-     * @return an array of hashable byte arrays in the correct sequence
-     */
-    protected abstract byte[][] generateHashables();
-    
-    /**
-     * Calculates the hash of this block as a sequence of bytes.
-     * This method will not use the built-in cache, and will generate the hash from the sequence of hashables.
-     * @return the generated block hash, as a byte array
-     */
-    protected final byte[] calculateHashBytes() {
-        return JNH.blake2b(NanoConst.LEN_HASH_B, generateHashables());
-    }
-    
     
     /**
      * Returns the block as a JSON string, filling blank fields.
@@ -187,7 +200,9 @@ public abstract class Block implements IBlock {
      * <p>This method should be overridden by subclasses where applicable.</p>
      * @param json the JSON object to fill
      */
-    protected void fillJsonBlanks(JsonObject json) {}
+    protected void fillJsonBlanks(JsonObject json) {
+    
+    }
     
     /**
      * Build a JsonObject that represents this instance.
@@ -239,6 +254,16 @@ public abstract class Block implements IBlock {
     @Override
     public final int hashCode() {
         return getHash().hashCode();
+    }
+    
+    
+    /**
+     * Standard Blake2b hash implementation.
+     * @param hashables the sequence of ordered hashable bytes
+     * @return the hash bytes
+     */
+    protected static byte[] hashBlake2b(byte[]... hashables) {
+        return JNH.blake2b(NanoConst.LEN_HASH_B, hashables);
     }
     
     
