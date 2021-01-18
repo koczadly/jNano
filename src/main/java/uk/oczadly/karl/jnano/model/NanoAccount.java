@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.model;
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
 
 import java.lang.reflect.Type;
@@ -97,7 +98,7 @@ public final class NanoAccount {
      * @see #parse(String)
      */
     public NanoAccount(BigInteger index, String prefix) {
-        this(prefix, JNH.leftPadByteArray(index.toByteArray(), 32, true), null, null, null);
+        this(prefix, JNH.leftPadByteArray(index.toByteArray(), NanoConst.LEN_KEY_B, true), null, null, null);
         if (index.compareTo(BigInteger.ZERO) < 0 || index.compareTo(MAX_INDEX_VAL) > 0)
             throw new IllegalArgumentException("Account index is out of bounds.");
     }
@@ -129,7 +130,8 @@ public final class NanoAccount {
                         String publicKeyHex, String segAddress, String segChecksum, BigInteger index) {
         validatePrefix(prefix);
         if (keyBytes == null) throw new IllegalArgumentException("Key byte array cannot be null.");
-        if (keyBytes.length != 32) throw new IllegalArgumentException("Key byte array must have a length of 32.");
+        if (keyBytes.length != NanoConst.LEN_KEY_B)
+            throw new IllegalArgumentException("Key byte array must have a length of " + NanoConst.LEN_KEY_B + ".");
         this.keyBytes = keyBytes;
         this.prefix = (prefix != null && !prefix.isEmpty()) ? prefix : null;
         this.checksumBytes = checksumBytes;
@@ -542,7 +544,7 @@ public final class NanoAccount {
         } catch (IllegalArgumentException e) { // Catch illegal characters
             throw new AddressFormatException(e);
         }
-        if (keyBytes.length != 32)
+        if (keyBytes.length != NanoConst.LEN_KEY_B)
             throw new AddressFormatException("Address/key bytes could not be decoded.");
         return keyBytes;
     }

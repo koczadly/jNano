@@ -14,6 +14,8 @@ public class NanoConst {
     
     public static final BigInteger MAX_BALANCE = JNH.BIGINT_MAX_128;
     
+    public static final int LEN_KEY_B = 32;
+    
     public static final int LEN_HASH_B = 32;
     public static final int LEN_HASH_H = LEN_HASH_B * 2;
     
