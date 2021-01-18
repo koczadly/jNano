@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This enum class represents account epochs for the live Nano network.
+ * This enum class represents account version epochs for the live Nano network.
  */
 public enum AccountEpoch {
     
@@ -24,13 +24,13 @@ public enum AccountEpoch {
      * Version 1 epoch block, which marks the transition from legacy blocks (send/receive/open/change) to UTX state
      * blocks.
      */
-    V1("65706F636820763120626C6F636B000000000000000000000000000000000000",
+    V1 ("65706F636820763120626C6F636B000000000000000000000000000000000000",
             NanoConstants.NANO_LIVE_NET.getGenesisAccount()),
     
     /**
      * Version 2 epoch block, which marks the change in minimum work difficulties introduced in node V21.
      */
-    V2("65706F636820763220626C6F636B000000000000000000000000000000000000",
+    V2 ("65706F636820763220626C6F636B000000000000000000000000000000000000",
             NanoAccount.parseAddressSegment("3qb6o6i1tkzr6jwr5s7eehfxwg9x6eemitdinbpi7u8bjjwsgqfj"));
     
     
@@ -42,7 +42,7 @@ public enum AccountEpoch {
     static {
         for (AccountEpoch e : AccountEpoch.values()) {
             VER_MAP.put(e.getVersion(), e);
-            ID_MAP.put(e.getIdentifier().toHexString().toUpperCase(), e);
+            ID_MAP.put(e.getIdentifier().toHexString(), e);
         }
     }
     
@@ -70,7 +70,7 @@ public enum AccountEpoch {
     }
     
     /**
-     * @return the account used to sign the epoch block
+     * @return the account used to sign the epoch block, or null if the owner's account is used instead
      */
     public NanoAccount getSignerAccount() {
         return signerAcc;
