@@ -25,6 +25,7 @@ module uk.oczadly.karl.jnano {
     // Dependencies
     requires transitive com.google.gson;
     requires blake2b;
+    requires net.i2p.crypto.eddsa;
     requires Java.WebSocket;
 
 }
