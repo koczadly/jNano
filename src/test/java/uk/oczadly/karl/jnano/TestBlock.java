@@ -53,12 +53,9 @@ public class TestBlock extends Block {
         return val;
     }
     
-    
     @Override
-    protected byte[][] generateHashables() {
-        return new byte[][] {
-                (getVal() != null ? getVal().getBytes() : new byte[0])
-        };
+    protected byte[] calculateHash() {
+        return hashBlake2b(getVal() != null ? getVal().getBytes() : new byte[0]);
     }
     
     @Override

@@ -67,10 +67,8 @@ public class BlockTest {
         }
     
         @Override
-        protected byte[][] generateHashables() {
-            return new byte[][] {
-                    new byte[] {1, 2, 3}
-            };
+        protected byte[] calculateHash() {
+            return hashBlake2b(new byte[] {1}, new byte[] {2}, new byte[] {3});
         }
     
         @Override
