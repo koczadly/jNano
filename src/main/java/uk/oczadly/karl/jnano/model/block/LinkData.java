@@ -29,8 +29,8 @@ public class LinkData {
     /**
      * Constructs a new LinkData.
      *
-     * <p>Either one of the {@code hex} or {@code account} values may be null, or both can be null if the intent
-     * indicates an unused value.</p>
+     * <p>Either one of the {@code hex} or {@code account} values may be null. If both values are null, a zero-value
+     * link data will be used.</p>
      *
      * @param intent  the intent
      * @param hex     the link data, as hex
@@ -41,8 +41,6 @@ public class LinkData {
         if (intent == null)
             throw new IllegalArgumentException("Intent cannot be null.");
         if (hex == null && account == null) {
-            if (intent != Intent.UNUSED)
-                throw new IllegalArgumentException("Link data/account fields cannot be null.");
             hex = JNH.ZEROES_64_HD; // Allow null for both values if unused
         }
         if (!JNH.isValidLength(hex, SIZE))
