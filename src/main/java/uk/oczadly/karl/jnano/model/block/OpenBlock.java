@@ -14,6 +14,7 @@ import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockRepresentative;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlockSelfVerifiable;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockSource;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
@@ -73,7 +74,8 @@ import java.util.function.Function;
  *     </tr>
  * </table>
  */
-public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBlockRepresentative {
+public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBlockRepresentative,
+        IBlockSelfVerifiable {
     
     /** A function which converts a {@link JsonObject} into a {@link OpenBlock} instance. */
     public static final Function<JsonObject, OpenBlock> DESERIALIZER = json -> new OpenBlock(
@@ -138,6 +140,11 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     @Override
     public final NanoAccount getRepresentative() {
         return representativeAccount;
+    }
+    
+    @Override
+    public boolean verifySignature() {
+        return verifySignature(getAccount());
     }
     
     @Override

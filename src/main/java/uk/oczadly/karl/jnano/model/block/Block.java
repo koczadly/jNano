@@ -44,10 +44,10 @@ public abstract class Block implements IBlock {
     private transient final BlockType typeEnum;
     
     @Expose @SerializedName("signature")
-    private HexData signature;
+    private volatile HexData signature;
     
     @Expose @SerializedName("work")
-    private WorkSolution workSolution;
+    private volatile WorkSolution work;
     
     
     private Block() {
@@ -57,29 +57,29 @@ public abstract class Block implements IBlock {
     /**
      * @param type          the block type, as a string
      * @param signature     the block signature, or null
-     * @param workSolution  the work solution, or null
+     * @param work  the work solution, or null
      */
-    protected Block(String type, HexData signature, WorkSolution workSolution) {
-        this(null, type, signature, workSolution);
+    protected Block(String type, HexData signature, WorkSolution work) {
+        this(null, type, signature, work);
     }
     
     /**
      * @param type          the block type
      * @param signature     the block signature, or null
-     * @param workSolution  the work solution, or null
+     * @param work  the work solution, or null
      * @see #Block(String, HexData, WorkSolution)
      */
-    protected Block(BlockType type, HexData signature, WorkSolution workSolution) {
-        this(type, type.getProtocolName(), signature, workSolution);
+    protected Block(BlockType type, HexData signature, WorkSolution work) {
+        this(type, type.getProtocolName(), signature, work);
     }
     
-    private Block(BlockType type, String typeStr, HexData signature, WorkSolution workSolution) {
+    private Block(BlockType type, String typeStr, HexData signature, WorkSolution work) {
         if (type == null && typeStr == null)
             throw new IllegalArgumentException("Block type cannot be null.");
         this.type = typeStr.toLowerCase();
         this.typeEnum = type;
         setSignature(signature);
-        setWorkSolution(workSolution);
+        setWorkSolution(work);
     }
     
     
@@ -122,7 +122,7 @@ public abstract class Block implements IBlock {
     }
     
     @Override
-    public final HexData getSignature() {
+    public synchronized final HexData getSignature() {
         return signature;
     }
     
@@ -130,7 +130,7 @@ public abstract class Block implements IBlock {
      * Sets or updates the signature for this block.
      * @param signature the new signature, or null (will render the block incomplete)
      */
-    public void setSignature(HexData signature) {
+    public synchronized void setSignature(HexData signature) {
         if (signature != null && signature.length() != NanoConst.LEN_SIGNATURE_B)
             throw new IllegalArgumentException("Block signature is an invalid length.");
         this.signature = signature;
@@ -145,7 +145,7 @@ public abstract class Block implements IBlock {
      * @param privateKey the private key of the signer (32-byte value)
      * @return the computed signature value
      */
-    public final HexData sign(HexData privateKey) {
+    public synchronized final HexData sign(HexData privateKey) {
         if (privateKey == null)
             throw new IllegalArgumentException("Private key cannot be null.");
         if (privateKey.length() != NanoConst.LEN_KEY_B)
@@ -164,9 +164,9 @@ public abstract class Block implements IBlock {
      *
      * @param account the signer account (public key) to test
      * @return true if the specified account is the signer of this block's signature, or false if not <em>or</em> if
-     *         the current {@code signature} field is null
+     *         the {@code signature} field is null
      */
-    public final boolean verifySignature(NanoAccount account) {
+    public synchronized final boolean verifySignature(NanoAccount account) {
         if (account == null)
             throw new IllegalArgumentException("Account cannot be null.");
         if (signature == null) return false;
@@ -183,7 +183,7 @@ public abstract class Block implements IBlock {
     
     @Override
     public final WorkSolution getWorkSolution() {
-        return workSolution;
+        return work;
     }
     
     /**
@@ -191,7 +191,7 @@ public abstract class Block implements IBlock {
      * @param work the new work value, or null (will render the block incomplete)
      */
     public void setWorkSolution(WorkSolution work) {
-        this.workSolution = work;
+        this.work = work;
     }
     
     @Override
@@ -236,7 +236,7 @@ public abstract class Block implements IBlock {
         if (fillBlanks) {
             if (signature == null)
                 json.addProperty("signature", JNC.ZEROES_128);
-            if (workSolution == null)
+            if (work == null)
                 json.addProperty("work", JNC.ZEROES_16);
             fillJsonBlanks(json);
         }

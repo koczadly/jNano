@@ -21,19 +21,20 @@ import static org.junit.Assert.*;
 
 public class StateBlockTest {
     
-    final HexData TB_SIGNATURE = new HexData("BC226F03E73CDA9706748494DBB1D0B78CE244BE5C66BCF4EBF88FBAF0937A4BEACE5" +
-            "E610B12278ADC6322BB6F0297CFB1D1CBF6D51FB331F2B25E0AD4A4A60C");
-    final WorkSolution TB_WORK = new WorkSolution("508bc946fe6d22e7");
-    final NanoAccount TB_ACCOUNT = NanoAccount.parseAddress(
-            "nano_3dmtrrws3pocycmbqwawk6xs7446qxa36fcncush4s1pejk16ksbmakis78m");
-    final NanoAccount TB_REP = NanoAccount.parseAddress(
-            "nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk");
-    final HexData TB_PREVIOUS = new HexData("90204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488");
-    final HexData TB_LINK = new HexData("65706F636820763220626C6F636B000000000000000000000000000000000000");
-    final NanoAmount TB_BALANCE = NanoAmount.valueOfRaw("1234567");
-    final StateBlockSubType TB_SUBTYPE = StateBlockSubType.SEND;
+    static final HexData TB_PRIVKEY = new HexData("8977C62F7D02E3FEA690BA90EB09F750B9BB8C3FB5FC61570C018E2D62E9FCF6");
+    static final HexData TB_SIGNATURE = new HexData("187AD5FCC225248B160AEFF0DC28AF598B94F5B7E0ABED474A5A4EE3CD82018" +
+            "845FA9624B5B0BF53D28251024FE563B95CD58610DF735D68510820E8B428F203");
+    static final WorkSolution TB_WORK = new WorkSolution("508bc946fe6d22e7");
+    static final NanoAccount TB_ACCOUNT =
+            NanoAccount.parseAddress("nano_3wznjw17oqwugahd93rj4suhjfh3f17skp9egp7suzpqgsyxfocxxqg4n7wt");
+    static final NanoAccount TB_REP =
+            NanoAccount.parseAddress("nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk");
+    static final HexData TB_PREVIOUS = new HexData("90204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488");
+    static final HexData TB_LINK = new HexData("65706F636820763220626C6F636B000000000000000000000000000000000000");
+    static final NanoAmount TB_BALANCE = NanoAmount.valueOfRaw("1234567");
+    static final StateBlockSubType TB_SUBTYPE = StateBlockSubType.SEND;
     
-    final StateBlockBuilder TEST_BUILDER = new StateBlockBuilder()
+    static final StateBlockBuilder TEST_BUILDER = new StateBlockBuilder()
             .setSignature(TB_SIGNATURE)
             .setWorkSolution(TB_WORK)
             .setSubtype(TB_SUBTYPE)
@@ -41,23 +42,28 @@ public class StateBlockTest {
             .setRepresentativeAddress(TB_REP)
             .setPreviousBlockHash(TB_PREVIOUS)
             .setBalance(TB_BALANCE)
-            .setLinkData("65706F636820763220626C6F636B000000000000000000000000000000000000");
+            .setLinkData(TB_LINK);
     
-    final String TEST_BLOCK_JSON = "{\n" +
+    static final String TEST_BLOCK_JSON = "{\n" +
             "    \"type\": \"state\",\n" +
-            "    \"account\": \"nano_3dmtrrws3pocycmbqwawk6xs7446qxa36fcncush4s1pejk16ksbmakis78m\",\n" +
+            "    \"account\": \"nano_3wznjw17oqwugahd93rj4suhjfh3f17skp9egp7suzpqgsyxfocxxqg4n7wt\",\n" +
             "    \"previous\": \"90204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488\",\n" +
             "    \"representative\": \"nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk\",\n" +
             "    \"balance\": \"1234567\",\n" +
             "    \"link\": \"65706F636820763220626C6F636B000000000000000000000000000000000000\",\n" +
             "    \"link_as_account\": \"nano_1sdifxjpia5p8ai86u5hefoi1111111111111111111111111111ngspq7ps\",\n" +
-            "    \"signature\": \"BC226F03E73CDA9706748494DBB1D0B78CE244BE5C66BCF4EBF88FBAF0937A4BEACE5E610B12278ADC6" +
-            "322BB6F0297CFB1D1CBF6D51FB331F2B25E0AD4A4A60C\",\n" +
+            "    \"signature\": \"187AD5FCC225248B160AEFF0DC28AF598B94F5B7E0ABED474A5A4EE3CD82018845FA9624B5B0BF53D" +
+            "28251024FE563B95CD58610DF735D68510820E8B428F203\",\n" +
             "    \"work\": \"508bc946fe6d22e7\",\n" +
             "    \"subtype\": \"send\"\n" +
             "  }";
     
-    final StateBlock TEST_BLOCK = TEST_BUILDER.build();
+    static final StateBlock TEST_BLOCK = TEST_BUILDER.build();
+    
+    
+    static StateBlockBuilder builder() {
+        return new StateBlockBuilder(TEST_BUILDER);
+    }
     
     
     @Test
@@ -75,33 +81,18 @@ public class StateBlockTest {
     }
     
     @Test
-    public void testCalcHash() {
-        StateBlock block = new StateBlockBuilder(TEST_BUILDER)
-                .setLinkData("80204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488")
-                .build();
-        
-        // Hash
-        assertEquals("AC762C4D4E8501026152DA37FBFB00D5A5FB55CDD85835CA4A2354717512203C",
-                block.getHash().toHexString());
-        
-        // Account link
-        assertEquals(NanoAccount.parseAddress("nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"),
-                block.getLink().asAccount());
-    }
-    
-    @Test
     public void testEquality() {
-        StateBlock block1 = new StateBlockBuilder(TEST_BUILDER)
+        StateBlock block1 = builder()
                 .setLinkAccount(NanoAccount.parseAddress(
                         "nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
                 .build();
         
-        StateBlock block2 = new StateBlockBuilder(TEST_BUILDER)
+        StateBlock block2 = builder()
                 .setLinkAccount(NanoAccount.parseAddress(
                         "nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
                 .build();
         
-        StateBlock block3 = new StateBlockBuilder(TEST_BUILDER)
+        StateBlock block3 = builder()
                 .setLinkData("62204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488")
                 .build();
     
@@ -119,11 +110,49 @@ public class StateBlockTest {
     
     @Test
     public void testHashing() {
-        StateBlock b = new StateBlockBuilder(TEST_BUILDER)
-                .setLinkData("62204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488")
+        assertEquals("FDBE6C7E2272C17AE12E1E322902F2E8420351272ACD9A23BDD3B7839AAFA008",
+                TEST_BLOCK.getHash().toString());
+    }
+    
+    @Test
+    public void testSigning() {
+        StateBlock b = builder()
+                .setSignature((HexData)null)
                 .build();
-        
-        assertEquals("3D49EFB46E7716220B5E83A7830F543CC4A3EE50E53183D1E3BE81B2A50B5EFE", b.getHash().toHexString());
+        assertNull(b.getSignature());
+        b.sign(TB_PRIVKEY);
+        assertEquals(TB_SIGNATURE, b.getSignature());
+    }
+    
+    @Test
+    public void testSigVerification() {
+        assertTrue(TEST_BLOCK.verifySignature(TB_ACCOUNT));
+        assertFalse(TEST_BLOCK.verifySignature(NanoAccount.ZERO_ACCOUNT));
+    }
+    
+    @Test
+    public void testSelfSigVerification() {
+        // Standard block
+        assertTrue(TEST_BLOCK.verifySignature());
+        // Standard block incorrect sig
+        assertFalse(builder().setSignature(JNC.ZEROES_128_HD).build().verifySignature());
+        // Epoch
+        StateBlock epoch = StateBlock.parse("{\n" +
+                "    \"type\": \"state\",\n" +
+                "    \"account\": \"nano_3x4ui45q1cw8hydmfdn4ec5ijsdqi4ryp14g4ayh71jcdkwmddrq7ca9xzn9\",\n" +
+                "    \"previous\": \"D7B1B764399B3417BC1220C602A9608D9C883CF2064EA481E14152813F3A6B9E\",\n" +
+                "    \"representative\": \"nano_3rw4un6ys57hrb39sy1qx8qy5wukst1iiponztrz9qiz6qqa55kxzx4491or\",\n" +
+                "    \"balance\": \"0\",\n" +
+                "    \"link\": \"65706F636820763220626C6F636B000000000000000000000000000000000000\",\n" +
+                "    \"signature\": \"C79A2779903119007A5A597EBA57931485D729CB4C5D12502967C3645624C042D6E867D6E783CFF" +
+                "7D2B01292AB8834A66BD7F9508B2981FEBF14542988F8AF02\",\n" +
+                "    \"work\": \"1c147cfad9657bb5\",\n" +
+                "    \"subtype\": \"epoch\"\n" +
+                "  }");
+        assertTrue(epoch.verifySignature());
+        // Epoch with incorrect sig
+        epoch.setSignature(JNC.ZEROES_128_HD);
+        assertFalse(epoch.verifySignature());
     }
     
     @Test

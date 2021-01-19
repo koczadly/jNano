@@ -134,7 +134,7 @@ import java.util.function.Function;
  * </table>
  */
 public final class StateBlock extends Block implements IBlockLink, IBlockBalance, IBlockPrevious, IBlockRepresentative,
-        IBlockAccount {
+        IBlockAccount, IBlockSelfVerifiable {
     
     /** A function which converts a {@link JsonObject} into a {@link StateBlock} instance. */
     public static final Function<JsonObject, StateBlock> DESERIALIZER = json -> new StateBlock(
@@ -253,6 +253,33 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     @Override
     public final LinkData getLink() {
         return link;
+    }
+    
+    /**
+     * Tests whether the signature is valid and was signed by the correct account.
+     *
+     * <p>For standard transactions, this uses the {@link #getAccount() block's account}. For externally-created
+     * epoch blocks, the signature is checked using the {@link AccountEpoch#getSignerAccount() expected signer account}
+     * rather than the block's owner.
+     *
+     * @return true if the signature is correct, false if not <em>or</em> if the {@code signature} is currently null
+     * @throws AccountEpoch.UnrecognizedEpochException if the block is an epoch block, and the epoch version was not
+     *                                                 recognized
+     */
+    @Override
+    public boolean verifySignature() {
+        if (getSignature() == null) return false;
+        
+        // Obtain signer account
+        NanoAccount signer = getAccount();
+        if (getSubType() == StateBlockSubType.EPOCH) {
+            // Check for epoch signer
+            AccountEpoch epochVer = AccountEpoch.fromIdentifier(getLink().asHex());
+            if (epochVer.getSignerAccount() != null) // Null means self-signed
+                signer = epochVer.getSignerAccount();
+        }
+        // Verify
+        return verifySignature(signer);
     }
     
     @Override
