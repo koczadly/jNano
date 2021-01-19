@@ -34,7 +34,7 @@ public enum AccountEpoch {
             NanoAccount.parseAddressSegment("3qb6o6i1tkzr6jwr5s7eehfxwg9x6eemitdinbpi7u8bjjwsgqfj"));
     
     
-    public static final AccountEpoch LATEST_EPOCH = values()[values().length - 1];
+    public static final AccountEpoch LATEST_EPOCH = V2;
     
     private static final Map<Integer, AccountEpoch> VER_MAP = new HashMap<>();
     private static final Map<String, AccountEpoch> ID_MAP = new HashMap<>();
@@ -80,16 +80,21 @@ public enum AccountEpoch {
     /**
      * Returns the appropriate epoch transition from a given version integer.
      * @param ver the version which the epoch block will upgrade the account to
-     * @return the related epoch transition, or null if not found
+     * @return the related epoch transition
+     * @throws UnrecognizedEpochException if the associated epoch constant is unrecognized
      */
     public static AccountEpoch fromVersion(int ver) {
-        return VER_MAP.get(ver);
+        AccountEpoch epoch = VER_MAP.get(ver);
+        if (epoch == null)
+            throw new UnrecognizedEpochException("Epoch could not be found from version number.");
+        return epoch;
     }
     
     /**
      * Returns the appropriate epoch transition from a given identifier.
      * @param id the identifier of the epoch transition (link data value)
      * @return the related epoch transition, or null if not found
+     * @throws UnrecognizedEpochException if the associated epoch constant is unrecognized
      */
     public static AccountEpoch fromIdentifier(HexData id) {
         return fromIdentifier(id.toHexString());
@@ -99,6 +104,7 @@ public enum AccountEpoch {
      * Returns the appropriate epoch transition from a given identifier.
      * @param id the identifier of the epoch transition (link data value)
      * @return the related epoch transition, or null if not found
+     * @throws UnrecognizedEpochException if the associated epoch constant is unrecognized
      */
     public static AccountEpoch fromIdentifier(String id) {
         return ID_MAP.get(id.toUpperCase());
@@ -109,16 +115,13 @@ public enum AccountEpoch {
      * not an epoch block, this method will return null.
      * @param block the epoch block
      * @return the epoch version which this block represents, or null if the block isn't an epoch block
+     * @throws UnrecognizedEpochException if the associated epoch constant is unrecognized
      */
     public static AccountEpoch fromEpochBlock(Block block) {
         if (block instanceof StateBlock) {
             StateBlock sb = (StateBlock)block;
-            if (sb.getSubType() == null || sb.getSubType() == StateBlockSubType.EPOCH) {
-                AccountEpoch epoch = fromIdentifier(sb.getLinkData());
-                if (epoch == null)
-                    throw new IllegalArgumentException("Unknown epoch identifier " + sb.getLinkData() + ".");
-                return epoch;
-            }
+            if (sb.getSubType() == StateBlockSubType.EPOCH)
+                return fromIdentifier(sb.getLink().asHex());
         }
         return null;
     }
@@ -129,6 +132,7 @@ public enum AccountEpoch {
      * return null.
      * @param blocks a set of blocks within a certain account
      * @return the latest epoch block in the list, or null if no epoch blocks are declared
+     * @throws UnrecognizedEpochException if one of the blocks contains an unrecognized epoch version
      */
     public static AccountEpoch calculateAccountVersion(Collection<Block> blocks) {
         if (blocks == null)
@@ -141,6 +145,17 @@ public enum AccountEpoch {
                 latestEpoch = epoch;
         }
         return latestEpoch;
+    }
+    
+    
+    /**
+     * Thrown if an epoch version was unrecognized.
+     * If this exception is thrown, either the given argument is invalid, or jNano needs to be updated.
+     */
+    public static class UnrecognizedEpochException extends RuntimeException {
+        public UnrecognizedEpochException(String message) {
+            super(message);
+        }
     }
     
 }
