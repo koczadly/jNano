@@ -159,7 +159,7 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
          * @param block the block to generate work for
          */
         public Builder(Block block) {
-            this(WorkSolution.getRoot(block), block);
+            this(WorkSolution.getRoot(block).toHexString(), block);
         }
     
         /**

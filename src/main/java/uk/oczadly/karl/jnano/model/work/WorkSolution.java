@@ -8,8 +8,8 @@ package uk.oczadly.karl.jnano.model.work;
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import com.rfksystems.blake2b.Blake2b;
-import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
@@ -89,12 +89,12 @@ public class WorkSolution {
      * @see #getRoot(Block)
      * @see #calculateDifficulty(Block)
      */
-    public WorkDifficulty calculateDifficulty(String root) {
+    public WorkDifficulty calculateDifficulty(HexData root) {
         if (root == null) throw new IllegalArgumentException("Root cannot be null.");
-        if (!JNH.isValidHex(root, 64))
-            throw new IllegalArgumentException("Root argument must be a 64-character hex string.");
+        if (root.length() != NanoConst.LEN_HASH_B)
+            throw new IllegalArgumentException("Root argument is an incorrect length.");
         
-        return calculateDifficulty(JNC.ENC_16.decode(root));
+        return calculateDifficulty(root.toByteArray());
     }
     
     /**
@@ -138,20 +138,20 @@ public class WorkSolution {
      * @return the root hash of the given block
      * @throws IllegalArgumentException if the block does not contain a {@code previous} or {@code account} field
      */
-    public static String getRoot(Block block) {
+    public static HexData getRoot(Block block) {
         if (block == null) throw new IllegalArgumentException("Block cannot be null.");
         
         // Try 'previous'
         if (block instanceof IBlockPrevious) {
             HexData previous = ((IBlockPrevious)block).getPreviousBlockHash();
             if (previous != null && !previous.isZero())
-                return previous.toHexString();
+                return previous;
         }
         // Try 'account'
         if (block instanceof IBlockAccount) {
             NanoAccount account = ((IBlockAccount)block).getAccount();
             if (account != null)
-                return account.toPublicKey();
+                return new HexData(account.toPublicKey());
         }
         throw new IllegalArgumentException("The root hash cannot be determined from the given block.");
     }
@@ -166,14 +166,13 @@ public class WorkSolution {
      * @param threshold the minimum difficulty threshold
      * @return the generated work solution
      * @throws InterruptedException if the thread is interrupted
-     * @see #generateMultiThreaded(String, WorkDifficulty)
+     * @see #generateMultiThreaded(HexData, WorkDifficulty)
      */
-    public static WorkSolution generate(String root, WorkDifficulty threshold) throws InterruptedException {
+    public static WorkSolution generate(HexData root, WorkDifficulty threshold) throws InterruptedException {
         if (root == null) throw new IllegalArgumentException("Root argument cannot be null.");
-        if (!JNH.isValidHex(root, 64))
-            throw new IllegalArgumentException("Root argument must be a 64-character hex string.");
-        
-        return generate(JNC.ENC_16.decode(root), threshold);
+        if (root.length() != NanoConst.LEN_HASH_B)
+            throw new IllegalArgumentException("Root argument is an incorrect length.");
+        return generate(root.toByteArray(), threshold);
     }
     
     /**
@@ -208,7 +207,7 @@ public class WorkSolution {
      * @param threshold the minimum difficulty threshold
      * @return a future object, representing the generated work solution
      */
-    public static Future<WorkSolution> generateMultiThreaded(String root, WorkDifficulty threshold) {
+    public static Future<WorkSolution> generateMultiThreaded(HexData root, WorkDifficulty threshold) {
         return generateMultiThreaded(root, threshold, WORK_GEN_POOL, Runtime.getRuntime().availableProcessors());
     }
     
@@ -240,13 +239,13 @@ public class WorkSolution {
      * @param parallelTasks the number of tasks to submit to the executor service
      * @return a future object, representing the generated work solution
      */
-    public static Future<WorkSolution> generateMultiThreaded(String root, WorkDifficulty threshold,
+    public static Future<WorkSolution> generateMultiThreaded(HexData root, WorkDifficulty threshold,
                                                              ExecutorService executor, int parallelTasks) {
         if (root == null) throw new IllegalArgumentException("Root argument cannot be null.");
-        if (!JNH.isValidHex(root, 64))
-            throw new IllegalArgumentException("Root argument must be a 64-character hex string.");
+        if (root.length() != NanoConst.LEN_HASH_B)
+            throw new IllegalArgumentException("Root argument is an incorrect length.");
     
-        return generateMultiThreaded(JNC.ENC_16.decode(root), threshold, executor, parallelTasks);
+        return generateMultiThreaded(root.toByteArray(), threshold, executor, parallelTasks);
     }
     
     /**
