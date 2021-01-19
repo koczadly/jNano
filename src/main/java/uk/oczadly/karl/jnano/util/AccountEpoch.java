@@ -86,7 +86,7 @@ public enum AccountEpoch {
     public static AccountEpoch fromVersion(int ver) {
         AccountEpoch epoch = VER_MAP.get(ver);
         if (epoch == null)
-            throw new UnrecognizedEpochException("Epoch could not be found from version number.");
+            throw new UnrecognizedEpochException("Epoch could not be recognized from version number.");
         return epoch;
     }
     
@@ -107,7 +107,10 @@ public enum AccountEpoch {
      * @throws UnrecognizedEpochException if the associated epoch constant is unrecognized
      */
     public static AccountEpoch fromIdentifier(String id) {
-        return ID_MAP.get(id.toUpperCase());
+        AccountEpoch epoch = ID_MAP.get(id.toUpperCase());
+        if (epoch == null)
+            throw new UnrecognizedEpochException("Epoch could not be recognized from hex identifier.");
+        return epoch;
     }
     
     /**
