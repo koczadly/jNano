@@ -14,7 +14,6 @@ import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
-import java.util.Objects;
 
 /**
  * <p>This class can be used to construct new State block ({@link StateBlock} instances.</p>
@@ -357,7 +356,7 @@ public final class StateBlockBuilder {
                                     NanoAccount account, HexData prevHash, NanoAccount rep, NanoAmount bal,
                                     HexData linkHex, NanoAccount linkAcc) {
         return new StateBlock(subtype, signature, work, account,
-                Objects.requireNonNullElse(prevHash, JNC.ZEROES_64_HD),
+                subtype == StateBlockSubType.OPEN ? JNC.ZEROES_64_HD : prevHash,
                 rep, bal, linkHex, linkAcc);
     }
     
