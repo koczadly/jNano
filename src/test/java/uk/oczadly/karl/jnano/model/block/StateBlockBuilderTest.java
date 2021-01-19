@@ -6,7 +6,7 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import org.junit.Test;
-import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
@@ -83,8 +83,8 @@ public class StateBlockBuilderTest {
         assertEquals(ACCOUNT, b2.getLink().asAccount());
         
         // Null should default to 000000...
-        assertEquals(JNH.ZEROES_64_HD, newBuilder().build().getLink().asHex());
-        assertEquals(JNH.ZEROES_64_HD, newBuilder().setLinkData((String)null).build().getLink().asHex());
+        assertEquals(JNC.ZEROES_64_HD, newBuilder().build().getLink().asHex());
+        assertEquals(JNC.ZEROES_64_HD, newBuilder().setLinkData((String)null).build().getLink().asHex());
     }
     
 }

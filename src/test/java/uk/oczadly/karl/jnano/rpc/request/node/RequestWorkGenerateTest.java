@@ -7,7 +7,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import org.junit.Test;
 import uk.oczadly.karl.jnano.TestConstants;
-import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.model.block.StateBlock;
 
 import static org.junit.Assert.assertEquals;
@@ -23,7 +23,7 @@ public class RequestWorkGenerateTest {
     
         // Test with no previous hash
         StateBlock sb2 = TestConstants.randStateBlock()
-                .setPreviousBlockHash(JNH.ZEROES_64).build();
+                .setPreviousBlockHash(JNC.ZEROES_64).build();
         RequestWorkGenerate req2 = new RequestWorkGenerate.Builder(sb2).build();
         assertEquals(sb2.getAccount().toPublicKey(), req2.getRootHash());
     }

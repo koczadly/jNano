@@ -6,6 +6,7 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import org.junit.Test;
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
@@ -59,7 +60,7 @@ public class LinkDataTest {
                 create(LinkData.Intent.SOURCE_HASH));
         // Different data
         assertNotEquals(create(LinkData.Intent.SOURCE_HASH),
-                new LinkData(LinkData.Intent.SOURCE_HASH, JNH.ZEROES_64_HD, null));
+                new LinkData(LinkData.Intent.SOURCE_HASH, JNC.ZEROES_64_HD, null));
     }
     
     

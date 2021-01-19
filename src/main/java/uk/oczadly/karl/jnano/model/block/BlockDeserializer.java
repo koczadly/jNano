@@ -6,6 +6,7 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.*;
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
 
 import java.lang.reflect.Type;
@@ -144,7 +145,7 @@ public final class BlockDeserializer {
         
         /** With the default block deserializer. */
         public JsonAdapter() {
-            this(JNH.BLOCK_DESERIALIZER);
+            this(JNC.BLOCK_DESERIALIZER);
         }
     
         /**

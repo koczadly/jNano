@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.model;
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import uk.oczadly.karl.jnano.internal.Ed25519Blake2b;
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
@@ -36,7 +37,7 @@ import java.util.regex.Pattern;
 @JsonAdapter(NanoAccount.Adapter.class)
 public final class NanoAccount {
     
-    private static final BigInteger MAX_INDEX_VAL = JNH.BIGINT_MAX_256;
+    private static final BigInteger MAX_INDEX_VAL = JNC.BIGINT_MAX_256;
     private static final Pattern PREFIX_VALIDATE_PATTERN = Pattern.compile("^[0-9A-Za-z]*$");
     
     /**
@@ -199,7 +200,7 @@ public final class NanoAccount {
         if (publicKeyHex == null) {
             synchronized (this) {
                 if (publicKeyHex == null)
-                    publicKeyHex = JNH.ENC_16.encode(keyBytes);
+                    publicKeyHex = JNC.ENC_16.encode(keyBytes);
             }
         }
         return publicKeyHex;
@@ -234,7 +235,7 @@ public final class NanoAccount {
         if (segAddress == null) {
             synchronized (this) {
                 if (segAddress == null)
-                    segAddress = JNH.ENC_32.encode(getPublicKeyBytes());
+                    segAddress = JNC.ENC_32.encode(getPublicKeyBytes());
             }
         }
         return segAddress;
@@ -247,7 +248,7 @@ public final class NanoAccount {
         if (segChecksum == null) {
             synchronized (this) {
                 if (segChecksum == null)
-                    segChecksum = JNH.ENC_32.encode(getChecksumBytes());
+                    segChecksum = JNC.ENC_32.encode(getChecksumBytes());
             }
         }
         return segChecksum;
@@ -440,7 +441,7 @@ public final class NanoAccount {
         
         // Create object
         NanoAccount createdAddr = new NanoAccount(
-                prefix, calculateKeyBytes(address, JNH.ENC_32), address, null, null);
+                prefix, calculateKeyBytes(address, JNC.ENC_32), address, null, null);
         
         // Verify checksum (if provided)
         if (checksum != null && !checksum.equals(createdAddr.getAddressChecksumSegment()))
@@ -474,7 +475,7 @@ public final class NanoAccount {
         if (key.length() != 64) throw new AddressFormatException("Key string must be 64 characters long.");
         
         key = key.toUpperCase();
-        return new NanoAccount(prefix, calculateKeyBytes(key, JNH.ENC_16), null, key, null);
+        return new NanoAccount(prefix, calculateKeyBytes(key, JNC.ENC_16), null, key, null);
     }
     
     

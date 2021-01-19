@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.model.block;
 import com.google.gson.JsonObject;
 import org.junit.Test;
 import uk.oczadly.karl.jnano.TestConstants;
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
@@ -221,7 +222,7 @@ public class StateBlockTest {
         // Test epoch (with OPEN subtype)
         intent = TestConstants.randStateBlock()
                 .setSubtype(StateBlockSubType.OPEN)
-                .setPreviousBlockHash(JNH.ZEROES_64)
+                .setPreviousBlockHash(JNC.ZEROES_64)
                 .setBalance(BigInteger.ZERO)
                 .build().getIntent();
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isChangeRep());

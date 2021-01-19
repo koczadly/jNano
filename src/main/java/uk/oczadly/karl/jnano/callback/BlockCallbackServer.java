@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.callback;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.httpserver.HttpCallback;
 import uk.oczadly.karl.jnano.internal.httpserver.HttpRequest;
@@ -133,7 +134,7 @@ public class BlockCallbackServer {
             // Manually add subtype property for parsing (not included automatically)
             if (blockJson.get("type").getAsString().equals(BlockType.STATE.getProtocolName()))
                 blockJson.addProperty("subtype", StateBlockSubType.getFromLegacyType(subtype).getProtocolName());
-            Block block = JNH.BLOCK_DESERIALIZER.deserialize(blockJson);
+            Block block = JNC.BLOCK_DESERIALIZER.deserialize(blockJson);
             
             BlockData blockData = new BlockData(request.getBody(),
                     NanoAccount.parse(json.get("account").getAsString()),

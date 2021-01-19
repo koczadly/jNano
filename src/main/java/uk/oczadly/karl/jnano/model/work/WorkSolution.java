@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.model.work;
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import com.rfksystems.blake2b.Blake2b;
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
@@ -93,7 +94,7 @@ public class WorkSolution {
         if (!JNH.isValidHex(root, 64))
             throw new IllegalArgumentException("Root argument must be a 64-character hex string.");
         
-        return calculateDifficulty(JNH.ENC_16.decode(root));
+        return calculateDifficulty(JNC.ENC_16.decode(root));
     }
     
     /**
@@ -172,7 +173,7 @@ public class WorkSolution {
         if (!JNH.isValidHex(root, 64))
             throw new IllegalArgumentException("Root argument must be a 64-character hex string.");
         
-        return generate(JNH.ENC_16.decode(root), threshold);
+        return generate(JNC.ENC_16.decode(root), threshold);
     }
     
     /**
@@ -245,7 +246,7 @@ public class WorkSolution {
         if (!JNH.isValidHex(root, 64))
             throw new IllegalArgumentException("Root argument must be a 64-character hex string.");
     
-        return generateMultiThreaded(JNH.ENC_16.decode(root), threshold, executor, parallelTasks);
+        return generateMultiThreaded(JNC.ENC_16.decode(root), threshold, executor, parallelTasks);
     }
     
     /**

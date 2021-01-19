@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.rpc.exception.*;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
@@ -27,7 +28,7 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
     
     
     public JsonResponseDeserializer() {
-        this(JNH.GSON);
+        this(JNC.GSON);
     }
     
     public JsonResponseDeserializer(Gson gson) {

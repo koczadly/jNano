@@ -5,56 +5,27 @@
 
 package uk.oczadly.karl.jnano.internal;
 
-import com.google.gson.*;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.rfksystems.blake2b.Blake2b;
-import uk.oczadly.karl.jnano.internal.gsonadapters.*;
-import uk.oczadly.karl.jnano.internal.utils.BaseEncoder;
 import uk.oczadly.karl.jnano.internal.utils.Functions;
 import uk.oczadly.karl.jnano.model.HexData;
-import uk.oczadly.karl.jnano.model.block.BlockDeserializer;
 import uk.oczadly.karl.jnano.util.NanoConstants;
 
 import java.math.BigInteger;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
 /**
- * JNano Helper class.
+ * JNano helper class.
  */
 public class JNH {
     
-    private static final Pattern REGEX_HEX_MATCH = Pattern.compile("[0-9A-Fa-f]+");
-    
-    
-    public static final BlockDeserializer BLOCK_DESERIALIZER = BlockDeserializer.withDefaults();
-    
-    public static final char[] HEX_CHARS_UC = "0123456789ABCDEF".toCharArray();
-    
-    public static final BaseEncoder ENC_16 = new BaseEncoder(HEX_CHARS_UC);
-    public static final BaseEncoder ENC_32 = new BaseEncoder("13456789abcdefghijkmnopqrstuwxyz");
-    
-    public static final String ZEROES_16 = repeatChar('0', 16);
-    public static final HexData ZEROES_16_HD = new HexData(ZEROES_16);
-    public static final String ZEROES_64 = repeatChar('0', 64);
-    public static final HexData ZEROES_64_HD = new HexData(ZEROES_64);
-    public static final String ZEROES_128 = repeatChar('0', 128);
-    public static final HexData ZEROES_128_HD = new HexData(ZEROES_128);
-    
-    public static final BigInteger BIGINT_MAX_128 = new BigInteger(1, filledByteArray(16, (byte)0xFF));
-    public static final BigInteger BIGINT_MAX_256 = new BigInteger(1, filledByteArray(32, (byte)0xFF));
-    
-    public static final Gson GSON = new GsonBuilder()
-            .excludeFieldsWithoutExposeAnnotation()
-            .registerTypeAdapterFactory(new EnumTypeAdapterFactory())          // Case-insensitive enums
-            .registerTypeAdapterFactory(new ArrayTypeAdapterFactoryFix())      // Empty array hotfix
-            .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer()) // Boolean deserializer
-            .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer()) // Boolean deserializer
-            .registerTypeAdapter(BigInteger.class, new BigIntSerializer())     // BigInt serializer (string)
-            .registerTypeAdapter(Instant.class, new InstantAdapter.Millis())   // Instant adapter (epoch millis)
-            .create();
+    private static final Pattern HEX_PATTERN = Pattern.compile("[0-9A-Fa-f]+");
     
     
     /**
@@ -115,7 +86,7 @@ public class JNH {
     public static boolean isValidHex(String str, int len) {
         if (str == null) return true;
         if (len > 0 && str.length() != len) return false;
-        return REGEX_HEX_MATCH.matcher(str).matches();
+        return HEX_PATTERN.matcher(str).matches();
     }
     
     /**

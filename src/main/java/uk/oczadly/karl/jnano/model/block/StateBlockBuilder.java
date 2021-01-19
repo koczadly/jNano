@@ -5,6 +5,7 @@
 
 package uk.oczadly.karl.jnano.model.block;
 
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
@@ -24,9 +25,9 @@ import java.util.Objects;
 public final class StateBlockBuilder {
     
     private StateBlockSubType subtype;
-    private NanoAccount accountAddress;
-    private HexData previousBlockHash;
-    private NanoAccount representativeAddress;
+    private NanoAccount account;
+    private HexData prevHash;
+    private NanoAccount rep;
     private NanoAmount balance;
     private NanoAccount linkAccount;
     private HexData linkData;
@@ -63,16 +64,16 @@ public final class StateBlockBuilder {
      * Constructs a new {@link StateBlockBuilder} with a set of parameters.
      *
      * @param accountAddress        the account which owns this block
-     * @param previousBlockHash     the hash of the previous (or latest) block for the account
-     * @param representativeAddress the representative for this account
+     * @param prevHash     the hash of the previous (or latest) block for the account
+     * @param rep the representative for this account
      * @param balance               the (newly updated) balance of this account
      */
     @Deprecated
-    public StateBlockBuilder(NanoAccount accountAddress, String previousBlockHash,
-                             NanoAccount representativeAddress, BigInteger balance) {
+    public StateBlockBuilder(NanoAccount accountAddress, String prevHash,
+                             NanoAccount rep, BigInteger balance) {
         setAccountAddress(accountAddress);
-        setPreviousBlockHash(previousBlockHash);
-        setRepresentativeAddress(representativeAddress);
+        setPreviousBlockHash(prevHash);
+        setRepresentativeAddress(rep);
         setBalance(balance);
     }
     
@@ -80,13 +81,13 @@ public final class StateBlockBuilder {
      * Constructs a new {@link StateBlockBuilder} with the non-optional parameters.
      *
      * @param accountAddress        the account which owns this block
-     * @param representativeAddress the representative for this account
+     * @param rep the representative for this account
      * @param balance               the (newly updated) balance of this account
      */
     @Deprecated
-    public StateBlockBuilder(NanoAccount accountAddress, NanoAccount representativeAddress, BigInteger balance) {
+    public StateBlockBuilder(NanoAccount accountAddress, NanoAccount rep, BigInteger balance) {
         setAccountAddress(accountAddress);
-        setRepresentativeAddress(representativeAddress);
+        setRepresentativeAddress(rep);
         setBalance(balance);
     }
     
@@ -115,9 +116,9 @@ public final class StateBlockBuilder {
     public StateBlockBuilder(StateBlockBuilder builder) {
         this();
         this.subtype = builder.subtype;
-        this.accountAddress = builder.accountAddress;
-        this.previousBlockHash = builder.previousBlockHash;
-        this.representativeAddress = builder.representativeAddress;
+        this.account = builder.account;
+        this.prevHash = builder.prevHash;
+        this.rep = builder.rep;
         this.balance = builder.balance;
         this.signature = builder.signature;
         this.work = builder.work;
@@ -176,14 +177,14 @@ public final class StateBlockBuilder {
     
     
     public NanoAccount getAccountAddress() {
-        return accountAddress;
+        return account;
     }
     
-    public StateBlockBuilder setAccountAddress(NanoAccount accountAddress) {
-        if (accountAddress == null)
+    public StateBlockBuilder setAccountAddress(NanoAccount account) {
+        if (account == null)
             throw new IllegalArgumentException("Account address argument cannot be null.");
         
-        this.accountAddress = accountAddress;
+        this.account = account;
         return this;
     }
     
@@ -195,7 +196,7 @@ public final class StateBlockBuilder {
     
     
     public String getPreviousBlockHash() {
-        return previousBlockHash.toHexString();
+        return prevHash.toHexString();
     }
     
     public StateBlockBuilder setPreviousBlockHash(String previousBlockHash) {
@@ -204,20 +205,20 @@ public final class StateBlockBuilder {
     }
     
     public StateBlockBuilder setPreviousBlockHash(HexData previousBlockHash) {
-        this.previousBlockHash = previousBlockHash;
+        this.prevHash = previousBlockHash;
         return this;
     }
     
     
     public NanoAccount getRepresentativeAddress() {
-        return representativeAddress;
+        return rep;
     }
     
-    public StateBlockBuilder setRepresentativeAddress(NanoAccount representativeAddress) {
-        if (representativeAddress == null)
+    public StateBlockBuilder setRepresentativeAddress(NanoAccount rep) {
+        if (rep == null)
             throw new IllegalArgumentException("Representative address argument cannot be null.");
         
-        this.representativeAddress = representativeAddress;
+        this.rep = rep;
         return this;
     }
     
@@ -261,7 +262,7 @@ public final class StateBlockBuilder {
             case HEXADECIMAL:
                 return setLinkData(linkData.asHex());
             case UNUSED:
-                return setLinkData(JNH.ZEROES_64_HD);
+                return setLinkData(JNC.ZEROES_64_HD);
             default:
                 throw new AssertionError("Unexpected link type.");
         }
@@ -318,13 +319,46 @@ public final class StateBlockBuilder {
     
     
     /**
+     * Constructs a {@link StateBlock} from the configured parameters.
      * @return a new instance of the {@link StateBlock} class using the configured parameters
      */
     public StateBlock build() {
-        return new StateBlock(subtype, signature, work, accountAddress,
-                Objects.requireNonNullElse(previousBlockHash, JNH.ZEROES_64_HD),
-                representativeAddress, balance,
-                (linkData == null && linkAccount == null) ? JNH.ZEROES_64_HD : linkData, linkAccount);
+        return build(subtype, signature, work, account, prevHash, rep, balance, linkData, linkAccount);
+    }
+    
+    /**
+     * Constructs a {@link StateBlock} from the configured parameters, and then signs the block.
+     * <p>This will override any configured {@code account} and {@code signature} value set in this builder object, but
+     * won't update this builder's state.</p>
+     *
+     * @param privateKey the private key of the account used to sign the block
+     * @return a new instance of the {@link StateBlock} class using the configured parameters
+     */
+    public StateBlock buildAndSign(String privateKey) {
+        return buildAndSign(new HexData(privateKey));
+    }
+    
+    /**
+     * Constructs a {@link StateBlock} from the configured parameters, and then signs the block.
+     * <p>This will override any configured {@code account} and {@code signature} value set in this builder object, but
+     * won't update this builder's state.</p>
+     *
+     * @param privateKey the private key of the account used to sign the block
+     * @return a new instance of the {@link StateBlock} class using the configured parameters
+     */
+    public StateBlock buildAndSign(HexData privateKey) {
+        NanoAccount account = NanoAccount.fromPrivateKey(privateKey);
+        StateBlock sb = build(subtype, null, work, account, prevHash, rep, balance, linkData, linkAccount);
+        sb.sign(privateKey); // Sign the block
+        return sb;
+    }
+    
+    private static StateBlock build(StateBlockSubType subtype, HexData signature, WorkSolution work,
+                                    NanoAccount account, HexData prevHash, NanoAccount rep, NanoAmount bal,
+                                    HexData linkHex, NanoAccount linkAcc) {
+        return new StateBlock(subtype, signature, work, account,
+                Objects.requireNonNullElse(prevHash, JNC.ZEROES_64_HD),
+                rep, bal, linkHex, linkAcc);
     }
     
 }

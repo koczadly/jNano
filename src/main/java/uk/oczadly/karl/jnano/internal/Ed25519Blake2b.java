@@ -83,11 +83,18 @@ public class Ed25519Blake2b {
      * @param data    the data to sign
      * @return the signature, as a byte array
      */
-    public static byte[] sign(byte[] privKey, byte[] data) {
+    public static byte[] sign(byte[] privKey, byte[][] data) {
         try {
             EdDSAEngine engine = newEngine();
             engine.initSign(new EdDSAPrivateKey(getPrivKeySpec(privKey)));
-            return engine.signOneShot(data);
+            
+            if (data.length == 1) {
+                return engine.signOneShot(data[0]);
+            } else {
+                for (byte[] arr : data)
+                    engine.update(arr);
+                return engine.sign();
+            }
         } catch (GeneralSecurityException e) {
             throw new AssertionError("Could not sign message.", e);
         }
@@ -101,7 +108,7 @@ public class Ed25519Blake2b {
      * @return true if the signature matches
      * @throws IllegalArgumentException if the public key is not a valid 25519 public key
      */
-    public static boolean verify(byte[] pubKey, byte[] data, byte[] sig) {
+    public static boolean verify(byte[] pubKey, byte[][] data, byte[] sig) {
         // Parse pubkey
         EdDSAPublicKeySpec pubKeySpec;
         try {
@@ -113,7 +120,14 @@ public class Ed25519Blake2b {
         try {
             EdDSAEngine engine = newEngine();
             engine.initVerify(new EdDSAPublicKey(pubKeySpec));
-            return engine.verifyOneShot(data, sig);
+            
+            if (data.length == 1) {
+                return engine.verifyOneShot(data[0], sig);
+            } else {
+                for (byte[] arr : data)
+                    engine.update(arr);
+                return engine.verify(sig);
+            }
         } catch (GeneralSecurityException e) {
             throw new AssertionError("Could not sign message.", e);
         }

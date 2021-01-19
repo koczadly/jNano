@@ -5,7 +5,7 @@
 
 package uk.oczadly.karl.jnano;
 
-import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
@@ -28,7 +28,7 @@ public class TestConstants {
     public static String randHex(int len) {
         StringBuilder sb = new StringBuilder(len);
         for (int i=0; i<len; i++)
-            sb.append(JNH.HEX_CHARS_UC[(i == 0) ? (RANDOM.nextInt(15) + 1) : RANDOM.nextInt(16)]);
+            sb.append(JNC.HEX_CHARS_UC[(i == 0) ? (RANDOM.nextInt(15) + 1) : RANDOM.nextInt(16)]);
         return sb.toString();
     }
     

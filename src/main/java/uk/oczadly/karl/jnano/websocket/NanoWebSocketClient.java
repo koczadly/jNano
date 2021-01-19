@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
 
 import java.net.URI;
@@ -48,7 +49,7 @@ public final class NanoWebSocketClient {
     
     private final AtomicLong nextReqId = new AtomicLong(0);
     private final Map<Long, CountDownLatch> requestTrackers = new ConcurrentHashMap<>();
-    private final Gson gson = JNH.GSON;
+    private final Gson gson = JNC.GSON;
     private final ExecutorService listenerExecutors = Executors.newFixedThreadPool(500);
     private final TopicRegistry topicRegistry = new TopicRegistry(this);
     

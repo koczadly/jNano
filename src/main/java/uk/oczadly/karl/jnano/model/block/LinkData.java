@@ -5,6 +5,7 @@
 
 package uk.oczadly.karl.jnano.model.block;
 
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
@@ -41,7 +42,7 @@ public class LinkData {
         if (intent == null)
             throw new IllegalArgumentException("Intent cannot be null.");
         if (hex == null && account == null) {
-            hex = JNH.ZEROES_64_HD; // Allow null for both values if unused
+            hex = JNC.ZEROES_64_HD; // Allow null for both values if unused
         }
         if (!JNH.isValidLength(hex, SIZE))
             throw new IllegalArgumentException("Link data is an invalid length.");

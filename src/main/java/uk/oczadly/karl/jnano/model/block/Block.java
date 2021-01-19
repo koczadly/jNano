@@ -10,11 +10,14 @@ import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlock;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
+import uk.oczadly.karl.jnano.util.BlockSigningUtil;
 
 import java.util.Objects;
 
@@ -133,6 +136,51 @@ public abstract class Block implements IBlock {
         this.signature = signature;
     }
     
+    /**
+     * Signs this block using the provided private key.
+     *
+     * <p>The computed value will overwrite the existing {@code signature} value in this block. Note that this will
+     * not update any {@code account} fields the block may have, as these fields should be immutable.</p>
+     *
+     * @param privateKey the private key of the signer (32-byte value)
+     * @return the computed signature value
+     */
+    public final HexData sign(HexData privateKey) {
+        if (privateKey == null)
+            throw new IllegalArgumentException("Private key cannot be null.");
+        if (privateKey.length() != NanoConst.LEN_KEY_B)
+            throw new IllegalArgumentException("Private key length is invalid.");
+    
+        HexData sig = BlockSigningUtil.sign(sigBytes(), privateKey.toByteArray());
+        setSignature(sig);
+        return sig;
+    }
+    
+    /**
+     * Tests whether the signature is valid and was signed by the specified account.
+     *
+     * <p>Be aware that some special blocks (such as epoch blocks) may be signed by an account other than the block's
+     * owner.</p>
+     *
+     * @param account the signer account (public key) to test
+     * @return true if the specified account is the signer of this block's signature, or false if not <em>or</em> if
+     *         the current {@code signature} field is null
+     */
+    public final boolean verifySignature(NanoAccount account) {
+        if (account == null)
+            throw new IllegalArgumentException("Account cannot be null.");
+        if (signature == null) return false;
+        return BlockSigningUtil.verify(sigBytes(), signature.toByteArray(), account.getPublicKeyBytes());
+    }
+    
+    /**
+     * Returns an array of byte arrays, used for signature creation and validation.
+     * @return the content bytes
+     */
+    protected byte[][] sigBytes() {
+        return new byte[][] { getHash().toByteArray() };
+    }
+    
     @Override
     public final WorkSolution getWorkSolution() {
         return workSolution;
@@ -187,9 +235,9 @@ public abstract class Block implements IBlock {
         JsonObject json = buildJsonObject();
         if (fillBlanks) {
             if (signature == null)
-                json.addProperty("signature", JNH.ZEROES_128);
+                json.addProperty("signature", JNC.ZEROES_128);
             if (workSolution == null)
-                json.addProperty("work", JNH.ZEROES_16);
+                json.addProperty("work", JNC.ZEROES_16);
             fillJsonBlanks(json);
         }
         return json;
@@ -209,7 +257,7 @@ public abstract class Block implements IBlock {
      * @return the JsonObject representing this block
      */
     protected JsonObject buildJsonObject() {
-        return JNH.GSON.toJsonTree(this).getAsJsonObject();
+        return JNC.GSON.toJsonTree(this).getAsJsonObject();
     }
     
     @Override
@@ -221,7 +269,8 @@ public abstract class Block implements IBlock {
      * Compares this block with the given object, and tests for equality with the type and hash.
      *
      * <p>Note that this method will only compare the types and hash fields of the block, and will not compare
-     * unhashed values, including the {@code work} and {@code signature} fields.</p>
+     * unhashed values, including the {@code work} and {@code signature} fields. For these, you should use the
+     * {@link #contentEquals(Block)} method instead.</p>
      *
      * @param obj the object to compare against
      * @return {@code true} if the objects are equal
@@ -232,8 +281,9 @@ public abstract class Block implements IBlock {
         if (this == obj) return true;
         if (!(obj instanceof Block)) return false; // Not a Block
         Block block = (Block)obj;
-        if (!getTypeString().equalsIgnoreCase(block.getTypeString())) return false; // Type doesnt match
-        return getHash() != null && block.getHash() != null && getHash().equals(block.getHash());
+        if (!getTypeString().equalsIgnoreCase(block.getTypeString()))
+            return false; // Type doesn't match
+        return getHash().equals(block.getHash());
     }
     
     /**
@@ -296,7 +346,7 @@ public abstract class Block implements IBlock {
      * @see BlockDeserializer
      */
     public static Block parse(JsonObject json) {
-        return JNH.BLOCK_DESERIALIZER.deserialize(json);
+        return JNC.BLOCK_DESERIALIZER.deserialize(json);
     }
     
 }

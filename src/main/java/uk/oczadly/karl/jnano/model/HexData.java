@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.model;
 
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
 
 import java.lang.reflect.Type;
@@ -72,7 +73,7 @@ public class HexData {
             throw new IllegalArgumentException("'bytes' array cannot be null.");
         this.valBytes = Arrays.copyOf(bytes, bytes.length);
         this.byteLength = valBytes.length;
-        this.valHex = JNH.ENC_16.encode(valBytes);
+        this.valHex = JNC.ENC_16.encode(valBytes);
     }
     
     /**
@@ -91,7 +92,7 @@ public class HexData {
             throw new IllegalArgumentException("'bytes' array is longer than 'length'.");
         this.valBytes = JNH.leftPadByteArray(Arrays.copyOf(bytes, bytes.length), length, false);
         this.byteLength = length;
-        this.valHex = JNH.ENC_16.encode(valBytes);
+        this.valHex = JNC.ENC_16.encode(valBytes);
     }
     
     
@@ -119,7 +120,7 @@ public class HexData {
         if (valBytes == null) {
             synchronized (this) {
                 if (valBytes == null)
-                    valBytes = JNH.ENC_16.decode(toHexString());
+                    valBytes = JNC.ENC_16.decode(toHexString());
             }
         }
         return valBytes;

@@ -81,7 +81,7 @@ public class JNHTest {
         assertTrue(JNH.isZero("", true));
         assertTrue(JNH.isZero("0", true));
         assertTrue(JNH.isZero("00000", true));
-        assertTrue(JNH.isZero(JNH.ZEROES_64, true));
+        assertTrue(JNH.isZero(JNC.ZEROES_64, true));
         assertFalse(JNH.isZero("00000001", true));
         assertFalse(JNH.isZero("04892slugs20", true));
     }

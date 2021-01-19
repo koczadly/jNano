@@ -7,7 +7,7 @@ package uk.oczadly.karl.jnano.model;
 
 import com.google.gson.JsonParser;
 import org.junit.Test;
-import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.JNC;
 
 import java.math.BigInteger;
 
@@ -54,7 +54,7 @@ public class NanoAccountTest {
     
     @Test
     public void testIndex() {
-        assertEquals(NanoAccount.parsePublicKey(JNH.ZEROES_64), new NanoAccount(BigInteger.ZERO));
+        assertEquals(NanoAccount.parsePublicKey(JNC.ZEROES_64), new NanoAccount(BigInteger.ZERO));
         assertEquals(new BigInteger(ACC_1_PUBKEY, 16), NanoAccount.parsePublicKey(ACC_1_PUBKEY).getAccountIndex());
         assertEquals(ACC_1_PUBKEY, new NanoAccount(new BigInteger(ACC_1_PUBKEY, 16)).toPublicKey());
     }
@@ -153,8 +153,8 @@ public class NanoAccountTest {
     
     @Test
     public void testJsonDeserializer() {
-        NanoAccount addr1 = JNH.GSON.fromJson("\"" + ACC_2_ADDR + "\"", NanoAccount.class);
-        NanoAccount addr2 = JNH.GSON.fromJson("\"" + ACC_2_PUBKEY + "\"", NanoAccount.class);
+        NanoAccount addr1 = JNC.GSON.fromJson("\"" + ACC_2_ADDR + "\"", NanoAccount.class);
+        NanoAccount addr2 = JNC.GSON.fromJson("\"" + ACC_2_PUBKEY + "\"", NanoAccount.class);
         assertEquals(ACC_2_ADDR, addr1.toAddress());
         assertEquals(ACC_2_ADDR, addr2.toAddress());
     }
@@ -163,7 +163,7 @@ public class NanoAccountTest {
     public void testJsonSerializer() {
         NanoAccount addr1 = NanoAccount.parseAddress(ACC_1_ADDR);
         assertEquals(JsonParser.parseString("\"" + ACC_1_ADDR + "\""),
-                JNH.GSON.toJsonTree(addr1));
+                JNC.GSON.toJsonTree(addr1));
     }
     
 }
