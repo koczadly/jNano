@@ -62,7 +62,6 @@ public class Ed25519Blake2b {
      * Creates a new EdDSAPublicKeySpec.
      * @param pubKey the public key
      * @return the new spec object
-     * @throws IllegalArgumentException if the public key is invalid
      */
     public static EdDSAPublicKeySpec getPubKeySpec(byte[] pubKey) {
         return new EdDSAPublicKeySpec(pubKey, CURVE_SPEC);
@@ -103,9 +102,17 @@ public class Ed25519Blake2b {
      * @throws IllegalArgumentException if the public key is not a valid 25519 public key
      */
     public static boolean verify(byte[] pubKey, byte[] data, byte[] sig) {
+        // Parse pubkey
+        EdDSAPublicKeySpec pubKeySpec;
+        try {
+            pubKeySpec = getPubKeySpec(pubKey);
+        } catch (IllegalArgumentException ignored) {
+            return false; // Invalid public key
+        }
+        // Verify
         try {
             EdDSAEngine engine = newEngine();
-            engine.initVerify(new EdDSAPublicKey(getPubKeySpec(pubKey)));
+            engine.initVerify(new EdDSAPublicKey(pubKeySpec));
             return engine.verifyOneShot(data, sig);
         } catch (GeneralSecurityException e) {
             throw new AssertionError("Could not sign message.", e);
