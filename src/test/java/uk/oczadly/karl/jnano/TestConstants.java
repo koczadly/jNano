@@ -65,7 +65,7 @@ public class TestConstants {
     
     public static StateBlockBuilder randStateBlock() {
         return new StateBlockBuilder(randAccount())
-                .setSubtype(StateBlockSubType.values()[RANDOM.nextInt(StateBlockSubType.values().length)])
+                .setSubtype(StateBlockSubType.SEND)
                 .setRepresentativeAddress(randAccount())
                 .setPreviousBlockHash(randHexData(64))
                 .setSignature(randHexData(128))
