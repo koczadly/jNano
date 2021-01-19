@@ -113,7 +113,7 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
         }
         // Try parse from prefix/suffix
         if (msgLc.startsWith("bad") || msgLc.startsWith("invalid") || msgLc.endsWith("invalid")
-                || msgLc.endsWith("required")) {
+                || msgLc.endsWith("required") || msgLc.endsWith("do not match")) {
             return new RpcInvalidArgumentException(msg);      // Invalid/bad argument
         } else if (msgLc.contains("not found")) {
             return new RpcEntityNotFoundException(msg);       // Unknown referenced entity
