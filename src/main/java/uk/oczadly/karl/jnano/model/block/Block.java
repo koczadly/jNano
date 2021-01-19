@@ -137,10 +137,11 @@ public abstract class Block implements IBlock {
     }
     
     /**
-     * Signs this block using the provided private key.
+     * Signs this block using the provided private key, and updates the signature attribute of this block.
      *
      * <p>The computed value will overwrite the existing {@code signature} value in this block. Note that this will
-     * not update any {@code account} fields the block may have, as these fields should be immutable.</p>
+     * not update any {@code account} fields the block may have, even if the supplied private key does not match the
+     * account.</p>
      *
      * @param privateKey the private key of the signer (32-byte value)
      * @return the computed signature value
@@ -159,8 +160,9 @@ public abstract class Block implements IBlock {
     /**
      * Tests whether the signature is valid and was signed by the specified account.
      *
-     * <p>Be aware that some special blocks (such as epoch blocks) may be signed by an account other than the block's
-     * owner.</p>
+     * <p>Be aware that some special blocks (such as epoch upgrades) may be signed by an account other than the
+     * block's owner. These blocks have their own specific signers and behaviour, and should provide their own
+     * method in addition to this for checking the validity of the signature.</p>
      *
      * @param account the signer account (public key) to test
      * @return true if the specified account is the signer of this block's signature, or false if not <em>or</em> if
