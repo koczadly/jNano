@@ -12,8 +12,8 @@ This library provides you simple access to the following:
  and events from the node.
 - A [server for listening to real-time block callbacks](https://github.com/koczadly/jNano/wiki/Block-callback) from
  the node.
-- Various [utility classes](https://github.com/koczadly/jNano/wiki/Utilities) for validating, computing and processing
- natively, without the need of a connected node.
+- Various [utility classes](https://github.com/koczadly/jNano/wiki/Utilities) for signing, validating, computing and
+ processing blocks and accounts, without the need of a connected node.
 
 ## Usage
 ### Maven
@@ -23,7 +23,7 @@ This project is hosted on [Maven Central](https://search.maven.org/artifact/uk.o
 <dependency>
     <groupId>uk.oczadly.karl</groupId>
     <artifactId>jnano</artifactId>
-    <version>2.10.2-V21.2</version>
+    <version>2.11.0-V21.2</version>
 </dependency>
 ```
 
