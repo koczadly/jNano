@@ -36,7 +36,7 @@ import java.util.function.Function;
  * {@link #verifySignature(NanoAccount)}.</p>
  *
  * <p>The block contains the following fields (note that <em>mutable</em> fields may also hold null values):</p>
- * <table>
+ * <table summary="Descriptions of block fields">
  *     <tr>
  *         <th>Attribute</th>
  *         <th>Mutable</th>

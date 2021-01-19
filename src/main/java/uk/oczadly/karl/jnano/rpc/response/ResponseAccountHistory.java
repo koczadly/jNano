@@ -37,6 +37,7 @@ public class ResponseAccountHistory extends RpcResponse {
     
     /**
      * Returns a list of historical blocks.
+     * @return a list of historical blocks
      */
     public List<BlockInfo> getHistory() {
         return history;

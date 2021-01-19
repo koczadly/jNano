@@ -29,7 +29,7 @@ import java.util.function.Function;
  * can be difficult to work with, and may even be subject to change in the future.</p>
  *
  * <p>The following actions can be performed by a state block:</p>
- * <table>
+ * <table summary="Description of the various state block subtypes">
  *     <tr>
  *         <th>Subtype</th>
  *         <th>Action</th>
@@ -79,7 +79,7 @@ import java.util.function.Function;
  * {@link #verifySignature(NanoAccount)}.</p>
  *
  * <p>The block contains the following fields (note that <em>mutable</em> fields may also hold null values):</p>
- * <table>
+ * <table summary="Descriptions of block fields">
  *     <tr>
  *         <th>Attribute</th>
  *         <th>Mutable</th>

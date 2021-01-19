@@ -73,6 +73,7 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
     /**
      * Set the headers and request method of the connection. May be overridden.
      * @param con the connection
+     * @throws IOException if an IO error prevents setting the header
      */
     protected void setRequestHeaders(HttpURLConnection con) throws IOException {
         con.setRequestMethod("POST");
