@@ -17,25 +17,70 @@ import uk.oczadly.karl.jnano.model.block.interfaces.IBlockBalance;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
-import java.math.BigInteger;
 import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * Represents a {@code send} block, and the associated data.
+ * <p>This class is used to represent {@link BlockType#SEND send} blocks, and the associated data they contain. A
+ * {@code send} block represents a financial transaction where funds are sent from the publishing account to
+ * another.</p>
  *
- * <p>Note that this is a legacy block and has since been officially deprecated. For new blocks, use
+ * <p><b>Note that this is a legacy block and has since been officially deprecated.</b> This class is only used to
+ * represent existing legacy blocks of this type, and all newly-issued blocks <em>must</em> be
  * {@link StateBlock state} blocks.</p>
+ *
+ * <p>The hash of a block can be calculated and retrieved by calling the {@link #getHash()} method. A block may be
+ * signed with a private key using the {@link #sign(HexData)} method, and verified using
+ * {@link #verifySignature(NanoAccount)}.</p>
+ *
+ * <p>The block contains the following fields (note that <em>mutable</em> fields may also hold null values):</p>
+ * <table>
+ *     <tr>
+ *         <th>Attribute</th>
+ *         <th>Mutable</th>
+ *         <th>Description</th>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getType() type}</td>
+ *         <td>No</td>
+ *         <td>The block type ({@link BlockType#SEND})</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getSignature() signature}</td>
+ *         <td>{@link #setSignature(HexData) Yes}</td>
+ *         <td>The signature, verifying the account holder created this block.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getWorkSolution() work}</td>
+ *         <td>{@link #setWorkSolution(WorkSolution) Yes}</td>
+ *         <td>The proof-of-work solution.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getPreviousBlockHash() previous}</td>
+ *         <td>No</td>
+ *         <td>The hash of the previous block in the account.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getDestinationAccount() destination}</td>
+ *         <td>No</td>
+ *         <td>The destination account which the funds are being sent to.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getBalance() balance}</td>
+ *         <td>No</td>
+ *         <td>The balance of the account <em>after</em> this block has been processed.</td>
+ *     </tr>
+ * </table>
  */
 public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     
     /** A function which converts a {@link JsonObject} into a {@link SendBlock} instance. */
     public static final Function<JsonObject, SendBlock> DESERIALIZER = json -> new SendBlock(
-            (HexData)JNH.getJson(json, "signature", HexData::new),
-            JNH.getJson(json, "work", WorkSolution::new),
-            JNH.getJson(json, "previous", HexData::new),
+            JNH.getJson(json, "signature",   HexData::new),
+            JNH.getJson(json, "work",        WorkSolution::new),
+            JNH.getJson(json, "previous",    HexData::new),
             JNH.getJson(json, "destination", NanoAccount::parseAddress),
-            JNH.getJson(json, "balance", NanoAmount::valueOfRaw));
+            JNH.getJson(json, "balance",     NanoAmount::valueOfRaw));
     
     private static final BlockIntent INTENT = new BlockIntent(true, false, false, false, false, false);
     
@@ -50,30 +95,30 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     private final NanoAmount balance;
     
     
-    @Deprecated(forRemoval = true)
-    public SendBlock(String signature, WorkSolution work, String previousBlockHash, NanoAccount destinationAccount,
-                     BigInteger balance) {
-        this(signature, work, previousBlockHash, destinationAccount, NanoAmount.valueOfRaw(balance));
-    }
-    
-    @Deprecated(forRemoval = true)
-    public SendBlock(String signature, WorkSolution work, String previousBlockHash, NanoAccount destinationAccount,
-                     NanoAmount balance) {
-        this(new HexData(signature), work, new HexData(previousBlockHash), destinationAccount, balance);
-    }
-    
-    public SendBlock(HexData signature, WorkSolution work, HexData previousBlockHash, NanoAccount destinationAccount,
+    /**
+     * Constructs a new send block.
+     *
+     * @param signature   the signature (may be null)
+     * @param work        the work solution (may be null)
+     * @param previous    the hash of the previous block
+     * @param destination the destination account
+     * @param balance     the balance of this account
+     */
+    public SendBlock(HexData signature, WorkSolution work, HexData previous, NanoAccount destination,
                      NanoAmount balance) {
         super(BlockType.SEND, signature, work);
     
-        if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNH.isValidLength(previousBlockHash, NanoConst.LEN_HASH_B))
+        if (previous == null)
+            throw new IllegalArgumentException("Previous block hash cannot be null.");
+        if (previous.length() != NanoConst.LEN_HASH_B)
             throw new IllegalArgumentException("Previous block hash is an invalid length.");
-        if (destinationAccount == null) throw new IllegalArgumentException("Block destination account cannot be null.");
-        if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");
+        if (destination == null)
+            throw new IllegalArgumentException("Block destination account cannot be null.");
+        if (balance == null)
+            throw new IllegalArgumentException("Account balance cannot be null.");
         
-        this.previousBlockHash = previousBlockHash;
-        this.destinationAccount = destinationAccount;
+        this.previousBlockHash = previous;
+        this.destinationAccount = destination;
         this.balance = balance;
     }
     

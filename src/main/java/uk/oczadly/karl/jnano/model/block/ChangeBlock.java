@@ -20,18 +20,58 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * Represents a {@code change} block, and the associated data.
+ * <p>This class is used to represent {@link BlockType#CHANGE change} blocks, and the associated data they contain. A
+ * {@code change} block represents a special action, where the chosen representative of an account is changed.</p>
  *
- * <p>Note that this is a legacy block and has since been officially deprecated. For new blocks, use
+ * <p><b>Note that this is a legacy block and has since been officially deprecated.</b> This class is only used to
+ * represent existing legacy blocks of this type, and all newly-issued blocks <em>must</em> be
  * {@link StateBlock state} blocks.</p>
+ *
+ * <p>The hash of a block can be calculated and retrieved by calling the {@link #getHash()} method. A block may be
+ * signed with a private key using the {@link #sign(HexData)} method, and verified using
+ * {@link #verifySignature(NanoAccount)}.</p>
+ *
+ * <p>The block contains the following fields (note that <em>mutable</em> fields may also hold null values):</p>
+ * <table>
+ *     <tr>
+ *         <th>Attribute</th>
+ *         <th>Mutable</th>
+ *         <th>Description</th>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getType() type}</td>
+ *         <td>No</td>
+ *         <td>The block type ({@link BlockType#CHANGE})</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getSignature() signature}</td>
+ *         <td>{@link #setSignature(HexData) Yes}</td>
+ *         <td>The signature, verifying the account holder created this block.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getWorkSolution() work}</td>
+ *         <td>{@link #setWorkSolution(WorkSolution) Yes}</td>
+ *         <td>The proof-of-work solution.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getPreviousBlockHash() previous}</td>
+ *         <td>No</td>
+ *         <td>The hash of the previous block in the account.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getRepresentative() representative}</td>
+ *         <td>No</td>
+ *         <td>The address of the representative this account is delegating to.</td>
+ *     </tr>
+ * </table>
  */
 public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresentative {
     
     /** A function which converts a {@link JsonObject} into a {@link ChangeBlock} instance. */
     public static final Function<JsonObject, ChangeBlock> DESERIALIZER = json -> new ChangeBlock(
-            (HexData)JNH.getJson(json, "signature", HexData::new),
-            JNH.getJson(json, "work", WorkSolution::new),
-            JNH.getJson(json, "previous", HexData::new),
+            JNH.getJson(json, "signature",      HexData::new),
+            JNH.getJson(json, "work",           WorkSolution::new),
+            JNH.getJson(json, "previous",       HexData::new),
             JNH.getJson(json, "representative", NanoAccount::parseAddress));
     
     private static final BlockIntent INTENT = new BlockIntent(false, false, true, false, false, false);
@@ -45,37 +85,25 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
     
     
     /**
-     * Constructs a change block.
-     * @param signature
-     * @param workSolution
-     * @param previousBlockHash
-     * @param representativeAccount
-     * @see #ChangeBlock(HexData, WorkSolution, HexData, NanoAccount)
+     * Constructs a new change block.
+     *
+     * @param signature      the signature (may be null)
+     * @param work           the work solution (may be null)
+     * @param previous       the hash of the previous block
+     * @param representative the representative for this account
      */
-    @Deprecated(forRemoval = true)
-    public ChangeBlock(String signature, WorkSolution workSolution, String previousBlockHash,
-                       NanoAccount representativeAccount) {
-        this(new HexData(signature), workSolution, new HexData(previousBlockHash), representativeAccount);
-    }
+    public ChangeBlock(HexData signature, WorkSolution work, HexData previous, NanoAccount representative) {
+        super(BlockType.CHANGE, signature, work);
     
-    /**
-     * Constructs a change block.
-     * @param signature
-     * @param workSolution
-     * @param previousBlockHash
-     * @param representativeAccount
-     */
-    public ChangeBlock(HexData signature, WorkSolution workSolution, HexData previousBlockHash,
-                       NanoAccount representativeAccount) {
-        super(BlockType.CHANGE, signature, workSolution);
-    
-        if (previousBlockHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNH.isValidLength(previousBlockHash, NanoConst.LEN_HASH_B))
+        if (previous == null)
+            throw new IllegalArgumentException("Previous block hash cannot be null.");
+        if (previous.length() != NanoConst.LEN_HASH_B)
             throw new IllegalArgumentException("Previous block hash is an invalid length.");
-        if (representativeAccount == null) throw new IllegalArgumentException("Block representative cannot be null.");
+        if (representative == null)
+            throw new IllegalArgumentException("Block representative cannot be null.");
         
-        this.previousBlockHash = previousBlockHash;
-        this.representativeAccount = representativeAccount;
+        this.previousBlockHash = previous;
+        this.representativeAccount = representative;
     }
     
     

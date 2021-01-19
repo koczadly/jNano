@@ -21,19 +21,66 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * Represents an {@code open} block, and the associated data.
+ * <p>This class is used to represent {@link BlockType#OPEN open} blocks, and the associated data they contain. An
+ * {@code open} block represents a financial transaction where funds are accepted from a corresponding {@code send}
+ * block into the account. In addition to this, an open block is the first block in an account, effectively
+ * "opening" the account.</p>
  *
- * <p>Note that this is a legacy block and has since been officially deprecated. For new blocks, use
+ * <p><b>Note that this is a legacy block and has since been officially deprecated.</b> This class is only used to
+ * represent existing legacy blocks of this type, and all newly-issued blocks <em>must</em> be
  * {@link StateBlock state} blocks.</p>
+ *
+ * <p>The hash of a block can be calculated and retrieved by calling the {@link #getHash()} method. A block may be
+ * signed with a private key using the {@link #sign(HexData)} method, and verified using
+ * {@link #verifySignature(NanoAccount)}.</p>
+ *
+ * <p>The block contains the following fields (note that <em>mutable</em> fields may also hold null values):</p>
+ * <table>
+ *     <tr>
+ *         <th>Attribute</th>
+ *         <th>Mutable</th>
+ *         <th>Description</th>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getType() type}</td>
+ *         <td>No</td>
+ *         <td>The block type ({@link BlockType#OPEN})</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getSignature() signature}</td>
+ *         <td>{@link #setSignature(HexData) Yes}</td>
+ *         <td>The signature, verifying the account holder created this block.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getWorkSolution() work}</td>
+ *         <td>{@link #setWorkSolution(WorkSolution) Yes}</td>
+ *         <td>The proof-of-work solution.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getSourceBlockHash() source}</td>
+ *         <td>No</td>
+ *         <td>The hash of the corresponding {@code send} block which sent the funds.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getAccount() account}</td>
+ *         <td>No</td>
+ *         <td>The account being opened, which created this block.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getRepresentative() representative}</td>
+ *         <td>No</td>
+ *         <td>The address of the representative this account is delegating to.</td>
+ *     </tr>
+ * </table>
  */
 public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBlockRepresentative {
     
     /** A function which converts a {@link JsonObject} into a {@link OpenBlock} instance. */
     public static final Function<JsonObject, OpenBlock> DESERIALIZER = json -> new OpenBlock(
-            (HexData)JNH.getJson(json, "signature", HexData::new),
-            JNH.getJson(json, "work", WorkSolution::new),
-            JNH.getJson(json, "source", HexData::new),
-            JNH.getJson(json, "account", NanoAccount::parseAddress),
+            JNH.getJson(json, "signature",      HexData::new),
+            JNH.getJson(json, "work",           WorkSolution::new),
+            JNH.getJson(json, "source",         HexData::new),
+            JNH.getJson(json, "account",        NanoAccount::parseAddress),
             JNH.getJson(json, "representative", NanoAccount::parseAddress));
     
     private static final BlockIntent INTENT = new BlockIntent(false, true, true, true, false, false);
@@ -50,25 +97,31 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     private final NanoAccount representativeAccount;
     
     
-    @Deprecated(forRemoval = true)
-    public OpenBlock(String signature, WorkSolution work, String sourceBlockHash, NanoAccount accountAddress,
-                     NanoAccount representativeAccount) {
-        this(new HexData(signature), work, new HexData(sourceBlockHash), accountAddress, representativeAccount);
-    }
-    
-    public OpenBlock(HexData signature, WorkSolution work, HexData sourceBlockHash, NanoAccount accountAddress,
-                     NanoAccount representativeAccount) {
+    /**
+     * Constructs a new open block.
+     *
+     * @param signature      the signature (may be null)
+     * @param work           the work solution (may be null)
+     * @param source         the hash of the source block
+     * @param account        the account which owns this block
+     * @param representative the representative for this account
+     */
+    public OpenBlock(HexData signature, WorkSolution work, HexData source, NanoAccount account,
+                     NanoAccount representative) {
         super(BlockType.OPEN, signature, work);
     
-        if (sourceBlockHash == null) throw new IllegalArgumentException("Source block hash cannot be null.");
-        if (!JNH.isValidLength(sourceBlockHash, NanoConst.LEN_HASH_B))
+        if (source == null)
+            throw new IllegalArgumentException("Source block hash cannot be null.");
+        if (source.length() != NanoConst.LEN_HASH_B)
             throw new IllegalArgumentException("Source block hash is an invalid length.");
-        if (accountAddress == null) throw new IllegalArgumentException("Block account cannot be null.");
-        if (representativeAccount == null) throw new IllegalArgumentException("Block representative cannot be null.");
+        if (account == null)
+            throw new IllegalArgumentException("Block account cannot be null.");
+        if (representative == null)
+            throw new IllegalArgumentException("Block representative cannot be null.");
         
-        this.sourceBlockHash = sourceBlockHash;
-        this.accountAddress = accountAddress;
-        this.representativeAccount = representativeAccount;
+        this.sourceBlockHash = source;
+        this.accountAddress = account;
+        this.representativeAccount = representative;
     }
     
     

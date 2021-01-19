@@ -15,27 +15,137 @@ import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.interfaces.*;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
+import uk.oczadly.karl.jnano.util.AccountEpoch;
 
 import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * <p>Represents a state block, and the associated data.</p>
- * <p>To construct a new state block, use the {@link StateBlockBuilder} provided.</p>
+ * <p>This class is used to represent {@link BlockType#STATE state} blocks, and the associated data they contain. A
+ * {@code state} block can represent a multitude of different actions, distinguished by the {@code subtype}
+ * attribute.</p>
+ *
+ * <p>To construct a new state block, use the provided {@link StateBlockBuilder} builder class. The class constructors
+ * can be difficult to work with, and may even be subject to change in the future.</p>
+ *
+ * <p>The following actions can be performed by a state block:</p>
+ * <table>
+ *     <tr>
+ *         <th>Subtype</th>
+ *         <th>Action</th>
+ *         <th>Link purpose</th>
+ *         <th>Legacy equivalent</th>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link StateBlockSubType#OPEN Open}</td>
+ *         <td>The first block in an account, also accepting funds from another pending {@code send} transaction
+ *         into this account.</td>
+ *         <td>{@link LinkData.Intent#SOURCE_HASH Source hash}</td>
+ *         <td>{@link OpenBlock}</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link StateBlockSubType#SEND Send}</td>
+ *         <td>A financial transaction which sends an amount of funds to another account. The account's representative
+ *         may also be updated within this block.</td>
+ *         <td>{@link LinkData.Intent#DESTINATION_ACCOUNT Destination account}</td>
+ *         <td>{@link SendBlock}</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link StateBlockSubType#RECEIVE Receive}</td>
+ *         <td>A financial transaction which accepts funds from a pending {@code send} block into this account. The
+ *         account's representative may also be updated within this block.</td>
+ *         <td>{@link LinkData.Intent#SOURCE_HASH Source hash}</td>
+ *         <td>{@link ReceiveBlock}</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link StateBlockSubType#CHANGE Change}</td>
+ *         <td>A special action used to change the chosen representative of the account. While {@code send} and
+ *         {@code receive} subtypes can also change the representative, a {@code change} action has no other
+ *         purpose.</td>
+ *         <td>{@link LinkData.Intent#UNUSED Not used}</td>
+ *         <td>{@link ChangeBlock}</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link StateBlockSubType#EPOCH Epoch}</td>
+ *         <td>A special action used to upgrade the version of the account. See {@link AccountEpoch} for more
+ *         information.</td>
+ *         <td>{@link LinkData.Intent#EPOCH_IDENTIFIER Epoch reference}</td>
+ *         <td>N/A</td>
+ *     </tr>
+ * </table>
+ *
+ * <p>The hash of a block can be calculated and retrieved by calling the {@link #getHash()} method. A block may be
+ * signed with a private key using the {@link #sign(HexData)} method, and verified using
+ * {@link #verifySignature(NanoAccount)}.</p>
+ *
+ * <p>The block contains the following fields (note that <em>mutable</em> fields may also hold null values):</p>
+ * <table>
+ *     <tr>
+ *         <th>Attribute</th>
+ *         <th>Mutable</th>
+ *         <th>Description</th>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getType() type}</td>
+ *         <td>No</td>
+ *         <td>The block type ({@link BlockType#STATE})</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getSignature() signature}</td>
+ *         <td>{@link #setSignature(HexData) Yes}</td>
+ *         <td>The signature, verifying the account holder created this block.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getWorkSolution() work}</td>
+ *         <td>{@link #setWorkSolution(WorkSolution) Yes}</td>
+ *         <td>The proof-of-work solution.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getSubType() subtype}</td>
+ *         <td>No</td>
+ *         <td>The sub-type of the state block.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getAccount() account}</td>
+ *         <td>No</td>
+ *         <td>The account which owns this block.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getPreviousBlockHash() previous}</td>
+ *         <td>No</td>
+ *         <td>The hash of the previous block in the account, or all zeroes for {@link StateBlockSubType#OPEN open}
+ *         subtypes.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getRepresentative() representative}</td>
+ *         <td>No</td>
+ *         <td>The address of the representative this account is delegating to.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getBalance() balance}</td>
+ *         <td>No</td>
+ *         <td>The balance of the account <em>after</em> this block has been processed.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@link #getLink() link}</td>
+ *         <td>No</td>
+ *         <td>A miscellaneous 32-byte link data associated with this transaction.</td>
+ *     </tr>
+ * </table>
  */
 public final class StateBlock extends Block implements IBlockLink, IBlockBalance, IBlockPrevious, IBlockRepresentative,
         IBlockAccount {
     
     /** A function which converts a {@link JsonObject} into a {@link StateBlock} instance. */
     public static final Function<JsonObject, StateBlock> DESERIALIZER = json -> new StateBlock(
-            JNH.getJson(json, "subtype", StateBlockSubType::getFromName),
-            JNH.getJson(json, "signature", HexData::new),
-            JNH.getJson(json, "work", WorkSolution::new),
-            JNH.getJson(json, "account", NanoAccount::parseAddress),
-            JNH.getJson(json, "previous", HexData::new),
-            JNH.getJson(json, "representative", NanoAccount::parseAddress),
-            JNH.getJson(json, "balance", NanoAmount::valueOfRaw),
-            JNH.getJson(json, "link", HexData::new),
+            JNH.getJson(json, "subtype",         StateBlockSubType::getFromName),
+            JNH.getJson(json, "signature",       HexData::new),
+            JNH.getJson(json, "work",            WorkSolution::new),
+            JNH.getJson(json, "account",         NanoAccount::parseAddress),
+            JNH.getJson(json, "previous",        HexData::new),
+            JNH.getJson(json, "representative",  NanoAccount::parseAddress),
+            JNH.getJson(json, "balance",         NanoAmount::valueOfRaw),
+            JNH.getJson(json, "link",            HexData::new),
             JNH.getJson(json, "link_as_account", NanoAccount::parseAddress));
     
     /** Prefix for block hashing. */
@@ -46,10 +156,10 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     private final NanoAccount account;
     
     @Expose @SerializedName("previous")
-    private final HexData prevHash;
+    private final HexData previous;
     
     @Expose @SerializedName("representative")
-    private final NanoAccount repAddr;
+    private final NanoAccount rep;
     
     @Expose @SerializedName("balance")
     private final NanoAmount balance;
@@ -63,113 +173,50 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     /**
      * Constructs a new state block.
      *
-     * @param subtype   the block's subtype
-     * @param signature the block verification signature
-     * @param work      the computed work solution
-     * @param account   the account's address
-     * @param prevHash  the previous block's hash
-     * @param repAddr   the representative address of this account
-     * @param balance   the balance of the account after this transaction, in raw
-     * @param link      the link data for this transaction, encoded as a hexadecimal string
+     * @param subtype        the subtype action
+     * @param signature      the signature (may be null)
+     * @param work           the work solution (may be null)
+     * @param account        the account which owns this block
+     * @param previous       the hash of the previous block
+     * @param representative the representative for this account
+     * @param balance        the balance of this account
+     * @param link           the miscellaneous link data of this transaction
      *
-     * @deprecated {@link StateBlockBuilder} builder class should be used instead
+     * @see StateBlockBuilder
      */
-    @Deprecated(forRemoval = true)
-    public StateBlock(StateBlockSubType subtype, String signature, WorkSolution work, NanoAccount account,
-                      String prevHash, NanoAccount repAddr, NanoAmount balance, String link) {
-        this(subtype, new HexData(signature), work, account, new HexData(prevHash),
-                repAddr, balance, parseLinkData(subtype, new HexData(link, NanoConst.LEN_HASH_B), null));
-    }
-    
-    /**
-     * Constructs a new state block.
-     *
-     * @param subtype    the block's subtype
-     * @param signature  the block verification signature
-     * @param work       the computed work solution
-     * @param account    the account's address
-     * @param prevHash   the previous block's hash
-     * @param repAddr    the representative address of this account
-     * @param balance    the balance of the account after this transaction, in raw
-     * @param link       the link data for this transaction, encoded as an account
-     *
-     * @deprecated {@link StateBlockBuilder} builder class should be used instead
-     */
-    @Deprecated(forRemoval = true)
-    public StateBlock(StateBlockSubType subtype, String signature, WorkSolution work, NanoAccount account,
-                      String prevHash, NanoAccount repAddr, NanoAmount balance,
-                      NanoAccount link) {
-        this(subtype, new HexData(signature), work, account, new HexData(prevHash),
-                repAddr, balance, parseLinkData(subtype, null, link));
-    }
-    
-    /**
-     * Constructs a new state block.
-     *
-     * @param subtype    the block's subtype
-     * @param signature  the block verification signature
-     * @param work       the computed work solution
-     * @param account    the account's address
-     * @param prevHash   the previous block's hash
-     * @param repAddr    the representative address of this account
-     * @param balance    the balance of the account after this transaction, in raw
-     * @param link       the link data for this transaction, encoded as a hexadecimal string
-     *
-     * @deprecated {@link StateBlockBuilder} builder class should be used instead
-     */
-    @Deprecated(forRemoval = true)
     public StateBlock(StateBlockSubType subtype, HexData signature, WorkSolution work, NanoAccount account,
-                      HexData prevHash, NanoAccount repAddr, NanoAmount balance, HexData link) {
-        this(subtype, signature, work, account, prevHash, repAddr,
-                balance, parseLinkData(subtype, link, null));
-    }
-    
-    /**
-     * Constructs a new state block.
-     *
-     * @param subtype   the block's subtype
-     * @param signature the block verification signature
-     * @param work      the computed work solution
-     * @param account   the account's address
-     * @param prevHash  the previous block's hash
-     * @param repAddr   the representative address of this account
-     * @param balance   the balance of the account after this transaction, in raw
-     * @param link      the link data for this transaction, encoded as an account
-     *
-     * @deprecated {@link StateBlockBuilder} builder class should be used instead
-     */
-    @Deprecated(forRemoval = true)
-    public StateBlock(StateBlockSubType subtype, HexData signature, WorkSolution work, NanoAccount account,
-                      HexData prevHash, NanoAccount repAddr, NanoAmount balance,
-                      NanoAccount link) {
-        this(subtype, signature, work, account, prevHash, repAddr,
-                balance, parseLinkData(subtype, null, link));
+               HexData previous, NanoAccount representative, NanoAmount balance, HexData link) {
+        this(subtype, signature, work, account, previous, representative, balance, link, null);
     }
     
     StateBlock(StateBlockSubType subtype, HexData signature, WorkSolution work, NanoAccount account,
-               HexData prevHash, NanoAccount repAddr, NanoAmount balance,
+               HexData prevHash, NanoAccount rep, NanoAmount balance,
                HexData linkHex, NanoAccount linkAcc) {
-        this(subtype, signature, work, account, prevHash, repAddr,
+        this(subtype, signature, work, account, prevHash, rep,
                 balance, parseLinkData(subtype, linkHex, linkAcc));
     }
     
     StateBlock(StateBlockSubType subtype, HexData signature, WorkSolution work, NanoAccount account,
-               HexData prevHash, NanoAccount repAddr, NanoAmount balance, LinkData link) {
+               HexData previous, NanoAccount representative, NanoAmount balance, LinkData link) {
         super(BlockType.STATE, signature, work);
         
         if (subtype == null)
             throw new IllegalArgumentException("Subtype cannot be null.");
-        if (prevHash == null) throw new IllegalArgumentException("Previous block hash cannot be null.");
-        if (!JNH.isValidLength(prevHash, NanoConst.LEN_HASH_B))
-            throw new IllegalArgumentException("Previous block hash is an invalid length.");
-        if (repAddr == null) throw new IllegalArgumentException("Block representative cannot be null.");
-        if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");
-        if (account == null) throw new IllegalArgumentException("Block account cannot be null.");
+        if (account == null)
+            throw new IllegalArgumentException("Account cannot be null.");
+        if (previous == null)
+            throw new IllegalArgumentException("Previous hash cannot be null.");
+        if (previous.length() != NanoConst.LEN_HASH_B)
+            throw new IllegalArgumentException("Previous hash length is incorrect.");
+        if (representative == null)
+            throw new IllegalArgumentException("Representative cannot be null.");
+        if (balance == null)
+            throw new IllegalArgumentException("Account balance cannot be null.");
         
         this.subtype = subtype;
         this.account = account;
-        this.prevHash = prevHash;
-        this.repAddr = repAddr;
+        this.previous = previous;
+        this.rep = representative;
         this.balance = balance;
         this.link = link;
     }
@@ -190,12 +237,12 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     
     @Override
     public final HexData getPreviousBlockHash() {
-        return prevHash;
+        return previous;
     }
     
     @Override
     public final NanoAccount getRepresentative() {
-        return repAddr;
+        return rep;
     }
     
     @Override
@@ -210,7 +257,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     
     @Override
     public BlockIntent getIntent() {
-        boolean isOpen = subtype == StateBlockSubType.OPEN || JNH.isZero(prevHash, false);
+        boolean isOpen = subtype == StateBlockSubType.OPEN || JNH.isZero(previous, false);
         boolean isEpoch = subtype == StateBlockSubType.EPOCH || (isOpen && balance.equals(NanoAmount.ZERO));
         boolean isSend = subtype == StateBlockSubType.SEND;
         boolean isReceive = subtype == StateBlockSubType.RECEIVE || (isOpen && !isEpoch);

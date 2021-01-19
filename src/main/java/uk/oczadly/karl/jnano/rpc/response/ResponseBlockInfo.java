@@ -14,6 +14,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.*;
@@ -117,11 +118,11 @@ public class ResponseBlockInfo extends RpcResponse {
         
         public BlockAdapter() {
             deserializer.registerDeserializer(BlockType.SEND,json -> new SendBlock(
-                    JNH.getJson(json, "signature"),
-                    JNH.getJson(json, "work", WorkSolution::new),
-                    JNH.getJson(json, "previous"),
+                    JNH.getJson(json, "signature",   HexData::new),
+                    JNH.getJson(json, "work",        WorkSolution::new),
+                    JNH.getJson(json, "previous",    HexData::new),
                     JNH.getJson(json, "destination", NanoAccount::parseAddress),
-                    (NanoAmount)JNH.getJson(json, "balance", s -> NanoAmount.valueOfRaw(new BigInteger(s, 16)))
+                    JNH.getJson(json, "balance", v -> NanoAmount.valueOfRaw(new BigInteger(v, 16)))
             ));
         }
         
