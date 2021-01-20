@@ -14,7 +14,6 @@ import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockRepresentative;
-import uk.oczadly.karl.jnano.model.block.interfaces.IBlockSelfVerifiable;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockSource;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
@@ -74,8 +73,7 @@ import java.util.function.Function;
  *     </tr>
  * </table>
  */
-public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBlockRepresentative,
-        IBlockSelfVerifiable {
+public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBlockRepresentative {
     
     /** A function which converts a {@link JsonObject} into a {@link OpenBlock} instance. */
     public static final Function<JsonObject, OpenBlock> DESERIALIZER = json -> new OpenBlock(
@@ -142,7 +140,11 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
         return representativeAccount;
     }
     
-    @Override
+    /**
+     * Tests whether the signature is valid and was signed by the correct account.
+     *
+     * @return true if the signature is correct, false if not <em>or</em> if the {@code signature} is currently null
+     */
     public boolean verifySignature() {
         return verifySignature(getAccount());
     }

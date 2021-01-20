@@ -134,7 +134,7 @@ import java.util.function.Function;
  * </table>
  */
 public final class StateBlock extends Block implements IBlockLink, IBlockBalance, IBlockPrevious, IBlockRepresentative,
-        IBlockAccount, IBlockSelfVerifiable {
+        IBlockAccount {
     
     /** A function which converts a {@link JsonObject} into a {@link StateBlock} instance. */
     public static final Function<JsonObject, StateBlock> DESERIALIZER = json -> new StateBlock(
@@ -260,13 +260,17 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      *
      * <p>For standard transactions, this uses the {@link #getAccount() block's account}. For externally-created
      * epoch blocks, the signature is checked using the {@link AccountEpoch#getSignerAccount() expected signer account}
-     * rather than the block's owner.
+     * rather than the block's owner.</p>
+     *
+     * <p><b>NOTE:</b> This method is only valid for epoch blocks on the live Nano network. Other networks, such as
+     * the beta network or Banano use different signing accounts for epoch upgrades. The jNano library must also be
+     * updated to the latest version to ensure that the epoch identifiers can be recognized. For non-epoch subtypes,
+     * this method will function as expected with all networks.</p>
      *
      * @return true if the signature is correct, false if not <em>or</em> if the {@code signature} is currently null
      * @throws AccountEpoch.UnrecognizedEpochException if the block is an epoch block, and the epoch version was not
      *                                                 recognized
      */
-    @Override
     public boolean verifySignature() {
         if (getSignature() == null) return false;
         
