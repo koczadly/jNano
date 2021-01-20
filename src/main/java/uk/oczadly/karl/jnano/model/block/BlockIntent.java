@@ -64,6 +64,7 @@ public class BlockIntent {
     
     
     /**
+     * Returns whether the block sent funds to an account.
      * @return true if the block sent funds
      */
     public final UncertainBool isSendFunds() {
@@ -71,6 +72,7 @@ public class BlockIntent {
     }
     
     /**
+     * Returns whether the block received funds from a pending block.
      * @return true if the block received funds
      */
     public final UncertainBool isReceiveFunds() {
@@ -78,13 +80,16 @@ public class BlockIntent {
     }
     
     /**
-     * @return true if the block changed the representative, or if the block is the first in the account ("open")
+     * Returns whether the block changed the representative of the account, or if the block is the first in the account
+     * ("open").
+     * @return true if the block updated the representative
      */
     public final UncertainBool isChangeRep() {
         return isChange;
     }
     
     /**
+     * Returns whether the block is the first block in the owner's account.
      * @return true if this is the opening block for the account
      */
     public final UncertainBool isFirstBlock() {
@@ -92,6 +97,7 @@ public class BlockIntent {
     }
     
     /**
+     * Returns whether the block upgraded the version of the account.
      * @return true if this block is an account upgrade block
      */
     public final UncertainBool isEpochUpgrade() {
@@ -99,6 +105,7 @@ public class BlockIntent {
     }
     
     /**
+     * Returns whether the block is the genesis block.
      * @return true if this block is the genesis block for the network
      */
     public final UncertainBool isGenesis() {
@@ -139,7 +146,7 @@ public class BlockIntent {
     }
     
     /**
-     * Returns whether this block has any functional intent (eg. transacting funds, modifying an account parameter).
+     * Returns whether this block has any functional intent (eg, transacting funds, modifying an account parameter).
      * @return true if this block has a function
      */
     public UncertainBool hasPurpose() {
