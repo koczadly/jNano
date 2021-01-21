@@ -10,6 +10,7 @@ import com.rfksystems.blake2b.security.Blake2bProvider;
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
+import net.i2p.crypto.eddsa.math.GroupElement;
 import net.i2p.crypto.eddsa.spec.EdDSANamedCurveSpec;
 import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
 import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
@@ -34,7 +35,7 @@ public class Ed25519Blake2b {
     
     /** Curve spec, based on the default ED_25519_CURVE_SPEC implementation. */
     private static final EdDSANamedCurveSpec CURVE_SPEC = new EdDSANamedCurveSpec(
-            EdDSANamedCurveTable.ED_25519,
+            "Ed25519Blake2b",
             EdDSANamedCurveTable.ED_25519_CURVE_SPEC.getCurve(),
             MESSAGE_DIGEST.getAlgorithm(),
             EdDSANamedCurveTable.ED_25519_CURVE_SPEC.getScalarOps(),
@@ -67,6 +68,20 @@ public class Ed25519Blake2b {
         return new EdDSAPublicKeySpec(pubKey, CURVE_SPEC);
     }
     
+    
+    /**
+     * Tests whether a public key is valid.
+     * @param pubKey the public key
+     * @return true if valid
+     */
+    public static boolean validatePubKey(byte[] pubKey) {
+        try {
+            new GroupElement(CURVE_SPEC.getCurve(), pubKey);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
     
     /**
      * Derives a public key from a private key.
@@ -105,8 +120,7 @@ public class Ed25519Blake2b {
      * @param pubKey the public key
      * @param data   the data
      * @param sig    the signature
-     * @return true if the signature matches
-     * @throws IllegalArgumentException if the public key is not a valid 25519 public key
+     * @return true if the signature matches, false if not or if pubkey is invalid
      */
     public static boolean verify(byte[] pubKey, byte[][] data, byte[] sig) {
         // Parse pubkey
@@ -132,5 +146,5 @@ public class Ed25519Blake2b {
             throw new AssertionError("Could not sign message.", e);
         }
     }
-
+    
 }

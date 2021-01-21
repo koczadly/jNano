@@ -307,10 +307,24 @@ public final class NanoAccount {
     
     /**
      * Checks whether the address prefix meets the criteria for a valid Nano address (eg. {@code nano} and {@code xrb}).
+     *
+     * <p>This method does <em>not</em> check whether the public key is {@link #isCryptoValid()
+     * cryptographically valid}, and simply tests the prefix.</p>
+     *
      * @return whether the given address is a valid Nano account
      */
     public boolean isValidNano() {
         return comparePrefix(getPrefix(), DEFAULT_PERMITTED_PREFIXES.toArray(new String[0]));
+    }
+    
+    /**
+     * Tests whether the public key of the account is cryptographically valid, and that the corresponding point lies on
+     * the Ed25519 curve.
+     *
+     * @return true if the account is a cryptographically valid public key
+     */
+    public boolean isCryptoValid() {
+        return Ed25519Blake2b.validatePubKey(keyBytes);
     }
     
     
@@ -515,6 +529,10 @@ public final class NanoAccount {
     /**
      * Checks whether a given address string is a valid Nano address. For an address to be considered valid, the format
      * must be of an appropriate length, contain an approved prefix, and have a matching checksum value.
+     *
+     * <p>This method does <em>not</em> check whether the public key is {@link #isCryptoValid()
+     * cryptographically valid}, and simply tests the format, checksum and prefix.</p>
+     *
      * @param address the account address string
      * @return whether the given address string is a valid Nano account
      */
@@ -529,11 +547,17 @@ public final class NanoAccount {
     /**
      * Checks whether a given address string is a valid Nano address. For an address to be considered valid, the
      * prefix must match one of the pre-defined Nano prefix strings.
-     * <p>Equivalent to calling {@link #isValidNano()} on the instance.</p>
+     *
+     * <p>This method does <em>not</em> check whether the public key is {@link #isCryptoValid()
+     * cryptographically valid}, and simply tests the format, checksum and prefix.</p>
+     *
      * @param address the account address
      * @return whether the given address is a valid Nano account
      * @see #isValidNano()
+     * 
+     * @deprecated Use instance method {@link #isValidNano()}
      */
+    @Deprecated
     public static boolean isValidNano(NanoAccount address) {
         return address.isValidNano();
     }
@@ -541,6 +565,10 @@ public final class NanoAccount {
     /**
      * Checks whether a given address string is valid. For an address to be considered valid, the format must be of
      * an appropriate length, contain the defined prefix, and have a matching checksum value.
+     *
+     * <p>This method does <em>not</em> check whether the public key is {@link #isCryptoValid()
+     * cryptographically valid}, and simply tests the format, checksum and prefix.</p>
+     *
      * @param address  the account address string
      * @param prefixes an array of permittable prefixes (without separator), or null/empty to allow any
      * @return whether the given address string is valid
@@ -556,6 +584,10 @@ public final class NanoAccount {
     
     /**
      * Compares the given address with the checksum component, and checks whether the address string is valid.
+     *
+     * <p>This method does <em>not</em> check whether the public key is {@link #isCryptoValid()
+     * cryptographically valid}, and simply tests the format and checksum.</p>
+     *
      * @param addressSegment the account address segment
      * @param checksum       the checksum segment
      * @return whether the given address string is valid

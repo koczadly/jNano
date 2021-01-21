@@ -39,4 +39,11 @@ public class Ed25519Blake2BTest {
        assertArrayEquals(PUB, Ed25519Blake2b.derivePublicKey(PRIV));
     }
     
+    @Test
+    public void testPubKeyValidate() {
+        assertTrue(Ed25519Blake2b.validatePubKey(PUB));
+        assertTrue(Ed25519Blake2b.validatePubKey(PUB2));
+        assertFalse(Ed25519Blake2b.validatePubKey(PRIV));
+    }
+    
 }

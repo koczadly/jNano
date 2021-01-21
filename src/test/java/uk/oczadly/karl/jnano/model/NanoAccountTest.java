@@ -101,6 +101,14 @@ public class NanoAccountTest {
     }
     
     @Test
+    public void testCryptoValidation() {
+        assertTrue(NanoAccount.parsePublicKey(ACC_1_PUBKEY).isCryptoValid());
+        assertTrue(NanoAccount.parsePublicKey(ACC_2_PUBKEY).isCryptoValid());
+        assertFalse(NanoAccount.parsePublicKey("2091F47280DEAE6A7B5CE0CAFEA85C330BAD2897DAD896B705814DD963BADE99")
+                .isCryptoValid());
+    }
+    
+    @Test
     public void testValidityChecks() {
         assertTrue(NanoAccount.isValid(ACC_1_ADDR)); // No prefix specified
         assertTrue(NanoAccount.isValid(ACC_1_ADDR, (String[])null)); // No prefix specified
