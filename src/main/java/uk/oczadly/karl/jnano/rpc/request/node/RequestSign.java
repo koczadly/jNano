@@ -7,13 +7,17 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSignature;
 
 /**
- * This request class is used to fetch sign a provided block using a specified private key or wallet address.
+ * This request class is used to sign a provided block using a specified private key or wallet address.
  * <br>Calls the RPC command {@code sign}, and returns a {@link ResponseSignature} data object.
+ *
+ * <p>The built-in {@link Block#sign(HexData)} method should be preferred when using a known private key or seed,
+ * and does not require an external node or request to be made.</p>
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#sign">Official RPC documentation</a>
  */

@@ -7,6 +7,8 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.HexData;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseKeyPair;
 
@@ -15,7 +17,11 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseKeyPair;
  * <br>Calls the RPC command {@code key_expand}, and returns a {@link ResponseKeyPair} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#key_expand">Official RPC documentation</a>
+ *
+ * @deprecated This can be computed without needing to query an external node: use of static method
+ * {@link NanoAccount#fromPrivateKey(HexData)} should be preferred.
  */
+@Deprecated
 public class RequestKeyExpand extends RpcRequest<ResponseKeyPair> {
     
     @Expose @SerializedName("key")

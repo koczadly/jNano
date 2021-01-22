@@ -7,15 +7,23 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.HexData;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseKeyPair;
+import uk.oczadly.karl.jnano.util.WalletUtil;
 
 /**
  * This request class is used to generate a private and public key from the given seed.
  * <br>Calls the RPC command {@code deterministic_key}, and returns a {@link ResponseKeyPair} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#deterministic_key">Official RPC documentation</a>
+ *
+ * @deprecated This can be computed without needing to query an external node: use of static methods
+ * {@link NanoAccount#fromPrivateKey(HexData)} and {@link WalletUtil#deriveKeyFromSeed(HexData, int)} should be
+ * preferred.
  */
+@Deprecated
 public class RequestDeterministicKey extends RpcRequest<ResponseKeyPair> {
     
     @Expose @SerializedName("seed")

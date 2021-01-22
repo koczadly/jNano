@@ -7,7 +7,9 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
+import uk.oczadly.karl.jnano.model.work.WorkSolution;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseWorkValidation;
 
@@ -16,6 +18,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseWorkValidation;
  * <br>Calls the RPC command {@code work_validate}, and returns a {@link ResponseWorkValidation} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#work_validate">Official RPC documentation</a>
+ * @see WorkSolution#calculateDifficulty(Block)
  */
 public class RequestWorkValidate extends RpcRequest<ResponseWorkValidation> {
     
