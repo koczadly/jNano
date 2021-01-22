@@ -9,6 +9,7 @@ import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
 
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 public final class WalletUtil {
@@ -16,21 +17,26 @@ public final class WalletUtil {
     
     
     /**
-     * Generates and returns a new randomly created seed (or private key).
+     * Generates and returns a new randomly created private key or seed.
+     *
+     * <p>This method uses the {@link SecureRandom#getInstanceStrong()} random instance to generate the key, which
+     * may be expensive to repeatedly call.</p>
      *
      * @return a 64-character hexadecimal string to be used as a wallet seed or private key
+     *
+     * @throws NoSuchAlgorithmException if a strong SecureRandom algorithm isn't set or can't be found
      */
-    public static HexData generateRandomSeed() {
-        return generateRandomSeed(new SecureRandom());
+    public static HexData generateRandomKey() throws NoSuchAlgorithmException {
+        return generateRandomKey(SecureRandom.getInstanceStrong());
     }
     
     /**
-     * Generates and returns a new randomly created seed (or private key) from a given {@link SecureRandom} instance.
+     * Generates and returns a new randomly created private key or seed from a given {@link SecureRandom} instance.
      *
      * @param random the random generator used to create the seed
      * @return a 64-character hexadecimal string to be used as a wallet seed or private key
      */
-    public static HexData generateRandomSeed(SecureRandom random) {
+    public static HexData generateRandomKey(SecureRandom random) {
         byte[] data = new byte[NanoConst.LEN_KEY_B];
         random.nextBytes(data);
         return new HexData(data);

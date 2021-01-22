@@ -9,14 +9,16 @@ import org.junit.Test;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
 
+import java.security.NoSuchAlgorithmException;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class WalletUtilTest {
     
     @Test
-    public void generateSeed() {
-        HexData seed = WalletUtil.generateRandomSeed();
+    public void generateSeed() throws NoSuchAlgorithmException {
+        HexData seed = WalletUtil.generateRandomKey();
         assertNotNull(seed);
         assertEquals(NanoConst.LEN_KEY_B, seed.length());
     }
