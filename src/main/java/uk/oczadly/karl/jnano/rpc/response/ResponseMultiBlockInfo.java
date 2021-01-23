@@ -5,19 +5,27 @@
 
 package uk.oczadly.karl.jnano.rpc.response;
 
+import com.google.gson.*;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.internal.JNC;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
+import uk.oczadly.karl.jnano.model.block.BlockType;
+import uk.oczadly.karl.jnano.model.block.SendBlock;
+import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
+import java.lang.reflect.Type;
+import java.math.BigInteger;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * This response class contains a set of block information.
@@ -38,38 +46,36 @@ public class ResponseMultiBlockInfo extends RpcResponse {
         return blocks;
     }
     
+    /**
+     * Returns the retrieved block from the given hash.
+     * @param hash the block hash
+     * @return the block info
+     */
+    public BlockInfo getBlock(HexData hash) {
+        return getBlocks().get(hash);
+    }
     
+    /**
+     * Returns the retrieved block from the given hash.
+     * @param hash the block hash
+     * @return the block info
+     */
+    public BlockInfo getBlock(String hash) {
+        return getBlock(new HexData(hash));
+    }
+    
+    
+    @JsonAdapter(InfoAdapter.class)
     public static class BlockInfo {
-        @Expose @SerializedName("block_account")
-        private NanoAccount account;
-        
-        @Expose @SerializedName("amount")
-        private NanoAmount amount;
-    
-        @Expose @SerializedName("balance")
-        private NanoAmount balance;
-    
-        @Expose @SerializedName("pending")
-        private NanoAmount pending;
-    
-        @Expose @SerializedName("source_account")
-        private NanoAccount source;
-        
-        @Expose @SerializedName("height")
-        private long height;
-        
-        @Expose @SerializedName("local_timestamp")
-        @JsonAdapter(InstantAdapter.Seconds.class)
-        private Instant timestamp;
-        
-        @Expose @SerializedName("confirmed")
-        private boolean confirmed;
-        
-        @Expose @SerializedName("contents")
-        private Block blockContents;
-        
-        @Expose @SerializedName("subtype")
-        private StateBlockSubType subtype;
+        private final NanoAccount account;
+        private final NanoAmount amount;
+        private final NanoAmount balance;
+        private final boolean pending;
+        private final NanoAccount source;
+        private final long height;
+        private final Instant timestamp;
+        private final boolean confirmed;
+        private final Block blockContents;
         
         
         /**
@@ -117,21 +123,14 @@ public class ResponseMultiBlockInfo extends RpcResponse {
         /**
          * @return the contents of the block
          */
-        public Block getBlockContents() {
+        public Block getContents() {
             return blockContents;
-        }
-        
-        /**
-         * @return the subtype of the block
-         */
-        public StateBlockSubType getSubtype() {
-            return subtype;
         }
     
         /**
-         * @return the pending amount
+         * @return whether the funds have been accepted (if a send transaction)
          */
-        public NanoAmount getPending() {
+        public boolean getPending() {
             return pending;
         }
     
@@ -140,6 +139,65 @@ public class ResponseMultiBlockInfo extends RpcResponse {
          */
         public NanoAccount getSourceAccount() {
             return source;
+        }
+    
+        public BlockInfo(NanoAccount account, NanoAmount amount, NanoAmount balance, boolean pending,
+                         NanoAccount source, long height, Instant timestamp, boolean confirmed, Block blockContents) {
+            this.account = account;
+            this.amount = amount;
+            this.balance = balance;
+            this.pending = pending;
+            this.source = source;
+            this.height = height;
+            this.timestamp = timestamp;
+            this.confirmed = confirmed;
+            this.blockContents = blockContents;
+        }
+    }
+    
+    /*
+     * Fix for weird formats and return types. Why should I have to do this??
+     * SEND block:     Balance is encoded in hexadecimal
+     * STATE block:    Subtype field is outside the contents object
+     * source_account: "0" when null
+     *
+     */
+    static class InfoAdapter implements JsonDeserializer<BlockInfo> {
+        private static final Function<JsonObject, SendBlock> SEND_DESERIALIZER = json -> new SendBlock(
+                JNH.getJson(json, "signature",    HexData::new),
+                JNH.getJson(json, "work",         WorkSolution::new),
+                JNH.getJson(json, "previous",     HexData::new),
+                JNH.getJson(json, "destination",  NanoAccount::parseAddress),
+                JNH.getJson(json, "balance", v -> NanoAmount.valueOfRaw(new BigInteger(v, 16))));
+        
+        @Override
+        public BlockInfo deserialize(JsonElement jsonEl, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            JsonObject json = jsonEl.getAsJsonObject();
+            
+            // Parse block contents
+            JsonObject contents = json.getAsJsonObject("contents");
+            BlockType type = BlockType.fromName(contents.get("type").getAsString());
+            Block block;
+            if (type == BlockType.SEND) {
+                block = SEND_DESERIALIZER.apply(contents);
+            } else {
+                if (type == BlockType.STATE)
+                    contents.add("subtype", json.get("subtype")); // Add subtype property
+                block = JNC.BLOCK_DESERIALIZER.deserialize(contents); // Default deserializer
+            }
+            
+            // Parse response class
+            return new BlockInfo(
+                    JNH.getJson(json, "block_account", NanoAccount::parseAddress),
+                    JNH.getJson(json, "amount", NanoAmount::valueOfRaw),
+                    JNH.getJson(json, "balance", NanoAmount::valueOfRaw),
+                    json.has("pending") && json.get("pending").getAsInt() == 1,
+                    JNH.getJson(json, "source_account", s -> s.equals("0") ? null : NanoAccount.parseAddress(s)),
+                    json.get("height").getAsLong(),
+                    InstantAdapter.Seconds.INSTANCE.deserialize(json.get("local_timestamp"), Instant.class, context),
+                    json.get("confirmed").getAsBoolean(),
+                    block);
         }
     }
     

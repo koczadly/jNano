@@ -15,6 +15,8 @@ public final class InstantAdapter {
     
     
     public static class Millis implements JsonSerializer<Instant>, JsonDeserializer<Instant> {
+        public static final Millis INSTANCE = new Millis();
+        
         @Override
         public Instant deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
@@ -28,6 +30,8 @@ public final class InstantAdapter {
     }
     
     public static class Seconds implements JsonSerializer<Instant>, JsonDeserializer<Instant> {
+        public static final Seconds INSTANCE = new Seconds();
+        
         @Override
         public Instant deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {

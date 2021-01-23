@@ -9,50 +9,37 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.annotations.SerializedName;
-import uk.oczadly.karl.jnano.internal.JNH;
-import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
-import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
-import uk.oczadly.karl.jnano.model.block.*;
-import uk.oczadly.karl.jnano.model.work.WorkSolution;
+import uk.oczadly.karl.jnano.model.block.Block;
 
 import java.lang.reflect.Type;
-import java.math.BigInteger;
 import java.time.Instant;
 
 /**
  * This response class contains detailed information about a block.
  */
+@JsonAdapter(ResponseBlockInfo.Adapter.class)
 public class ResponseBlockInfo extends RpcResponse {
     
-    @Expose @SerializedName("block_account")
-    private NanoAccount account;
+    private final NanoAccount account;
+    private final NanoAmount amount;
+    private final NanoAmount balance;
+    private final long height;
+    private final Instant timestamp;
+    private final boolean confirmed;
+    private final Block blockContents;
     
-    @Expose @SerializedName("amount")
-    private NanoAmount amount;
-    
-    @Expose @SerializedName("balance")
-    private NanoAmount balance;
-    
-    @Expose @SerializedName("height")
-    private long height;
-    
-    @Expose @SerializedName("local_timestamp") @JsonAdapter(InstantAdapter.Seconds.class)
-    private Instant timestamp;
-    
-    @Expose @SerializedName("confirmed")
-    private boolean confirmed;
-    
-    @Expose @SerializedName("contents") @JsonAdapter(BlockAdapter.class)
-    private Block blockContents;
-    
-    @Expose @SerializedName("subtype")
-    private StateBlockSubType subtype;
-    
+    private ResponseBlockInfo(ResponseMultiBlockInfo.BlockInfo block) {
+        this.account = block.getAccount();
+        this.amount = block.getAmount();
+        this.balance = block.getBalance();
+        this.height = block.getHeight();
+        this.timestamp = block.getLocalTimestamp();
+        this.confirmed = block.isConfirmed();
+        this.blockContents = block.getContents();
+    }
     
     /**
      * @return the account who created this block
@@ -99,37 +86,18 @@ public class ResponseBlockInfo extends RpcResponse {
     /**
      * @return the contents of the block
      */
-    public Block getBlockContents() {
+    public Block getContents() {
         return blockContents;
     }
     
-    /**
-     * @return the subtype of the block
-     */
-    public StateBlockSubType getSubtype() {
-        return subtype;
-    }
     
-    
-    
-    // Fix for hexadecimal-encoded balances with SEND blocks.
-    private static class BlockAdapter implements JsonDeserializer<Block> {
-        BlockDeserializer deserializer = BlockDeserializer.withDefaults();
-        
-        public BlockAdapter() {
-            deserializer.registerDeserializer(BlockType.SEND,json -> new SendBlock(
-                    JNH.getJson(json, "signature",   HexData::new),
-                    JNH.getJson(json, "work",        WorkSolution::new),
-                    JNH.getJson(json, "previous",    HexData::new),
-                    JNH.getJson(json, "destination", NanoAccount::parseAddress),
-                    JNH.getJson(json, "balance", v -> NanoAmount.valueOfRaw(new BigInteger(v, 16)))
-            ));
-        }
+    static class Adapter implements JsonDeserializer<ResponseBlockInfo> {
+        static final ResponseMultiBlockInfo.InfoAdapter ADAPTER = new ResponseMultiBlockInfo.InfoAdapter();
         
         @Override
-        public Block deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+        public ResponseBlockInfo deserialize(JsonElement jsonEl, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
-            return deserializer.deserialize(json.getAsJsonObject());
+            return new ResponseBlockInfo(ADAPTER.deserialize(jsonEl, ResponseMultiBlockInfo.BlockInfo.class, context));
         }
     }
     
