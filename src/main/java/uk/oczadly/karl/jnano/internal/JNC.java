@@ -5,6 +5,7 @@
 
 package uk.oczadly.karl.jnano.internal;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import uk.oczadly.karl.jnano.internal.gsonadapters.*;
@@ -28,6 +29,7 @@ public class JNC {
             .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer()) // Boolean deserializer
             .registerTypeAdapter(BigInteger.class, new BigIntSerializer())     // BigInt serializer (string)
             .registerTypeAdapter(Instant.class, new InstantAdapter.Millis())   // Instant adapter (epoch millis)
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .create();
     
     public static final BlockDeserializer BLOCK_DESERIALIZER = BlockDeserializer.withDefaults();
