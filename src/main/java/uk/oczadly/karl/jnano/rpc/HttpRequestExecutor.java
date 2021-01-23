@@ -20,30 +20,6 @@ import java.net.URL;
  */
 public class HttpRequestExecutor implements RpcRequestExecutor {
     
-    private final boolean allowErrors;
-    
-    
-    /**
-     * Constructs an executor with {@code allowErrors} set to false.
-     * @see #HttpRequestExecutor(boolean)
-     */
-    public HttpRequestExecutor() {
-        this(false);
-    }
-    
-    /**
-     * @param allowErrors if true, non-200 HTTP codes will still be parsed instead of throwing an exception
-     */
-    public HttpRequestExecutor(boolean allowErrors) {
-        this.allowErrors = allowErrors;
-    }
-    
-    
-    public final boolean getAllowErrors() {
-        return allowErrors;
-    }
-    
-    
     @Override
     public final String submit(URL address, String request, int timeout) throws IOException {
         if (address == null)
@@ -92,11 +68,7 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
             try {
                 is = con.getInputStream();
             } catch (IOException e) {
-                if (allowErrors) {
-                    is = con.getErrorStream();
-                } else {
-                    throw e;
-                }
+                is = con.getErrorStream();
             }
             
             // Read response data
