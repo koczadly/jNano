@@ -44,10 +44,8 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
     
     /**
      * @param root the source root
-     * @deprecated Use nested builder class
      * @see Builder#Builder(String)
      */
-    @Deprecated(forRemoval = true)
     public RequestWorkGenerate(String root) {
         this(root, null, null, null, null);
     }
@@ -58,10 +56,8 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
      * @param root       the source root
      * @param usePeers   (optional) whether work peers should be used
      * @param difficulty (optional) the absolute difficulty value
-     * @deprecated Use nested builder class
      * @see Builder#Builder(String)
      */
-    @Deprecated(forRemoval = true)
     public RequestWorkGenerate(String root, Boolean usePeers, WorkDifficulty difficulty) {
         this(root, null, difficulty, null, usePeers);
     }
@@ -72,10 +68,8 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
      * @param root       the source root
      * @param usePeers   (optional) whether work peers should be used
      * @param multiplier (optional) the difficulty multiplier
-     * @deprecated Use nested builder class
      * @see Builder#Builder(String)
      */
-    @Deprecated(forRemoval = true)
     public RequestWorkGenerate(String root, Boolean usePeers, Double multiplier) {
         this(root, null, null, multiplier, usePeers);
     }
