@@ -18,7 +18,7 @@ import java.io.IOException;
  * @param <Q> the request class
  * @param <R> the response class
  */
-public interface QueryCallback<Q extends RpcRequest<R>, R extends RpcResponse> {
+public interface QueryCallback<Q extends RpcRequest<? extends R>, R extends RpcResponse> {
     
     /**
      * This method is called when the request was successful and the node has returned a valid response.

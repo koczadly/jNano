@@ -13,6 +13,7 @@ import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -211,8 +212,8 @@ public class RpcQueryNode {
         if (timeout < 0)
             throw new IllegalArgumentException("Timeout period must be zero or greater.");
         
-        String requestJsonStr = this.requestSerializer.serialize(request); // Serialise the request into JSON
-        return this.processRequestRaw(requestJsonStr, timeout, request.getResponseClass());
+        String requestJsonStr = requestSerializer.serialize(request); // Serialise the request into JSON
+        return processRequestRaw(requestJsonStr, timeout, request.getResponseClass());
     }
     
     
@@ -231,7 +232,7 @@ public class RpcQueryNode {
      * for a list of supported request operations.</a>
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request) {
-        return this.processRequestAsync(request, defaultTimeout, null);
+        return processRequestAsync(request, defaultTimeout, null);
     }
     
     /**
@@ -250,7 +251,7 @@ public class RpcQueryNode {
      * for a list of supported request operations.</a>
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request, int timeout) {
-        return this.processRequestAsync(request, timeout, null);
+        return processRequestAsync(request, timeout, null);
     }
     
     
@@ -271,8 +272,8 @@ public class RpcQueryNode {
      * for a list of supported request operations.</a>
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request,
-            QueryCallback<Q, R> callback) {
-        return this.processRequestAsync(request, defaultTimeout, callback);
+            QueryCallback<? super Q, ? super R> callback) {
+        return processRequestAsync(request, defaultTimeout, callback);
     }
     
     /**
@@ -293,31 +294,13 @@ public class RpcQueryNode {
      * for a list of supported request operations.</a>
      */
     public <Q extends RpcRequest<R>, R extends RpcResponse> Future<R> processRequestAsync(Q request, int timeout,
-            QueryCallback<Q, R> callback) {
+            QueryCallback<? super Q, ? super R> callback) {
         if (request == null)
             throw new IllegalArgumentException("Request argument must not be null.");
         if (timeout < 0)
             throw new IllegalArgumentException("Timeout period must be zero or greater.");
         
-        return this.executorService.submit(() -> {
-            try {
-                R response = RpcQueryNode.this.processRequest(request, timeout);
-                if (callback != null)
-                    callback.onResponse(response, request);
-                return response; // Return for Future object
-            } catch (RpcException ex) {
-                if (callback != null)
-                    callback.onFailure(ex, request);
-                throw ex; // Re-throw for Future object
-            } catch (IOException ex) {
-                if (callback != null)
-                    callback.onFailure(ex, request);
-                throw ex; // Re-throw for Future object
-            } catch (Exception ex) { // Shouldn't happen!
-                ex.printStackTrace();
-                throw ex;
-            }
-        });
+        return executorService.submit(new AsyncExecutorTask<>(request, timeout, callback));
     }
     
     
@@ -343,7 +326,7 @@ public class RpcQueryNode {
         
         try {
             String responseJson = this.processRequestRaw(jsonRequest, timeout); // Send the request to the node
-            return this.responseDeserializer.deserialize(responseJson, responseClass);
+            return responseDeserializer.deserialize(responseJson, responseClass);
         } catch (IOException | RpcException e) {
             throw e;
         } catch (Exception e) {
@@ -547,6 +530,39 @@ public class RpcQueryNode {
         public RpcQueryNode build() {
             return new RpcQueryNode(address, defaultTimeout, serializer, deserializer, requestExecutor,
                     executorService);
+        }
+    }
+    
+    private class AsyncExecutorTask<Q extends RpcRequest<R>, R extends RpcResponse> implements Callable<R> {
+        private final Q request;
+        private final QueryCallback<? super Q, ? super R> callback;
+        private final int timeout;
+    
+        public AsyncExecutorTask(Q request, int timeout, QueryCallback<? super Q, ? super R> callback) {
+            this.request = request;
+            this.timeout = timeout;
+            this.callback = callback;
+        }
+        
+        @Override
+        public R call() throws Exception {
+            try {
+                R response = processRequest(request, timeout);
+                if (callback != null)
+                    callback.onResponse(response, request);
+                return response; // Return for Future object
+            } catch (RpcException ex) {
+                if (callback != null)
+                    callback.onFailure(ex, request);
+                throw ex; // Re-throw for Future object
+            } catch (IOException ex) {
+                if (callback != null)
+                    callback.onFailure(ex, request);
+                throw ex; // Re-throw for Future object
+            } catch (Exception ex) { // Shouldn't happen!
+                ex.printStackTrace();
+                throw ex;
+            }
         }
     }
     
