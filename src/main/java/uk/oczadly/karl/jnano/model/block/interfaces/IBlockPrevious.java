@@ -13,8 +13,7 @@ import uk.oczadly.karl.jnano.model.HexData;
 public interface IBlockPrevious extends IBlock {
     
     /**
-     * Returns the hash of the previous block in the account's chain. For the first block in an account, this value
-     * may return null or an empty string of zeroes.
+     * Returns the hash of the previous block in the account's chain.
      * @return the previous block hash
      */
     HexData getPreviousBlockHash();
