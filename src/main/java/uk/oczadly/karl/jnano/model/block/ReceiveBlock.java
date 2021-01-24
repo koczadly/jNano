@@ -135,10 +135,11 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     }
     
     @Override
-    protected byte[] calculateHash() {
-        return hashBlake2b(
+    protected byte[][] hashables() {
+        return new byte[][] {
                 getPreviousBlockHash().toByteArray(),
-                getSourceBlockHash().toByteArray());
+                getSourceBlockHash().toByteArray()
+        };
     }
     
     /**

@@ -156,11 +156,12 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     }
     
     @Override
-    protected byte[] calculateHash() {
-        return hashBlake2b(
+    protected byte[][] hashables() {
+        return new byte[][] {
                 getPreviousBlockHash().toByteArray(),
                 getDestinationAccount().getPublicKeyBytes(),
-                JNH.leftPadByteArray(getBalance().getAsRaw().toByteArray(), 16, false));
+                JNH.leftPadByteArray(getBalance().getAsRaw().toByteArray(), 16, false)
+        };
     }
     
     

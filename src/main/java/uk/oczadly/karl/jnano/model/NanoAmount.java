@@ -7,8 +7,7 @@ package uk.oczadly.karl.jnano.model;
 
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
-import uk.oczadly.karl.jnano.internal.JNH;
-import uk.oczadly.karl.jnano.internal.NanoConst;
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.util.NanoUnit;
 
 import java.lang.reflect.Type;
@@ -28,11 +27,13 @@ import java.util.Objects;
 @JsonAdapter(NanoAmount.JsonAdapter.class)
 public final class NanoAmount implements Comparable<NanoAmount> {
     
+    private static final BigInteger MAX_VAL_RAW = JNC.BIGINT_MAX_128;
+    
     /** A zero-value amount. */
     public static final NanoAmount ZERO = new NanoAmount(BigInteger.ZERO);
     
     /** The maximum possible balance value, equal to the amount created in the genesis block. */
-    public static final NanoAmount MAX_VALUE = new NanoAmount(NanoConst.MAX_BALANCE);
+    public static final NanoAmount MAX_VALUE = new NanoAmount(MAX_VAL_RAW);
     
     /**
      * A single Nano unit ({@code 1 Nano}).
@@ -57,7 +58,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     private NanoAmount(BigInteger rawValue) {
         if (rawValue == null)
             throw new IllegalArgumentException("Raw value cannot be null.");
-        if (!JNH.isBalanceValid(rawValue))
+        if (rawValue.compareTo(BigInteger.ZERO) < 0 || rawValue.compareTo(MAX_VAL_RAW) > 0)
             throw new IllegalArgumentException("Raw value is outside the possible range.");
         this.rawValue = rawValue;
     }

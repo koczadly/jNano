@@ -114,10 +114,11 @@ ws.getTopics().topicConfirmedBlocks().subscribeBlocking(
 This project uses the following dependencies, which are included automatically through Maven:
 - [Gson 2.8.6](https://github.com/google/gson)
 - [blake2b 1.0.0](https://github.com/rfksystems/blake2b)
+- [ed25519-java 0.3.0](https://github.com/str4d/ed25519-java)
 - [Java-WebSocket 1.5.1](https://github.com/TooTallNate/Java-WebSocket)
 
 ---
 
-<sup><sup>If you found this library useful and would like to support my work, donations may be sent to 
-<b>[nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz](nano:nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz)</b>
-\- any amount would be greatly appreciated :D</sup></sup>
+<sup>If you found this library useful and would like to support my work, donations may be sent to 
+<b>`nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz`</b> - any amount would be greatly
+ appreciated :D</sup>

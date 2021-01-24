@@ -17,7 +17,7 @@ import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlock;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.util.BlockSigningUtil;
+import uk.oczadly.karl.jnano.util.CryptoUtil;
 
 import java.util.Objects;
 
@@ -88,7 +88,7 @@ public abstract class Block implements IBlock {
         if (hash == null) {
             synchronized (this) {
                 if (hash == null)
-                    hash = new HexData(calculateHash(), NanoConst.LEN_HASH_B);
+                    hash = CryptoUtil.hash(hashables());
             }
         }
         return hash;
@@ -102,14 +102,6 @@ public abstract class Block implements IBlock {
     public final byte[] getHashBytes() {
         return getHash().toByteArray();
     }
-    
-    /**
-     * Calculates the hash of this block as a sequence of bytes.
-     * <p>For classes implementing the block, you could use the supplied {@link Block#hashBlake2b(byte[]...)} helper
-     * method.</p>
-     * @return the generated block hash, as a byte array
-     */
-    protected abstract byte[] calculateHash();
     
     @Override
     public final BlockType getType() {
@@ -152,7 +144,7 @@ public abstract class Block implements IBlock {
         if (privateKey.length() != NanoConst.LEN_KEY_B)
             throw new IllegalArgumentException("Private key length is invalid.");
     
-        HexData sig = BlockSigningUtil.sign(sigBytes(), privateKey.toByteArray());
+        HexData sig = CryptoUtil.sign(sigBytes(), privateKey.toByteArray());
         setSignature(sig);
         return sig;
     }
@@ -172,7 +164,7 @@ public abstract class Block implements IBlock {
         if (account == null)
             throw new IllegalArgumentException("Account cannot be null.");
         if (signature == null) return false;
-        return BlockSigningUtil.verify(sigBytes(), signature.toByteArray(), account.getPublicKeyBytes());
+        return CryptoUtil.verifySig(sigBytes(), signature.toByteArray(), account.getPublicKeyBytes());
     }
     
     /**
@@ -182,6 +174,12 @@ public abstract class Block implements IBlock {
     protected byte[][] sigBytes() {
         return new byte[][] { getHash().toByteArray() };
     }
+    
+    /**
+     * Returns an array of byte arrays to be hashed in the given order.
+     * @return the hashables
+     */
+    protected abstract byte[][] hashables();
     
     @Override
     public final WorkSolution getWorkSolution() {
@@ -306,16 +304,6 @@ public abstract class Block implements IBlock {
     @Override
     public final int hashCode() {
         return getHash().hashCode();
-    }
-    
-    
-    /**
-     * Standard Blake2b hash implementation.
-     * @param hashables the sequence of ordered hashable bytes
-     * @return the hash bytes
-     */
-    protected static byte[] hashBlake2b(byte[]... hashables) {
-        return JNH.blake2b(NanoConst.LEN_HASH_B, hashables);
     }
     
     

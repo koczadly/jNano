@@ -169,11 +169,12 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     }
     
     @Override
-    protected byte[] calculateHash() {
-        return hashBlake2b(
+    protected byte[][] hashables() {
+        return new byte[][] {
                 getSourceBlockHash().toByteArray(),
                 getRepresentative().getPublicKeyBytes(),
-                getAccount().getPublicKeyBytes());
+                getAccount().getPublicKeyBytes()
+        };
     }
     
     

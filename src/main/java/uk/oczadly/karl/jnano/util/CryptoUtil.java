@@ -6,26 +6,29 @@
 package uk.oczadly.karl.jnano.util;
 
 import uk.oczadly.karl.jnano.internal.Ed25519Blake2b;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
 
 /**
- * Low-level utility operations for signing and verifying blocks.
+ * Low-level operations for hashing, signing and verifying data.
  */
-public class BlockSigningUtil {
+public final class CryptoUtil {
+    private CryptoUtil() {}
+    
     
     /**
-     * Signs a block, and returns the generated signature.
-     * @param hash       the data to sign (the block hash)
+     * Signs a set of data with the given private key, and returns the generated signature.
+     * @param data       the data to sign
      * @param privateKey the private key (as a byte array)
      * @return the signature
      */
-    public static HexData sign(byte[] hash, byte[] privateKey) {
-        return sign(new byte[][] { hash }, privateKey);
+    public static HexData sign(byte[] data, byte[] privateKey) {
+        return sign(new byte[][] { data }, privateKey);
     }
     
     /**
-     * Signs a block, and returns the generated signature.
+     * Signs a set of data with the given private key, and returns the generated signature.
      *
      * @param data       the data to sign
      * @param privateKey the private key (as a byte array)
@@ -44,26 +47,26 @@ public class BlockSigningUtil {
     }
     
     /**
-     * Verifies whether the signature matches the block and public key.
-     * @param hash      the data to sign (the block hash)
-     * @param signature the signature (as a 64-length byte array)
-     * @param publicKey the public key (as a 32-length byte array)
-     * @return true if the signature matches, false if it doesn't <em>or</em> if the public key is an invalid Ed25519
-     *         key
-     */
-    public static boolean verify(byte[] hash, byte[] signature, byte[] publicKey) {
-        return verify(new byte[][] { hash }, signature, publicKey);
-    }
-    
-    /**
-     * Verifies whether the signature matches the block and public key.
+     * Verifies whether the signature matches the data and public key.
      * @param data      the data to sign
      * @param signature the signature (as a 64-length byte array)
      * @param publicKey the public key (as a 32-length byte array)
      * @return true if the signature matches, false if it doesn't <em>or</em> if the public key is an invalid Ed25519
      *         key
      */
-    public static boolean verify(byte[][] data, byte[] signature, byte[] publicKey) {
+    public static boolean verifySig(byte[] data, byte[] signature, byte[] publicKey) {
+        return verifySig(new byte[][] { data }, signature, publicKey);
+    }
+    
+    /**
+     * Verifies whether the signature matches the data and public key.
+     * @param data      the data to sign
+     * @param signature the signature (as a 64-length byte array)
+     * @param publicKey the public key (as a 32-length byte array)
+     * @return true if the signature matches, false if it doesn't <em>or</em> if the public key is an invalid Ed25519
+     *         key
+     */
+    public static boolean verifySig(byte[][] data, byte[] signature, byte[] publicKey) {
         if (data == null)
             throw new IllegalArgumentException("Data array cannot be null.");
         if (signature == null)
@@ -77,5 +80,28 @@ public class BlockSigningUtil {
         
         return Ed25519Blake2b.verify(publicKey, data, signature);
     }
-
+    
+    
+    /**
+     * Hashes the given byte array using the {@code Blake2b} message digest algorithm, with a digest output size of 32
+     * bytes.
+     *
+     * @param data the data to hash
+     * @return the hash digest, as an array of 32 bytes
+     */
+    public static HexData hash(byte[]... data) {
+        return hash(NanoConst.LEN_HASH_B, data);
+    }
+    
+    /**
+     * Hashes the given byte array using the {@code Blake2b} message digest algorithm, with the specified output size.
+     *
+     * @param outputSize the size of the output in bytes
+     * @param data       the data to hash
+     * @return the hash digest, as an array of bytes
+     */
+    public static HexData hash(int outputSize, byte[]... data) {
+        return new HexData(JNH.blake2b(outputSize, data), outputSize);
+    }
+    
 }

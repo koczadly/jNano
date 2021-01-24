@@ -8,9 +8,6 @@ package uk.oczadly.karl.jnano.internal;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import org.junit.Test;
-import uk.oczadly.karl.jnano.util.NanoConstants;
-
-import java.math.BigInteger;
 
 import static org.junit.Assert.*;
 
@@ -40,16 +37,6 @@ public class JNHTest {
     public void testReverseByteArray() {
         assertNull(JNH.reverseArray(null));
         assertArrayEquals(new byte[] {4, 3, 2}, JNH.reverseArray(new byte[] {2, 3, 4}));
-    }
-    
-    @Test
-    public void testBalanceValid() {
-        assertTrue(JNH.isBalanceValid(null));
-        assertTrue(JNH.isBalanceValid(BigInteger.ZERO));
-        assertTrue(JNH.isBalanceValid(new BigInteger("270")));
-        assertTrue(JNH.isBalanceValid(NanoConstants.MAX_BALANCE_RAW));
-        assertFalse(JNH.isBalanceValid(NanoConstants.MAX_BALANCE_RAW.add(BigInteger.ONE)));
-        assertFalse(JNH.isBalanceValid(new BigInteger("-1")));
     }
     
     @Test

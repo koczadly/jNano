@@ -12,9 +12,7 @@ import com.google.gson.JsonParser;
 import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.utils.Functions;
 import uk.oczadly.karl.jnano.model.HexData;
-import uk.oczadly.karl.jnano.util.NanoConstants;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
@@ -94,14 +92,6 @@ public class JNH {
      */
     public static boolean isValidLength(HexData data, int len) {
         return data == null || data.length() == len;
-    }
-    
-    /**
-     * @return true if the BigInt is null or is within the correct range
-     */
-    public static boolean isBalanceValid(BigInteger raw) {
-        if (raw == null) return true;
-        return raw.compareTo(BigInteger.ZERO) >= 0 && raw.compareTo(NanoConstants.MAX_BALANCE_RAW) <= 0;
     }
     
     /**
