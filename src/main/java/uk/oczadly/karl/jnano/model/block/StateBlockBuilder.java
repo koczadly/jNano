@@ -16,6 +16,7 @@ import java.math.BigInteger;
 
 /**
  * <p>This class can be used to construct new State block ({@link StateBlock} instances.</p>
+ *
  * <p>Simply call the constructor with the required parameters, then set the additional properties using the
  * provided setter methods. Finally, call {@link #build()} to create the state block instance from the
  * information supplied to this builder class.</p>
@@ -86,7 +87,7 @@ public final class StateBlockBuilder {
      * @param signature the signature (64-character hexadecimal string)
      * @return this builder instance
      */
-    public StateBlockBuilder setSignature(String signature) {
+    public synchronized StateBlockBuilder setSignature(String signature) {
         return setSignature(signature != null ? new HexData(signature, NanoConst.LEN_SIGNATURE_B) : null);
     }
     
@@ -95,7 +96,7 @@ public final class StateBlockBuilder {
      * @param signature the signature (64-character hexadecimal value)
      * @return this builder instance
      */
-    public StateBlockBuilder setSignature(HexData signature) {
+    public synchronized StateBlockBuilder setSignature(HexData signature) {
         this.signature = signature;
         return this;
     }
@@ -106,7 +107,7 @@ public final class StateBlockBuilder {
      * @param work the computed work value
      * @return this builder instance
      */
-    public StateBlockBuilder setWork(WorkSolution work) {
+    public synchronized StateBlockBuilder setWork(WorkSolution work) {
         this.work = work;
         return this;
     }
@@ -116,7 +117,7 @@ public final class StateBlockBuilder {
      * @param work the computed work value (16-character hexadecimal value)
      * @return this builder instance
      */
-    public StateBlockBuilder setWork(String work) {
+    public synchronized StateBlockBuilder setWork(String work) {
         return setWork(work != null ? new WorkSolution(work) : null);
     }
     
@@ -126,7 +127,7 @@ public final class StateBlockBuilder {
      * @param subtype the block subtype
      * @return this builder instance
      */
-    public StateBlockBuilder setSubtype(StateBlockSubType subtype) {
+    public synchronized StateBlockBuilder setSubtype(StateBlockSubType subtype) {
         this.subtype = subtype;
         return this;
     }
@@ -137,7 +138,7 @@ public final class StateBlockBuilder {
      * @param account the account which owns this block
      * @return this builder instance
      */
-    public StateBlockBuilder setAccount(NanoAccount account) {
+    public synchronized StateBlockBuilder setAccount(NanoAccount account) {
         if (account == null)
             throw new IllegalArgumentException("Account address argument cannot be null.");
         
@@ -150,7 +151,7 @@ public final class StateBlockBuilder {
      * @param account the account which owns this block
      * @return this builder instance
      */
-    public StateBlockBuilder setAccount(String account) {
+    public synchronized StateBlockBuilder setAccount(String account) {
         if (account == null)
             throw new IllegalArgumentException("Account address argument cannot be null.");
         return setAccount(NanoAccount.parse(account));
@@ -162,7 +163,7 @@ public final class StateBlockBuilder {
      * @param block the previous block in this account chain
      * @return this builder instance
      */
-    public StateBlockBuilder setPreviousHash(Block block) {
+    public synchronized StateBlockBuilder setPreviousHash(Block block) {
         return setPreviousHash(block.getHash());
     }
     
@@ -171,7 +172,7 @@ public final class StateBlockBuilder {
      * @param hash the hash of the previous block in this account chain (64-character hexadecimal string)
      * @return this builder instance
      */
-    public StateBlockBuilder setPreviousHash(String hash) {
+    public synchronized StateBlockBuilder setPreviousHash(String hash) {
         return setPreviousHash(hash != null
                 ? new HexData(hash, NanoConst.LEN_HASH_B) : null);
     }
@@ -181,7 +182,7 @@ public final class StateBlockBuilder {
      * @param hash the hash of the previous block in this account chain (64-character hexadecimal value)
      * @return this builder instance
      */
-    public StateBlockBuilder setPreviousHash(HexData hash) {
+    public synchronized StateBlockBuilder setPreviousHash(HexData hash) {
         this.prevHash = hash;
         return this;
     }
@@ -192,7 +193,7 @@ public final class StateBlockBuilder {
      * @param representative the representative of the account
      * @return this builder instance
      */
-    public StateBlockBuilder setRepresentative(NanoAccount representative) {
+    public synchronized StateBlockBuilder setRepresentative(NanoAccount representative) {
         this.rep = representative;
         return this;
     }
@@ -202,7 +203,7 @@ public final class StateBlockBuilder {
      * @param representative the representative of the account
      * @return this builder instance
      */
-    public StateBlockBuilder setRepresentative(String representative) {
+    public synchronized StateBlockBuilder setRepresentative(String representative) {
         return setRepresentative(representative != null ? NanoAccount.parse(representative) : null);
     }
     
@@ -212,7 +213,7 @@ public final class StateBlockBuilder {
      * @param balance the balance of the account after this transaction (in raw)
      * @return this builder instance
      */
-    public StateBlockBuilder setBalance(String balance) {
+    public synchronized StateBlockBuilder setBalance(String balance) {
         return setBalance(NanoAmount.valueOfRaw(balance));
     }
     
@@ -221,7 +222,7 @@ public final class StateBlockBuilder {
      * @param balance the balance of the account after this transaction (in raw)
      * @return this builder instance
      */
-    public StateBlockBuilder setBalance(BigInteger balance) {
+    public synchronized StateBlockBuilder setBalance(BigInteger balance) {
         return setBalance(NanoAmount.valueOfRaw(balance));
     }
     
@@ -230,7 +231,7 @@ public final class StateBlockBuilder {
      * @param balance the balance of the account after this transaction
      * @return this builder instance
      */
-    public StateBlockBuilder setBalance(NanoAmount balance) {
+    public synchronized StateBlockBuilder setBalance(NanoAmount balance) {
         this.balance = balance;
         return this;
     }
@@ -241,7 +242,7 @@ public final class StateBlockBuilder {
      * @param linkData the {@link LinkData} object (intent value is ignored)
      * @return this builder instance
      */
-    public StateBlockBuilder setLink(LinkData linkData) {
+    public synchronized StateBlockBuilder setLink(LinkData linkData) {
         switch (linkData.getType()) {
             case ACCOUNT:
                 return setLink(linkData.asAccount());
@@ -259,7 +260,7 @@ public final class StateBlockBuilder {
      * @param link the link value, either in hexadecimal (64-character) or account format
      * @return this builder instance
      */
-    public StateBlockBuilder setLink(String link) {
+    public synchronized StateBlockBuilder setLink(String link) {
         setLink(link != null ? NanoAccount.parse(link) : null);
         return this;
     }
@@ -269,7 +270,7 @@ public final class StateBlockBuilder {
      * @param link the link value, in hexadecimal format (64-character hex string)
      * @return this builder instance
      */
-    public StateBlockBuilder setLink(HexData link) {
+    public synchronized StateBlockBuilder setLink(HexData link) {
         this.linkData = link;
         this.linkAccount = null;
         return this;
@@ -280,7 +281,7 @@ public final class StateBlockBuilder {
      * @param link the link value, in an account format
      * @return this builder instance
      */
-    public StateBlockBuilder setLink(NanoAccount link) {
+    public synchronized StateBlockBuilder setLink(NanoAccount link) {
         this.linkData = null;
         this.linkAccount = link;
         return this;
@@ -291,7 +292,7 @@ public final class StateBlockBuilder {
      * Constructs a {@link StateBlock} from the configured parameters.
      * @return a new instance of the {@link StateBlock} class using the configured parameters
      */
-    public StateBlock build() {
+    public synchronized StateBlock build() {
         return build(subtype, signature, work, account, prevHash, rep, balance, linkData, linkAccount);
     }
     
@@ -303,7 +304,7 @@ public final class StateBlockBuilder {
      * @param privateKey the private key of the account used to sign the block
      * @return a new instance of the {@link StateBlock} class using the configured parameters
      */
-    public StateBlock buildAndSign(String privateKey) {
+    public synchronized StateBlock buildAndSign(String privateKey) {
         return buildAndSign(new HexData(privateKey));
     }
     
@@ -315,7 +316,7 @@ public final class StateBlockBuilder {
      * @param privateKey the private key of the account used to sign the block
      * @return a new instance of the {@link StateBlock} class using the configured parameters
      */
-    public StateBlock buildAndSign(HexData privateKey) {
+    public synchronized StateBlock buildAndSign(HexData privateKey) {
         NanoAccount account = NanoAccount.fromPrivateKey(privateKey);
         StateBlock sb = build(subtype, null, work, account, prevHash, rep, balance, linkData, linkAccount);
         sb.sign(privateKey); // Sign the block
