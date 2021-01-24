@@ -29,11 +29,12 @@ public interface QueryCallback<Q extends RpcRequest<? extends R>, R extends RpcR
     void onResponse(R response, Q request);
     
     /**
-     * This method is called when there is an error with the request data, returned response data, or the node. View the
-     * exceptions table on the GitHub wiki for a list of possible exception classes, which you can use (along with an
-     * {@code instanceof} check) to determine the detailed cause of the exception.
+     * This method is called when there is an error with the request data, returned response data, or the node.
      *
-     * @param ex      the exception thrown
+     * <p>View the exceptions table on the GitHub wiki for a list of possible exception classes, which you can use
+     * (along with an {@code instanceof} check) to determine the detailed cause of the exception.</p>
+     *
+     * @param ex      the RPC exception thrown
      * @param request the attempted request which triggered this exception
      *
      * @see <a href="https://github.com/koczadly/jNano/wiki/Query-requests#exceptions-table">Exceptions table on the
@@ -44,7 +45,7 @@ public interface QueryCallback<Q extends RpcRequest<? extends R>, R extends RpcR
     /**
      * This method is called when an exception occurs with the connection to the node.
      *
-     * @param ex      the exception thrown
+     * @param ex      the IO exception thrown
      * @param request the attempted request which triggered this exception
      */
     void onFailure(IOException ex, Q request);

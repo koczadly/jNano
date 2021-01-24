@@ -415,7 +415,8 @@ public class RpcQueryNode {
         }
     
         /**
-         * Sets the endpoint address of the node to the given address and port.
+         * Sets the endpoint address of the node to the given address and port using the {@code HTTP} protocol.
+         *
          * @param address the hostname address of the node
          * @param port the port address of the node
          * @return this builder
@@ -426,7 +427,7 @@ public class RpcQueryNode {
         }
     
         /**
-         * Sets the endpoint address of the node to the given port on {@code localhost}.
+         * Sets the endpoint address of the node to the given port on {@code localhost} sing the {@code HTTP} protocol.
          * @param port the port address of the node
          * @return this builder
          * @throws MalformedURLException if the port is out of range
@@ -448,6 +449,8 @@ public class RpcQueryNode {
          * @return this builder
          */
         public Builder setDefaultTimeout(int defaultTimeout) {
+            if (defaultTimeout < 0)
+                throw new IllegalArgumentException("Timeout must be zero (indefinite) or greater.");
             this.defaultTimeout = defaultTimeout;
             return this;
         }
@@ -465,6 +468,8 @@ public class RpcQueryNode {
          * @return this builder
          */
         public Builder setSerializer(RpcRequestSerializer serializer) {
+            if (serializer == null)
+                throw new IllegalArgumentException("Serializer cannot be null.");
             this.serializer = serializer;
             return this;
         }
@@ -483,6 +488,8 @@ public class RpcQueryNode {
          * @return this builder
          */
         public Builder setDeserializer(RpcResponseDeserializer deserializer) {
+            if (deserializer == null)
+                throw new IllegalArgumentException("Deserializer cannot be null.");
             this.deserializer = deserializer;
             return this;
         }
@@ -501,6 +508,8 @@ public class RpcQueryNode {
          * @return this builder
          */
         public Builder setRequestExecutor(RpcRequestExecutor requestExecutor) {
+            if (requestExecutor == null)
+                throw new IllegalArgumentException("Request executor cannot be null.");
             this.requestExecutor = requestExecutor;
             return this;
         }
@@ -518,6 +527,8 @@ public class RpcQueryNode {
          * @return this builder
          */
         public Builder setAsyncExecutorService(ExecutorService executorService) {
+            if (executorService == null)
+                throw new IllegalArgumentException("Executor service cannot be null.");
             this.executorService = executorService;
             return this;
         }
@@ -528,8 +539,8 @@ public class RpcQueryNode {
          * @return a new {@link RpcQueryNode} object
          */
         public RpcQueryNode build() {
-            return new RpcQueryNode(address, defaultTimeout, serializer, deserializer, requestExecutor,
-                    executorService);
+            return new RpcQueryNode(
+                    address, defaultTimeout, serializer, deserializer, requestExecutor, executorService);
         }
     }
     
@@ -550,15 +561,15 @@ public class RpcQueryNode {
                 R response = processRequest(request, timeout);
                 if (callback != null)
                     callback.onResponse(response, request);
-                return response; // Return for Future object
+                return response;
             } catch (RpcException ex) {
                 if (callback != null)
                     callback.onFailure(ex, request);
-                throw ex; // Re-throw for Future object
+                throw ex;
             } catch (IOException ex) {
                 if (callback != null)
                     callback.onFailure(ex, request);
-                throw ex; // Re-throw for Future object
+                throw ex;
             } catch (Exception ex) { // Shouldn't happen!
                 ex.printStackTrace();
                 throw ex;
