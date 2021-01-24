@@ -42,7 +42,7 @@ public class StateBlockTest {
             .setRepresentative(TB_REP)
             .setPreviousHash(TB_PREVIOUS)
             .setBalance(TB_BALANCE)
-            .setLinkData(TB_LINK);
+            .setLink(TB_LINK);
     
     static final String TEST_BLOCK_JSON = "{\n" +
             "    \"type\": \"state\",\n" +
@@ -83,17 +83,17 @@ public class StateBlockTest {
     @Test
     public void testEquality() {
         StateBlock block1 = builder()
-                .setLinkAccount(NanoAccount.parseAddress(
+                .setLink(NanoAccount.parseAddress(
                         "nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
                 .build();
         
         StateBlock block2 = builder()
-                .setLinkAccount(NanoAccount.parseAddress(
+                .setLink(NanoAccount.parseAddress(
                         "nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
                 .build();
         
         StateBlock block3 = builder()
-                .setLinkData("62204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488")
+                .setLink("62204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488")
                 .build();
     
         // Equal

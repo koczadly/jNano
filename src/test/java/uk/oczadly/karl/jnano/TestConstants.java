@@ -64,13 +64,14 @@ public class TestConstants {
     }
     
     public static StateBlockBuilder randStateBlock() {
-        return new StateBlockBuilder(randAccount())
+        return new StateBlockBuilder()
                 .setSubtype(StateBlockSubType.SEND)
+                .setAccount(randAccount())
                 .setRepresentative(randAccount())
                 .setPreviousHash(randHexData(64))
                 .setSignature(randHexData(128))
                 .setWork(new WorkSolution(RANDOM.nextLong()))
-                .setLinkData(randHexData(64))
+                .setLink(randHexData(64))
                 .setBalance(randBalance());
                 
     }

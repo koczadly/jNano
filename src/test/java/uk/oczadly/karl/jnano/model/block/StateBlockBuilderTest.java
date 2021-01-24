@@ -11,8 +11,6 @@ import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
-import java.math.BigInteger;
-
 import static org.junit.Assert.*;
 
 public class StateBlockBuilderTest {
@@ -22,12 +20,11 @@ public class StateBlockBuilderTest {
             NanoAccount.parseAddress("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz");
     
     public static StateBlockBuilder newBuilder() {
-        return new StateBlockBuilder(
-                ACCOUNT,
-                "1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97",
-                ACCOUNT,
-                new BigInteger("1337"))
-                .setSubtype(StateBlockSubType.EPOCH);
+        return new StateBlockBuilder()
+                .setSubtype(StateBlockSubType.EPOCH)
+                .setAccount(ACCOUNT)
+                .setPreviousHash("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97")
+                .setBalance("1337");
     }
     
 
@@ -46,7 +43,7 @@ public class StateBlockBuilderTest {
     @Test
     public void testAllValues() {
         StateBlock block = newBuilder()
-                .setLinkData(DATA)
+                .setLink(DATA)
                 .setSignature("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC9734F1B28DA06C9CA246615" +
                         "9428733B971068BF154DBA2AB10372510D52E86CC97")
                 .setWork(new WorkSolution("009d175747abbc9e"))
@@ -73,18 +70,18 @@ public class StateBlockBuilderTest {
     @Test
     public void testLinkFormats() {
         // Data
-        StateBlock b1 = newBuilder().setLinkAccount(ACCOUNT).setLinkData(DATA).build();
+        StateBlock b1 = newBuilder().setLink(ACCOUNT).setLink(DATA).build();
         assertEquals(DATA, b1.getLink().asHex().toString());
         assertEquals(ACCOUNT, b1.getLink().asAccount());
     
         // Account
-        StateBlock b2 = newBuilder().setLinkData(DATA).setLinkAccount(ACCOUNT).build();
+        StateBlock b2 = newBuilder().setLink(DATA).setLink(ACCOUNT).build();
         assertEquals(DATA, b2.getLink().asHex().toString());
         assertEquals(ACCOUNT, b2.getLink().asAccount());
         
         // Null should default to 000000...
         assertEquals(JNC.ZEROES_64_HD, newBuilder().build().getLink().asHex());
-        assertEquals(JNC.ZEROES_64_HD, newBuilder().setLinkData((String)null).build().getLink().asHex());
+        assertEquals(JNC.ZEROES_64_HD, newBuilder().setLink((String)null).build().getLink().asHex());
     }
     
 }
