@@ -32,8 +32,27 @@ public abstract class RpcResponse {
      * @return the JSON-encoded response string sent from the server
      */
     @Override
-    public String toString() {
+    public final String toString() {
         return rawJson != null ? rawJson.toString() : "{}";
+    }
+    
+    
+    /**
+     * Populates the raw JSON field within the {@link RpcResponse} object.
+     * @param response the response object
+     * @param json     the raw JSON object
+     */
+    @SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
+    public static void initJsonField(RpcResponse response, JsonObject json) {
+        if (response.rawJson == null) {
+            synchronized (response) {
+                if (response.rawJson == null) {
+                    response.rawJson = json;
+                    return;
+                }
+            }
+        }
+        throw new IllegalStateException("Raw JSON object is already initialized.");
     }
     
 }

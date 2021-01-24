@@ -15,14 +15,10 @@ import uk.oczadly.karl.jnano.rpc.exception.*;
 import uk.oczadly.karl.jnano.rpc.response.ResponseSuccessful;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 
-import java.lang.reflect.Field;
-
 /**
  * The standard implementation of {@link RpcResponseDeserializer}, which deserializes the response as a JSON object.
  */
 public class JsonResponseDeserializer implements RpcResponseDeserializer {
-    
-    private static volatile Field RESPONSE_JSON_FIELD;
     
     private final Gson gson;
     
@@ -67,7 +63,7 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
     
             // Deserialize response
             R responseObj = getGson().fromJson(responseJson, responseClass);
-            populateJsonField(responseObj, responseJson);
+            RpcResponse.initJsonField(responseObj, responseJson);
             return responseObj;
         } catch (JsonParseException ex) {
             throw new RpcInvalidResponseException(response, ex); // If unable to parse
@@ -130,35 +126,6 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
         }
         // Couldn't parse, unknown exception type
         return new RpcUnrecognizedException(msg);
-    }
-    
-    
-    /**
-     * Populates the raw JSON field within {@link RpcResponse} objects.
-     * @param response the response object
-     * @param json     the raw JSON object
-     * @deprecated Method may be changed or removed in the future.
-     */
-    @Deprecated
-    public static void populateJsonField(RpcResponse response, JsonObject json) {
-        if (RESPONSE_JSON_FIELD == null) {
-            try {
-                RESPONSE_JSON_FIELD = RpcResponse.class.getDeclaredField("rawJson");
-                RESPONSE_JSON_FIELD.setAccessible(true);
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-        }
-        if (RESPONSE_JSON_FIELD != null) {
-            try {
-                if (RESPONSE_JSON_FIELD.get(response) != null)
-                    throw new IllegalStateException("Response JSON value is already assigned.");
-                
-                RESPONSE_JSON_FIELD.set(response, json);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 }
