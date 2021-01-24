@@ -108,8 +108,8 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
                         "The server returned an \"empty response\" error.", msg);
         }
         // Try parse from prefix/suffix
-        if (msgLc.startsWith("bad") || msgLc.startsWith("invalid") || msgLc.endsWith("invalid")
-                || msgLc.endsWith("required") || msgLc.endsWith("do not match")) {
+        if (msgLc.startsWith("bad") || msgLc.startsWith("invalid") || msgLc.startsWith("gap")
+                || msgLc.endsWith("invalid") || msgLc.endsWith("required") || msgLc.endsWith("do not match")) {
             return new RpcInvalidArgumentException(msg);      // Invalid/bad argument
         } else if (msgLc.contains("not found")) {
             return new RpcEntityNotFoundException(msg);       // Unknown referenced entity
