@@ -55,8 +55,7 @@ public final class StateBlockBuilder {
      * @param accountAddress the account which owns this block
      */
     public StateBlockBuilder(NanoAccount accountAddress) {
-        setAccountAddress(accountAddress);
-        setRepresentativeAddress(accountAddress);
+        setAccount(accountAddress);
     }
     
     /**
@@ -70,9 +69,9 @@ public final class StateBlockBuilder {
     @Deprecated
     public StateBlockBuilder(NanoAccount accountAddress, String prevHash,
                              NanoAccount rep, BigInteger balance) {
-        setAccountAddress(accountAddress);
-        setPreviousBlockHash(prevHash);
-        setRepresentativeAddress(rep);
+        setAccount(accountAddress);
+        setPreviousHash(prevHash);
+        setRepresentative(rep);
         setBalance(balance);
     }
     
@@ -85,8 +84,8 @@ public final class StateBlockBuilder {
      */
     @Deprecated
     public StateBlockBuilder(NanoAccount accountAddress, NanoAccount rep, BigInteger balance) {
-        setAccountAddress(accountAddress);
-        setRepresentativeAddress(rep);
+        setAccount(accountAddress);
+        setRepresentative(rep);
         setBalance(balance);
     }
     
@@ -98,12 +97,12 @@ public final class StateBlockBuilder {
     public StateBlockBuilder(StateBlock block) {
         this();
         setSubtype(block.getSubType());
-        setAccountAddress(block.getAccount());
-        setPreviousBlockHash(block.getPreviousBlockHash());
-        setRepresentativeAddress(block.getRepresentative());
+        setAccount(block.getAccount());
+        setPreviousHash(block.getPreviousBlockHash());
+        setRepresentative(block.getRepresentative());
         setBalance(getBalance());
         setSignature(block.getSignature());
-        setWorkSolution(block.getWorkSolution());
+        setWork(block.getWorkSolution());
         setLinkData(block.getLinkData());
     }
     
@@ -155,13 +154,13 @@ public final class StateBlockBuilder {
         return work;
     }
     
-    public StateBlockBuilder setWorkSolution(WorkSolution work) {
+    public StateBlockBuilder setWork(WorkSolution work) {
         this.work = work;
         return this;
     }
     
-    public StateBlockBuilder setWorkSolution(String work) {
-        return setWorkSolution(work != null ? new WorkSolution(work) : null);
+    public StateBlockBuilder setWork(String work) {
+        return setWork(work != null ? new WorkSolution(work) : null);
     }
     
     
@@ -175,11 +174,11 @@ public final class StateBlockBuilder {
     }
     
     
-    public NanoAccount getAccountAddress() {
+    public NanoAccount getAccount() {
         return account;
     }
     
-    public StateBlockBuilder setAccountAddress(NanoAccount account) {
+    public StateBlockBuilder setAccount(NanoAccount account) {
         if (account == null)
             throw new IllegalArgumentException("Account address argument cannot be null.");
         
@@ -187,33 +186,37 @@ public final class StateBlockBuilder {
         return this;
     }
     
-    public StateBlockBuilder setAccountAddress(String accountAddress) {
+    public StateBlockBuilder setAccount(String accountAddress) {
         if (accountAddress == null)
             throw new IllegalArgumentException("Account address argument cannot be null.");
-        return setAccountAddress(NanoAccount.parseAddress(accountAddress));
+        return setAccount(NanoAccount.parse(accountAddress));
     }
     
     
-    public String getPreviousBlockHash() {
+    public String getPreviousHash() {
         return prevHash.toHexString();
     }
     
-    public StateBlockBuilder setPreviousBlockHash(String previousBlockHash) {
-        return setPreviousBlockHash(previousBlockHash != null
-                ? new HexData(previousBlockHash, NanoConst.LEN_HASH_B) : null);
+    public StateBlockBuilder setPreviousHash(Block block) {
+        return setPreviousHash(block.getHash());
     }
     
-    public StateBlockBuilder setPreviousBlockHash(HexData previousBlockHash) {
-        this.prevHash = previousBlockHash;
+    public StateBlockBuilder setPreviousHash(String hash) {
+        return setPreviousHash(hash != null
+                ? new HexData(hash, NanoConst.LEN_HASH_B) : null);
+    }
+    
+    public StateBlockBuilder setPreviousHash(HexData hash) {
+        this.prevHash = hash;
         return this;
     }
     
     
-    public NanoAccount getRepresentativeAddress() {
+    public NanoAccount getRepresentative() {
         return rep;
     }
     
-    public StateBlockBuilder setRepresentativeAddress(NanoAccount rep) {
+    public StateBlockBuilder setRepresentative(NanoAccount rep) {
         if (rep == null)
             throw new IllegalArgumentException("Representative address argument cannot be null.");
         
@@ -221,10 +224,10 @@ public final class StateBlockBuilder {
         return this;
     }
     
-    public StateBlockBuilder setRepresentativeAddress(String representativeAddress) {
+    public StateBlockBuilder setRepresentative(String representativeAddress) {
         if (representativeAddress == null)
             throw new IllegalArgumentException("Representative address argument cannot be null.");
-        return setRepresentativeAddress(NanoAccount.parseAddress(representativeAddress));
+        return setRepresentative(NanoAccount.parse(representativeAddress));
     }
     
     
@@ -355,9 +358,11 @@ public final class StateBlockBuilder {
     private static StateBlock build(StateBlockSubType subtype, HexData signature, WorkSolution work,
                                     NanoAccount account, HexData prevHash, NanoAccount rep, NanoAmount bal,
                                     HexData linkHex, NanoAccount linkAcc) {
-        return new StateBlock(subtype, signature, work, account,
+        return new StateBlock(
+                subtype, signature, work, account,
                 subtype == StateBlockSubType.OPEN ? JNC.ZEROES_64_HD : prevHash,
-                rep, bal, linkHex, linkAcc);
+                rep == null ? account : rep,
+                bal, linkHex, linkAcc);
     }
     
 }

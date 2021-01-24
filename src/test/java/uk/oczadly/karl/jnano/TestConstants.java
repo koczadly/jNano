@@ -66,10 +66,10 @@ public class TestConstants {
     public static StateBlockBuilder randStateBlock() {
         return new StateBlockBuilder(randAccount())
                 .setSubtype(StateBlockSubType.SEND)
-                .setRepresentativeAddress(randAccount())
-                .setPreviousBlockHash(randHexData(64))
+                .setRepresentative(randAccount())
+                .setPreviousHash(randHexData(64))
                 .setSignature(randHexData(128))
-                .setWorkSolution(new WorkSolution(RANDOM.nextLong()))
+                .setWork(new WorkSolution(RANDOM.nextLong()))
                 .setLinkData(randHexData(64))
                 .setBalance(randBalance());
                 

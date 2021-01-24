@@ -49,7 +49,7 @@ public class StateBlockBuilderTest {
                 .setLinkData(DATA)
                 .setSignature("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC9734F1B28DA06C9CA246615" +
                         "9428733B971068BF154DBA2AB10372510D52E86CC97")
-                .setWorkSolution(new WorkSolution("009d175747abbc9e"))
+                .setWork(new WorkSolution("009d175747abbc9e"))
                 .build();
     
         assertEquals(BlockType.STATE, block.getType());

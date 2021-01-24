@@ -36,11 +36,11 @@ public class StateBlockTest {
     
     static final StateBlockBuilder TEST_BUILDER = new StateBlockBuilder()
             .setSignature(TB_SIGNATURE)
-            .setWorkSolution(TB_WORK)
+            .setWork(TB_WORK)
             .setSubtype(TB_SUBTYPE)
-            .setAccountAddress(TB_ACCOUNT)
-            .setRepresentativeAddress(TB_REP)
-            .setPreviousBlockHash(TB_PREVIOUS)
+            .setAccount(TB_ACCOUNT)
+            .setRepresentative(TB_REP)
+            .setPreviousHash(TB_PREVIOUS)
             .setBalance(TB_BALANCE)
             .setLinkData(TB_LINK);
     
@@ -251,7 +251,7 @@ public class StateBlockTest {
         // Test epoch (with OPEN subtype)
         intent = TestConstants.randStateBlock()
                 .setSubtype(StateBlockSubType.OPEN)
-                .setPreviousBlockHash(JNC.ZEROES_64)
+                .setPreviousHash(JNC.ZEROES_64)
                 .setBalance(BigInteger.ZERO)
                 .build().getIntent();
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isChangeRep());
