@@ -239,20 +239,11 @@ public final class StateBlockBuilder {
     
     /**
      * Sets the {@code link} field of the block.
-     * @param linkData the {@link LinkData} object (intent value is ignored)
+     * @param link the {@link LinkData} object (intent value is ignored)
      * @return this builder instance
      */
-    public synchronized StateBlockBuilder setLink(LinkData linkData) {
-        switch (linkData.getType()) {
-            case ACCOUNT:
-                return setLink(linkData.asAccount());
-            case HEXADECIMAL:
-                return setLink(linkData.asHex());
-            case UNUSED:
-                return setLink(JNC.ZEROES_64_HD);
-            default:
-                throw new AssertionError("Unexpected link type.");
-        }
+    public synchronized StateBlockBuilder setLink(LinkData link) {
+        return setLink(link != null ? link.asHex() : null);
     }
     
     /**
