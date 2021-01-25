@@ -23,10 +23,10 @@ public class RequestActiveDifficulty extends RpcRequest<ResponseActiveDifficulty
     
     
     /**
-     * Constructs an {@code active_difficulty} request with include_trend set to {@code true}.
+     * Constructs an {@code active_difficulty} request with include_trend set to {@code false}.
      */
     public RequestActiveDifficulty() {
-        this(true);
+        this(false);
     }
     
     /**
