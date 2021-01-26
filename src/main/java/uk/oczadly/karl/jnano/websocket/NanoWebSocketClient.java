@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * // Subscribe to the block confirmations topic, and specify an account filter
  * ws.getTopics().topicConfirmedBlocks().subscribe(new TopicConfirmation.SubParams()
- *         .setAccounts(List.of(NanoAccount.parse("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz")))
+ *         .setAccounts("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz")
  *         .setIncludeBlock(true));
  * }</pre>
  */

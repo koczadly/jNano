@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseMultiBlockInfo;
 
@@ -53,7 +54,7 @@ public class RequestMultiBlocksInfo extends RpcRequest<ResponseMultiBlockInfo> {
      */
     public RequestMultiBlocksInfo(Boolean includeNotFound, String... blockHashes) {
         super("blocks_info", ResponseMultiBlockInfo.class);
-        this.blockHashes = Set.of(blockHashes);
+        this.blockHashes = JNH.ofSet(blockHashes);
         this.includeNotFound = includeNotFound;
     }
     

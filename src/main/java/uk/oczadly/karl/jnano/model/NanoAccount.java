@@ -54,7 +54,7 @@ public final class NanoAccount {
     /**
      * An immutable set of permitted prefixes on the Nano network. This includes the {@link #DEFAULT_PREFIX} value.
      */
-    public static final Set<String> DEFAULT_PERMITTED_PREFIXES = Set.of(DEFAULT_PREFIX, "xrb");
+    public static final Set<String> DEFAULT_PERMITTED_PREFIXES = JNH.ofSet(DEFAULT_PREFIX, "xrb");
     
     /**
      * <p>The zeroth index account, represented by all zeroes for the public key. This address is also the burn address

@@ -314,7 +314,7 @@ public class WorkSolution {
             // Compare against threshold
             boolean valid = true;
             for (int i=0; i<thresholdBytes.length; i++) {
-                if (Byte.compareUnsigned(difficulty[i], thresholdBytes[i]) < 0) {
+                if ((difficulty[i] & 0xFF) < (thresholdBytes[i] & 0xFF)) {
                     valid = false;
                     break;
                 }

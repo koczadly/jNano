@@ -13,7 +13,7 @@ import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.utils.Functions;
 import uk.oczadly.karl.jnano.model.HexData;
 
-import java.util.Arrays;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -25,6 +25,19 @@ public class JNH {
     
     private static final Pattern HEX_PATTERN = Pattern.compile("[0-9A-Fa-f]+");
     
+    
+    /** For java 8 compatibility */
+    public static <T> Set<T> ofSet(T... elements) {
+        Set<T> set = new HashSet<>(elements.length);
+        for (T element : elements)
+            set.add(element);
+        return Collections.unmodifiableSet(set);
+    }
+    
+    /** For java 8 compatibility */
+    public static <T> List<T> ofList(T... elements) {
+        return Collections.unmodifiableList(Arrays.asList(elements));
+    }
     
     /**
      * Returns a new byte array filled with values.

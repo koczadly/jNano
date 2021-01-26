@@ -2,6 +2,8 @@
 jNano is a Java library used to interface with the official [Nano node](https://github.com/nanocurrency/nano-node)
  via RPC requests. It also includes many native utilities and tools so that a node isn't always necessary.
  
+This library can be built using Java versions 8 and 9 (module `uk.oczadly.karl.jnano` for Java versions 9 and above).
+ 
 Nano is a crypto-currency which aims to offer instantaneous feeless transactions. For more information, visit
 [https://nano.org](https://nano.org).
 
@@ -23,7 +25,7 @@ This project is hosted on [Maven Central](https://search.maven.org/artifact/uk.o
 <dependency>
     <groupId>uk.oczadly.karl</groupId>
     <artifactId>jnano</artifactId>
-    <version>2.12.0-V21.2</version>
+    <version>2.13.0</version>
 </dependency>
 ```
 

@@ -50,20 +50,6 @@ public class RequestWorkValidate extends RpcRequest<ResponseWorkValidation> {
      * @param workSolution the computed work value
      * @param blockHash    the block's hash
      * @param difficulty   the difficulty value
-     *                     
-     * @deprecated use {@link #RequestWorkValidate(String, String, WorkDifficulty)}
-     */
-    @Deprecated(forRemoval = true)
-    public RequestWorkValidate(String workSolution, String blockHash, String difficulty) {
-        this(workSolution, blockHash, new WorkDifficulty(difficulty));
-    }
-    
-    /**
-     * Constructs a work validation request with a specific difficulty value.
-     *
-     * @param workSolution the computed work value
-     * @param blockHash    the block's hash
-     * @param difficulty   the difficulty value
      */
     public RequestWorkValidate(String workSolution, String blockHash, WorkDifficulty difficulty) {
         this(workSolution, blockHash, difficulty, null);

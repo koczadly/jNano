@@ -9,7 +9,6 @@ import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.NanoAccount;
-import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
 import java.math.BigInteger;
@@ -73,7 +72,7 @@ public final class NanoConstants {
     
     /** An immutable set of <em>all</em> available network constant instances.
      * <p>Currently contains: {@link #NANO_LIVE_NET}, {@link #NANO_BETA_NET} and {@link #BANANO_LIVE_NET}.</p>*/
-    public static final Set<NetworkConstants> ALL_NETWORKS = Set.of(NANO_LIVE_NET, NANO_BETA_NET, BANANO_LIVE_NET);
+    public static final Set<NetworkConstants> ALL_NETWORKS = JNH.ofSet(NANO_LIVE_NET, NANO_BETA_NET, BANANO_LIVE_NET);
     
     /**
      * Returns a {@link NetworkConstants} instance for the specified network by matching the genesis block hash.
@@ -90,38 +89,5 @@ public final class NanoConstants {
                 .filter(net -> net.getNetworkIdentifier().equalsIgnoreCase(hash))
                 .findFirst().orElse(null);
     }
-    
-    
-    
-    /**
-     * The genesis account's address on the live Nano network.
-     * @deprecated Use constants offered in {@link #NANO_LIVE_NET}.
-     */
-    @Deprecated(forRemoval = true)
-    public static final NanoAccount ADDRESS_GENESIS_LIVE = NANO_LIVE_NET.getGenesisAccount();
-    
-    /**
-     * The official designated burn address. Funds sent to this address will be permanently irretrievable.
-     * @deprecated Use constants offered in {@link #NANO_LIVE_NET}.
-     */
-    @Deprecated(forRemoval = true)
-    public static final NanoAccount ADDRESS_BURN = NANO_LIVE_NET.getBurnAddress();
-    
-    
-    /**
-     * The genesis block on the live Nano network. This represents the block/transaction where all Nano units were
-     * initially introduced to the network.
-     * @deprecated Use constants offered in {@link #NANO_LIVE_NET}.
-     */
-    @Deprecated(forRemoval = true)
-    public static final Block BLOCK_GENESIS_LIVE = NANO_LIVE_NET.getGenesisBlock();
-    
-    /**
-     * The block hash of the genesis transaction on the live Nano network. This represents the block/transaction where
-     * all Nano units were initially introduced to the network.
-     * @deprecated Use constants offered in {@link #NANO_LIVE_NET}.
-     */
-    @Deprecated(forRemoval = true)
-    public static final String BLOCK_HASH_GENESIS = BLOCK_GENESIS_LIVE.getHash().toHexString();
     
 }
