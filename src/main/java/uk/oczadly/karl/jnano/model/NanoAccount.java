@@ -68,8 +68,8 @@ public final class NanoAccount {
     private final byte[] keyBytes;
     private final String prefix;
     // Fields below may be initialized lazily
-    private volatile byte[] checksumBytes;
-    private volatile String cachedAddress, publicKeyHex, segAddress, segChecksum;
+    private volatile byte[] cachedCheckBytes;
+    private volatile String cachedAddress, cachedHex, cachedSegAddr, cachedSegCheck;
     private volatile BigInteger index;
     
     /**
@@ -81,8 +81,8 @@ public final class NanoAccount {
      */
     @Deprecated
     public NanoAccount(NanoAccount address, String newPrefix) {
-        this(newPrefix, address.keyBytes, address.checksumBytes, null, address.publicKeyHex,
-                address.segAddress, address.segChecksum, address.index);
+        this(newPrefix, address.keyBytes, address.cachedCheckBytes, null, address.cachedHex,
+                address.cachedSegAddr, address.cachedSegCheck, address.index);
     }
     
     /**
@@ -139,11 +139,11 @@ public final class NanoAccount {
             throw new IllegalArgumentException("Key byte array must have a length of " + NanoConst.LEN_KEY_B + ".");
         this.keyBytes = keyBytes;
         this.prefix = (prefix != null && !prefix.isEmpty()) ? prefix : null;
-        this.checksumBytes = checksumBytes;
+        this.cachedCheckBytes = checksumBytes;
         this.cachedAddress = cachedAddress;
-        this.publicKeyHex = publicKeyHex;
-        this.segAddress = segAddress;
-        this.segChecksum = segChecksum;
+        this.cachedHex = publicKeyHex;
+        this.cachedSegAddr = segAddress;
+        this.cachedSegCheck = segChecksum;
         this.index = index;
     }
     
@@ -166,13 +166,13 @@ public final class NanoAccount {
      * @return an array of bytes which represent the checksum of this address
      */
     public byte[] getChecksumBytes() {
-        if (checksumBytes == null) {
+        if (cachedCheckBytes == null) {
             synchronized (this) {
-                if (checksumBytes == null)
-                    checksumBytes = calculateChecksumBytes(keyBytes);
+                if (cachedCheckBytes == null)
+                    cachedCheckBytes = calculateChecksumBytes(keyBytes);
             }
         }
-        return Arrays.copyOf(checksumBytes, checksumBytes.length);
+        return Arrays.copyOf(cachedCheckBytes, cachedCheckBytes.length);
     }
     
     /**
@@ -197,13 +197,13 @@ public final class NanoAccount {
      * @return this address, represented by a 64-character hexadecimal string
      */
     public String toPublicKey() {
-        if (publicKeyHex == null) {
+        if (cachedHex == null) {
             synchronized (this) {
-                if (publicKeyHex == null)
-                    publicKeyHex = JNC.ENC_16.encode(keyBytes);
+                if (cachedHex == null)
+                    cachedHex = JNC.ENC_16.encode(keyBytes);
             }
         }
-        return publicKeyHex;
+        return cachedHex;
     }
     
     /**
@@ -232,26 +232,26 @@ public final class NanoAccount {
      * @return this address, without the prefix or checksum segments
      */
     public String getAddressSegment() {
-        if (segAddress == null) {
+        if (cachedSegAddr == null) {
             synchronized (this) {
-                if (segAddress == null)
-                    segAddress = JNC.ENC_32.encode(getPublicKeyBytes());
+                if (cachedSegAddr == null)
+                    cachedSegAddr = JNC.ENC_32.encode(getPublicKeyBytes());
             }
         }
-        return segAddress;
+        return cachedSegAddr;
     }
     
     /**
      * @return the checksum segment of this address
      */
     public String getAddressChecksumSegment() {
-        if (segChecksum == null) {
+        if (cachedSegCheck == null) {
             synchronized (this) {
-                if (segChecksum == null)
-                    segChecksum = JNC.ENC_32.encode(getChecksumBytes());
+                if (cachedSegCheck == null)
+                    cachedSegCheck = JNC.ENC_32.encode(getChecksumBytes());
             }
         }
-        return segChecksum;
+        return cachedSegCheck;
     }
     
     
@@ -454,14 +454,14 @@ public final class NanoAccount {
         checksum = checksum != null ? checksum.toLowerCase() : null;
         
         // Create object
-        NanoAccount createdAddr = new NanoAccount(
-                prefix, calculateKeyBytes(address, JNC.ENC_32), address, null, null);
+        NanoAccount account = new NanoAccount(
+                prefix, decodeKey(address, JNC.ENC_32), address, null, null);
         
         // Verify checksum (if provided)
-        if (checksum != null && !checksum.equals(createdAddr.getAddressChecksumSegment()))
+        if (checksum != null && !checksum.equals(account.getAddressChecksumSegment()))
             throw new AddressFormatException("Provided checksum did not match the computed checksum.");
         
-        return createdAddr;
+        return account;
     }
     
     /**
@@ -489,7 +489,7 @@ public final class NanoAccount {
         if (key.length() != 64) throw new AddressFormatException("Key string must be 64 characters long.");
         
         key = key.toUpperCase();
-        return new NanoAccount(prefix, calculateKeyBytes(key, JNC.ENC_16), null, key, null);
+        return new NanoAccount(prefix, decodeKey(key, JNC.ENC_16), null, key, null);
     }
     
     
@@ -522,7 +522,7 @@ public final class NanoAccount {
             throw new IllegalArgumentException("Invalid private key length.");
         
         byte[] pubKey = Ed25519Blake2b.derivePublicKey(privKey.toByteArray());
-        return new NanoAccount(pubKey, prefix);
+        return new NanoAccount(prefix, pubKey, null, null, null);
     }
     
     
@@ -608,7 +608,7 @@ public final class NanoAccount {
     }
     
     /** Helper method to calculate bytes from an encoded address. */
-    private static byte[] calculateKeyBytes(String encodedData, BaseEncoder decoder) {
+    private static byte[] decodeKey(String encodedData, BaseEncoder decoder) {
         byte[] keyBytes;
         try {
             keyBytes = decoder.decode(encodedData);
