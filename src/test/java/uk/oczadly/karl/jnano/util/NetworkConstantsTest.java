@@ -6,10 +6,6 @@
 package uk.oczadly.karl.jnano.util;
 
 import org.junit.Test;
-import uk.oczadly.karl.jnano.TestConstants;
-import uk.oczadly.karl.jnano.model.block.BlockType;
-import uk.oczadly.karl.jnano.model.block.StateBlockBuilder;
-import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -36,41 +32,6 @@ public class NetworkConstantsTest {
         NetworkConstants.Version ver2 = new NetworkConstants.Version(10, 0);
         assertEquals("V10.2", ver1.toString());
         assertEquals("V10.0", ver2.toString());
-    }
-    
-    @Test
-    public void testWorkV2() {
-        long diffSend = 0xfffffff800000000L;
-        long diffReceive = 0xfffffe0000000000L;
-        long diffLegacy = 0xffffffc000000000L;
-        NetworkConstants.WorkDifficulties diff = new NetworkConstants.WorkDifficultiesV2(
-                diffSend, diffReceive, diffLegacy);
-        
-        // Base
-        assertEquals(diffSend, diff.getBase().getAsLong());
-        // State block types
-        assertEquals(diffSend, diff.getForType(StateBlockSubType.SEND).getAsLong());
-        assertEquals(diffSend, diff.getForType(StateBlockSubType.CHANGE).getAsLong());
-        assertEquals(diffReceive, diff.getForType(StateBlockSubType.RECEIVE).getAsLong());
-        assertEquals(diffReceive, diff.getForType(StateBlockSubType.OPEN).getAsLong());
-        assertEquals(diffReceive, diff.getForType(StateBlockSubType.EPOCH).getAsLong());
-        assertEquals(diffSend, diff.getForType(BlockType.STATE).getAsLong());
-        // From legacy block
-        assertEquals(diffLegacy, diff.getForBlock(TestConstants.randOpenBlock()).getAsLong());
-        assertEquals(diffLegacy, diff.getForBlock(TestConstants.randChangeBlock()).getAsLong());
-        assertEquals(diffLegacy, diff.getForBlock(TestConstants.randSendBlock()).getAsLong());
-        assertEquals(diffLegacy, diff.getForBlock(TestConstants.randReceiveBlock()).getAsLong());
-        assertEquals(diffLegacy, diff.getForType(BlockType.OPEN).getAsLong());
-        assertEquals(diffLegacy, diff.getForType(BlockType.CHANGE).getAsLong());
-        assertEquals(diffLegacy, diff.getForType(BlockType.SEND).getAsLong());
-        assertEquals(diffLegacy, diff.getForType(BlockType.RECEIVE).getAsLong());
-        // From state block
-        StateBlockBuilder sb = TestConstants.randStateBlock();
-        assertEquals(diffSend, diff.getForBlock(sb.setSubtype(StateBlockSubType.SEND).build()).getAsLong());
-        assertEquals(diffSend, diff.getForBlock(sb.setSubtype(StateBlockSubType.CHANGE).build()).getAsLong());
-        assertEquals(diffReceive, diff.getForBlock(sb.setSubtype(StateBlockSubType.RECEIVE).build()).getAsLong());
-        assertEquals(diffReceive, diff.getForBlock(sb.setSubtype(StateBlockSubType.OPEN).build()).getAsLong());
-        assertEquals(diffReceive, diff.getForBlock(sb.setSubtype(StateBlockSubType.EPOCH).build()).getAsLong());
     }
     
 }

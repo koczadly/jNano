@@ -9,8 +9,10 @@ import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.NanoAccount;
-import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
+import uk.oczadly.karl.jnano.model.work.generator.policy.ConstantDifficultyPolicyV1;
+import uk.oczadly.karl.jnano.model.work.generator.policy.ConstantDifficultyPolicyV2;
 
 import java.math.BigInteger;
 import java.util.Set;
@@ -43,7 +45,8 @@ public final class NanoConstants {
             "9F0C933C8ADE004D808EA1985FA746A7E95BA2A38F867640F53EC8F180BDFE9E2C1268DEAD7C2664F356E37ABA362BC58E46D" +
                     "BA03E523A7B5A19E4B6EB12BB02",
             new WorkSolution("62f05417dd3fb691"), "3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xt",
-            new NetworkConstants.WorkDifficultiesV2(0xfffffff800000000L, 0xfffffe0000000000L, 0xffffffc000000000L));
+            new ConstantDifficultyPolicyV2(
+                    new WorkDifficulty(0xfffffff800000000L), new WorkDifficulty(0xfffffe0000000000L)));
     
     /**
      * Constants representing the official beta Nano network.
@@ -56,7 +59,8 @@ public final class NanoConstants {
             "DB9EFAC98A28EEA048E722F91C2A2720E1D8EF2A81453C80FC53B453180C0A264CE021D38D5B4540B1BBB0C378B80F2DF7389" +
                     "027593C08DDEF9F47934B9CF805",
             new WorkSolution("7f5c2eb5e2658e81"), "1betagcfp7ojzzkof35peohaakx7mt9ddnj4ya8n7sa8imae4ttn",
-            new NetworkConstants.WorkDifficultiesV2(0xfffff00000000000L, 0xffffe00000000000L, 0xfffff00000000000L));
+            new ConstantDifficultyPolicyV2(
+                    new WorkDifficulty(0xfffff00000000000L), new WorkDifficulty(0xffffe00000000000L)));
     
     /**
      * Constants representing the official Banano network.
@@ -69,11 +73,13 @@ public final class NanoConstants {
             "533DCAB343547B93C4128E779848DEA5877D3278CB5EA948BB3A9AA1AE0DB293DE6D9DA4F69E8D1DDFA385F9B4C5E4F38DFA4" +
                     "2C00D7B183560435D07AFA18900",
             new WorkSolution("fa055f79fa56abcf"), "1bananobh5rat99qfgt1ptpieie5swmoth87thi74qgbfrij7dcg",
-            new NetworkConstants.WorkDifficultiesV1(0xfffffe0000000000L));
+            new ConstantDifficultyPolicyV1(new WorkDifficulty(0xfffffe0000000000L)));
+    
     
     /** An immutable set of <em>all</em> available network constant instances.
      * <p>Currently contains: {@link #NANO_LIVE_NET}, {@link #NANO_BETA_NET} and {@link #BANANO_LIVE_NET}.</p>*/
     public static final Set<NetworkConstants> ALL_NETWORKS = Set.of(NANO_LIVE_NET, NANO_BETA_NET, BANANO_LIVE_NET);
+    
     
     /**
      * Returns a {@link NetworkConstants} instance for the specified network by matching the genesis block hash.
@@ -90,38 +96,5 @@ public final class NanoConstants {
                 .filter(net -> net.getNetworkIdentifier().equalsIgnoreCase(hash))
                 .findFirst().orElse(null);
     }
-    
-    
-    
-    /**
-     * The genesis account's address on the live Nano network.
-     * @deprecated Use constants offered in {@link #NANO_LIVE_NET}.
-     */
-    @Deprecated(forRemoval = true)
-    public static final NanoAccount ADDRESS_GENESIS_LIVE = NANO_LIVE_NET.getGenesisAccount();
-    
-    /**
-     * The official designated burn address. Funds sent to this address will be permanently irretrievable.
-     * @deprecated Use constants offered in {@link #NANO_LIVE_NET}.
-     */
-    @Deprecated(forRemoval = true)
-    public static final NanoAccount ADDRESS_BURN = NANO_LIVE_NET.getBurnAddress();
-    
-    
-    /**
-     * The genesis block on the live Nano network. This represents the block/transaction where all Nano units were
-     * initially introduced to the network.
-     * @deprecated Use constants offered in {@link #NANO_LIVE_NET}.
-     */
-    @Deprecated(forRemoval = true)
-    public static final Block BLOCK_GENESIS_LIVE = NANO_LIVE_NET.getGenesisBlock();
-    
-    /**
-     * The block hash of the genesis transaction on the live Nano network. This represents the block/transaction where
-     * all Nano units were initially introduced to the network.
-     * @deprecated Use constants offered in {@link #NANO_LIVE_NET}.
-     */
-    @Deprecated(forRemoval = true)
-    public static final String BLOCK_HASH_GENESIS = BLOCK_GENESIS_LIVE.getHash().toHexString();
     
 }

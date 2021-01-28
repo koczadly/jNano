@@ -63,6 +63,10 @@ public class TestConstants {
         return new ReceiveBlock(randHexData(128), new WorkSolution(RANDOM.nextLong()), randHexData(64), randHexData(64));
     }
     
+    public static StateBlock randStateBlock(StateBlockSubType subtype) {
+        return randStateBlock().setSubtype(subtype).build();
+    }
+    
     public static StateBlockBuilder randStateBlock() {
         return new StateBlockBuilder()
                 .setSubtype(StateBlockSubType.SEND)

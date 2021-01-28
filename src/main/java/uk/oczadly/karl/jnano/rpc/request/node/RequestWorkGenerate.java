@@ -11,6 +11,7 @@ import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
+import uk.oczadly.karl.jnano.model.work.generator.WorkGenerator;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseWork;
 
@@ -19,6 +20,7 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseWork;
  * <br>Calls the RPC command {@code work_generate}, and returns a {@link ResponseWork} data object.
  *
  * @see <a href="https://docs.nano.org/commands/rpc-protocol/#work_generate">Official RPC documentation</a>
+ * @see WorkGenerator
  */
 public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
     

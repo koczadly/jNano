@@ -5,6 +5,8 @@ module uk.oczadly.karl.jnano {
     exports uk.oczadly.karl.jnano.model.block;
     exports uk.oczadly.karl.jnano.model.block.interfaces;
     exports uk.oczadly.karl.jnano.model.work;
+    exports uk.oczadly.karl.jnano.model.work.generator;
+    exports uk.oczadly.karl.jnano.model.work.generator.policy;
     // Callback
     exports uk.oczadly.karl.jnano.callback;
     // RPC

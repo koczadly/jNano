@@ -5,12 +5,11 @@
 
 package uk.oczadly.karl.jnano.util;
 
-import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
-import uk.oczadly.karl.jnano.model.block.*;
-import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
+import uk.oczadly.karl.jnano.model.block.OpenBlock;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
+import uk.oczadly.karl.jnano.model.work.generator.policy.ConstantWorkDifficultyPolicy;
 
 import java.util.Comparator;
 import java.util.Objects;
@@ -29,11 +28,11 @@ public final class NetworkConstants {
     private final String networkName, addressPrefix;
     private final OpenBlock genesisBlock;
     private final NanoAccount burnAddress;
-    private final WorkDifficulties workDifficulty;
+    private final ConstantWorkDifficultyPolicy workDifficulty;
     
     NetworkConstants(Version version, String networkName, String addressPrefix, String burnAddressSegment,
                      String genBlockSig, WorkSolution genBlockWork, String genBlockAccountSeg,
-                     WorkDifficulties workDifficulty) {
+                     ConstantWorkDifficultyPolicy workDifficulty) {
         this.version = version;
         this.networkName = networkName + " network";
         this.addressPrefix = addressPrefix;
@@ -103,30 +102,11 @@ public final class NetworkConstants {
     }
     
     /**
-     * Returns a {@link WorkDifficulties} object which contains the minimum work difficulty policy for this network.
-     * @return the work difficulty thresholds for this network
+     * Returns the current minimum work difficulty thresholds for this network.
+     * @return the minimum work difficulty thresholds
      */
-    public WorkDifficulties getWorkDifficulties() {
+    public ConstantWorkDifficultyPolicy getWorkDifficulties() {
         return workDifficulty;
-    }
-    
-    /**
-     * @param blockType the block type to compute work for
-     * @return the work difficulty threshold for the given block type
-     * @deprecated Use of {@link #getWorkDifficulties()} is recommended
-     */
-    @Deprecated
-    public WorkDifficulty getWorkDifficultyThreshold(StateBlockSubType blockType) {
-        return getWorkDifficulties().getForType(blockType);
-    }
-    
-    /**
-     * @return the base work difficulty threshold for any block type
-     * @deprecated Use of {@link #getWorkDifficulties()} is recommended
-     */
-    @Deprecated
-    public WorkDifficulty getWorkDifficultyThreshold() {
-        return getWorkDifficulties().getBase();
     }
     
     @Override
@@ -135,125 +115,11 @@ public final class NetworkConstants {
     }
     
     
-    /** Represents a set of minimum work difficulty policies for the network. */
-    public interface WorkDifficulties {
-        /**
-         * Returns the minimum work difficulty threshold for a given block. Be aware that this method does
-         * <em>not</em> factor in different difficulty epochs, and is only suitable for newly produced blocks.
-         * @param block the block to compute work for
-         * @return the work difficulty threshold for the given block
-         */
-        default WorkDifficulty getForBlock(Block block) {
-            if (block == null) throw new IllegalArgumentException("Block cannot be null.");
-            if (block instanceof StateBlock) {
-                StateBlockSubType subtype = ((StateBlock)block).getSubType();
-                if (subtype != null) {
-                    return getForType(subtype);
-                }
-            }
-            return block.getType() != null ? getForType(block.getType()) : getBase();
-        }
-    
-        /**
-         * Returns the minimum work difficulty threshold for a given state block type. Be aware that this method does
-         * <em>not</em> factor in different difficulty epochs, and is only suitable for newly produced blocks.
-         * @param type the block type to compute work for
-         * @return the work difficulty threshold for the given block type
-         */
-        default WorkDifficulty getForType(StateBlockSubType type) {
-            return getForType(BlockType.STATE);
-        }
-    
-        /**
-         * Returns the minimum work difficulty threshold for a given block type. Be aware that this method does
-         * <em>not</em> factor in different difficulty epochs, and is only suitable for newly produced blocks.
-         * @param type the block type to compute work for
-         * @return the work difficulty threshold for the given block type
-         */
-        default WorkDifficulty getForType(BlockType type) {
-            return getBase();
-        }
-    
-        /**
-         * Returns the minimum work difficulty threshold for a given block. Be aware that this method does
-         * <em>not</em> factor in different difficulty epochs, and is only suitable for newly produced blocks.
-         * @return the base work difficulty threshold for any block type
-         */
-        WorkDifficulty getBase();
-    }
-    
-    static class WorkDifficultiesV1 implements WorkDifficulties {
-        private final WorkDifficulty diff;
-        
-        WorkDifficultiesV1(long diff) {
-            this.diff = new WorkDifficulty(diff);
-        }
-        
-        @Override
-        public WorkDifficulty getBase() {
-            return diff;
-        }
-    }
-    
-    static class WorkDifficultiesV2 implements WorkDifficulties {
-        private final WorkDifficulty send, receive, base, legacy;
-        
-        WorkDifficultiesV2(long send, long receive, long legacy) {
-            this.send = new WorkDifficulty(send);
-            this.receive = new WorkDifficulty(receive);
-            this.legacy = new WorkDifficulty(legacy);
-            this.base = JNH.max(this.send, this.receive);
-        }
-    
-        @Override
-        public WorkDifficulty getForBlock(Block block) {
-            if (block == null) throw new IllegalArgumentException("Block cannot be null.");
-            if (block instanceof StateBlock) {
-                StateBlockSubType subtype = ((StateBlock)block).getSubType();
-                if (subtype != null) {
-                    return getForType(subtype);
-                }
-            } else {
-                return legacy;
-            }
-            return block.getType() != null ? getForType(block.getType()) : getBase();
-        }
-        
-        @Override
-        public WorkDifficulty getForType(StateBlockSubType subtype) {
-            switch (subtype) {
-                case SEND:
-                case CHANGE:
-                    return send;
-                default:
-                    return receive;
-            }
-        }
-    
-        @Override
-        public WorkDifficulty getForType(BlockType type) {
-            switch (type) {
-                case SEND:
-                case RECEIVE:
-                case OPEN:
-                case CHANGE:
-                    return legacy;
-                default:
-                    return base;
-            }
-        }
-    
-        @Override
-        public WorkDifficulty getBase() {
-            return base;
-        }
-    }
-    
     /** Represents a version of the node. Contains both a major and minor element. */
     public static final class Version implements Comparable<Version> {
         private final int major, minor;
         
-        public Version(int major, int minor) {
+        Version(int major, int minor) {
             if (major < 1)
                 throw new IllegalArgumentException("Major version must be 1 or greater.");
             if (minor < 0)
