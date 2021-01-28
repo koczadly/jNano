@@ -78,7 +78,7 @@ public final class NanoConstants {
     
     /** An immutable set of <em>all</em> available network constant instances.
      * <p>Currently contains: {@link #NANO_LIVE_NET}, {@link #NANO_BETA_NET} and {@link #BANANO_LIVE_NET}.</p>*/
-    public static final Set<NetworkConstants> ALL_NETWORKS = Set.of(NANO_LIVE_NET, NANO_BETA_NET, BANANO_LIVE_NET);
+    public static final Set<NetworkConstants> ALL_NETWORKS = JNH.ofSet(NANO_LIVE_NET, NANO_BETA_NET, BANANO_LIVE_NET);
     
     
     /**

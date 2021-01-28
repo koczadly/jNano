@@ -141,7 +141,7 @@ public class ResponseMultiBlockInfo extends RpcResponse {
             return source;
         }
     
-        public BlockInfo(NanoAccount account, NanoAmount amount, NanoAmount balance, boolean pending,
+        BlockInfo(NanoAccount account, NanoAmount amount, NanoAmount balance, boolean pending,
                          NanoAccount source, long height, Instant timestamp, boolean confirmed, Block blockContents) {
             this.account = account;
             this.amount = amount;
@@ -159,8 +159,6 @@ public class ResponseMultiBlockInfo extends RpcResponse {
      * Fix for weird formats and return types. Why should I have to do this??
      * SEND block:     Balance is encoded in hexadecimal
      * STATE block:    Subtype field is outside the contents object
-     * source_account: "0" when null
-     *
      */
     static class InfoAdapter implements JsonDeserializer<BlockInfo> {
         private static final Function<JsonObject, SendBlock> SEND_DESERIALIZER = json -> new SendBlock(
@@ -189,15 +187,16 @@ public class ResponseMultiBlockInfo extends RpcResponse {
             
             // Parse response class
             return new BlockInfo(
-                    JNH.getJson(json, "block_account", NanoAccount::parseAddress),
-                    JNH.getJson(json, "amount", NanoAmount::valueOfRaw),
-                    JNH.getJson(json, "balance", NanoAmount::valueOfRaw),
-                    json.has("pending") && json.get("pending").getAsInt() == 1,
-                    JNH.getJson(json, "source_account", s -> s.equals("0") ? null : NanoAccount.parseAddress(s)),
+                    context.deserialize(json.get("block_account"), NanoAccount.class),
+                    context.deserialize(json.get("amount"), NanoAmount.class),
+                    context.deserialize(json.get("balance"), NanoAmount.class),
+                    context.deserialize(json.get("pending"), boolean.class),
+                    context.deserialize(json.get("source_account"), NanoAccount.class),
                     json.get("height").getAsLong(),
                     InstantAdapter.Seconds.INSTANCE.deserialize(json.get("local_timestamp"), Instant.class, context),
-                    json.get("confirmed").getAsBoolean(),
-                    block);
+                    context.deserialize(json.get("confirmed"), boolean.class),
+                    block
+            );
         }
     }
     

@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
+import uk.oczadly.karl.jnano.internal.JNH;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public enum BlockType {
         this.isTransaction = isTransaction;
         this.blockClass = blockClass;
         this.deserializer = deserializer;
-        this.altNames = Set.of(altNames);
+        this.altNames = JNH.ofSet(altNames);
     }
     
     

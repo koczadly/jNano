@@ -89,15 +89,6 @@ public class RequestWorkGenerate extends RpcRequest<ResponseWork> {
     
     
     /**
-     * @return the block's hash
-     * @deprecated Use {@link #getRootHash()} ()}
-     */
-    @Deprecated(forRemoval = true)
-    public String getBlockHash() {
-        return rootHash;
-    }
-    
-    /**
      * @return the work source root
      */
     public String getRootHash() {
