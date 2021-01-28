@@ -69,11 +69,7 @@ public class HexData {
      * @param bytes the array of bytes to construct from
      */
     public HexData(byte[] bytes) {
-        if (bytes == null)
-            throw new IllegalArgumentException("'bytes' array cannot be null.");
-        this.valBytes = Arrays.copyOf(bytes, bytes.length);
-        this.byteLength = valBytes.length;
-        this.valHex = JNC.ENC_16.encode(valBytes);
+        this(bytes, bytes.length);
     }
     
     /**
@@ -88,9 +84,7 @@ public class HexData {
             throw new IllegalArgumentException("'bytes' array cannot be null.");
         if (length < 0)
             throw new IllegalArgumentException("'length' must be zero or greater.");
-        if (bytes.length > length)
-            throw new IllegalArgumentException("'bytes' array is longer than 'length'.");
-        this.valBytes = JNH.leftPadByteArray(Arrays.copyOf(bytes, bytes.length), length, false);
+        this.valBytes = JNH.leftPadByteArray(Arrays.copyOf(bytes, bytes.length), length, true);
         this.byteLength = length;
         this.valHex = JNC.ENC_16.encode(valBytes);
     }
