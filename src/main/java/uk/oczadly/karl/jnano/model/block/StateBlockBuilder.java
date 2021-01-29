@@ -92,7 +92,11 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setSignature(String signature) {
-        return setSignature(signature != null ? new HexData(signature, NanoConst.LEN_SIGNATURE_B) : null);
+        if (signature != null && signature.length() != NanoConst.LEN_SIGNATURE_H)
+            throw new IllegalArgumentException("Invalid signature length.");
+        
+        this.signature = signature == null ? null : new HexData(signature);
+        return this;
     }
     
     /**
@@ -101,6 +105,9 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setSignature(HexData signature) {
+        if (signature != null && signature.length() != NanoConst.LEN_SIGNATURE_B)
+            throw new IllegalArgumentException("Invalid signature length.");
+    
         this.signature = signature;
         return this;
     }
@@ -158,9 +165,6 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setAccount(NanoAccount account) {
-        if (account == null)
-            throw new IllegalArgumentException("Account address argument cannot be null.");
-        
         this.account = account;
         return this;
     }
@@ -171,9 +175,8 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setAccount(String account) {
-        if (account == null)
-            throw new IllegalArgumentException("Account address argument cannot be null.");
-        return setAccount(NanoAccount.parse(account));
+        this.account = account == null ? null : NanoAccount.parse(account);
+        return this;
     }
     
     
@@ -183,7 +186,8 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setPreviousHash(Block block) {
-        return setPreviousHash(block.getHash());
+        this.prevHash = block == null ? null : block.getHash();
+        return this;
     }
     
     /**
@@ -192,8 +196,11 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setPreviousHash(String hash) {
-        return setPreviousHash(hash != null
-                ? new HexData(hash, NanoConst.LEN_HASH_B) : null);
+        if (hash != null && hash.length() != NanoConst.LEN_HASH_H)
+            throw new IllegalArgumentException("Invalid previous hash length.");
+        
+        this.prevHash = hash == null ? null : new HexData(hash);
+        return this;
     }
     
     /**
@@ -202,6 +209,9 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setPreviousHash(HexData hash) {
+        if (hash != null && hash.length() != NanoConst.LEN_HASH_B)
+            throw new IllegalArgumentException("Invalid previous hash length.");
+        
         this.prevHash = hash;
         return this;
     }
@@ -223,7 +233,8 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setRepresentative(String representative) {
-        return setRepresentative(representative != null ? NanoAccount.parse(representative) : null);
+        this.rep = representative == null ? null : NanoAccount.parse(representative);
+        return this;
     }
     
     
@@ -233,7 +244,8 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setBalance(String balance) {
-        return setBalance(NanoAmount.valueOfRaw(balance));
+        this.balance = balance == null ? null : NanoAmount.valueOfRaw(balance);
+        return this;
     }
     
     /**
@@ -242,7 +254,8 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setBalance(BigInteger balance) {
-        return setBalance(NanoAmount.valueOfRaw(balance));
+        this.balance = balance == null ? null : NanoAmount.valueOfRaw(balance);
+        return this;
     }
     
     /**
@@ -262,7 +275,8 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setLink(LinkData link) {
-        return setLink(link != null ? link.asHex() : null);
+        this.linkData = link == null ? null : link.asHex();
+        return this;
     }
     
     /**
@@ -281,6 +295,9 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setLink(HexData link) {
+        if (link != null && link.length() != NanoConst.LEN_HASH_B)
+            throw new IllegalArgumentException("Invalid link length.");
+        
         this.linkData = link;
         this.linkAccount = null;
         return this;
