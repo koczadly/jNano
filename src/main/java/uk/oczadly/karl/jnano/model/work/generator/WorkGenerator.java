@@ -150,8 +150,12 @@ public abstract class WorkGenerator {
         queue.add(workReq);
         
         // Start consumer thread (if not running)
-        if (!consumerThread.isAlive())
-            consumerThread.start();
+        if (!consumerThread.isAlive()) {
+            synchronized (this) {
+                if (!consumerThread.isAlive())
+                    consumerThread.start();
+            }
+        }
         
         return workReq.future;
     }
