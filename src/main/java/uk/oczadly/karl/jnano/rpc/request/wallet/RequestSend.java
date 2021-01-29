@@ -40,13 +40,16 @@ public class RequestSend extends RpcRequest<ResponseBlockHash> {
     
     
     /**
+     * Constructs a new {@code send} request.
+     *
+     * <p>Note: In many cases, you should should prefer the variants with the {@code transactionId} parameter to
+     * prevent accidentally executing the same transaction twice.</p>
+     *
      * @param walletId           the wallet's ID
      * @param sourceAccount      the account's address to send from
      * @param destinationAccount the destination account's address (recipient)
      * @param amount             the amount to send (in RAW)
-     * @deprecated a unique ID should be supplied for idempotency
      */
-    @Deprecated
     public RequestSend(String walletId, String sourceAccount, String destinationAccount, BigInteger amount) {
         this(walletId, sourceAccount, destinationAccount, amount, null);
     }
@@ -56,7 +59,7 @@ public class RequestSend extends RpcRequest<ResponseBlockHash> {
      * @param sourceAccount      the account's address to send from
      * @param destinationAccount the destination account's address (recipient)
      * @param amount             the amount to send (in RAW)
-     * @param transactionId      a unique ID for idempotency
+     * @param transactionId      a unique ID for idempotency (any format is permitted, see {@link java.util.UUID})
      */
     public RequestSend(String walletId, String sourceAccount, String destinationAccount, BigInteger amount,
                        String transactionId) {
@@ -68,7 +71,7 @@ public class RequestSend extends RpcRequest<ResponseBlockHash> {
      * @param sourceAccount      the account's address to send from
      * @param destinationAccount the destination account's address (recipient)
      * @param amount             the amount to send (in RAW)
-     * @param transactionId      a unique ID for idempotency
+     * @param transactionId      a unique ID for idempotency (any format is permitted, see {@link java.util.UUID})
      * @param workSolution       a pre-computed work solution
      */
     public RequestSend(String walletId, String sourceAccount, String destinationAccount, BigInteger amount,
