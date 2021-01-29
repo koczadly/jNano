@@ -56,6 +56,7 @@ public abstract class WorkGenerator {
      * @param root       the work root
      * @param difficulty the work difficulty
      * @return the computed work solution
+     * @throws Exception whenever
      */
     protected abstract WorkSolution generateWork(HexData root, WorkDifficulty difficulty) throws Exception;
     
@@ -63,6 +64,9 @@ public abstract class WorkGenerator {
     /**
      * Generates a {@link WorkSolution} for the provided block, using the difficulty retrieved from the difficulty
      * policy.
+     *
+     * <p>Note that cancelling work requests is currently not supported, and calls to the {@code cancel} method of the
+     * returned future object will be ignored.</p>
      *
      * @param block the block to compute work for
      * @return the (future) computed work solution
@@ -76,6 +80,9 @@ public abstract class WorkGenerator {
     
     /**
      * Generates a {@link WorkSolution} for the provided block, using the specified difficulty.
+     *
+     * <p>Note that cancelling work requests is currently not supported, and calls to the {@code cancel} method of the
+     * returned future object will be ignored.</p>
      *
      * @param block      the block to compute work for
      * @param difficulty the minimum difficulty threshold of the work
@@ -93,6 +100,9 @@ public abstract class WorkGenerator {
      * policy. If the difficulty policy applies it's own multiplier (as is typically the case with
      * {@link NodeWorkDifficultyPolicy}), then this multiplier will be stacked on top of the previous
      * multiplication, rather than overriding.</p>
+     *
+     * <p>Note that cancelling work requests is currently not supported, and calls to the {@code cancel} method of the
+     * returned future object will be ignored.</p>
      *
      * @param block      the block to compute work for
      * @param multiplier the difficulty multiplier
@@ -115,6 +125,9 @@ public abstract class WorkGenerator {
      * Generates a {@link WorkSolution} for the provided block root hash using the "any" difficulty provided by the
      * difficulty policy.
      *
+     * <p>Note that cancelling work requests is currently not supported, and calls to the {@code cancel} method of the
+     * returned future object will be ignored.</p>
+     *
      * @param root the root hash
      * @return the (future) computed work solution
      * @throws UnsupportedOperationException if no difficulty policy is specified
@@ -132,6 +145,9 @@ public abstract class WorkGenerator {
     
     /**
      * Generates a {@link WorkSolution} for the provided block root hash, using the specified difficulty.
+     *
+     * <p>Note that cancelling work requests is currently not supported, and calls to the {@code cancel} method of the
+     * returned future object will be ignored.</p>
      *
      * @param root       the root hash
      * @param difficulty the minimum difficulty threshold of the work
@@ -166,7 +182,7 @@ public abstract class WorkGenerator {
     
     static class WorkRequest {
         final WorkRequestSpec spec;
-        final CompletableFuture<WorkSolution> future = new CompletableFuture<>();
+        final CompletableFuture<WorkSolution> future = new FutureWork();
         
         WorkRequest(WorkRequestSpec requestSpec) {
             this.spec = requestSpec;
