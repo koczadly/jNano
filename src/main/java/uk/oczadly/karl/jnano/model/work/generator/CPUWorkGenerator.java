@@ -23,6 +23,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * <p>Use of this generation method is not recommended unless necessary, as the calculations are likely to be less
  * efficient than other methods of computation available.</p>
+ *
+ * <p>Instances of this class should be re-used throughout your application, as each instance will spawn a new
+ * background thread. This also ensures that tasks are queued correctly in the order of request.</p>
  */
 public class CPUWorkGenerator extends WorkGenerator {
     

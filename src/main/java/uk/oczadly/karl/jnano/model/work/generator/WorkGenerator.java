@@ -29,6 +29,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <p>Generation requests will be queued and processed in a FIFO ordering. Requests which utilise the specified work
  * policy object will defer computation and retrieval of the policy until they begin processing, ensuring that
  * time-sensitive policies are still applicable to generated work.</p>
+ *
+ * <p>Instances of this class should be re-used throughout your application, as each instance will spawn a new
+ * background thread. This also ensures that tasks are queued correctly in the order of request.</p>
  */
 //TODO: allow cancellation of work
 public abstract class WorkGenerator {

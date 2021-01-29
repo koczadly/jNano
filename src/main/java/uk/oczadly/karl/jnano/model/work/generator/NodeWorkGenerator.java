@@ -16,6 +16,9 @@ import uk.oczadly.karl.jnano.rpc.request.node.RequestWorkGenerate;
 /**
  * This {@code WorkGenerator} computes the work solution on the provided RPC endpoint, using whichever computation
  * method is configured on the node.
+ *
+ * <p>Instances of this class should be re-used throughout your application, as each instance will spawn a new
+ * background thread. This also ensures that tasks are queued correctly in the order of request.</p>
  */
 public class NodeWorkGenerator extends WorkGenerator {
 
