@@ -11,8 +11,10 @@ import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
+import uk.oczadly.karl.jnano.model.work.generator.WorkGenerator;
 
 import java.math.BigInteger;
+import java.util.concurrent.ExecutionException;
 
 /**
  * <p>This class can be used to construct new State block ({@link StateBlock} instances.</p>
@@ -32,6 +34,7 @@ public final class StateBlockBuilder {
     private HexData linkData;
     private HexData signature;
     private WorkSolution work;
+    private WorkGenerator workGenerator;
     
     
     /**
@@ -77,6 +80,7 @@ public final class StateBlockBuilder {
         this.balance = builder.balance;
         this.signature = builder.signature;
         this.work = builder.work;
+        this.workGenerator = builder.workGenerator;
         this.linkData = builder.linkData;
         this.linkAccount = builder.linkAccount;
     }
@@ -119,6 +123,21 @@ public final class StateBlockBuilder {
      */
     public synchronized StateBlockBuilder setWork(String work) {
         return setWork(work != null ? new WorkSolution(work) : null);
+    }
+    
+    /**
+     * Sets the {@link WorkGenerator} used to generate the {@code work} value of the block.
+     *
+     * <p>The work will be computed when calling one of the {@code build} methods. The build method(s) may also throw a
+     * {@link BlockCreationException} if the work could not be computed.</p>
+     *
+     * @param workGenerator the work generator object
+     * @return this builder instance
+     */
+    public synchronized StateBlockBuilder generateWork(WorkGenerator workGenerator) {
+        this.workGenerator = workGenerator;
+        this.work = null;
+        return this;
     }
     
     
@@ -282,9 +301,10 @@ public final class StateBlockBuilder {
     /**
      * Constructs a {@link StateBlock} from the configured parameters.
      * @return a new instance of the {@link StateBlock} class using the configured parameters
+     * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
      */
     public synchronized StateBlock build() {
-        return build(subtype, signature, work, account, prevHash, rep, balance, linkData, linkAccount);
+        return build(subtype, signature, work, workGenerator, account, prevHash, rep, balance, linkData, linkAccount);
     }
     
     /**
@@ -294,6 +314,7 @@ public final class StateBlockBuilder {
      *
      * @param privateKey the private key of the account used to sign the block
      * @return a new instance of the {@link StateBlock} class using the configured parameters
+     * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
      */
     public synchronized StateBlock buildAndSign(String privateKey) {
         return buildAndSign(new HexData(privateKey));
@@ -306,22 +327,56 @@ public final class StateBlockBuilder {
      *
      * @param privateKey the private key of the account used to sign the block
      * @return a new instance of the {@link StateBlock} class using the configured parameters
+     * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
      */
     public synchronized StateBlock buildAndSign(HexData privateKey) {
         NanoAccount account = NanoAccount.fromPrivateKey(privateKey);
-        StateBlock sb = build(subtype, null, work, account, prevHash, rep, balance, linkData, linkAccount);
+        StateBlock sb = build(subtype, null, work, workGenerator, account, prevHash, rep, balance, linkData, linkAccount);
         sb.sign(privateKey); // Sign the block
         return sb;
     }
     
     private static StateBlock build(StateBlockSubType subtype, HexData signature, WorkSolution work,
-                                    NanoAccount account, HexData prevHash, NanoAccount rep, NanoAmount bal,
-                                    HexData linkHex, NanoAccount linkAcc) {
-        return new StateBlock(
-                subtype, signature, work, account,
-                subtype == StateBlockSubType.OPEN ? JNC.ZEROES_64_HD : prevHash,
-                rep == null ? account : rep,
-                bal, linkHex, linkAcc);
+                                    WorkGenerator workGen, NanoAccount account, HexData prevHash, NanoAccount rep,
+                                    NanoAmount bal, HexData linkHex, NanoAccount linkAcc) {
+        StateBlock block;
+        try {
+            block = new StateBlock(
+                    subtype, signature, work, account,
+                    subtype == StateBlockSubType.OPEN ? JNC.ZEROES_64_HD : prevHash,
+                    rep == null ? account : rep,
+                    bal, linkHex, linkAcc);
+        } catch (RuntimeException e) {
+            throw new BlockCreationException(e);
+        }
+    
+        // Work
+        if (work == null && workGen != null) {
+            try {
+                block.setWorkSolution(workGen.generate(block).get());
+            } catch (InterruptedException | ExecutionException e) {
+                throw new BlockCreationException("Couldn't generate work.", e);
+            }
+        }
+        return block;
+    }
+    
+    
+    /** Thrown when there is an error with creating a block. */
+    public static class BlockCreationException extends RuntimeException {
+        public BlockCreationException() {}
+    
+        public BlockCreationException(String message) {
+            super(message);
+        }
+    
+        public BlockCreationException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    
+        public BlockCreationException(Throwable cause) {
+            super(cause);
+        }
     }
     
 }
