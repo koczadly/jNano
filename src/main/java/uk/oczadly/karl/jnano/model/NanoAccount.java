@@ -570,7 +570,7 @@ public final class NanoAccount {
      * cryptographically valid}, and simply tests the format, checksum and prefix.</p>
      *
      * @param address  the account address string
-     * @param prefixes an array of permittable prefixes (without separator), or null/empty to allow any
+     * @param prefixes an array of permitted prefixes (without separator), or null/empty to allow any
      * @return whether the given address string is valid
      */
     public static boolean isValid(String address, String...prefixes) {
