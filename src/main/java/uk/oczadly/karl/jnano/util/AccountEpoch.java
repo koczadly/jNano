@@ -11,6 +11,8 @@ import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.StateBlock;
 import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,16 +26,15 @@ public enum AccountEpoch {
      * Version 1 epoch block, which marks the transition from legacy blocks (send/receive/open/change) to UTX state
      * blocks.
      */
-    V1 ("65706F636820763120626C6F636B000000000000000000000000000000000000",
-            NanoConstants.NANO_LIVE_NET.getGenesisAccount()),
+    V1 (NanoConstants.NANO_LIVE_NET.getGenesisAccount()),
     
     /**
      * Version 2 epoch block, which marks the change in minimum work difficulties introduced in node V21.
      */
-    V2 ("65706F636820763220626C6F636B000000000000000000000000000000000000",
-            NanoAccount.parseAddressSegment("3qb6o6i1tkzr6jwr5s7eehfxwg9x6eemitdinbpi7u8bjjwsgqfj"));
+    V2 (NanoAccount.parseAddressSegment("3qb6o6i1tkzr6jwr5s7eehfxwg9x6eemitdinbpi7u8bjjwsgqfj"));
     
     
+    /** The latest epoch version supported by this enum. */
     public static final AccountEpoch LATEST_EPOCH = V2;
     
     private static final Map<Integer, AccountEpoch> VER_MAP = new HashMap<>();
@@ -46,11 +47,13 @@ public enum AccountEpoch {
         }
     }
     
-    HexData id;
-    NanoAccount signerAcc;
+    final int version;
+    final HexData id;
+    final NanoAccount signerAcc;
     
-    AccountEpoch(String id, NanoAccount signerAcc) {
-        this.id = new HexData(id);
+    AccountEpoch(NanoAccount signerAcc) {
+        this.version = ordinal() + 1;
+        this.id = new HexData(Arrays.copyOf(("epoch v" + version + " block").getBytes(StandardCharsets.UTF_8), 32));
         this.signerAcc = signerAcc;
     }
     
@@ -59,7 +62,7 @@ public enum AccountEpoch {
      * @return the version which this epoch block will upgrade an account to
      */
     public int getVersion() {
-        return ordinal() + 1;
+        return version;
     }
     
     /**
