@@ -164,6 +164,15 @@ public abstract class WorkGenerator {
     }
     
     
+    /**
+     * Attempts to cancel all pending work generations, and stops the main consumer thread from running.
+     */
+    public final void shutdown() {
+        consumerThread.interrupt();
+        queue.clear();
+    }
+    
+    
     private Future<WorkSolution> enqueueWork(WorkRequestSpec spec) {
         WorkRequest workReq = new WorkRequest(spec);
         queue.add(workReq);
@@ -200,7 +209,7 @@ public abstract class WorkGenerator {
         public void run() {
             while (!Thread.currentThread().isInterrupted()) {
                 // Retrieve request
-                WorkRequest request = null;
+                WorkRequest request;
                 try {
                     request = queue.take();
                 } catch (InterruptedException e) {
