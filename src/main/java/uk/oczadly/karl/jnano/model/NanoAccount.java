@@ -452,10 +452,6 @@ public final class NanoAccount {
         if (checksum != null && checksum.length() != 8)
             throw new AddressFormatException("Expected checksum string must be 8 characters long.");
         
-        // Preprocess
-        address = address.toLowerCase();
-        checksum = checksum != null ? checksum.toLowerCase() : null;
-        
         // Create object
         NanoAccount account = new NanoAccount(
                 prefix, decodeKey(address, JNC.ENC_32), address, null, null);
