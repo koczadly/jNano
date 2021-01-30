@@ -17,7 +17,7 @@ import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
 
 /**
- * <p>This class can be used to construct new State block ({@link StateBlock} instances.</p>
+ * This class can be used to easily construct new {@link StateBlock} instances from a set of parameters.
  *
  * <p>Simply call the constructor with the required parameters, then set the additional properties using the
  * provided setter methods. Finally, call {@link #build()} to create the state block instance from the
@@ -79,10 +79,10 @@ public final class StateBlockBuilder {
         this.rep = builder.rep;
         this.balance = builder.balance;
         this.signature = builder.signature;
-        this.work = builder.work;
-        this.workGenerator = builder.workGenerator;
         this.linkData = builder.linkData;
         this.linkAccount = builder.linkAccount;
+        this.work = builder.work;
+        this.workGenerator = builder.workGenerator;
     }
     
     
@@ -348,7 +348,8 @@ public final class StateBlockBuilder {
      */
     public synchronized StateBlock buildAndSign(HexData privateKey) {
         NanoAccount account = NanoAccount.fromPrivateKey(privateKey);
-        StateBlock sb = build(subtype, null, work, workGenerator, account, prevHash, rep, balance, linkData, linkAccount);
+        StateBlock sb = build(subtype, null, work, workGenerator, account, prevHash, rep, balance, linkData,
+                linkAccount);
         sb.sign(privateKey); // Sign the block
         return sb;
     }
