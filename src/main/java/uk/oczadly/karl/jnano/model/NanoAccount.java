@@ -51,10 +51,13 @@ public final class NanoAccount {
      */
     public static final String DEFAULT_PREFIX = "nano";
     
+    private static final String[] DEFAULT_PREFIXES_ARR = { DEFAULT_PREFIX, "xrb" };
+    
     /**
      * An immutable set of permitted prefixes on the Nano network. This includes the {@link #DEFAULT_PREFIX} value.
      */
-    public static final Set<String> DEFAULT_PERMITTED_PREFIXES = JNH.ofSet(DEFAULT_PREFIX, "xrb");
+    public static final Set<String> DEFAULT_PERMITTED_PREFIXES = JNH.ofSet(DEFAULT_PREFIXES_ARR);
+    
     
     /**
      * <p>The zeroth index account, represented by all zeroes for the public key. This address is also the burn address
@@ -314,7 +317,7 @@ public final class NanoAccount {
      * @return whether the given address is a valid Nano account
      */
     public boolean isValidNano() {
-        return comparePrefix(getPrefix(), DEFAULT_PERMITTED_PREFIXES.toArray(new String[0]));
+        return comparePrefix(getPrefix(), DEFAULT_PREFIXES_ARR);
     }
     
     /**
