@@ -40,7 +40,7 @@ public class ResponseBalance extends RpcResponse {
      * @return the total balance of the account
      */
     public NanoAmount getTotal() {
-        return NanoAmount.valueOfRaw(pending.getAsRaw().add(pocketed.getAsRaw()));
+        return pending.add(pocketed);
     }
     
 }
