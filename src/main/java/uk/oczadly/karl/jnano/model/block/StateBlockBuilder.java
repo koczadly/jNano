@@ -317,6 +317,11 @@ public final class StateBlockBuilder {
     
     /**
      * Constructs a {@link StateBlock} from the configured parameters.
+     *
+     * <p>If a {@link #generateWork(WorkGenerator) work generator} is specified, then this method will block until
+     * the work has been generated. If the work could not be generated, then this method will throw a
+     * {@link BlockCreationException}.</p>
+     *
      * @return a new instance of the {@link StateBlock} class using the configured parameters
      * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
      */
@@ -326,8 +331,13 @@ public final class StateBlockBuilder {
     
     /**
      * Constructs a {@link StateBlock} from the configured parameters, and then signs the block.
-     * <p>This will override any configured {@code account} and {@code signature} value set in this builder object, but
-     * won't update this builder's state.</p>
+     *
+     * <p>If a {@link #generateWork(WorkGenerator) work generator} is specified, then this method will block until
+     * the work has been generated. If the work could not be generated, then this method will throw a
+     * {@link BlockCreationException}.</p>
+     *
+     * <p>Calling this method and signing the block will override any configured {@code account} and {@code signature}
+     * value set in this builder object to match the private key. This will not update the state of this builder.</p>
      *
      * @param privateKey the private key of the account used to sign the block
      * @return a new instance of the {@link StateBlock} class using the configured parameters
@@ -339,8 +349,13 @@ public final class StateBlockBuilder {
     
     /**
      * Constructs a {@link StateBlock} from the configured parameters, and then signs the block.
-     * <p>This will override any configured {@code account} and {@code signature} value set in this builder object, but
-     * won't update this builder's state.</p>
+     *
+     * <p>If a {@link #generateWork(WorkGenerator) work generator} is specified, then this method will block until
+     * the work has been generated. If the work could not be generated, then this method will throw a
+     * {@link BlockCreationException}.</p>
+     *
+     * <p>Calling this method and signing the block will override any configured {@code account} and {@code signature}
+     * value set in this builder object to match the private key. This will not update the state of this builder.</p>
      *
      * @param privateKey the private key of the account used to sign the block
      * @return a new instance of the {@link StateBlock} class using the configured parameters
@@ -382,17 +397,11 @@ public final class StateBlockBuilder {
     
     /** Thrown when there is an error with creating a block. */
     public static class BlockCreationException extends RuntimeException {
-        public BlockCreationException() {}
-    
-        public BlockCreationException(String message) {
-            super(message);
-        }
-    
-        public BlockCreationException(String message, Throwable cause) {
+        BlockCreationException(String message, Throwable cause) {
             super(message, cause);
         }
     
-        public BlockCreationException(Throwable cause) {
+        BlockCreationException(Throwable cause) {
             super(cause);
         }
     }
