@@ -24,6 +24,11 @@ public class NanoAmountTest {
     NanoAmount VAL_C = NanoAmount.valueOfRaw("1230000000000000000000000000000");
     
     
+    @Test(expected = ArithmeticException.class)
+    public void testOverflowValueOf() {
+        NanoAmount.valueOfNano(new BigDecimal("1.0000000000000000000000000000001"));
+    }
+    
     @Test
     public void testValueOf() {
         assertEquals(new BigInteger("27"), NanoAmount.valueOfRaw("27").getAsRaw());
