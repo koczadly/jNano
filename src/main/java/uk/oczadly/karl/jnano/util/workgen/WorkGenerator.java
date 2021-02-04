@@ -3,16 +3,16 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.model.work.generator;
+package uk.oczadly.karl.jnano.util.workgen;
 
 import uk.oczadly.karl.jnano.internal.utils.NanoUtil;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.model.work.generator.policy.NodeWorkDifficultyPolicy;
-import uk.oczadly.karl.jnano.model.work.generator.policy.WorkDifficultyPolicy;
 import uk.oczadly.karl.jnano.util.NanoConstants;
+import uk.oczadly.karl.jnano.util.workgen.policy.NodeWorkDifficultyPolicy;
+import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;

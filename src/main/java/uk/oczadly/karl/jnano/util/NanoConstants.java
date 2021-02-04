@@ -11,8 +11,8 @@ import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.model.work.generator.policy.ConstantDifficultyPolicyV1;
-import uk.oczadly.karl.jnano.model.work.generator.policy.ConstantDifficultyPolicyV2;
+import uk.oczadly.karl.jnano.util.workgen.policy.ConstantDifficultyPolicyV1;
+import uk.oczadly.karl.jnano.util.workgen.policy.ConstantDifficultyPolicyV2;
 
 import java.math.BigInteger;
 import java.util.Set;

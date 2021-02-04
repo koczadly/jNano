@@ -9,7 +9,7 @@ import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.OpenBlock;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.model.work.generator.policy.ConstantWorkDifficultyPolicy;
+import uk.oczadly.karl.jnano.util.workgen.policy.ConstantWorkDifficultyPolicy;
 
 import java.util.Comparator;
 import java.util.Objects;

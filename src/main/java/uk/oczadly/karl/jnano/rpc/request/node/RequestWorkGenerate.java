@@ -11,9 +11,9 @@ import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.model.work.generator.WorkGenerator;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseWork;
+import uk.oczadly.karl.jnano.util.workgen.WorkGenerator;
 
 /**
  * This request class is used to generate work for the specified block hash.

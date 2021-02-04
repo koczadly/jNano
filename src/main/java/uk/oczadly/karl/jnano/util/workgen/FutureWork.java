@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.model.work.generator;
+package uk.oczadly.karl.jnano.util.workgen;
 
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 

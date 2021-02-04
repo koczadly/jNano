@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.model.work.generator.policy;
+package uk.oczadly.karl.jnano.util.workgen.policy;
 
 /**
  * This exception is thrown when work difficulty values could not be retrieved.

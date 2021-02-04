@@ -5,8 +5,6 @@ module uk.oczadly.karl.jnano {
     exports uk.oczadly.karl.jnano.model.block;
     exports uk.oczadly.karl.jnano.model.block.interfaces;
     exports uk.oczadly.karl.jnano.model.work;
-    exports uk.oczadly.karl.jnano.model.work.generator;
-    exports uk.oczadly.karl.jnano.model.work.generator.policy;
     // Callback
     exports uk.oczadly.karl.jnano.callback;
     // RPC
@@ -19,6 +17,8 @@ module uk.oczadly.karl.jnano {
     exports uk.oczadly.karl.jnano.rpc.response;
     // Utils
     exports uk.oczadly.karl.jnano.util;
+    exports uk.oczadly.karl.jnano.util.workgen;
+    exports uk.oczadly.karl.jnano.util.workgen.policy;
     // WebSocket
     exports uk.oczadly.karl.jnano.websocket;
     exports uk.oczadly.karl.jnano.websocket.topic;

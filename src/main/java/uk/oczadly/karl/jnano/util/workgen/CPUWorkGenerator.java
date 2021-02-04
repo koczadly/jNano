@@ -3,18 +3,21 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.model.work.generator;
+package uk.oczadly.karl.jnano.util.workgen;
 
 import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.model.work.generator.policy.WorkDifficultyPolicy;
+import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
 
 import java.util.Arrays;
 import java.util.Random;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -105,11 +108,7 @@ public class CPUWorkGenerator extends WorkGenerator {
             THREAD_POOL.submit(new GeneratorTask(rootBytes, threshold, initialWork, result));
         }
     
-        try {
-            return result.get();
-        } catch (ExecutionException | InterruptedException e) {
-            throw e;
-        }
+        return result.get();
     }
     
     static class GeneratorTask implements Runnable {
