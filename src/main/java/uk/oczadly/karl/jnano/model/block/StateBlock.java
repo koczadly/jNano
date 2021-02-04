@@ -18,7 +18,7 @@ import uk.oczadly.karl.jnano.model.epoch.EpochUpgrade;
 import uk.oczadly.karl.jnano.model.epoch.EpochUpgradeRegistry;
 import uk.oczadly.karl.jnano.model.epoch.UnrecognizedEpochException;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.util.NanoConstants;
+import uk.oczadly.karl.jnano.util.NetworkConstants;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -265,7 +265,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      * epoch blocks, the signature is checked using the {@link EpochUpgrade#getSigner() expected signer account}
      * rather than the block's holding account.</p>
      *
-     * <p><b>NOTE:</b> This method is only valid for epoch blocks on the {@link NanoConstants#NANO_LIVE_NET live Nano
+     * <p><b>NOTE:</b> This method is only valid for epoch blocks on the {@link NetworkConstants#NANO live Nano
      * network}. Other networks, such as the beta network or Banano use different signing accounts for epoch upgrades.
      * The jNano library must also be updated to the latest version to ensure that the epoch identifiers can be
      * recognized. For non-epoch subtypes, this method will function as expected with all networks.</p>
@@ -276,7 +276,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      * @see #verifySignature(EpochUpgradeRegistry)
      */
     public boolean verifySignature() {
-        return verifySignature(NanoConstants.NANO_LIVE_NET.getEpochUpgrades());
+        return verifySignature(NetworkConstants.NANO.getEpochUpgrades());
     }
     
     
@@ -292,7 +292,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      * @throws UnrecognizedEpochException if the block is an epoch block, and the epoch version was not recognized
      *
      * @see #verifySignature()
-     * @see uk.oczadly.karl.jnano.util.NanoConstants
+     * @see NetworkConstants
      */
     public boolean verifySignature(EpochUpgradeRegistry epochRegistry) {
         if (epochRegistry == null) throw new IllegalArgumentException("Epoch registry cannot be null.");

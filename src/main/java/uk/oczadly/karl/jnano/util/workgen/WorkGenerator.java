@@ -10,7 +10,7 @@ import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.util.NanoConstants;
+import uk.oczadly.karl.jnano.util.NetworkConstants;
 import uk.oczadly.karl.jnano.util.workgen.policy.NodeWorkDifficultyPolicy;
 import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
 
@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 //TODO: allow cancellation of work
 public abstract class WorkGenerator {
     
-    static final WorkDifficultyPolicy DEFAULT_POLICY = NanoConstants.NANO_LIVE_NET.getWorkDifficulties();
+    static final WorkDifficultyPolicy DEFAULT_POLICY = NetworkConstants.NANO.getWorkDifficulties();
     
     private final WorkDifficultyPolicy policy;
     

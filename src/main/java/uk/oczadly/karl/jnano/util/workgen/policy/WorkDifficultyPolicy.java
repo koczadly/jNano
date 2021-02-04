@@ -7,12 +7,12 @@ package uk.oczadly.karl.jnano.util.workgen.policy;
 
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
-import uk.oczadly.karl.jnano.util.NanoConstants;
+import uk.oczadly.karl.jnano.util.NetworkConstants;
 
 /**
  * Represents a work difficulty policy.
  *
- * @see NanoConstants#NANO_LIVE_NET
+ * @see NetworkConstants#NANO
  */
 public interface WorkDifficultyPolicy {
     

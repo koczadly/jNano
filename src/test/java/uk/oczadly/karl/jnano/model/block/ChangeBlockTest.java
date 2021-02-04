@@ -11,7 +11,7 @@ import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.util.NanoConstants;
+import uk.oczadly.karl.jnano.util.NetworkConstants;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -77,7 +77,7 @@ public class ChangeBlockTest {
         
         // Genesis
         assertEquals(BlockIntent.UncertainBool.TRUE,
-                NanoConstants.NANO_LIVE_NET.getGenesisBlock().getIntent().isGenesis());
+                NetworkConstants.NANO.getGenesisBlock().getIntent().isGenesis());
     }
     
     @Test
