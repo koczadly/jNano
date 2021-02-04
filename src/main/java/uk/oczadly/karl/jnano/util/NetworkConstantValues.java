@@ -109,7 +109,10 @@ public final class NetworkConstantValues {
     
     
     private static OpenBlock createGenesisBlock(NanoAccount account, WorkSolution work, HexData signature) {
-        return new OpenBlock(signature, work, new HexData(account.toPublicKey()), account, account);
+        OpenBlock block = new OpenBlock(signature, work, new HexData(account.toPublicKey()), account, account);
+        if (!block.verifySignature())
+            throw new IllegalArgumentException("Signature is invalid.");
+        return block;
     }
     
 }
