@@ -14,8 +14,11 @@ import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.interfaces.*;
+import uk.oczadly.karl.jnano.model.epoch.EpochUpgrade;
+import uk.oczadly.karl.jnano.model.epoch.EpochUpgradeRegistry;
+import uk.oczadly.karl.jnano.model.epoch.UnrecognizedEpochException;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.util.AccountEpoch;
+import uk.oczadly.karl.jnano.util.NanoConstants;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -67,8 +70,7 @@ import java.util.function.Function;
  *     </tr>
  *     <tr>
  *         <td>{@link StateBlockSubType#EPOCH Epoch}</td>
- *         <td>A special action used to upgrade the version of the account. See {@link AccountEpoch} for more
- *         information.</td>
+ *         <td>A special action used to upgrade the version of the account.</td>
  *         <td>{@link LinkData.Intent#EPOCH_IDENTIFIER Epoch reference}</td>
  *         <td>N/A</td>
  *     </tr>
@@ -256,34 +258,52 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     }
     
     /**
-     * Tests whether the signature is valid and was signed by the correct account.
+     * Tests whether the signature is valid and was signed by the correct account, also validating epoch blocks for
+     * the live Nano network.
      *
      * <p>For standard transactions, this uses the {@link #getAccount() block's account}. For externally-created
-     * epoch blocks, the signature is checked using the {@link AccountEpoch#getSignerAccount() expected signer account}
-     * rather than the block's owner.</p>
+     * epoch blocks, the signature is checked using the {@link EpochUpgrade#getSigner() expected signer account}
+     * rather than the block's holding account.</p>
      *
-     * <p><b>NOTE:</b> This method is only valid for epoch blocks on the live Nano network. Other networks, such as
-     * the beta network or Banano use different signing accounts for epoch upgrades. The jNano library must also be
-     * updated to the latest version to ensure that the epoch identifiers can be recognized. For non-epoch subtypes,
-     * this method will function as expected with all networks.</p>
+     * <p><b>NOTE:</b> This method is only valid for epoch blocks on the {@link NanoConstants#NANO_LIVE_NET live Nano
+     * network}. Other networks, such as the beta network or Banano use different signing accounts for epoch upgrades.
+     * The jNano library must also be updated to the latest version to ensure that the epoch identifiers can be
+     * recognized. For non-epoch subtypes, this method will function as expected with all networks.</p>
      *
      * @return true if the signature is correct, false if not <em>or</em> if the {@code signature} is currently null
-     * @throws AccountEpoch.UnrecognizedEpochException if the block is an epoch block, and the epoch version was not
-     *                                                 recognized
+     * @throws UnrecognizedEpochException if the block is an epoch block, and the epoch version was not recognized
+     *
+     * @see #verifySignature(EpochUpgradeRegistry)
      */
     public boolean verifySignature() {
+        return verifySignature(NanoConstants.NANO_LIVE_NET.getEpochUpgrades());
+    }
+    
+    
+    /**
+     * Tests whether the signature is valid and was signed by the correct account, also validating epoch blocks.
+     *
+     * <p>For standard transactions, this uses the {@link #getAccount() block's account}. For externally-created
+     * epoch blocks, the signature is checked using the {@link EpochUpgrade#getSigner() expected signer account}
+     * rather than the block's holding account.</p>
+     *
+     * @param epochRegistry the epoch registry to be used when checking epoch blocks
+     * @return true if the signature is correct, false if not <em>or</em> if the {@code signature} is currently null
+     * @throws UnrecognizedEpochException if the block is an epoch block, and the epoch version was not recognized
+     *
+     * @see #verifySignature()
+     * @see uk.oczadly.karl.jnano.util.NanoConstants
+     */
+    public boolean verifySignature(EpochUpgradeRegistry epochRegistry) {
+        if (epochRegistry == null) throw new IllegalArgumentException("Epoch registry cannot be null.");
         if (getSignature() == null) return false;
         
-        // Obtain signer account
-        NanoAccount signer = getAccount();
         if (getSubType() == StateBlockSubType.EPOCH) {
-            // Check for epoch signer
-            AccountEpoch epochVer = AccountEpoch.fromIdentifier(getLink().asHex());
-            if (epochVer.getSignerAccount() != null) // Null means self-signed
-                signer = epochVer.getSignerAccount();
+            EpochUpgrade epoch = epochRegistry.fromIdentifier(getLink().asHex());
+            return verifySignature(epoch.getSigner().orElse(getAccount()));
+        } else {
+            return verifySignature(getAccount());
         }
-        // Verify
-        return verifySignature(signer);
     }
     
     @Override

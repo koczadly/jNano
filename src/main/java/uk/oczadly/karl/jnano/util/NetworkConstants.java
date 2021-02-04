@@ -8,53 +8,38 @@ package uk.oczadly.karl.jnano.util;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.OpenBlock;
+import uk.oczadly.karl.jnano.model.epoch.EpochUpgradeRegistry;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 import uk.oczadly.karl.jnano.util.workgen.policy.ConstantWorkDifficultyPolicy;
-
-import java.util.Comparator;
-import java.util.Objects;
 
 /**
  * This class contains and represents a collection of constant values for a specific network or fork of the Nano
  * cryptocurrency.
  *
- * <p>Note that these values may not match if the node version doesn't correlate with the value returned by
- * {@link #getIntendedVersion()}. These values are also not guaranteed to match in cases where canary blocks or
- * epochs trigger a change to the network policies (as seen with adjustments to work generation).</p>
+ * <p>Note that these constants may change as the node upgrades. In these cases, the jNano library will also need to
+ * be updated to reflect these changes, otherwise this information may be outdated and no longer valid.</p>
  */
 public final class NetworkConstants {
     
-    private final Version version;
     private final String networkName, addressPrefix;
     private final OpenBlock genesisBlock;
-    private final NanoAccount burnAddress;
     private final ConstantWorkDifficultyPolicy workDifficulty;
+    private final EpochUpgradeRegistry epochs;
     
-    NetworkConstants(Version version, String networkName, String addressPrefix, String burnAddressSegment,
-                     String genBlockSig, WorkSolution genBlockWork, String genBlockAccountSeg,
-                     ConstantWorkDifficultyPolicy workDifficulty) {
-        this.version = version;
-        this.networkName = networkName + " network";
+    NetworkConstants(String networkName, String addressPrefix, String genBlockSig,
+                     WorkSolution genBlockWork, String genAccountPk,
+                     ConstantWorkDifficultyPolicy workDifficulty, EpochUpgradeRegistry epochs) {
+        this.networkName = networkName;
         this.addressPrefix = addressPrefix;
-        this.burnAddress = NanoAccount.parseAddressSegment(burnAddressSegment, addressPrefix);
-        NanoAccount genesisAccount = NanoAccount.parseAddressSegment(genBlockAccountSeg, addressPrefix);
-        this.genesisBlock = new OpenBlock(new HexData(genBlockSig), genBlockWork,
-                new HexData(genesisAccount.toPublicKey()), genesisAccount, genesisAccount);
+        NanoAccount genesisAccount = NanoAccount.parsePublicKey(genAccountPk, addressPrefix);
+        this.genesisBlock = createGenesisBlock(genesisAccount, genBlockWork, new HexData(genBlockSig));
         this.workDifficulty = workDifficulty;
+        this.epochs = epochs;
     }
     
     
     /**
-     * Returns the node version which this set of constants is intended for. If using a non-matching version, some of
-     * these constants may be invalid.
-     * @return the intended node version
-     */
-    public Version getIntendedVersion() {
-        return version;
-    }
-    
-    /**
-     * Returns the name of the network.
+     * Returns the name of this network.
      * @return the name of this network
      */
     public String getNetworkName() {
@@ -90,7 +75,7 @@ public final class NetworkConstants {
      * @return the burn account
      */
     public NanoAccount getBurnAddress() {
-        return burnAddress;
+        return NanoAccount.ZERO_ACCOUNT.withPrefix(getAddressPrefix());
     }
     
     /**
@@ -109,59 +94,22 @@ public final class NetworkConstants {
         return workDifficulty;
     }
     
+    /**
+     * Returns a registry of supported and recognized account epoch upgrades.
+     * @return a registry of epoch upgrades
+     */
+    public EpochUpgradeRegistry getEpochUpgrades() {
+        return epochs;
+    }
+    
     @Override
     public String toString() {
-        return getNetworkName();
+        return getNetworkName() + " network";
     }
     
     
-    /** Represents a version of the node. Contains both a major and minor element. */
-    public static final class Version implements Comparable<Version> {
-        private final int major, minor;
-        
-        Version(int major, int minor) {
-            if (major < 1)
-                throw new IllegalArgumentException("Major version must be 1 or greater.");
-            if (minor < 0)
-                throw new IllegalArgumentException("Minor version must be 0 or greater.");
-            this.major = major;
-            this.minor = minor;
-        }
-        
-        
-        public int getMajor() {
-            return major;
-        }
-        
-        public int getMinor() {
-            return minor;
-        }
-    
-        @Override
-        public String toString() {
-            return "V" + major + "." + minor;
-        }
-        
-        @Override
-        public int compareTo(Version o) {
-            if (o == null)
-                throw new NullPointerException("Argument cannot be null.");
-            return Comparator.comparingInt(Version::getMajor).thenComparing(Version::getMinor).compare(this, o);
-        }
-        
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Version)) return false;
-            Version version = (Version)o;
-            return getMajor() == version.getMajor() &&
-                    getMinor() == version.getMinor();
-        }
-        
-        @Override
-        public int hashCode() {
-            return Objects.hash(getMajor(), getMinor());
-        }
+    private static OpenBlock createGenesisBlock(NanoAccount account, WorkSolution work, HexData signature) {
+        return new OpenBlock(signature, work, new HexData(account.toPublicKey()), account, account);
     }
     
 }
