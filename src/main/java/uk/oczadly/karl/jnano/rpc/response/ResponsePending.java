@@ -26,7 +26,7 @@ public class ResponsePending extends RpcResponse {
     /**
      * Map follows the structure {@code block hash -> block info}.
      *
-     * @return a map of representatives
+     * @return a map of pending blocks
      */
     public Map<HexData, PendingBlock> getPendingBlocks() {
         return blocks;

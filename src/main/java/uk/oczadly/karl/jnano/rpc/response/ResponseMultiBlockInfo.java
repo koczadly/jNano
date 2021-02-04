@@ -23,6 +23,7 @@ import uk.oczadly.karl.jnano.model.work.WorkSolution;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
@@ -40,10 +41,17 @@ public class ResponseMultiBlockInfo extends RpcResponse {
      * Returns a map of all retrieved blocks.
      * <p>The map follows the structure {@code block hash (k) -> block information (v)}.</p>
      *
-     * @return a map of block hashes and information, or null if not present in the response
+     * @return a map of block hashes and information
      */
     public Map<HexData, BlockInfo> getBlocks() {
         return blocks;
+    }
+    
+    /**
+     * @return a collection of block information
+     */
+    public Collection<BlockInfo> getBlocksList() {
+        return blocks.values();
     }
     
     /**

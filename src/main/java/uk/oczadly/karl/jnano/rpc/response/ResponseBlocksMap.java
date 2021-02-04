@@ -10,6 +10,7 @@ import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.Block;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -28,6 +29,13 @@ public class ResponseBlocksMap extends RpcResponse {
      */
     public Map<HexData, Block> getBlocks() {
         return blocks;
+    }
+    
+    /**
+     * @return a collection of blocks
+     */
+    public Collection<Block> getBlocksList() {
+        return blocks.values();
     }
     
     /**

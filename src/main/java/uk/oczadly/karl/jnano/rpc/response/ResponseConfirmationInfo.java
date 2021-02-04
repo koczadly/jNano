@@ -12,6 +12,7 @@ import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -56,10 +57,17 @@ public class ResponseConfirmationInfo extends RpcResponse {
     /**
      * Map follows the structure {@code block hash -> confirmation info}.
      *
-     * @return a map of confirmations.
+     * @return a map of confirmations
      */
     public Map<HexData, BlockConfirmation> getBlocks() {
         return blocks;
+    }
+    
+    /**
+     * @return a collection of confirmations
+     */
+    public Collection<BlockConfirmation> getBlocksList() {
+        return blocks.values();
     }
     
     
