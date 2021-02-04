@@ -84,8 +84,10 @@ public class NanoAmountTest {
     
     @Test
     public void testDifference() {
-        assertEquals(NanoAmount.valueOfRaw("400"), NanoAmount.valueOfRaw("500").difference(NanoAmount.valueOfRaw("100")));
-        assertEquals(NanoAmount.valueOfRaw("400"), NanoAmount.valueOfRaw("100").difference(NanoAmount.valueOfRaw("500")));
+        assertEquals(NanoAmount.valueOfRaw("400"),
+                NanoAmount.valueOfRaw("500").difference(NanoAmount.valueOfRaw("100")));
+        assertEquals(NanoAmount.valueOfRaw("400"),
+                NanoAmount.valueOfRaw("100").difference(NanoAmount.valueOfRaw("500")));
     }
     
 }

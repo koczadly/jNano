@@ -5,12 +5,11 @@
 
 package uk.oczadly.karl.jnano.util;
 
+import uk.oczadly.karl.jnano.internal.utils.UnitHelper;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 
 /**
  * <p>This class represents the currency units and denominations used to represent an amount of Nano, and can be
@@ -36,42 +35,42 @@ import java.text.DecimalFormat;
  *
  * @see NanoAmount
  */
-public enum NanoUnit {
+public enum NanoUnit implements NanoAmount.Denomination {
     
     /**
      * The largest divisor, equivalent to 10<sup>33</sup> raw.
      */
-    GIGA(33,  "Gnano", "Gxrb"),
+    GIGA  (33, "Gnano"),
     
     /**
      * The 2nd largest divisor, equivalent to 10<sup>30</sup> raw.
      */
-    MEGA(30,  "Nano",  "Mxrb"),
+    MEGA  (30, "Nano"),
     
     /**
      * The 3rd largest divisor, equivalent to 10<sup>27</sup> raw.
      */
-    KILO(27,  "knano", "kxrb"),
+    KILO  (27, "knano"),
     
     /**
      * The 4th largest divisor, equivalent to 10<sup>24</sup> raw.
      */
-    XRB(24,   "nano",  "xrb"),
+    XRB   (24, "nano"),
     
     /**
      * The 5th largest divisor, equivalent to 10<sup>21</sup> raw.
      */
-    MILLI(21, "mnano", "mxrb"),
+    MILLI (21, "mnano"),
     
     /**
      * The 6th largest divisor, equivalent to 10<sup>18</sup> raw.
      */
-    MICRO(18, "μnano", "uxrb"),
+    MICRO (18, "μnano"),
     
     /**
      * The smallest possible representable unit.
      */
-    RAW(0,    "raw",   "raw");
+    RAW   (0,  "raw");
     
     
     /**
@@ -82,57 +81,31 @@ public enum NanoUnit {
      */
     public static final NanoUnit BASE_UNIT = NanoUnit.MEGA;
     
-    private static final DecimalFormat FRIENDLY_DF = new DecimalFormat("#,##0.######");
-    private static final DecimalFormat FRIENDLY_DF_FORCE = new DecimalFormat("#,##0.000000");
-    
     final int exponent;
     final BigInteger rawValue;
-    final String displayName, classicName;
+    final String displayName;
     
-    NanoUnit(int exponent, String displayName, String classicName) {
+    NanoUnit(int exponent, String displayName) {
         this.exponent = exponent;
         this.rawValue = BigInteger.TEN.pow(exponent);
         this.displayName = displayName;
-        this.classicName = classicName;
     }
     
     
-    /**
-     * <p>Returns the exponent of the unit as a power of 10.</p>
-     * <p>For instance, 10<sup>x</sup>, with {@code x} being the value returned by this method.</p>
-     * @return the exponent of this unit
-     */
+    @Override
     public int getExponent() {
         return exponent;
     }
     
-    
-    /**
-     * Returns the equivalent value of a single unit in raw.
-     *
-     * @return the equivalent raw value of 1 unit
-     */
+    @Override
     public BigInteger getRawValue() {
         return rawValue;
     }
     
-    
-    /**
-     * Returns the human-readable name for this currency unit.
-     * @return the display name
-     */
+    @Override
     public String getDisplayName() {
         return displayName;
     }
-    
-    /**
-     * Returns the classic legacy name used within previous versions of the node.
-     * @return the legacy name
-     */
-    public String getClassicName() {
-        return classicName;
-    }
-    
     
     @Override
     public String toString() {
@@ -141,11 +114,11 @@ public enum NanoUnit {
     
     
     /**
-     * <p>Converts the specified unit and amount into this unit.</p>
+     * Converts the specified unit and amount into this unit.
      *
      * <p>If you are converting from a smaller unit and fractional digits are lost, then an {@link ArithmeticException}
-     * will be thrown. If you wish to bypass this, use {@link #convertFrom(NanoUnit, BigInteger)} and transform
-     * the retrieved value into a BigInteger using the {@link BigDecimal#toBigInteger()} method.</p>
+     * will be thrown. If you wish to bypass this, use {@link #convertFrom(NanoUnit, BigInteger)} and
+     * transform the retrieved value into a BigInteger using the {@link BigDecimal#toBigInteger()} method.</p>
      *
      * <p>The {@link NanoAmount} class and it's provided conversion methods are recommended over this method for better
      * code clarity.</p>
@@ -161,11 +134,11 @@ public enum NanoUnit {
     }
     
     /**
-     * <p>Converts the specified unit and amount into this unit.</p>
+     * Converts the specified unit and amount into this unit.
      *
      * <p>If you are converting from a smaller unit and fractional digits are lost, then an {@link ArithmeticException}
-     * will be thrown. If you wish to bypass this, use {@link #convertFrom(NanoUnit, BigDecimal)} and transform
-     * the retrieved value into a BigInteger using the {@link BigDecimal#toBigInteger()} method.</p>
+     * will be thrown. If you wish to bypass this, use {@link #convertFrom(NanoUnit, BigDecimal)} and
+     * transform the retrieved value into a BigInteger using the {@link BigDecimal#toBigInteger()} method.</p>
      *
      * <p>The {@link NanoAmount} class and it's provided conversion methods are recommended over this method for better
      * code clarity.</p>
@@ -178,15 +151,13 @@ public enum NanoUnit {
      * sourceAmount} has too many decimal digits for the specified {@code sourceUnit}
      */
     public BigInteger convertFromInt(NanoUnit sourceUnit, BigDecimal sourceAmount) {
-        BigDecimal decimalVal = this.convertFrom(sourceUnit, sourceAmount);
+        BigDecimal decimalVal = convertFrom(sourceUnit, sourceAmount);
         try {
             return decimalVal.toBigIntegerExact();
         } catch (ArithmeticException e) {
-            throw new ArithmeticException(
-                    String.format("Converting %s %s to %s is not permitted, as fractional amounts would be truncated." +
-                                    " Use convert(sourceAmount, sourceUnit).toBigInteger() if you are okay with " +
-                                    "losing this information.",
-                            sourceAmount, sourceUnit.getDisplayName(), this.getDisplayName()));
+            throw new ArithmeticException(String.format(
+                    "Conversion of %s to %s was not possible without losing information.",
+                    sourceUnit.getDisplayName(), getDisplayName()));
         }
     }
     
@@ -202,7 +173,7 @@ public enum NanoUnit {
      * @return the converted value in this unit
      */
     public BigDecimal convertFrom(NanoUnit sourceUnit, BigInteger sourceAmount) {
-        return this.convertFrom(sourceUnit, new BigDecimal(sourceAmount));
+        return convertFrom(sourceUnit, new BigDecimal(sourceAmount));
     }
     
     /**
@@ -218,30 +189,16 @@ public enum NanoUnit {
      * {@code sourceUnit}
      */
     public BigDecimal convertFrom(NanoUnit sourceUnit, BigDecimal sourceAmount) {
-        // Argument checks
         if (sourceAmount == null)
             throw new IllegalArgumentException("Source amount cannot be null");
         if (sourceUnit == null)
             throw new IllegalArgumentException("Source unit cannot be null");
         if (sourceAmount.compareTo(BigDecimal.ZERO) < 0)
             throw new IllegalArgumentException("Source amount cannot be negative");
-        sourceAmount = sourceAmount.stripTrailingZeros();
-        if (sourceAmount.scale() > sourceUnit.exponent)
-            throw new ArithmeticException("Source amount scale is too large for the specified source unit.");
-    
-        BigDecimal result;
-        if (sourceUnit == this) {
-            // Same unit
-            result = sourceAmount;
-        } else if (sourceUnit.exponent > this.exponent) {
-            // Source is higher, multiply (shift decimal right)
-            result = sourceAmount.movePointRight(sourceUnit.exponent - this.exponent);
-        } else {
-            // Source is lower, divide (shift decimal left)
-            result = sourceAmount.movePointLeft(this.exponent - sourceUnit.exponent);
-        }
-        return result.setScale(this.exponent, RoundingMode.FLOOR);
+        
+        return UnitHelper.convert(sourceAmount, sourceUnit.exponent, exponent);
     }
+    
     
     /**
      * <p>Converts a given value of <i>raw</i> to the current base unit ({@link #BASE_UNIT}), and formats the number to
@@ -277,21 +234,8 @@ public enum NanoUnit {
      * @return a friendly string of a given currency amount
      */
     public static String toFriendlyString(BigDecimal amount, NanoUnit sourceUnit) {
-        BigDecimal nanoAmount = BASE_UNIT.convertFrom(sourceUnit, amount);
-        BigDecimal scaledAmount = nanoAmount.setScale(6, RoundingMode.FLOOR);
-        boolean trimmed = nanoAmount.compareTo(scaledAmount) != 0;
-    
-        String valStr;
-        if (scaledAmount.compareTo(BigDecimal.ZERO) == 0) {
-            valStr = trimmed ? ">0" : "0";
-        } else {
-            if (trimmed) {
-                valStr = FRIENDLY_DF_FORCE.format(scaledAmount) + ((char)8230); // Ellipsis character
-            } else {
-                valStr = FRIENDLY_DF.format(scaledAmount);
-            }
-        }
-        return valStr + " " + BASE_UNIT.getDisplayName();
+        BigDecimal converted = BASE_UNIT.convertFrom(sourceUnit, amount);
+        return UnitHelper.toFriendlyString(converted, BASE_UNIT);
     }
     
 }

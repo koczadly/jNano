@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.model;
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import uk.oczadly.karl.jnano.internal.JNC;
+import uk.oczadly.karl.jnano.internal.utils.UnitHelper;
 import uk.oczadly.karl.jnano.util.NanoUnit;
 
 import java.lang.reflect.Type;
@@ -16,7 +17,9 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 /**
- * This class is used to represent a quantity of Nano, for use as a transactional amount or account balance. Only
+ * An immutable class which represents a quantity of Nano.
+ *
+ * This class can be used as a transactional amount or account balance. Only
  * unsigned values are supported, so this class cannot be used to represent a negative amount.
  *
  * <p>To obtain an instance of this class, use one of the provided static {@code valueOf} methods, or one of the
@@ -28,6 +31,7 @@ import java.util.Objects;
 public final class NanoAmount implements Comparable<NanoAmount> {
     
     private static final BigInteger MAX_VAL_RAW = JNC.BIGINT_MAX_128;
+    private static final Denomination BASE_UNIT = NanoUnit.BASE_UNIT;
     
     /** A zero-value amount. */
     public static final NanoAmount ZERO = new NanoAmount(BigInteger.ZERO);
@@ -36,25 +40,21 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     public static final NanoAmount MAX_VALUE = new NanoAmount(MAX_VAL_RAW);
     
     /**
-     * A single Nano unit ({@code 1 Nano}).
-     * <p>This value is based on the current {@link NanoUnit#BASE_UNIT} constant value.</p>
-     */
-    public static final NanoAmount ONE_NANO = NanoAmount.valueOf(BigInteger.ONE, NanoUnit.BASE_UNIT);
-    
-    /**
-     * A single raw unit ({@code 1 raw}).
+     * A constant value representing a single {@link NanoUnit#RAW raw} unit ({@code 1 raw}).
      * <p>This is the smallest representable quantity of Nano possible.</p>
      */
-    public static final NanoAmount ONE_RAW = NanoAmount.valueOfRaw(BigInteger.ONE);
+    public static final NanoAmount ONE_RAW = new NanoAmount(BigInteger.ONE);
+    
+    /**
+     * A constant value representing a single {@link NanoUnit#BASE_UNIT Nano} unit ({@code 1 Nano}).
+     * <p><b>Warning:</b> This is based on the current {@link NanoUnit#BASE_UNIT} constant, which may be prone to
+     * change in the future if the official Nano denomination system changes.</p>
+     */
+    public static final NanoAmount ONE_NANO = NanoAmount.valueOfNano(BigInteger.ONE);
     
     
     private final BigInteger rawValue;
     
-    /**
-     * Creates a NanoAmount from a given {@code raw} value.
-     *
-     * @param rawValue the raw value
-     */
     private NanoAmount(BigInteger rawValue) {
         if (rawValue == null)
             throw new IllegalArgumentException("Raw value cannot be null.");
@@ -74,12 +74,15 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns the value of this amount in the standard base unit ({@link NanoUnit#BASE_UNIT}).
+     * Returns the value of this amount in the standard base unit.
+     *
+     * <p><b>Warning:</b> This method uses the current {@link NanoUnit#BASE_UNIT} constant, which may be prone to
+     * change in the future if the official Nano denomination system changes.</p>
      *
      * @return the value, in the base unit
      */
     public BigDecimal getAsNano() {
-        return getAs(NanoUnit.BASE_UNIT);
+        return getAs(BASE_UNIT);
     }
     
     /**
@@ -88,26 +91,41 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @param unit the unit to convert this value to
      * @return the value, in the requested unit
      */
-    public BigDecimal getAs(NanoUnit unit) {
+    public BigDecimal getAs(Denomination unit) {
         if (unit == null)
             throw new IllegalArgumentException("Unit cannot be null.");
-        return unit.convertFrom(NanoUnit.RAW, rawValue);
+        
+        return UnitHelper.convert(
+                new BigDecimal(rawValue), 0, unit.getExponent());
     }
     
     
     /**
      * Returns this amount as a friendly string, complete with the unit name.
      *
+     * <p><b>Warning:</b> This method uses the current {@link NanoUnit#BASE_UNIT} constant, which may be prone to
+     * change in the future if the official Nano denomination system changes.</p>
+     *
      * @return a friendly string of this amount
-     * @see NanoUnit#toFriendlyString(BigInteger)
      */
     @Override
     public String toString() {
-        return NanoUnit.toFriendlyString(rawValue);
+        return toString(BASE_UNIT);
     }
     
     /**
-     * Returns this amount as an integer, in raw units.
+     * Returns this amount as a friendly string, complete with the unit name.
+     *
+     * @param unit the unit to display the amount in
+     * @return a friendly string of this amount
+     */
+    public String toString(Denomination unit) {
+        BigDecimal amount = getAs(unit);
+        return UnitHelper.toFriendlyString(amount, unit);
+    }
+    
+    /**
+     * Returns this amount as an integer, in raw units. Example string: "{@code 420000000000000973}".
      *
      * @return this value in raw, as a string
      */
@@ -116,6 +134,13 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     
+    /**
+     * Compares this NanoAmount with the specified Object for equality.
+     *
+     * @param  o the object this
+     * @return {@code true} if and only if the specified Object is a
+     *         BigInteger whose value is numerically equal to this BigInteger.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -146,9 +171,9 @@ public final class NanoAmount implements Comparable<NanoAmount> {
             return this;
         
         BigInteger newVal = rawValue.add(amount.rawValue);
-        if (newVal.compareTo(MAX_VALUE.getAsRaw()) > 0)
+        if (newVal.compareTo(MAX_VAL_RAW) > 0)
             throw new ArithmeticException("Resulting NanoAmount is greater than the possible representable amount.");
-        return new NanoAmount(newVal);
+        return valueOfRaw(newVal);
     }
     
     /**
@@ -163,7 +188,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
             throw new ArithmeticException("Resulting NanoAmount is negative.");
         if (this.equals(amount))
             return ZERO;
-        return new NanoAmount(rawValue.subtract(amount.rawValue));
+        return valueOfRaw(rawValue.subtract(amount.rawValue));
     }
     
     /**
@@ -186,8 +211,10 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @param unit the denomination of the {@code val} amount
      * @return a {@link NanoAmount} instance representing the given value
      */
-    public static NanoAmount valueOf(long val, NanoUnit unit) {
-        return valueOf(BigInteger.valueOf(val), unit);
+    public static NanoAmount valueOf(long val, Denomination unit) {
+        if (unit.getExponent() == 0)
+            return valueOfRaw(val); // Skip conversion if source unit is raw
+        return valueOf(BigDecimal.valueOf(val), unit);
     }
     
     /**
@@ -197,8 +224,10 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @param unit the denomination of the {@code val} amount
      * @return a {@link NanoAmount} instance representing the given value
      */
-    public static NanoAmount valueOf(BigInteger val, NanoUnit unit) {
-        return new NanoAmount(NanoUnit.RAW.convertFromInt(unit, val));
+    public static NanoAmount valueOf(BigInteger val, Denomination unit) {
+        if (unit.getExponent() == 0)
+            return valueOfRaw(val); // Skip conversion if source unit is raw
+        return valueOf(new BigDecimal(val), unit);
     }
     
     /**
@@ -210,8 +239,8 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @throws ArithmeticException if the source {@code val} has too many decimal digits for the specified
      * {@code unit}
      */
-    public static NanoAmount valueOf(BigDecimal val, NanoUnit unit) {
-        return new NanoAmount(NanoUnit.RAW.convertFromInt(unit, val));
+    public static NanoAmount valueOf(BigDecimal val, Denomination unit) {
+        return new NanoAmount(UnitHelper.convertToRaw(val, unit.getExponent()));
     }
     
     /**
@@ -225,7 +254,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @throws ArithmeticException if the source {@code val} has too many decimal digits for the specified
      * {@code unit}
      */
-    public static NanoAmount valueOf(String val, NanoUnit unit) {
+    public static NanoAmount valueOf(String val, Denomination unit) {
         return valueOf(new BigDecimal(val), unit);
     }
     
@@ -236,6 +265,8 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @return a {@link NanoAmount} instance representing the given value
      */
     public static NanoAmount valueOfRaw(BigInteger raw) {
+        if (raw.equals(BigInteger.ZERO)) return ZERO;
+        if (raw.equals(BigInteger.ONE)) return ONE_RAW;
         return new NanoAmount(raw);
     }
     
@@ -251,45 +282,120 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
+     * Returns a NanoAmount instance that represents the given {@link NanoUnit#RAW raw} amount.
+     *
+     * @param raw the numeric value, in raw (must be zero or positive)
+     * @return a {@link NanoAmount} instance representing the given value
+     * @throws NumberFormatException if val is not a valid integer
+     */
+    public static NanoAmount valueOfRaw(long raw) {
+        if (raw == 0) return ZERO;
+        if (raw == 1) return ONE_RAW;
+        return new NanoAmount(BigInteger.valueOf(raw));
+    }
+    
+    /**
      * Returns a NanoAmount instance representing the given Nano amount.
      *
-     * <p>Note that this method uses the {@link NanoUnit#BASE_UNIT base unit}, which may change in the future if the
-     * official Nano divisor or unit system is modified. If you need to specify a fixed value, use the
-     * {@link #valueOf(BigInteger, NanoUnit)} method instead.</p>
+     * <p><b>Warning:</b> This method uses the current {@link NanoUnit#BASE_UNIT} constant, which may be prone to
+     * change in the future if the official Nano denomination system changes.</p>
      *
      * @param val the numeric value, in Nanos (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
      */
     public static NanoAmount valueOfNano(BigInteger val) {
-        return valueOf(val, NanoUnit.BASE_UNIT);
+        return valueOf(val, BASE_UNIT);
     }
     
     /**
      * Returns a NanoAmount instance representing the given Nano amount.
      *
-     * <p>Note that this method uses the {@link NanoUnit#BASE_UNIT base unit}, which may change in the future if the
-     * official Nano divisor or unit system is modified. If you need to specify a fixed value, use the
-     * {@link #valueOf(BigDecimal, NanoUnit)} method instead.</p>
+     * <p><b>Warning:</b> This method uses the current {@link NanoUnit#BASE_UNIT} constant, which may be prone to
+     * change in the future if the official Nano denomination system changes.</p>
      *
      * @param val the numeric value, in Nanos (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
      */
     public static NanoAmount valueOfNano(BigDecimal val) {
-        return valueOf(val, NanoUnit.BASE_UNIT);
+        return valueOf(val, BASE_UNIT);
     }
     
     /**
      * Returns a NanoAmount instance representing the given Nano amount.
      *
-     * <p>Note that this method uses the {@link NanoUnit#BASE_UNIT base unit}, which may change in the future if the
-     * official Nano divisor or unit system is modified. If you need to specify a fixed value, use the
-     * {@link #valueOf(long, NanoUnit)} method instead.</p>
+     * <p><b>Warning:</b> This method uses the current {@link NanoUnit#BASE_UNIT} constant, which may be prone to
+     * change in the future if the official Nano denomination system changes.</p>
      *
      * @param val the numeric value, in Nanos (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
      */
     public static NanoAmount valueOfNano(long val) {
-        return valueOf(val, NanoUnit.BASE_UNIT);
+        return valueOf(val, BASE_UNIT);
+    }
+    
+    
+    
+    /**
+     * This interface is to be implemented by custom units or value denominations.
+     * <p>For a concrete implementation, use the {@link NanoUnit} enum class.</p>
+     * @see NanoUnit
+     * @see DenominationImpl
+     */
+    public interface Denomination {
+        /**
+         * Returns the exponent of the unit as a power of 10.
+         * <p>For instance, 10<sup>x</sup>, with {@code x} being the value returned by this method.</p>
+         *
+         * @return the exponent of this denomination
+         */
+        int getExponent();
+    
+        /**
+         * Returns the equivalent value of a single unit in {@code raw} (the smallest possible unit).
+         * @return the equivalent raw value of 1 unit
+         */
+        BigInteger getRawValue();
+    
+        /**
+         * Returns the friendly display name of this unit, eg: {@code Nano}.
+         * @return the display name of this denomination
+         */
+        String getDisplayName();
+    }
+    
+    /**
+     * A simple {@link Denomination} implementation.
+     */
+    public static final class DenominationImpl implements Denomination {
+        private final String name;
+        private final int exponent;
+        private final BigInteger rawVal;
+    
+        /**
+         * Constructs a new unit Denomination constant.
+         * @param name     the name of the unit
+         * @param exponent the exponent of the unit's value (eg. 10<sup>x</sup>)
+         */
+        public DenominationImpl(String name, int exponent) {
+            this.name = name;
+            this.exponent = exponent;
+            this.rawVal = BigInteger.TEN.pow(exponent);
+        }
+        
+        @Override
+        public int getExponent() {
+            return exponent;
+        }
+        
+        @Override
+        public BigInteger getRawValue() {
+            return rawVal;
+        }
+    
+        @Override
+        public String getDisplayName() {
+            return name;
+        }
     }
     
     
