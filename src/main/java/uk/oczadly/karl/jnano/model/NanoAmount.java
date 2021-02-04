@@ -94,9 +94,10 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     public BigDecimal getAs(Denomination unit) {
         if (unit == null)
             throw new IllegalArgumentException("Unit cannot be null.");
+        if (unit.getExponent() == 0)
+            return new BigDecimal(rawValue);
         
-        return UnitHelper.convert(
-                new BigDecimal(rawValue), 0, unit.getExponent());
+        return UnitHelper.convert(new BigDecimal(rawValue), 0, unit.getExponent());
     }
     
     

@@ -28,7 +28,7 @@ public class UnitHelper {
         BigDecimal result;
         if (sourceExp == destExp) {
             // Same unit
-            result = sourceAmount;
+            return sourceAmount;
         } else if (sourceExp > destExp) {
             // Source is higher, multiply (shift decimal right)
             result = sourceAmount.movePointRight(sourceExp - destExp);
@@ -40,7 +40,6 @@ public class UnitHelper {
         result = result.stripTrailingZeros();
         if (result.scale() > destExp)
             throw new ArithmeticException("Value could not be exactly converted.");
-        
         return result;
     }
     
