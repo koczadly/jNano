@@ -337,7 +337,10 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     
     /**
      * This interface is to be implemented by custom units or value denominations.
-     * <p>For a concrete implementation, use the {@link NanoUnit} enum class.</p>
+     *
+     * <p>For a concrete implementation, use the constant values offered by the {@link NanoUnit} enum. You could
+     * also declare your own units by constructing {@link DenominationImpl} objects.</p>
+     *
      * @see NanoUnit
      * @see DenominationImpl
      */
