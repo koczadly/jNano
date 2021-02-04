@@ -59,10 +59,10 @@ public class EpochUpgradeRegistry {
      * @return the corresponding upgrade
      * @throws UnrecognizedEpochException if no matching upgrade is found
      */
-    public EpochUpgrade fromVersion(int version) {
+    public EpochUpgrade ofVersion(int version) {
         EpochUpgrade result = mapByVer.get(version);
         if (result == null)
-            throw new UnrecognizedEpochException("Could not find epoch by version integer.");
+            throw new UnrecognizedEpochException(String.format("Unknown epoch with version \"%d\".", version));
         return result;
     }
     
@@ -72,10 +72,11 @@ public class EpochUpgradeRegistry {
      * @return the corresponding upgrade
      * @throws UnrecognizedEpochException if no matching upgrade is found
      */
-    public EpochUpgrade fromIdentifier(HexData identifier) {
+    public EpochUpgrade ofIdentifier(HexData identifier) {
         EpochUpgrade result = mapById.get(identifier);
         if (result == null)
-            throw new UnrecognizedEpochException("Could not find epoch by identifier.");
+            throw new UnrecognizedEpochException(String.format("Unknown epoch with identifier \"%s\".",
+                    identifier));
         return result;
     }
     
@@ -90,7 +91,7 @@ public class EpochUpgradeRegistry {
         if (block instanceof StateBlock) {
             StateBlock sb = (StateBlock)block;
             if (sb.getSubType() == StateBlockSubType.EPOCH)
-                return fromIdentifier(sb.getLink().asHex());
+                return ofIdentifier(sb.getLink().asHex());
         }
         return null;
     }

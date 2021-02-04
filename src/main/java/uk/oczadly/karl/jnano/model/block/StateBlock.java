@@ -299,7 +299,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         if (getSignature() == null) return false;
         
         if (getSubType() == StateBlockSubType.EPOCH) {
-            EpochUpgrade epoch = epochRegistry.fromIdentifier(getLink().asHex());
+            EpochUpgrade epoch = epochRegistry.ofIdentifier(getLink().asHex());
             return verifySignature(epoch.getSigner().orElse(getAccount()));
         } else {
             return verifySignature(getAccount());
