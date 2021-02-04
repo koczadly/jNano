@@ -11,7 +11,6 @@ import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This response class contains information about the current network active difficulty.
@@ -55,14 +54,14 @@ public class ResponseActiveDifficulty extends RpcResponse {
      * @return the minimum work value required for receiving blocks
      */
     public WorkDifficulty getNetworkReceiveMinimum() {
-        return Objects.requireNonNullElse(networkReceiveMinimum, networkMinimum);
+        return networkReceiveMinimum != null ? networkReceiveMinimum : networkMinimum;
     }
     
     /**
      * @return the current average work value for receive blocks
      */
     public WorkDifficulty getNetworkReceiveCurrent() {
-        return Objects.requireNonNullElse(networkReceiveCurrent, networkCurrent);
+        return networkReceiveCurrent != null ? networkReceiveCurrent : networkCurrent;
     }
     
     /**
