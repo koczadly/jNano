@@ -45,6 +45,8 @@ public abstract class WorkGenerator {
     private final BlockingQueue<WorkRequest> queue = new LinkedBlockingQueue<>();
     private final Thread consumerThread = new ConsumerThread();
     
+    private volatile boolean isShutdown = false;
+    
     /**
      * @param policy the work difficulty policy (may be null)
      */
@@ -167,15 +169,27 @@ public abstract class WorkGenerator {
     
     
     /**
+     * Returns whether this generator has been shut down by calling {@link #shutdown()}.
+     * @return true if this generator has been shut down.
+     */
+    public synchronized boolean isShutdown() {
+        return isShutdown;
+    }
+    
+    /**
      * Attempts to cancel all pending work generations, and stops the main consumer thread from running.
      */
-    public void shutdown() {
+    public synchronized void shutdown() {
+        isShutdown = true;
         consumerThread.interrupt();
         queue.clear();
     }
     
     
-    private Future<WorkSolution> enqueueWork(WorkRequestSpec spec) {
+    private synchronized Future<WorkSolution> enqueueWork(WorkRequestSpec spec) {
+        if (isShutdown)
+            throw new IllegalStateException("WorkGenerator is shutdown and cannot accept new requests.");
+        
         WorkRequest workReq = new WorkRequest(spec);
         queue.add(workReq);
         
