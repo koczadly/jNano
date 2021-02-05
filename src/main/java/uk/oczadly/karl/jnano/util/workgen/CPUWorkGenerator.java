@@ -39,9 +39,9 @@ public class CPUWorkGenerator extends WorkGenerator {
     public static final CPUWorkGenerator INSTANCE = new CPUWorkGenerator();
     
     private static final Random RANDOM = new Random();
-    private static final ExecutorService THREAD_POOL = Executors.newCachedThreadPool(new GeneratorThreadFactory());
-
+    
     private final int threadCount;
+    private final ExecutorService executorService;
     
     /**
      * Constructs a {@code CPUWorkGenerator} with the default Nano difficulty policy, and {@code n-1} threads, where
@@ -81,6 +81,7 @@ public class CPUWorkGenerator extends WorkGenerator {
         if (threadCount < 1)
             throw new IllegalArgumentException("Must have at least 1 thread.");
         this.threadCount = threadCount;
+        this.executorService = Executors.newFixedThreadPool(threadCount, new GeneratorThreadFactory());
     }
     
     
@@ -92,7 +93,12 @@ public class CPUWorkGenerator extends WorkGenerator {
         return threadCount;
     }
     
-
+    @Override
+    public void shutdown() {
+        super.shutdown();
+        executorService.shutdownNow();
+    }
+    
     @Override
     protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty) throws Exception {
         // Prepare parameters
@@ -110,8 +116,8 @@ public class CPUWorkGenerator extends WorkGenerator {
         for (int i = 0; i < threadCount; i++) {
             byte[] initialWork = Arrays.copyOf(initialWorkTemplate, initialWorkTemplate.length);
             initialWork[7] += (byte)(i * 37); // Try to ensure different work value for each thread
-            
-            THREAD_POOL.submit(new GeneratorTask(rootBytes, threshold, initialWork, result));
+    
+            executorService.submit(new GeneratorTask(rootBytes, threshold, initialWork, result));
         }
     
         return result.get();
