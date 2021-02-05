@@ -32,12 +32,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class CPUWorkGenerator extends WorkGenerator {
     
-    /**
-     * A re-usable {@code CPUWorkGenerator} configured to use {@code n - 1} CPU cores with the default Nano
-     * difficulty threshold policy.
-     */
-    public static final CPUWorkGenerator INSTANCE = new CPUWorkGenerator();
-    
     private static final Random RANDOM = new Random();
     
     private final int threadCount;
