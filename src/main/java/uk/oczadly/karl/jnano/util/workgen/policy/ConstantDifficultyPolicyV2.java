@@ -65,4 +65,20 @@ public final class ConstantDifficultyPolicyV2 implements ConstantWorkDifficultyP
         return multiplier;
     }
     
+    /**
+     * Returns the minimum difficulty threshold for {@code send} subtypes.
+     * @return the difficulty for send blocks
+     */
+    public WorkDifficulty forSendTypes() {
+        return send;
+    }
+    
+    /**
+     * Returns the minimum difficulty threshold for {@code receive} subtypes.
+     * @return the difficulty for receive blocks
+     */
+    public WorkDifficulty forReceiveTypes() {
+        return receive;
+    }
+    
 }
