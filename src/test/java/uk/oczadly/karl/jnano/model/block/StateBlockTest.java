@@ -13,7 +13,9 @@ import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
+import uk.oczadly.karl.jnano.model.epoch.UnrecognizedEpochException;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
+import uk.oczadly.karl.jnano.util.NetworkConstants;
 
 import java.math.BigInteger;
 
@@ -128,6 +130,28 @@ public class StateBlockTest {
     public void testSigVerification() {
         assertTrue(TEST_BLOCK.verifySignature(TB_ACCOUNT));
         assertFalse(TEST_BLOCK.verifySignature(NanoAccount.ZERO_ACCOUNT));
+    }
+    
+    @Test
+    public void testEpochSigVerification() {
+        // V2 epoch block
+        StateBlock block = StateBlock.parse("{\n" +
+                "\"type\": \"state\",\n" +
+                "\"account\": \"nano_3x4ui45q1cw8hydmfdn4ec5ijsdqi4ryp14g4ayh71jcdkwmddrq7ca9xzn9\",\n" +
+                "\"previous\": \"D7B1B764399B3417BC1220C602A9608D9C883CF2064EA481E14152813F3A6B9E\",\n" +
+                "\"representative\": \"nano_3rw4un6ys57hrb39sy1qx8qy5wukst1iiponztrz9qiz6qqa55kxzx4491or\",\n" +
+                "\"balance\": \"0\",\n" +
+                "\"link\": \"65706F636820763220626C6F636B000000000000000000000000000000000000\",\n" +
+                "\"link_as_account\": \"nano_1sdifxjpia5p8ai86u5hefoi1111111111111111111111111111ngspq7ps\",\n" +
+                "\"signature\": \"C79A2779903119007A5A597EBA57931485D729CB4C5D12502967C3645624C042D6E867D6E783CFF7D2" +
+                "B01292AB8834A66BD7F9508B2981FEBF14542988F8AF02\",\n" +
+                "\"work\": \"1c147cfad9657bb5\",\n" +
+                "\"subtype\": \"epoch\"}");
+        
+        assertTrue(block.verifySignature());
+        assertFalse(block.verifySignature(block.getAccount()));
+        assertThrows(UnrecognizedEpochException.class,
+                () -> block.verifySignature(NetworkConstants.BANANO.getEpochUpgrades()));
     }
     
     @Test
