@@ -118,7 +118,7 @@ public abstract class Block implements IBlock {
     }
     
     @Override
-    public synchronized final HexData getSignature() {
+    public final synchronized HexData getSignature() {
         return signature;
     }
     
@@ -142,7 +142,7 @@ public abstract class Block implements IBlock {
      * @param privateKey the private key of the signer (32-byte value)
      * @return the computed signature value
      */
-    public synchronized final HexData sign(HexData privateKey) {
+    public final synchronized HexData sign(HexData privateKey) {
         if (privateKey == null)
             throw new IllegalArgumentException("Private key cannot be null.");
         if (privateKey.length() != NanoConst.LEN_KEY_B)
@@ -164,7 +164,7 @@ public abstract class Block implements IBlock {
      * @return true if the specified account is the signer of this block's signature, or false if not <em>or</em> if
      *         the {@code signature} field is null
      */
-    public synchronized final boolean verifySignature(NanoAccount account) {
+    public final synchronized boolean verifySignature(NanoAccount account) {
         if (account == null)
             throw new IllegalArgumentException("Account cannot be null.");
         if (signature == null) return false;
