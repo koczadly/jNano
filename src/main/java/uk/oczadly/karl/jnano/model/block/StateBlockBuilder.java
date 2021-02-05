@@ -117,6 +117,8 @@ public final class StateBlockBuilder {
      * Sets the {@code work} field of the block.
      * @param work the computed work value
      * @return this builder instance
+     *
+     * @see #generateWork(WorkGenerator)
      */
     public synchronized StateBlockBuilder setWork(WorkSolution work) {
         this.work = work;
@@ -127,6 +129,8 @@ public final class StateBlockBuilder {
      * Sets the {@code work} field of the block.
      * @param work the computed work value (16-character hexadecimal value)
      * @return this builder instance
+     *
+     * @see #generateWork(WorkGenerator)
      */
     public synchronized StateBlockBuilder setWork(String work) {
         return setWork(work != null ? new WorkSolution(work) : null);
@@ -140,6 +144,8 @@ public final class StateBlockBuilder {
      *
      * @param workGenerator the work generator object
      * @return this builder instance
+     *
+     * @see #setWork(WorkSolution)
      */
     public synchronized StateBlockBuilder generateWork(WorkGenerator workGenerator) {
         this.workGenerator = workGenerator;
@@ -182,6 +188,10 @@ public final class StateBlockBuilder {
     
     /**
      * Sets the {@code previous} field of the block.
+     *
+     * <p>This field doesn't need to be set for {@link StateBlockSubType#OPEN open} subtypes, as a zero-value hash
+     * will be used instead.</p>
+     *
      * @param block the previous block in this account chain
      * @return this builder instance
      */
@@ -192,6 +202,10 @@ public final class StateBlockBuilder {
     
     /**
      * Sets the {@code previous} field of the block.
+     *
+     * <p>This field doesn't need to be set for {@link StateBlockSubType#OPEN open} subtypes, as a zero-value hash
+     * will be used instead.</p>
+     *
      * @param hash the hash of the previous block in this account chain (64-character hexadecimal string)
      * @return this builder instance
      */
@@ -205,6 +219,10 @@ public final class StateBlockBuilder {
     
     /**
      * Sets the {@code previous} field of the block.
+     *
+     * <p>This field doesn't need to be set for {@link StateBlockSubType#OPEN open} subtypes, as a zero-value hash
+     * will be used instead.</p>
+     *
      * @param hash the hash of the previous block in this account chain (64-character hexadecimal value)
      * @return this builder instance
      */
@@ -219,6 +237,10 @@ public final class StateBlockBuilder {
     
     /**
      * Sets the {@code representative} field of the block.
+     * 
+     * <p>If this field isn't set, then the {@link #setAccount(NanoAccount) account} field will be used as the
+     * representative.</p>
+     * 
      * @param representative the representative of the account
      * @return this builder instance
      */
@@ -229,6 +251,10 @@ public final class StateBlockBuilder {
     
     /**
      * Sets the {@code representative} field of the block.
+     *
+     * <p>If this field isn't set, then the {@link #setAccount(NanoAccount) account} field will be used as the
+     * representative.</p>
+     *
      * @param representative the representative of the account
      * @return this builder instance
      */
@@ -270,9 +296,16 @@ public final class StateBlockBuilder {
     
     
     /**
-     * Sets the {@code link} field of the block.
-     * @param link the {@link LinkData} object (intent value is ignored)
+     * Sets the {@code link} field of the block, ignoring the intent value of the {@code LinkData} object.
+     *
+     * <p>Do not use this method if you are constructing the link data yourself, this should only be used when
+     * copying from a pre-existing block. This field doesn't need to be set for {@link StateBlockSubType#CHANGE change}
+     * subtypes, as the value will be ignored.</p>
+     *
+     * @param link the {@link LinkData} object (intent is ignored)
      * @return this builder instance
+     *
+     * @see #setLink(String)
      */
     public synchronized StateBlockBuilder setLink(LinkData link) {
         this.linkData = link == null ? null : link.asHex();
@@ -280,7 +313,11 @@ public final class StateBlockBuilder {
     }
     
     /**
-     * Sets the {@code link} field of the block.
+     * Sets the {@code link} field of the block, in either account or hexadecimal format.
+     *
+     * <p>This field doesn't need to be set for {@link StateBlockSubType#CHANGE change} subtypes, as the value will be
+     * ignored.</p>
+     *
      * @param link the link value, either in hexadecimal (64-character) or account format
      * @return this builder instance
      */
@@ -291,6 +328,10 @@ public final class StateBlockBuilder {
     
     /**
      * Sets the {@code link} field of the block.
+     *
+     * <p>This field doesn't need to be set for {@link StateBlockSubType#CHANGE change} subtypes, as the value will be
+     * ignored.</p>
+     *
      * @param link the link value, in hexadecimal format (64-character hex string)
      * @return this builder instance
      */
@@ -305,6 +346,10 @@ public final class StateBlockBuilder {
     
     /**
      * Sets the {@code link} field of the block.
+     *
+     * <p>This field doesn't need to be set for {@link StateBlockSubType#CHANGE change} subtypes, as the value will be
+     * ignored.</p>
+     *
      * @param link the link value, in an account format
      * @return this builder instance
      */
