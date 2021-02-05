@@ -31,7 +31,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * time-sensitive policies are still applicable to generated work.</p>
  *
  * <p>Instances of this class should be re-used throughout your application, as each instance will spawn a new
- * background thread. This also ensures that tasks are queued correctly in the order of request.</p>
+ * background thread. This also ensures that tasks are queued correctly in the order of request. If and when you are
+ * finished with a {@code WorkGenerator} object, you should call the {@link #shutdown()} method to terminate any
+ * background threads.</p>
  */
 //TODO: allow cancellation of work
 public abstract class WorkGenerator {
