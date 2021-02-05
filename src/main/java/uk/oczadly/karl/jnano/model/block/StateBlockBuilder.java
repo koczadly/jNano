@@ -11,6 +11,7 @@ import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
+import uk.oczadly.karl.jnano.util.NanoUnit;
 import uk.oczadly.karl.jnano.util.workgen.WorkGenerator;
 
 import java.math.BigInteger;
@@ -92,11 +93,7 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setSignature(String signature) {
-        if (signature != null && signature.length() != NanoConst.LEN_SIGNATURE_H)
-            throw new IllegalArgumentException("Invalid signature length.");
-        
-        this.signature = signature == null ? null : new HexData(signature);
-        return this;
+        return setSignature(signature == null ? null : new HexData(signature));
     }
     
     /**
@@ -160,6 +157,8 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setSubtype(StateBlockSubType subtype) {
+        if (subtype == null)
+            throw new IllegalArgumentException("Subtype cannot be null.");
         this.subtype = subtype;
         return this;
     }
@@ -266,22 +265,24 @@ public final class StateBlockBuilder {
     
     /**
      * Sets the {@code balance} field of the block.
-     * @param balance the balance of the account after this transaction (in raw)
+     * @param balance the balance of the account after this transaction, in {@link NanoUnit#RAW raw}
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setBalance(String balance) {
-        this.balance = balance == null ? null : NanoAmount.valueOfRaw(balance);
-        return this;
+        if (balance == null)
+            throw new IllegalArgumentException("Balance cannot be null.");
+        return setBalance(NanoAmount.valueOfRaw(balance));
     }
     
     /**
      * Sets the {@code balance} field of the block.
-     * @param balance the balance of the account after this transaction (in raw)
+     * @param balance the balance of the account after this transaction, in {@link NanoUnit#RAW raw}
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setBalance(BigInteger balance) {
-        this.balance = balance == null ? null : NanoAmount.valueOfRaw(balance);
-        return this;
+        if (balance == null)
+            throw new IllegalArgumentException("Balance cannot be null.");
+        return setBalance(NanoAmount.valueOfRaw(balance));
     }
     
     /**
@@ -290,6 +291,8 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setBalance(NanoAmount balance) {
+        if (balance == null)
+            throw new IllegalArgumentException("Balance cannot be null.");
         this.balance = balance;
         return this;
     }
@@ -389,6 +392,8 @@ public final class StateBlockBuilder {
      * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
      */
     public synchronized StateBlock buildAndSign(String privateKey) {
+        if (privateKey == null)
+            throw new IllegalArgumentException("Private key cannot be null.");
         return buildAndSign(new HexData(privateKey));
     }
     
@@ -407,6 +412,9 @@ public final class StateBlockBuilder {
      * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
      */
     public synchronized StateBlock buildAndSign(HexData privateKey) {
+        if (privateKey == null)
+            throw new IllegalArgumentException("Private key cannot be null.");
+        
         NanoAccount account = NanoAccount.fromPrivateKey(privateKey);
         StateBlock sb = build(subtype, null, work, workGenerator, account, prevHash, rep, balance, linkData,
                 linkAccount);
