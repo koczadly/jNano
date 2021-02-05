@@ -42,7 +42,11 @@ public class LinkData {
         if (intent == null)
             throw new IllegalArgumentException("Intent cannot be null.");
         if (hex == null && account == null) {
-            hex = JNC.ZEROES_64_HD; // Allow null for both values if unused
+            if (intent == Intent.UNUSED) {
+                hex = JNC.ZEROES_64_HD; // Allow null for both values if unused
+            } else {
+                throw new IllegalArgumentException("Link data cannot be null.");
+            }
         }
         if (!JNH.isValidLength(hex, SIZE))
             throw new IllegalArgumentException("Link data is an invalid length.");
