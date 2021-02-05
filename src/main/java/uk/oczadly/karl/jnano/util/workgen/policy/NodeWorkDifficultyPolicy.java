@@ -15,13 +15,13 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseActiveDifficulty;
 import java.io.IOException;
 
 /**
- * A work difficulty policy set by the node using the {@code active_difficulty} RPC command.
+ * A dynamic work difficulty policy retrieved from an external node. This policy will retrieve the thresholds via the
+ * {@code active_difficulty} RPC command.
  *
- * <p>The work values will be internally cached for a short period, unless specified otherwise in the constructors.
- * This is done to prevent spamming the node with requests when batch processing large amounts of blocks.</p>
+ * <p>The work values will be internally cached for a short period, unless specified otherwise in the constructors.</p>
  *
- * <p>Note that the methods will throw a {@link DifficultyRetrievalException} if the node returns an {@link RpcException} or an
- * {@link IOException} occurs.</p>
+ * <p>Note that the methods will throw a {@link DifficultyRetrievalException} if the node returns an
+ * {@link RpcException} or an {@link IOException} occurs.</p>
  */
 public class NodeWorkDifficultyPolicy implements WorkDifficultyPolicy {
     
