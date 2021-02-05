@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 public final class NanoAccount {
     
     private static final BigInteger MAX_INDEX_VAL = JNC.BIGINT_MAX_256;
-    private static final Pattern PREFIX_VALIDATE_PATTERN = Pattern.compile("^[0-9A-Za-z]*$");
+    private static final Pattern PREFIX_VALIDATE_PATTERN = Pattern.compile("^[0-9A-Za-z]+$");
     
     /**
      * The character which separates the prefix from the address string.
@@ -382,7 +382,7 @@ public final class NanoAccount {
         } else if (str.length() == 52) {
             return parseAddressSegment(str, defaultPrefix); // Address segment
         }
-        throw new AddressFormatException("Could not identify the encoding format of the given address.");
+        throw new AddressFormatException("Could not identify the encoded format.");
     }
     
     /**
@@ -395,18 +395,18 @@ public final class NanoAccount {
      */
     public static NanoAccount parseAddress(String address) {
         if (address == null) throw new IllegalArgumentException("Address argument cannot be null.");
-        if (address.length() < 60) throw new AddressFormatException("Address string is too short.");
+        if (address.length() < 60) throw new AddressFormatException("Address length is invalid.");
         
         int separatorIndex = address.lastIndexOf(PREFIX_SEPARATOR_CHAR);
         
         if ((separatorIndex == -1 && address.length() != 60) // No prefix
-                || (separatorIndex != -1 && (address.length() - separatorIndex - 1) != 60)) // With prefix
-            throw new AddressFormatException("Address/checksum segment is not the right length.");
+                || (separatorIndex != -1 && (address.length() - separatorIndex) != 61)) // Prefix
+            throw new AddressFormatException("Address length is invalid.");
         
         return parseAddressSegment(
-                address.substring(address.length() - 60, address.length() - 8),
-                (separatorIndex <= 0 ? null : address.substring(0, separatorIndex)),
-                address.substring(address.length() - 8));
+                address.substring(address.length() - 60, address.length() - 8),       // Address
+                (separatorIndex == -1 ? null : address.substring(0, separatorIndex)), // Prefix
+                address.substring(address.length() - 8));                             // Checksum
     }
     
     /**
@@ -444,8 +444,10 @@ public final class NanoAccount {
      * @throws AddressFormatException if the address does not meet the required format criteria
      */
     public static NanoAccount parseAddressSegment(String address, String prefix, String checksum) {
-        if (address == null) throw new IllegalArgumentException("Address argument cannot be null.");
-        if (address.length() != 52) throw new AddressFormatException("Address string must be 52 characters long.");
+        if (address == null)
+            throw new IllegalArgumentException("Address argument cannot be null.");
+        if (address.length() != 52)
+            throw new AddressFormatException("Address string must be 52 characters long.");
         if (address.charAt(0) != '1' && address.charAt(0) != '3')
             throw new AddressFormatException("Addresses may only begin with characters 1 or 3.");
         validatePrefix(prefix);
@@ -620,7 +622,10 @@ public final class NanoAccount {
     }
     
     private static void validatePrefix(String prefix) {
-        if (prefix != null && !PREFIX_VALIDATE_PATTERN.matcher(prefix).matches())
+        if (prefix == null) return;
+        if (prefix.length() == 0)
+            throw new AddressFormatException("Address prefix cannot be empty.");
+        if (!PREFIX_VALIDATE_PATTERN.matcher(prefix).matches())
             throw new AddressFormatException("Address prefix contains an illegal character.");
     }
     
