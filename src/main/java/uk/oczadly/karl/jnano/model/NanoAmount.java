@@ -138,9 +138,8 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     /**
      * Compares this NanoAmount with the specified Object for equality.
      *
-     * @param  o the object this
-     * @return {@code true} if and only if the specified Object is a
-     *         BigInteger whose value is numerically equal to this BigInteger.
+     * @param o the object this
+     * @return {@code true} if the specified Object is a NanoAmount whose value is numerically equal to this NanoAmount.
      */
     @Override
     public boolean equals(Object o) {
