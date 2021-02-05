@@ -47,7 +47,11 @@ public final class NetworkConstantValues {
     }
     
     /**
-     * Returns the genesis block which created all existing nano units.
+     * Returns the genesis block which created all existing transactional units.
+     *
+     * <p>Note that the returned object is immutable, and calling the setter methods will throw a
+     * {@link UnsupportedOperationException} which may be unexpected behaviour.</p>
+     *
      * @return the genesis block
      */
     public OpenBlock getGenesisBlock() {
@@ -109,10 +113,28 @@ public final class NetworkConstantValues {
     
     
     private static OpenBlock createGenesisBlock(NanoAccount account, WorkSolution work, HexData signature) {
-        OpenBlock block = new OpenBlock(signature, work, new HexData(account.toPublicKey()), account, account);
+        OpenBlock block = new ImmutableOpenBlock(
+                signature, work, new HexData(account.toPublicKey()), account, account);
         if (!block.verifySignature())
             throw new IllegalArgumentException("Signature is invalid.");
         return block;
+    }
+    
+    private static class ImmutableOpenBlock extends OpenBlock {
+        public ImmutableOpenBlock(HexData signature, WorkSolution work, HexData source, NanoAccount account,
+                                  NanoAccount representative) {
+            super(signature, work, source, account, representative);
+        }
+    
+        @Override
+        public synchronized void setSignature(HexData signature) {
+            throw new UnsupportedOperationException("Block is immutable, so the signature cannot be changed.");
+        }
+        
+        @Override
+        public void setWorkSolution(WorkSolution work) {
+            throw new UnsupportedOperationException("Block is immutable, so the work cannot be changed.");
+        }
     }
     
 }

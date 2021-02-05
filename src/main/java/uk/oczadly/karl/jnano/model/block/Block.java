@@ -82,8 +82,8 @@ public abstract class Block implements IBlock {
             throw new IllegalArgumentException("Block type cannot be null.");
         this.type = typeStr.toLowerCase();
         this.typeEnum = type;
-        setSignature(signature);
-        setWorkSolution(work);
+        this.signature = signature;
+        this.work = work;
     }
     
     
