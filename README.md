@@ -1,4 +1,6 @@
-# Introduction to jNano
+# jNano
+[![Maven Central](https://img.shields.io/maven-central/v/uk.oczadly.karl/jnano)](https://search.maven.org/artifact/uk.oczadly.karl/jnano)
+
 jNano is a Java library used to interface with the official [Nano node](https://github.com/nanocurrency/nano-node)
  via RPC requests. It also includes many native utilities and tools so that a node isn't always necessary.
  
