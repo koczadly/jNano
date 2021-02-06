@@ -108,9 +108,10 @@ public final class NetworkConstantValues {
     
     @Override
     public String toString() {
-        return getNetworkName() + " network";
+        return "NetworkConstantValues{" +
+                "name='" + networkName + "', " +
+                "identifier='" + getNetworkIdentifier() + "'}";
     }
-    
     
     private static OpenBlock createGenesisBlock(NanoAccount account, WorkSolution work, HexData signature) {
         OpenBlock block = new ImmutableOpenBlock(
