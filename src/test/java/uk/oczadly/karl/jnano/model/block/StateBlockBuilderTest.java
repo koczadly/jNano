@@ -6,6 +6,7 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import org.junit.Test;
+import uk.oczadly.karl.jnano.TestConstants;
 import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
@@ -30,8 +31,9 @@ public class StateBlockBuilderTest {
 
     @Test
     public void testBuildMultiple() {
-        StateBlockBuilder builder = newBuilder();
-    
+        StateBlockBuilder builder = newBuilder()
+                .setLink(TestConstants.randHash());
+        
         StateBlock b1 = builder.build();
         StateBlock b2 = builder.build();
         
@@ -79,9 +81,10 @@ public class StateBlockBuilderTest {
         assertEquals(DATA, b2.getLink().asHex().toString());
         assertEquals(ACCOUNT, b2.getLink().asAccount());
         
-        // Null should default to 000000...
-        assertEquals(JNC.ZEROES_64_HD, newBuilder().build().getLink().asHex());
-        assertEquals(JNC.ZEROES_64_HD, newBuilder().setLink((String)null).build().getLink().asHex());
+        // Null CHANGE subtype should be zeroes
+        assertEquals(JNC.ZEROES_64_HD, newBuilder()
+                .setSubtype(StateBlockSubType.CHANGE).build()
+                .getLink().asHex());
     }
     
 }
