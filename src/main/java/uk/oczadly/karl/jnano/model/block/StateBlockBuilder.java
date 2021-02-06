@@ -435,13 +435,15 @@ public final class StateBlockBuilder {
         } catch (RuntimeException e) {
             throw new BlockCreationException(e);
         }
-    
+        
         // Work
         if (work == null && workGen != null) {
             try {
-                block.setWorkSolution(workGen.generate(block).get());
-            } catch (InterruptedException | ExecutionException e) {
-                throw new BlockCreationException("Couldn't generate work.", e);
+                block.setWorkSolution(workGen.generate(block).get().getWork());
+            } catch (ExecutionException e) {
+                throw new BlockCreationException("Couldn't generate work.", e.getCause());
+            } catch (InterruptedException e) {
+                throw new BlockCreationException("Work generation was interrupted.", e);
             }
         }
         return block;

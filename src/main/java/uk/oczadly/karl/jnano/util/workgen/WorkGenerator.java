@@ -67,7 +67,7 @@ public abstract class WorkGenerator {
      *
      * @see WorkDifficultyPolicy#forBlock(Block)
      */
-    public final Future<WorkSolution> generate(Block block) {
+    public final Future<GeneratedWork> generate(Block block) {
         return generate(block, 1);
     }
     
@@ -78,7 +78,7 @@ public abstract class WorkGenerator {
      * @param difficulty the minimum difficulty threshold of the work
      * @return the (future) computed work solution
      */
-    public final Future<WorkSolution> generate(Block block, WorkDifficulty difficulty) {
+    public final Future<GeneratedWork> generate(Block block, WorkDifficulty difficulty) {
         return generate(NanoUtil.getWorkRoot(block), difficulty);
     }
     
@@ -98,7 +98,7 @@ public abstract class WorkGenerator {
      *
      * @see WorkDifficultyPolicy#forBlock(Block)
      */
-    public final Future<WorkSolution> generate(Block block, double multiplier) {
+    public final Future<GeneratedWork> generate(Block block, double multiplier) {
         if (policy == null)
             throw new UnsupportedOperationException("No difficulty policy is specified.");
         if (block == null)
@@ -119,7 +119,7 @@ public abstract class WorkGenerator {
      * @see WorkSolution#getRoot(Block)
      * @see WorkDifficultyPolicy#forAny()
      */
-    public final Future<WorkSolution> generate(HexData root) {
+    public final Future<GeneratedWork> generate(HexData root) {
         if (policy == null)
             throw new UnsupportedOperationException("No difficulty policy is specified.");
         if (root == null)
@@ -136,7 +136,7 @@ public abstract class WorkGenerator {
      *
      * @see WorkSolution#getRoot(Block)
      */
-    public final Future<WorkSolution> generate(HexData root, WorkDifficulty difficulty) {
+    public final Future<GeneratedWork> generate(HexData root, WorkDifficulty difficulty) {
         if (root == null)
             throw new IllegalArgumentException("Root cannot be null.");
         if (difficulty == null)
@@ -170,7 +170,7 @@ public abstract class WorkGenerator {
         }
     }
     
-    private Future<WorkSolution> enqueueWork(WorkRequestSpec spec) {
+    private Future<GeneratedWork> enqueueWork(WorkRequestSpec spec) {
         if (executor.isShutdown())
             throw new IllegalStateException("Work generator is shut down and cannot accept new requests.");
         
@@ -178,7 +178,7 @@ public abstract class WorkGenerator {
     }
     
     
-    class WorkGeneratorTask implements Callable<WorkSolution> {
+    class WorkGeneratorTask implements Callable<GeneratedWork> {
         private final WorkRequestSpec spec;
         
         public WorkGeneratorTask(WorkRequestSpec spec) {
@@ -186,8 +186,12 @@ public abstract class WorkGenerator {
         }
     
         @Override
-        public WorkSolution call() throws Exception {
-            return generateWork(spec.getRoot(), spec.getDifficulty());
+        public GeneratedWork call() throws Exception {
+            HexData root = spec.getRoot();
+            WorkDifficulty difficulty = spec.getDifficulty();
+            
+            WorkSolution work = generateWork(root, difficulty);
+            return new GeneratedWork(work, root, difficulty);
         }
     }
 

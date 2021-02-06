@@ -31,15 +31,15 @@ public class WorkGeneratorTest {
         
         HexData root1 = TestConstants.randHash();
         HexData root2 = TestConstants.randHash();
-        Future<WorkSolution> fwork1 = generator.generate(root1);                          // Standard policy
-        Future<WorkSolution> fwork2 = generator.generate(root2, new WorkDifficulty(420)); // Specified difficulty
+        Future<GeneratedWork> fwork1 = generator.generate(root1);                          // Standard policy
+        Future<GeneratedWork> fwork2 = generator.generate(root2, new WorkDifficulty(420)); // Specified difficulty
     
-        WorkSolution work1 = fwork1.get();
-        WorkSolution work2 = fwork2.get();
+        GeneratedWork work1 = fwork1.get();
+        GeneratedWork work2 = fwork2.get();
         
         // Assert results
-        assertSame(generator.requests.get(0).result, work1);
-        assertSame(generator.requests.get(1).result, work2);
+        assertSame(generator.requests.get(0).result, work1.getWork());
+        assertSame(generator.requests.get(1).result, work2.getWork());
         
         // Assert requests
         assertEquals(generator.requests.get(0).root, root1);
