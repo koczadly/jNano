@@ -20,13 +20,33 @@ import java.net.URL;
  */
 public class HttpRequestExecutor implements RpcRequestExecutor {
     
-    @Override
-    public final String submit(URL address, String request, int timeout) throws IOException {
+    private final URL address;
+    
+    /**
+     * Configures a request executor over the {@code http} or {@code https} protocols.
+     * @param address the endpoint address
+     */
+    public HttpRequestExecutor(URL address) {
         if (address == null)
             throw new IllegalArgumentException("Address cannot be null.");
         if (!address.getProtocol().equalsIgnoreCase("http") && !address.getProtocol().equalsIgnoreCase("https"))
-            throw new IllegalArgumentException(
-                    "HttpRequestExecutor only supports the 'HTTP' and 'HTTPS' protocols.");
+            throw new IllegalArgumentException("HttpRequestExecutor only supports the HTTP and HTTPS protocols.");
+        
+        this.address = address;
+    }
+    
+    
+    /**
+     * @return the URL address of the endpoint
+     */
+    public final URL getAddress() {
+        return address;
+    }
+    
+    
+    @Override
+    public final String submit(String request, int timeout) throws IOException {
+
         if (request == null)
             throw new IllegalArgumentException("Request body cannot be null.");
         if (timeout < 0)
@@ -56,7 +76,15 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
         con.setRequestProperty("Content-Type", "application/json");
     }
     
-    protected final String makeRequest(HttpURLConnection con, String body) throws IOException {
+    
+    /**
+     * Makes an HTTP request.
+     * @param con  the HTTP connection
+     * @param body the request body
+     * @return the response body as a string
+     * @throws IOException if an exception occurs
+     */
+    protected static String makeRequest(HttpURLConnection con, String body) throws IOException {
         try (OutputStream os = con.getOutputStream()) {
             // Write request data
             OutputStreamWriter writer = new OutputStreamWriter(os);

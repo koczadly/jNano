@@ -23,22 +23,19 @@ public class RpcQueryNodeTest {
 
     @Test
     public void testBuilder() throws Exception {
-        URL url = new URL("https://api.nanex.cc");
         RpcRequestSerializer serializer = new JsonRequestSerializer();
         RpcResponseDeserializer deserializer = new JsonResponseDeserializer();
-        RpcRequestExecutor executor = new HttpRequestExecutor();
+        RpcRequestExecutor executor = new HttpRequestExecutor(new URL("https://localhost:1337"));
         ExecutorService es = Executors.newFixedThreadPool(1);
         
         RpcQueryNode node = new RpcQueryNode.Builder()
-                .setAddress(url)
                 .setSerializer(serializer)
                 .setDeserializer(deserializer)
                 .setRequestExecutor(executor)
                 .setAsyncExecutorService(es)
                 .setDefaultTimeout(420)
                 .build();
-    
-        assertSame(url, node.getAddress());
+        
         assertSame(serializer, node.getRequestSerializer());
         assertSame(deserializer, node.getResponseDeserializer());
         assertSame(executor, node.getRequestExecutor());
@@ -50,16 +47,16 @@ public class RpcQueryNodeTest {
     public void testProcess() throws Exception {
         MockRequest mockRequest = new MockRequest();
         MockResponse mockResponse = new MockResponse();
+        
         RpcQueryNode node = new RpcQueryNode.Builder()
                 .setSerializer(req -> "REQ")
-                .setRequestExecutor((address, req, timeout) -> {
+                .setRequestExecutor((req, timeout) -> {
                     assertEquals("REQ", req);
                     return "EXEC";
                 })
                 .setDeserializer(new RpcResponseDeserializer() {
                     @Override
-                    public <R extends RpcResponse> R deserialize(String response, Class<R> responseClass)
-                            throws RpcException {
+                    public <R extends RpcResponse> R deserialize(String response, Class<R> responseClass) {
                         assertEquals("EXEC", response);
                         return (R)mockResponse;
                     }

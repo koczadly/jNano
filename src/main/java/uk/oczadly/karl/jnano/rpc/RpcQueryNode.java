@@ -13,14 +13,10 @@ import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
- * <p>This class represents a connection to a specified Nano node endpoint, with the main intent of sending and
- * queuing RPC requests.</p>
+ * This class is used to connect to an external Nano node endpoint, to which requests and queries can be sent.
  *
  * <p>To use this class, set the endpoint address and port in the constructor, or use the provided {@link Builder} class
  * for additional configuration parameters). To make a request, first create a request object that inherits from
@@ -56,7 +52,11 @@ import java.util.concurrent.Future;
  */
 public class RpcQueryNode {
     
-    private final URL address;
+    private static final int DEFAULT_PORT = 7076;
+    private static final RpcRequestSerializer DEFAULT_SERIALIZER = new JsonRequestSerializer();
+    private static final RpcResponseDeserializer DEFAULT_DESERIALIZER = new JsonResponseDeserializer();
+    private static final ThreadFactory THREAD_FACTORY = JNH.threadFactory("RPC-AsyncExecutor", false);
+    
     private final int defaultTimeout;
     private final RpcRequestSerializer requestSerializer;
     private final RpcResponseDeserializer responseDeserializer;
@@ -65,73 +65,60 @@ public class RpcQueryNode {
     
     
     /**
-     * Constructs a new query node with the local loopback address with port 7076 ({@code [::1]:7076}).
+     * Constructs a new RPC communications object via {@code http} on localhost ({@code ::1}) on port
+     * {@value DEFAULT_PORT}.
      */
     public RpcQueryNode() {
-        this(7076);
+        this(DEFAULT_PORT);
     }
     
     /**
-     * Constructs a new query node with the local loopback address {@code [::1]} and the specified port.
+     * Constructs a new RPC communications object via {@code http} on localhost ({@code ::1}) on the specified port.
      *
-     * @param port the port which the node is listening on
+     * @param port the endpoint port number
      *
      * @see Builder
      */
     public RpcQueryNode(int port) {
-        this(JNH.unchecked(() -> new URL("HTTP", "::1", port, "")));
+        this(0, DEFAULT_SERIALIZER, DEFAULT_DESERIALIZER, newLocalhostExecutor(port), newThreadExecutor());
     }
     
     /**
-     * Constructs a new query node with the given address and port number.
+     * Constructs a new RPC communications object via {@code http} on the specified host address and port.
      *
-     * @param address   the address of the node
-     * @param port      the port which the node is listening on
-     *
-     * @throws MalformedURLException if the address cannot be parsed
+     * @param address the endpoint address or hostname
+     * @param port    the endpoint port number
      *
      * @see Builder
      */
-    public RpcQueryNode(String address, int port) throws MalformedURLException {
-        this(new URL("HTTP", address, port, ""));
-        
-        if (address == null)
-            throw new IllegalArgumentException("Address argument cannot be null.");
+    public RpcQueryNode(String address, int port) {
+        this(JNH.unchecked(() -> new URL("HTTP", address, port, ""), IllegalArgumentException::new));
     }
     
     /**
-     * Constructs a new query node with the given address (as a URL).
+     * Constructs a new RPC communications object via the specified protocol, host address and port. The protocol of the
+     * URL must be either {@code http} or {@code https}.
      *
-     * @param address   the HTTP URL (address and port) which the node is listening on
+     * @param url the endpoint URL of the node (protocol, address and port)
      *
      * @see Builder
      */
-    public RpcQueryNode(URL address) {
-        this(address, 0, null, null, null, null);
+    public RpcQueryNode(URL url) {
+        this(0, DEFAULT_SERIALIZER, DEFAULT_DESERIALIZER, new HttpRequestExecutor(url), newThreadExecutor());
     }
     
-    private RpcQueryNode(URL address, int defaultTimeout, RpcRequestSerializer serializer,
-                         RpcResponseDeserializer deserializer, RpcRequestExecutor executor,
-                         ExecutorService executorService) {
-        if (address == null)
-            throw new IllegalArgumentException("Address argument cannot be null.");
+    private RpcQueryNode(int defaultTimeout, RpcRequestSerializer serializer, RpcResponseDeserializer deserializer,
+                         RpcRequestExecutor executor, ExecutorService executorService) {
         if (defaultTimeout < 0)
             throw new IllegalArgumentException("Default timeout value must be positive or zero.");
+        if (serializer == null || deserializer == null || executor == null || executorService == null)
+            throw new IllegalArgumentException("Arguments cannot be null.");
         
-        this.address = address;
         this.defaultTimeout = defaultTimeout;
-        this.requestSerializer = serializer != null ? serializer : new JsonRequestSerializer();
-        this.responseDeserializer = deserializer != null ? deserializer : new JsonResponseDeserializer();
-        this.requestExecutor = executor != null ? executor : new HttpRequestExecutor();
-        this.executorService = executorService != null ? executorService : Executors.newFixedThreadPool(250);
-    }
-    
-    
-    /**
-     * @return the address of this node's RPC listener
-     */
-    public final URL getAddress() {
-        return this.address;
+        this.requestSerializer = serializer;
+        this.responseDeserializer = deserializer;
+        this.requestExecutor = executor;
+        this.executorService = executorService;
     }
     
     
@@ -143,28 +130,28 @@ public class RpcQueryNode {
     }
     
     /**
-     * @return the object responsible for serializing requests
+     * @return the RpcRequestSerializer which converts request objects into a String format
      */
     public final RpcRequestSerializer getRequestSerializer() {
         return requestSerializer;
     }
     
     /**
-     * @return the object responsible for deserializing and parsing errors of responses
+     * @return the RpcRequestDeserializer which converts the returned String into a response class
      */
     public final RpcResponseDeserializer getResponseDeserializer() {
         return responseDeserializer;
     }
     
     /**
-     * @return the object responsible for submitting requests to the node
+     * @return the RpcRequestExecutor which submits the request to the external node
      */
     public final RpcRequestExecutor getRequestExecutor() {
         return requestExecutor;
     }
     
     /**
-     * @return the executor service used to process asynchronous queries
+     * @return the ExecutorService used to process asynchronous queries
      */
     public final ExecutorService getExecutorService() {
         return executorService;
@@ -352,7 +339,54 @@ public class RpcQueryNode {
         if (timeout < 0)
             throw new IllegalArgumentException("Timeout period must be zero or greater.");
         
-        return requestExecutor.submit(address, jsonRequest, timeout);
+        return requestExecutor.submit(jsonRequest, timeout);
+    }
+    
+    
+    private static ExecutorService newThreadExecutor() {
+        return Executors.newFixedThreadPool(100, THREAD_FACTORY);
+    }
+    
+    private static RpcRequestExecutor newLocalhostExecutor(int port) {
+        if (port <= 0 || port > 65535)
+            throw new IllegalArgumentException("Invalid port number.");
+        return new HttpRequestExecutor(
+                JNH.unchecked(() -> new URL("HTTP", "::1", port, "")));
+    }
+    
+    
+    private class AsyncExecutorTask<Q extends RpcRequest<R>, R extends RpcResponse> implements Callable<R> {
+        private final Q request;
+        private final QueryCallback<? super Q, ? super R> callback;
+        private final int timeout;
+        
+        public AsyncExecutorTask(Q request, int timeout, QueryCallback<? super Q, ? super R> callback) {
+            this.request = request;
+            this.timeout = timeout;
+            this.callback = callback;
+        }
+        
+        @Override
+        public R call() throws Exception {
+            // Exceptions are re-thrown so the returned Future object can retrieve them
+            try {
+                R response = processRequest(request, timeout);
+                if (callback != null)
+                    callback.onResponse(response, request);
+                return response;
+            } catch (RpcException ex) {
+                if (callback != null)
+                    callback.onFailure(ex, request);
+                throw ex;
+            } catch (IOException ex) {
+                if (callback != null)
+                    callback.onFailure(ex, request);
+                throw ex;
+            } catch (Exception ex) { // Shouldn't happen!
+                ex.printStackTrace();
+                throw ex;
+            }
+        }
     }
     
     
@@ -373,76 +407,89 @@ public class RpcQueryNode {
      * </table>
      */
     public static class Builder {
-        private URL address;
         private int defaultTimeout = 0;
         private RpcRequestSerializer serializer;
         private RpcResponseDeserializer deserializer;
         private RpcRequestExecutor requestExecutor;
         private ExecutorService executorService;
     
-    
         /**
-         * Creates a builder using {@code localhost:7076} as the endpoint address.
+         * Creates a builder with no pre-defined parameters.
          */
-        public Builder() {
-            JNH.unchecked(() -> setAddress(7076));
-        }
+        public Builder() {}
     
         /**
-         * Creates a builder using the given endpoint address.
-         * @param address the URL of the node
+         * Creates a builder using the given endpoint address. The protocol of the URL must be either {@code http} or
+         * {@code https}.
+         *
+         * @param address the endpoint URL of the node (protocol, address and port)
          */
         public Builder(URL address) {
-            this.address = address;
+            setAddress(address);
         }
     
-    
+        
         /**
-         * @return the URL endpoint of the node
-         */
-        public URL getAddress() {
-            return address;
-        }
-    
-        /**
-         * Sets the endpoint address of the node to the given URL.
-         * @param address the URL of the node
+         * Sets the endpoint address of the node to the given URL. The protocol of the URL must be either {@code http}
+         * or {@code https}.
+         * 
+         * <p>This will overwrite the {@link #setRequestExecutor(RpcRequestExecutor) RpcRequestExecutor} value with
+         * a {@link HttpRequestExecutor} configured to the specified address.</p>
+         *
+         * @param address the endpoint URL of the node (protocol, address and port)
          * @return this builder
+         * @see #setRequestExecutor(RpcRequestExecutor)
          */
         public Builder setAddress(URL address) {
-            this.address = address;
-            return this;
+            return setRequestExecutor(new HttpRequestExecutor(address));
         }
     
         /**
-         * Sets the endpoint address of the node to the given address and port using the {@code HTTP} protocol.
+         * Sets the endpoint address of the node to the given address and port using the {@code http} protocol.
          *
-         * @param address the hostname address of the node
-         * @param port the port address of the node
+         * <p>This will overwrite the {@link #setRequestExecutor(RpcRequestExecutor) RpcRequestExecutor} value with
+         * a {@link HttpRequestExecutor} configured to the specified address.</p>
+         *
+         * @param address the endpoint address or hostname
+         * @param port    the endpoint port number
          * @return this builder
          * @throws MalformedURLException if the address is invalid or the port is out of range
+         * @see #setRequestExecutor(RpcRequestExecutor)
          */
         public Builder setAddress(String address, int port) throws MalformedURLException {
             return setAddress(new URL("HTTP", address, port, ""));
         }
     
         /**
-         * Sets the endpoint address of the node to the given port on {@code localhost} sing the {@code HTTP} protocol.
-         * @param port the port address of the node
+         * Sets the {@link RpcRequestExecutor} to connect via {@code http} on localhost ({@code ::1}) on the
+         * specified port.
+         *
+         * <p>This will overwrite the {@link #setRequestExecutor(RpcRequestExecutor) RpcRequestExecutor} value with
+         * a {@link HttpRequestExecutor} configured to the specified address.</p>
+         *
+         * @param port the endpoint port number
          * @return this builder
          * @throws MalformedURLException if the port is out of range
+         * @see #setRequestExecutor(RpcRequestExecutor)
          */
-        public Builder setAddress(int port) throws MalformedURLException {
-            return setAddress(new URL("HTTP", "::1", port, ""));
+        public Builder setLocalAddress(int port) {
+            return setRequestExecutor(newLocalhostExecutor(port));
         }
     
         /**
-         * @return the default timeout value in milliseconds, or zero for indefinite
+         * Sets the {@link RpcRequestExecutor} to connect via {@code http} on localhost ({@code ::1}) on port
+         * {@value DEFAULT_PORT}.
+         *
+         * <p>This will overwrite the {@link #setRequestExecutor(RpcRequestExecutor) RpcRequestExecutor} value with
+         * a {@link HttpRequestExecutor} configured to the specified address.</p>
+         *
+         * @return this builder
+         * @see #setRequestExecutor(RpcRequestExecutor)
          */
-        public int getDefaultTimeout() {
-            return defaultTimeout;
+        public Builder setLocalAddress() {
+            return setLocalAddress(DEFAULT_PORT);
         }
-    
+        
         /**
          * Sets the timeout value to be used for requests which do not specify a timeout value.
          * @param defaultTimeout the timeout value in milliseconds, or zero for indefinite
@@ -454,14 +501,7 @@ public class RpcQueryNode {
             this.defaultTimeout = defaultTimeout;
             return this;
         }
-    
-        /**
-         * @return the object which converts {@link RpcRequest} instances into JSON strings
-         */
-        public RpcRequestSerializer getSerializer() {
-            return serializer;
-        }
-    
+        
         /**
          * Sets the {@link RpcRequestSerializer} object which converts {@link RpcRequest} instances into JSON strings.
          * @param serializer the serializer object
@@ -473,14 +513,7 @@ public class RpcQueryNode {
             this.serializer = serializer;
             return this;
         }
-    
-        /**
-         * @return the object which maps the returned JSON strings into {@link RpcResponse} objects
-         */
-        public RpcResponseDeserializer getDeserializer() {
-            return deserializer;
-        }
-    
+        
         /**
          * Sets the {@link RpcResponseDeserializer} object which maps the JSON strings into {@link RpcResponse}
          * objects.
@@ -493,14 +526,7 @@ public class RpcQueryNode {
             this.deserializer = deserializer;
             return this;
         }
-    
-        /**
-         * @return the object which submits requests to the external node
-         */
-        public RpcRequestExecutor getRequestExecutor() {
-            return requestExecutor;
-        }
-    
+        
         /**
          * Sets the {@link RpcRequestExecutor} object which submits requests and reads the response data from the
          * external node.
@@ -513,14 +539,7 @@ public class RpcQueryNode {
             this.requestExecutor = requestExecutor;
             return this;
         }
-    
-        /**
-         * @return the {@link ExecutorService} used for asynchronous execution of queries
-         */
-        public ExecutorService getAsyncExecutorService() {
-            return executorService;
-        }
-    
+        
         /**
          * Sets the {@link ExecutorService} which is used to execute asynchronous queries.
          * @param executorService the ExecutorService used for async queries
@@ -536,44 +555,19 @@ public class RpcQueryNode {
     
         /**
          * Creates a new {@link RpcQueryNode} object from the configured parameters.
+         *
+         * <p>If no URL, port or RpcRequestExecutor values are set, then the endpoint will be configured to connect
+         * via {@code http} on localhost ({@code ::1}) on port {@value DEFAULT_PORT}.</p>
+         *
          * @return a new {@link RpcQueryNode} object
          */
         public RpcQueryNode build() {
             return new RpcQueryNode(
-                    address, defaultTimeout, serializer, deserializer, requestExecutor, executorService);
-        }
-    }
-    
-    private class AsyncExecutorTask<Q extends RpcRequest<R>, R extends RpcResponse> implements Callable<R> {
-        private final Q request;
-        private final QueryCallback<? super Q, ? super R> callback;
-        private final int timeout;
-    
-        public AsyncExecutorTask(Q request, int timeout, QueryCallback<? super Q, ? super R> callback) {
-            this.request = request;
-            this.timeout = timeout;
-            this.callback = callback;
-        }
-        
-        @Override
-        public R call() throws Exception {
-            try {
-                R response = processRequest(request, timeout);
-                if (callback != null)
-                    callback.onResponse(response, request);
-                return response;
-            } catch (RpcException ex) {
-                if (callback != null)
-                    callback.onFailure(ex, request);
-                throw ex;
-            } catch (IOException ex) {
-                if (callback != null)
-                    callback.onFailure(ex, request);
-                throw ex;
-            } catch (Exception ex) { // Shouldn't happen!
-                ex.printStackTrace();
-                throw ex;
-            }
+                    defaultTimeout,
+                    serializer == null ? DEFAULT_SERIALIZER : serializer,
+                    deserializer == null ? DEFAULT_DESERIALIZER : deserializer,
+                    requestExecutor == null ? newLocalhostExecutor(DEFAULT_PORT) : requestExecutor,
+                    executorService != null ? executorService : newThreadExecutor());
         }
     }
     

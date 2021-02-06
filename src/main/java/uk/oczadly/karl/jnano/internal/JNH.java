@@ -204,12 +204,16 @@ public class JNH {
     }
     
     public static <T> T unchecked(Callable<T> supplier) {
+        return unchecked(supplier, RuntimeException::new);
+    }
+    
+    public static <T> T unchecked(Callable<T> supplier, Function<Exception, ? extends RuntimeException> rethrow) {
         try {
             return supplier.call();
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw rethrow.apply(e);
         }
     }
     
