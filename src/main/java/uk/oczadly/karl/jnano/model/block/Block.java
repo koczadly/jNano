@@ -5,8 +5,6 @@
 
 package uk.oczadly.karl.jnano.model.block;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
@@ -38,8 +36,6 @@ import java.util.Objects;
  */
 @JsonAdapter(BlockDeserializer.JsonAdapter.class)
 public abstract class Block implements IBlock {
-    
-    private static final Gson GSON_PRETTY = new GsonBuilder().setPrettyPrinting().create();
     
     private transient volatile HexData hash;
     
@@ -268,7 +264,7 @@ public abstract class Block implements IBlock {
      */
     @Override
     public final String toString() {
-        return GSON_PRETTY.toJson(toJsonObject()); // Pretty print
+        return JNC.GSON_PRETTY.toJson(toJsonObject()); // Pretty print
     }
     
     /**

@@ -32,6 +32,8 @@ public class JNC {
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .create();
     
+    public static final Gson GSON_PRETTY = GSON.newBuilder().setPrettyPrinting().create();
+    
     public static final BlockDeserializer BLOCK_DESERIALIZER = BlockDeserializer.withDefaults();
     
     public static final char[] HEX_CHARS_UC = "0123456789ABCDEF".toCharArray();

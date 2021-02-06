@@ -41,8 +41,8 @@ public class RpcResponseDeserializerTest {
         JsonObject json = JNH.parseJson("{\"rpc_version\":\"123\"}");
         
         ResponseVersion response = deserializer.deserialize(json.toString(), ResponseVersion.class);
-        assertNotNull(response.getRawResponseJson());
-        assertEquals(json, response.getRawResponseJson());
+        assertNotNull(response.asJson());
+        assertEquals(json, response.asJson());
     }
 
 }

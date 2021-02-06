@@ -30,7 +30,7 @@ public class JsonResponseDeserializerTest {
         assertNotNull(res);
         assertEquals(res.getBlockHash().toHexString(),
                 "6AACA0D90E760840A3418F6C961423A15501DD693B96C9A7327CBD93D2B7D6EC");
-        assertNotNull(res.getRawResponseJson());
+        assertNotNull(res.asJson());
     }
     
     @Test
@@ -45,14 +45,14 @@ public class JsonResponseDeserializerTest {
     }
     
     @Test
-    public void testInternalExceptions() throws Exception {
+    public void testInternalExceptions() {
         assertThrows(RpcInvalidResponseException.class, "");
         assertThrows(RpcInvalidResponseException.class, "{420}");
         assertThrows(RpcUnrecognizedException.class, errorJson("Node is morbidly obese"));
     }
     
     @Test
-    public void testNodeExceptions() throws Exception {
+    public void testNodeExceptions() {
         assertThrows(RpcConfigForbiddenException.class, errorJson("Configuration disallows x"));
         assertThrows(RpcControlDisabledException.class, errorJson("RPC control is disabled"));
         assertThrows(RpcEntityNotFoundException.class, errorJson("Source not found"));

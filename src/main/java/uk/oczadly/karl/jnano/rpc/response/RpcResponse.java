@@ -8,13 +8,19 @@ package uk.oczadly.karl.jnano.rpc.response;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.internal.JNC;
 
 /**
  * Represents a response from a Nano RPC query.
+ *
  * <p>This class represents an RPC response, containing all of the structured data returned by the node.</p>
+ *
  * <p>Classes which extend this class need to specify parameters as private fields, and MUST be marked with Gson's
  * {@link Expose} annotation. The parameter name will be derived from the name of the field, unless specified otherwise
  * using the {@link SerializedName} annotation.</p>
+ *
+ * <p>If implementing a custom deserializer, you should call {@link #initJsonField(RpcResponse, JsonObject)}
+ * on the response object before passing it to the application.</p>
  */
 public abstract class RpcResponse {
     
@@ -24,8 +30,10 @@ public abstract class RpcResponse {
     /**
      * @return the raw JSON response data sent from the node
      */
-    public final JsonObject getRawResponseJson() {
-        return this.rawJson;
+    public final JsonObject asJson() {
+        if (rawJson == null)
+            throw new IllegalStateException("JSON field not initialized!");
+        return rawJson;
     }
     
     /**
@@ -33,7 +41,7 @@ public abstract class RpcResponse {
      */
     @Override
     public final String toString() {
-        return rawJson != null ? rawJson.toString() : "{}";
+        return rawJson != null ? JNC.GSON_PRETTY.toJson(rawJson) : "{}";
     }
     
     
