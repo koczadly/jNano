@@ -82,7 +82,7 @@ public final class NetworkConstants {
      * @param hash the hash of the genesis block
      * @return the associated {@link NetworkConstantValues} class, or null if not found
      */
-    public static NetworkConstantValues getNetworkFromGenesisHash(String hash) {
+    public static NetworkConstantValues fromIdentifier(String hash) {
         if (hash == null)
             throw new IllegalArgumentException("Block hash cannot be null.");
         if (!JNH.isValidHex(hash, NanoConst.LEN_HASH_H))
