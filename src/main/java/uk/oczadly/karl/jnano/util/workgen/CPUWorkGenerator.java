@@ -18,7 +18,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This {@code WorkGenerator} computes the work solution on the system's CPU within the JVM, without requiring an
@@ -32,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class CPUWorkGenerator extends WorkGenerator {
     
+    private static final ThreadFactory WORKER_THREAD_FACTORY = JNH.threadFactory("CPUWorkGenerator-Worker", true);
     private static final Random RANDOM = new Random();
     
     private final int threadCount;
@@ -75,7 +75,7 @@ public class CPUWorkGenerator extends WorkGenerator {
         if (threadCount < 1)
             throw new IllegalArgumentException("Must have at least 1 thread.");
         this.threadCount = threadCount;
-        this.executorService = Executors.newFixedThreadPool(threadCount, new GeneratorThreadFactory());
+        this.executorService = Executors.newFixedThreadPool(threadCount, WORKER_THREAD_FACTORY);
     }
     
     
@@ -177,18 +177,6 @@ public class CPUWorkGenerator extends WorkGenerator {
                 }
             }
             result.completeExceptionally(new InterruptedException("Work task interrupted."));
-        }
-    }
-    
-    static class GeneratorThreadFactory implements ThreadFactory {
-        private static final AtomicInteger THREAD_ID = new AtomicInteger();
-        
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread thread = new Thread(r);
-            thread.setName("CPUWorkGenerator-Worker-" + THREAD_ID.getAndIncrement());
-            thread.setDaemon(true);
-            return thread;
         }
     }
     

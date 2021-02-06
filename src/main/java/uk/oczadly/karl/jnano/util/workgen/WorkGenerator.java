@@ -5,6 +5,7 @@
 
 package uk.oczadly.karl.jnano.util.workgen;
 
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.utils.NanoUtil;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.Block;
@@ -15,7 +16,6 @@ import uk.oczadly.karl.jnano.util.workgen.policy.NodeWorkDifficultyPolicy;
 import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
 
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This abstract class is used for generating work solutions from a given block or root hash.
@@ -32,9 +32,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public abstract class WorkGenerator {
     
-    static final WorkDifficultyPolicy DEFAULT_POLICY = NetworkConstants.NANO.getWorkDifficulties();
+    private static final ThreadFactory CONSUMER_THREAD_FACTORY = JNH.threadFactory("WorkGenerator-Consumer", true);
     
-    private final ExecutorService executor = Executors.newSingleThreadExecutor(new ConsumerThreadFactory());
+    protected static final WorkDifficultyPolicy DEFAULT_POLICY = NetworkConstants.NANO.getWorkDifficulties();
+    
+    private final ExecutorService executor = Executors.newSingleThreadExecutor(CONSUMER_THREAD_FACTORY);
     private final WorkDifficultyPolicy policy;
     
     /**
@@ -186,17 +188,6 @@ public abstract class WorkGenerator {
         @Override
         public WorkSolution call() throws Exception {
             return generateWork(spec.getRoot(), spec.getDifficulty());
-        }
-    }
-    
-    private static class ConsumerThreadFactory implements ThreadFactory {
-        private static final AtomicInteger THREAD_ID = new AtomicInteger();
-        
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread thread = new Thread(r, "WorkGenerator-Consumer-" + THREAD_ID.getAndIncrement());
-            thread.setDaemon(true);
-            return thread;
         }
     }
 

@@ -15,6 +15,8 @@ import uk.oczadly.karl.jnano.model.HexData;
 
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -265,6 +267,19 @@ public class JNH {
         if (max == null)
             throw new IllegalArgumentException("No non-null values were provided.");
         return max;
+    }
+    
+    public static ThreadFactory threadFactory(String namePrefix, boolean daemon) {
+        return new ThreadFactory() {
+            final AtomicInteger id = new AtomicInteger();
+            
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r, namePrefix + "-" + id.getAndIncrement());
+                thread.setDaemon(daemon);
+                return thread;
+            }
+        };
     }
     
 }
