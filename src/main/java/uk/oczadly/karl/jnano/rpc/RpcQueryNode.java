@@ -433,8 +433,8 @@ public class RpcQueryNode {
          * Sets the endpoint address of the node to the given URL. The protocol of the URL must be either {@code http}
          * or {@code https}.
          * 
-         * <p>This will overwrite the {@link #setRequestExecutor(RpcRequestExecutor) RpcRequestExecutor} value with
-         * a {@link HttpRequestExecutor} configured to the specified address.</p>
+         * <p>This will overwrite the {@code RpcRequestExecutor} value with a {@link HttpRequestExecutor} configured to
+         * the specified address.</p>
          *
          * @param address the endpoint URL of the node (protocol, address and port)
          * @return this builder
@@ -447,8 +447,8 @@ public class RpcQueryNode {
         /**
          * Sets the endpoint address of the node to the given address and port using the {@code http} protocol.
          *
-         * <p>This will overwrite the {@link #setRequestExecutor(RpcRequestExecutor) RpcRequestExecutor} value with
-         * a {@link HttpRequestExecutor} configured to the specified address.</p>
+         * <p>This will overwrite the {@code RpcRequestExecutor} value with a {@link HttpRequestExecutor} configured to
+         * the specified address.</p>
          *
          * @param address the endpoint address or hostname
          * @param port    the endpoint port number
@@ -464,12 +464,11 @@ public class RpcQueryNode {
          * Sets the {@link RpcRequestExecutor} to connect via {@code http} on localhost ({@code ::1}) on the
          * specified port.
          *
-         * <p>This will overwrite the {@link #setRequestExecutor(RpcRequestExecutor) RpcRequestExecutor} value with
-         * a {@link HttpRequestExecutor} configured to the specified address.</p>
+         * <p>This will overwrite the {@code RpcRequestExecutor} value with a {@link HttpRequestExecutor} configured to
+         * the specified address.</p>
          *
          * @param port the endpoint port number
          * @return this builder
-         * @throws MalformedURLException if the port is out of range
          * @see #setRequestExecutor(RpcRequestExecutor)
          */
         public Builder setLocalAddress(int port) {
@@ -480,8 +479,8 @@ public class RpcQueryNode {
          * Sets the {@link RpcRequestExecutor} to connect via {@code http} on localhost ({@code ::1}) on port
          * {@value DEFAULT_PORT}.
          *
-         * <p>This will overwrite the {@link #setRequestExecutor(RpcRequestExecutor) RpcRequestExecutor} value with
-         * a {@link HttpRequestExecutor} configured to the specified address.</p>
+         * <p>This will overwrite the {@code RpcRequestExecutor} value with a {@link HttpRequestExecutor} configured to
+         * the specified address.</p>
          *
          * @return this builder
          * @see #setRequestExecutor(RpcRequestExecutor)
