@@ -89,8 +89,11 @@ public class CPUWorkGenerator extends WorkGenerator {
     
     @Override
     public void shutdown() {
-        super.shutdown();
-        executorService.shutdownNow();
+        try {
+            executorService.shutdownNow();
+        } finally {
+            super.shutdown();
+        }
     }
     
     @Override

@@ -14,10 +14,7 @@ import uk.oczadly.karl.jnano.util.NetworkConstants;
 import uk.oczadly.karl.jnano.util.workgen.policy.NodeWorkDifficultyPolicy;
 import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -30,22 +27,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  * policy object will defer computation and retrieval of the policy until they begin processing, ensuring that
  * time-sensitive policies are still applicable to generated work.</p>
  *
- * <p>Instances of this class should be re-used throughout your application, as each instance will spawn a new
- * background thread. This also ensures that tasks are queued correctly in the order of request. If and when you are
- * finished with a {@code WorkGenerator} object, you should call the {@link #shutdown()} method to terminate any
- * background threads.</p>
+ * <p>Instances of this class should be re-used throughout your application, as each instance will spawn new
+ * background threads. This practice also ensures that tasks are queued correctly in the order of request.</p>
  */
-//TODO: allow cancellation of work
 public abstract class WorkGenerator {
     
     static final WorkDifficultyPolicy DEFAULT_POLICY = NetworkConstants.NANO.getWorkDifficulties();
     
+    private final ExecutorService executor = Executors.newSingleThreadExecutor(new ConsumerThreadFactory());
     private final WorkDifficultyPolicy policy;
-    
-    private final BlockingQueue<WorkRequest> queue = new LinkedBlockingQueue<>();
-    private final Thread consumerThread = new ConsumerThread();
-    
-    private volatile boolean isShutdown = false;
     
     /**
      * @param policy the work difficulty policy (may be null)
@@ -69,9 +59,6 @@ public abstract class WorkGenerator {
      * Generates a {@link WorkSolution} for the provided block, using the difficulty retrieved from the difficulty
      * policy.
      *
-     * <p>Note that cancelling work requests is currently not supported, and calls to the {@code cancel} method of the
-     * returned future object will be ignored.</p>
-     *
      * @param block the block to compute work for
      * @return the (future) computed work solution
      * @throws UnsupportedOperationException if no difficulty policy is specified
@@ -84,9 +71,6 @@ public abstract class WorkGenerator {
     
     /**
      * Generates a {@link WorkSolution} for the provided block, using the specified difficulty.
-     *
-     * <p>Note that cancelling work requests is currently not supported, and calls to the {@code cancel} method of the
-     * returned future object will be ignored.</p>
      *
      * @param block      the block to compute work for
      * @param difficulty the minimum difficulty threshold of the work
@@ -104,9 +88,6 @@ public abstract class WorkGenerator {
      * policy. If the difficulty policy applies it's own multiplier (as is typically the case with
      * {@link NodeWorkDifficultyPolicy}), then this multiplier will be stacked on top of the previous
      * multiplication, rather than overriding.</p>
-     *
-     * <p>Note that cancelling work requests is currently not supported, and calls to the {@code cancel} method of the
-     * returned future object will be ignored.</p>
      *
      * @param block      the block to compute work for
      * @param multiplier the difficulty multiplier
@@ -129,9 +110,6 @@ public abstract class WorkGenerator {
      * Generates a {@link WorkSolution} for the provided block root hash using the "any" difficulty provided by the
      * difficulty policy.
      *
-     * <p>Note that cancelling work requests is currently not supported, and calls to the {@code cancel} method of the
-     * returned future object will be ignored.</p>
-     *
      * @param root the root hash
      * @return the (future) computed work solution
      * @throws UnsupportedOperationException if no difficulty policy is specified
@@ -149,9 +127,6 @@ public abstract class WorkGenerator {
     
     /**
      * Generates a {@link WorkSolution} for the provided block root hash, using the specified difficulty.
-     *
-     * <p>Note that cancelling work requests is currently not supported, and calls to the {@code cancel} method of the
-     * returned future object will be ignored.</p>
      *
      * @param root       the root hash
      * @param difficulty the minimum difficulty threshold of the work
@@ -172,73 +147,56 @@ public abstract class WorkGenerator {
      * Returns whether this generator has been shut down by calling {@link #shutdown()}.
      * @return true if this generator has been shut down.
      */
-    public synchronized boolean isShutdown() {
-        return isShutdown;
+    public final boolean isShutdown() {
+        return executor.isShutdown();
     }
     
     /**
      * Attempts to cancel all pending work generations, and stops the main consumer thread from running.
      */
-    public synchronized void shutdown() {
-        isShutdown = true;
-        consumerThread.interrupt();
-        queue.clear();
+    public void shutdown() {
+        executor.shutdownNow();
     }
     
-    
-    private synchronized Future<WorkSolution> enqueueWork(WorkRequestSpec spec) {
-        if (isShutdown)
-            throw new IllegalStateException("WorkGenerator is shutdown and cannot accept new requests.");
-        
-        WorkRequest workReq = new WorkRequest(spec);
-        queue.add(workReq);
-        
-        // Start consumer thread (if not running)
-        if (!consumerThread.isAlive()) {
-            synchronized (this) {
-                if (!consumerThread.isAlive())
-                    consumerThread.start();
-            }
-        }
-        
-        return workReq.future;
-    }
-    
-    
-    static class WorkRequest {
-        final WorkRequestSpec spec;
-        final CompletableFuture<WorkSolution> future = new FutureWork();
-        
-        WorkRequest(WorkRequestSpec requestSpec) {
-            this.spec = requestSpec;
+    @SuppressWarnings("deprecation")
+    @Override
+    protected final void finalize() throws Throwable {
+        try {
+            shutdown();
+        } finally {
+            super.finalize();
         }
     }
     
-    private static final AtomicInteger THREAD_ID = new AtomicInteger();
-    class ConsumerThread extends Thread {
-        public ConsumerThread() {
-            super("WorkGenerator-Consumer-" + THREAD_ID.getAndIncrement());
-            setDaemon(true);
+    private Future<WorkSolution> enqueueWork(WorkRequestSpec spec) {
+        if (executor.isShutdown())
+            throw new IllegalStateException("Work generator is shut down and cannot accept new requests.");
+        
+        return executor.submit(new WorkGeneratorTask(spec));
+    }
+    
+    
+    class WorkGeneratorTask implements Callable<WorkSolution> {
+        private final WorkRequestSpec spec;
+        
+        public WorkGeneratorTask(WorkRequestSpec spec) {
+            this.spec = spec;
         }
     
         @Override
-        public void run() {
-            while (!Thread.currentThread().isInterrupted()) {
-                // Retrieve request
-                WorkRequest request;
-                try {
-                    request = queue.take();
-                } catch (InterruptedException e) {
-                    break;
-                }
-                
-                try {
-                    WorkSolution work = generateWork(request.spec.getRoot(), request.spec.getDifficulty());
-                    request.future.complete(work);
-                } catch (Throwable t) {
-                    request.future.completeExceptionally(t);
-                }
-            }
+        public WorkSolution call() throws Exception {
+            return generateWork(spec.getRoot(), spec.getDifficulty());
+        }
+    }
+    
+    private static class ConsumerThreadFactory implements ThreadFactory {
+        private static final AtomicInteger THREAD_ID = new AtomicInteger();
+        
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread thread = new Thread(r, "WorkGenerator-Consumer-" + THREAD_ID.getAndIncrement());
+            thread.setDaemon(true);
+            return thread;
         }
     }
 
