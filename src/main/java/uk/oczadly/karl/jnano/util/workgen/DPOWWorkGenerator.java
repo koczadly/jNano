@@ -54,6 +54,9 @@ public final class DPOWWorkGenerator extends WorkGenerator {
      * @param apiKey  the API key credential
      * @param timeout the generation timeout, in seconds
      * @param policy  the difficulty policy
+     *
+     * @see #forNano(String, String)
+     * @see #forBanano(String, String)
      */
     public DPOWWorkGenerator(URL url, String user, String apiKey, int timeout, WorkDifficultyPolicy policy) {
         super(policy);
