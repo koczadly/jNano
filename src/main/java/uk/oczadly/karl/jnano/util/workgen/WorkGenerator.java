@@ -20,8 +20,8 @@ import java.util.concurrent.*;
 /**
  * This abstract class is used for generating work solutions from a given block or root hash.
  *
- * <p>The following implementations are provided by this library: {@link CPUWorkGenerator},
- * {@link NodeWorkGenerator}.</p>
+ * <p>The following implementations are provided by this library: {@link CPUWorkGenerator}, {@link NodeWorkGenerator},
+ * and {@link DPOWWorkGenerator}.</p>
  *
  * <p>Generation requests will be queued and processed in a FIFO ordering. Requests which utilise the specified work
  * policy object will defer computation and retrieval of the policy until they begin processing, ensuring that
