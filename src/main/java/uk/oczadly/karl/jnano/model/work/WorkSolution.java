@@ -14,21 +14,18 @@ import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
+import uk.oczadly.karl.jnano.util.workgen.WorkGenerator;
 
 import java.lang.reflect.Type;
 import java.util.Objects;
-import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * This class represents a proof-of-work solution.
+ *
+ * @see WorkGenerator
  */
 @JsonAdapter(WorkSolution.WorkSolutionJsonAdapter.class)
 public class WorkSolution {
-    
-    private static final Random RANDOM = new Random();
-    private static final ExecutorService WORK_GEN_POOL = Executors.newWorkStealingPool();
     
     private final long longVal;
     private final String hexVal;
