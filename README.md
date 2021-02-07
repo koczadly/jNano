@@ -2,8 +2,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/uk.oczadly.karl/jnano)](https://search.maven.org/artifact/uk.oczadly.karl/jnano)
 
 jNano is a Java library used to interface with the official [Nano node](https://github.com/nanocurrency/nano-node)
- via RPC requests. It also includes many built-in utilities so that a node isn't always necessary.
- 
+ via RPC requests. It also includes many built-in utilities so that a node isn't always necessary. 
 This library is compatible with Java versions 8 and above (module `uk.oczadly.karl.jnano` for versions 9+).
  
 Nano is a crypto-currency which aims to offer instantaneous feeless transactions. For more information, visit
@@ -11,13 +10,13 @@ Nano is a crypto-currency which aims to offer instantaneous feeless transactions
 
 ## Features
 This library provides you simple access to the following:
-- [RPC Queries](https://github.com/koczadly/jNano/wiki/Query-requests)
+- [RPC Queries](https://github.com/koczadly/jNano/wiki/RPC-Queries)
 - [WebSocket updates](https://github.com/koczadly/jNano/wiki/WebSocket-communication)
-- [~~HTTP Callback Server~~](https://github.com/koczadly/jNano/wiki/Block-callback) (deprecated, prefer websockets)
+- [~~HTTP Block callback server~~](https://github.com/koczadly/jNano/wiki/Block-callback) (deprecated, prefer websockets)
 - Various built-in utilities:
-  - Blocks: [creation](https://github.com/koczadly/jNano/wiki/Utilities#creation--construction) / [signing](https://github.com/koczadly/jNano/wiki/Utilities#signing) / [hashing](https://github.com/koczadly/jNano/wiki/Utilities#hashing)
-  - [Work generation (with support for DPoW)](https://github.com/koczadly/jNano/wiki/Utilities#work-generation)
-  - Accounts: [parsing](https://github.com/koczadly/jNano/wiki/Utilities#accounts) / [validation](https://github.com/koczadly/jNano/wiki/Utilities#validation)
+  - Block [creation](https://github.com/koczadly/jNano/wiki/Utilities#creation--construction) / [signing](https://github.com/koczadly/jNano/wiki/Utilities#signing) / [hashing](https://github.com/koczadly/jNano/wiki/Utilities#hashing)
+  - [Work generation](https://github.com/koczadly/jNano/wiki/Utilities#work-generation) (with support for DPoW)
+  - Account [parsing](https://github.com/koczadly/jNano/wiki/Utilities#accounts) / [validation](https://github.com/koczadly/jNano/wiki/Utilities#validation)
   - [Unit conversions](https://github.com/koczadly/jNano/wiki/Utilities#unit-conversion)
   - [Constants for Nano and Banano](https://github.com/koczadly/jNano/wiki/Utilities#constants)
 
@@ -37,13 +36,7 @@ This project is hosted on [Maven Central](https://search.maven.org/artifact/uk.o
 The latest Javadoc pages can be [viewed online through Javadoc.io](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk.oczadly.karl.jnano-summary.html).
 Additional documentation can be found on the [wiki pages](https://github.com/koczadly/jNano/wiki/).
 
-### Configuring the node
-Before using this library, you will need to configure the node correctly. Make sure to view the wiki topics for steps
- on how to do this.
-
 ### Examples
-*More detailed examples can be found on the associated [wiki pages](https://github.com/koczadly/jNano/wiki/).*
-
 #### Executing RPC queries
 To make queries to an external Nano node through the RPC system, you will need to use [RpcQueryNode](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk/oczadly/karl/jnano/rpc/RpcQueryNode.html)
  class.
