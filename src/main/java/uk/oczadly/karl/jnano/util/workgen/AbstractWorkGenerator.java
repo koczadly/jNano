@@ -7,12 +7,15 @@ package uk.oczadly.karl.jnano.util.workgen;
 
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.HexData;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlockAccount;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 import uk.oczadly.karl.jnano.util.NetworkConstants;
 import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
 
+import java.util.Optional;
 import java.util.concurrent.*;
 
 /**
@@ -49,28 +52,32 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
      * Subclasses must override this method, compute and then return the work solution.
      * @param root       the work root
      * @param difficulty the work difficulty
+     * @param context    additional contextual info on the request
      * @return the computed work solution
      * @throws Exception whenever
      */
-    protected abstract WorkSolution generateWork(HexData root, WorkDifficulty difficulty) throws Exception;
+    protected abstract WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
+            throws Exception;
     
     
     @Override
-    public final Future<GeneratedWork> generate(Block block, double multiplier) {
+    public Future<GeneratedWork> generate(Block block, WorkDifficulty baseDifficulty) {
         if (block == null)
             throw new IllegalArgumentException("Block cannot be null.");
-        if (multiplier <= 0)
-            throw new IllegalArgumentException("Difficulty multiplier must be a positive value.");
+        if (baseDifficulty == null)
+            throw new IllegalArgumentException("Difficulty cannot be null.");
         
-        return enqueueWork(new WorkRequestSpec.WithBlock(policy, block, multiplier));
+        return enqueueWork(new WorkRequestSpec(policy, block, 1, baseDifficulty));
     }
     
     @Override
-    public final Future<GeneratedWork> generate(HexData root) {
-        if (root == null)
-            throw new IllegalArgumentException("Root cannot be null.");
-        
-        return enqueueWork(new WorkRequestSpec.WithRoot(policy, root, null));
+    public final Future<GeneratedWork> generate(Block block, double diffMultiplier) {
+        if (block == null)
+            throw new IllegalArgumentException("Block cannot be null.");
+        if (diffMultiplier <= 0)
+            throw new IllegalArgumentException("Difficulty multiplier must be a positive value.");
+    
+        return enqueueWork(new WorkRequestSpec(policy, block, diffMultiplier, null));
     }
     
     @Override
@@ -79,10 +86,28 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
             throw new IllegalArgumentException("Root cannot be null.");
         if (baseDifficulty == null)
             throw new IllegalArgumentException("Difficulty cannot be null.");
-        
-        return enqueueWork(new WorkRequestSpec.WithRoot(policy, root, baseDifficulty));
+    
+        return enqueueWork(new WorkRequestSpec(policy, root, 1, baseDifficulty));
     }
     
+    @Override
+    public Future<GeneratedWork> generate(HexData root, double diffMultiplier) {
+        if (root == null)
+            throw new IllegalArgumentException("Root cannot be null.");
+        if (diffMultiplier <= 0)
+            throw new IllegalArgumentException("Difficulty multiplier must be a positive value.");
+    
+        return enqueueWork(new WorkRequestSpec(policy, root, diffMultiplier, null));
+    }
+    
+    
+    /**
+     * Returns the work difficulty policy to be used when generating work.
+     * @return the work difficulty policy
+     */
+    public final WorkDifficultyPolicy getDifficultyPolicy() {
+        return policy;
+    }
     
     /**
      * Returns whether this generator has been shut down by calling {@link #shutdown()}.
@@ -99,21 +124,22 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
         executor.shutdownNow();
     }
     
-    @SuppressWarnings("deprecation")
-    @Override
-    protected final void finalize() throws Throwable {
-        try {
-            shutdown();
-        } finally {
-            super.finalize();
-        }
-    }
-    
     private Future<GeneratedWork> enqueueWork(WorkRequestSpec spec) {
         if (executor.isShutdown())
             throw new IllegalStateException("Work generator is shut down and cannot accept new requests.");
         
         return executor.submit(new WorkGeneratorTask(spec));
+    }
+    
+    
+    @SuppressWarnings("deprecation")
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            shutdown();
+        } finally {
+            super.finalize();
+        }
     }
     
     
@@ -126,11 +152,59 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
     
         @Override
         public GeneratedWork call() throws Exception {
-            HexData root = spec.getRoot();
+            HexData root = spec.root;
             WorkRequestSpec.DifficultySet difficulty = spec.getDifficulty();
+            RequestContext context = new RequestContext(spec.block, difficulty.getMultiplier(), difficulty.getBase());
             
-            WorkSolution work = generateWork(root, difficulty.getTarget());
+            WorkSolution work = generateWork(root, difficulty.getTarget(), context);
             return new GeneratedWork(work, root, difficulty.getBase(), difficulty.getTarget());
+        }
+    }
+    
+    /**
+     * Contains additional contextual information on the work request.
+     */
+    protected static class RequestContext {
+        private final Block block;
+        private final double multiplier;
+        private final WorkDifficulty baseDifficulty;
+    
+        private RequestContext(Block block, double multiplier, WorkDifficulty baseDifficulty) {
+            this.block = block;
+            this.multiplier = multiplier;
+            this.baseDifficulty = baseDifficulty;
+        }
+    
+    
+        /**
+         * @return the block the work is being generated for
+         */
+        public Optional<Block> getBlock() {
+            return Optional.ofNullable(block);
+        }
+    
+        /**
+         * @return the account holder of the block
+         */
+        public Optional<NanoAccount> getAccount() {
+            if (block != null && block instanceof IBlockAccount) {
+                return Optional.of(((IBlockAccount)block).getAccount());
+            }
+            return Optional.empty();
+        }
+    
+        /**
+         * @return the difficulty multiplier in respect to the base difficulty
+         */
+        public double getMultiplier() {
+            return multiplier;
+        }
+    
+        /**
+         * @return the base threshold difficulty (difficulty without multipliers)
+         */
+        public WorkDifficulty getBaseDifficulty() {
+            return baseDifficulty;
         }
     }
 

@@ -97,15 +97,16 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
     
     
     @Override
-    protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty) throws Exception {
+    protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
+            throws Exception {
         // Build request
-        // TODO: support 'account' for precaching when block is passed
         JsonObject requestJson = new JsonObject();
         requestJson.addProperty("user",       user);
         requestJson.addProperty("api_key",    apiKey);
         requestJson.addProperty("timeout",    timeout);
         requestJson.addProperty("hash",       root.toHexString());
         requestJson.addProperty("difficulty", difficulty.getAsHexadecimal());
+        context.getAccount().ifPresent(acc -> requestJson.addProperty("account", acc.toAddress())); // For precaching
         
         // Make request
         HttpURLConnection con = (HttpURLConnection)url.openConnection();

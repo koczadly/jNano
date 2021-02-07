@@ -60,7 +60,7 @@ public class AbstractWorkGeneratorTest {
         }
     
         @Override
-        protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty) {
+        protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context) {
             WorkSolution work = new WorkSolution(0);
             requests.add(new Request(root, difficulty, work));
             return work;

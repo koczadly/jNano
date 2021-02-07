@@ -81,7 +81,8 @@ public class NodeWorkGenerator extends AbstractWorkGenerator {
     
     
     @Override
-    protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty) throws Exception {
+    protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
+            throws Exception {
         RequestWorkGenerate req = new RequestWorkGenerate(root.toHexString(), usePeers, difficulty);
         return rpc.processRequest(req).getWorkSolution();
     }

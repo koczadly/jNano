@@ -99,7 +99,8 @@ public final class CPUWorkGenerator extends AbstractWorkGenerator {
     }
     
     @Override
-    protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty) throws Exception {
+    protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
+            throws Exception {
         // Prepare parameters
         byte[] rootBytes = root.toByteArray();
         byte[] thresholdBytes = JNH.reverseArray(JNH.longToBytes(difficulty.getAsLong()));

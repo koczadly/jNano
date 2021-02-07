@@ -18,70 +18,54 @@ import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
  * This class is used to defer difficulty calculations (ie. active network difficulty) until the work is at the head
  * of the queue and due to be processed.
  */
-abstract class WorkRequestSpec {
+class WorkRequestSpec {
     
-    private final WorkDifficultyPolicy policy;
-    private final HexData root;
+    final WorkDifficultyPolicy policy;
+    final HexData root;
+    final double reqMultiplier;
+    final WorkDifficulty reqDifficulty;
+    final Block block;
     
-    protected WorkRequestSpec(WorkDifficultyPolicy policy, HexData root) {
+    public WorkRequestSpec(WorkDifficultyPolicy policy, HexData root, double reqMultiplier,
+                    WorkDifficulty reqDifficulty) {
+        this(policy, root, reqMultiplier, reqDifficulty, null);
+    }
+    
+    public WorkRequestSpec(WorkDifficultyPolicy policy, Block block, double reqMultiplier,
+                    WorkDifficulty reqDifficulty) {
+        this(policy, NanoUtil.getWorkRoot(block), reqMultiplier, reqDifficulty, block);
+    }
+    
+    private WorkRequestSpec(WorkDifficultyPolicy policy, HexData root, double reqMultiplier,
+                            WorkDifficulty reqDifficulty, Block block) {
         this.policy = policy;
         this.root = root;
+        this.reqMultiplier = reqMultiplier;
+        this.reqDifficulty = reqDifficulty;
+        this.block = block;
     }
     
     
-    public final WorkDifficultyPolicy getPolicy() {
-        return policy;
-    }
-    
-    public final HexData getRoot() {
-        return root;
-    }
-    
-    public abstract DifficultySet getDifficulty() throws DifficultyRetrievalException;
-    
-    
-    
-    /** Obtain the difficulty from the block (using forBlock()) */
-    static class WithBlock extends WorkRequestSpec {
-        private final Block block;
-        private final double multiplier;
-    
-        public WithBlock(WorkDifficultyPolicy policy, Block block, double multiplier) {
-            super(policy, NanoUtil.getWorkRoot(block));
-            this.block = block;
-            this.multiplier = multiplier;
+    public DifficultySet getDifficulty() throws DifficultyRetrievalException {
+        WorkDifficulty base;
+        if (reqDifficulty != null) {
+            base = reqDifficulty;           // Using difficulty constant
+        } else if (block != null) {
+            base = policy.forBlock(block);  // Using block
+        } else {
+            base = policy.forAny();         // Using "any" difficulty
         }
-        
-        @Override
-        public DifficultySet getDifficulty() throws DifficultyRetrievalException {
-            WorkDifficulty base = getPolicy().forBlock(block);
-            return new DifficultySet(base, getPolicy().multiplier() * multiplier);
-        }
-    }
-    
-    /** Obtain the difficulty from the root and difficulty (or policy difficulty using forAny()) */
-    static class WithRoot extends WorkRequestSpec {
-        private final WorkDifficulty difficulty;
-        
-        public WithRoot(WorkDifficultyPolicy policy, HexData root, WorkDifficulty difficulty) {
-            super(policy, root);
-            this.difficulty = difficulty;
-        }
-        
-        @Override
-        public DifficultySet getDifficulty() throws DifficultyRetrievalException {
-            return new DifficultySet(
-                    difficulty != null ? difficulty : getPolicy().forAny(),
-                    getPolicy().multiplier());
-        }
+        return new DifficultySet(base, policy.multiplier() * reqMultiplier);
     }
     
     
     static final class DifficultySet {
         private final WorkDifficulty base, target;
+        private final double multiplier;
     
         public DifficultySet(WorkDifficulty base, double targetMultiplier) {
             this.base = base;
+            this.multiplier = targetMultiplier;
             this.target = base.multiply(targetMultiplier);
         }
         
@@ -91,6 +75,10 @@ abstract class WorkRequestSpec {
     
         public WorkDifficulty getTarget() {
             return target;
+        }
+    
+        public double getMultiplier() {
+            return multiplier;
         }
     }
     
