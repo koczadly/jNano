@@ -34,13 +34,13 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
      * The secure endpoint URL for the Nano <i>Distributed Proof of Work</i> work generation service.
      * @see <a href="https://dpow.nanocenter.org/">https://dpow.nanocenter.org/</a>
      */
-    public static final URL URL_NANO_DPOW = JNH.unchecked(() -> new URL("https://dpow.nanocenter.org/service/"));
+    public static final URL URL_NANO_DPOW = JNH.parseURL("https://dpow.nanocenter.org/service/");
     
     /**
      * The secure endpoint URL for the Banano <i>BoomPow</i> work generation service.
      * @see <a href="https://bpow.banano.cc/">https://bpow.banano.cc/</a>
      */
-    public static final URL URL_BANANO_BPOW = JNH.unchecked(() -> new URL("https://bpow.banano.cc/service/"));
+    public static final URL URL_BANANO_BPOW = JNH.parseURL("https://bpow.banano.cc/service/");
     
     
     private final URL url;

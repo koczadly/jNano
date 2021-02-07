@@ -13,6 +13,7 @@ import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.utils.Functions;
 import uk.oczadly.karl.jnano.model.HexData;
 
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadFactory;
@@ -203,16 +204,16 @@ public class JNH {
         return val;
     }
     
-    public static <T> T unchecked(Callable<T> supplier) {
-        return unchecked(supplier, RuntimeException::new);
+    public static <V> V unchecked(Callable<V> supplier) {
+        return unchecked(supplier, AssertionError::new);
     }
     
-    public static <T> T unchecked(Callable<T> supplier, Function<Exception, ? extends RuntimeException> rethrow) {
+    public static <V, T extends Throwable> V unchecked(Callable<V> supplier, Function<Throwable, T> rethrow) throws T {
         try {
             return supplier.call();
-        } catch (RuntimeException e) {
+        } catch (Error | RuntimeException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw rethrow.apply(e);
         }
     }
@@ -289,6 +290,14 @@ public class JNH {
                 return thread;
             }
         };
+    }
+    
+    public static URL parseURL(String protocol, String address, int port) {
+        return unchecked(() -> new URL(protocol, address, port, ""), IllegalArgumentException::new);
+    }
+    
+    public static URL parseURL(String url) {
+        return unchecked(() -> new URL(url), IllegalArgumentException::new);
     }
     
 }

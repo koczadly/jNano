@@ -14,9 +14,6 @@ import java.net.URL;
 /**
  * The standard implementation of {@link RpcRequestExecutor}, which submits requests through an HTTP POST request.
  *
- * <p>If {@code allowErrors} is set to true, non-200 HTTP errors returned by the server will <em>not</em> throw an
- * {@link IOException} and will just forward the body data to the deserializer.</p>
- *
  * <p>The request method and headers may be changed by overriding the {@link #setRequestHeaders(HttpURLConnection)}
  * method.</p>
  */
@@ -48,7 +45,6 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
     
     @Override
     public final String submit(String request, int timeout) throws IOException {
-
         if (request == null)
             throw new IllegalArgumentException("Request body cannot be null.");
         if (timeout < 0)
@@ -58,11 +54,11 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
         HttpURLConnection con = (HttpURLConnection)address.openConnection();
         
         // Configure connection
+        setRequestHeaders(con);
         con.setConnectTimeout(timeout);
         con.setReadTimeout(timeout);
         con.setDoOutput(true);
         con.setDoInput(true);
-        setRequestHeaders(con);
         
         // Submit
         return makeRequest(con, request);

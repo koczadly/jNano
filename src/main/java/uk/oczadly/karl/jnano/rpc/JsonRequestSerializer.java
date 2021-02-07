@@ -21,16 +21,24 @@ public class JsonRequestSerializer implements RpcRequestSerializer {
     
     private final Gson gson;
     
-    
+    /**
+     * Constructs using default jNano GSON instance.
+     */
     public JsonRequestSerializer() {
         this(JNC.GSON);
     }
     
+    /**
+     * @param gson the gson instance
+     */
     public JsonRequestSerializer(Gson gson) {
         this.gson = gson;
     }
     
     
+    /**
+     * @return the gson instance
+     */
     public final Gson getGson() {
         return gson;
     }
@@ -38,9 +46,19 @@ public class JsonRequestSerializer implements RpcRequestSerializer {
     
     @Override
     public String serialize(RpcRequest<?> request) {
-        JsonObject obj = getGson().toJsonTree(request).getAsJsonObject();
+        return serializeJsonObject(request).toString();
+    }
+    
+    
+    /**
+     * Default serialization method.
+     * @param request the request object
+     * @return the JSON object
+     */
+    public JsonObject serializeJsonObject(RpcRequest<?> request) {
+        JsonObject obj = gson.toJsonTree(request).getAsJsonObject();
         obj.addProperty("action", request.getActionCommand());
-        return obj.toString();
+        return obj;
     }
 
 }

@@ -48,6 +48,7 @@ import java.util.concurrent.*;
  *  }
  * }</pre>
  *
+ * @see RpcServiceProviders
  * @see Builder
  */
 public class RpcQueryNode {
@@ -92,7 +93,7 @@ public class RpcQueryNode {
      * @see Builder
      */
     public RpcQueryNode(String address, int port) {
-        this(JNH.unchecked(() -> new URL("HTTP", address, port, ""), IllegalArgumentException::new));
+        this(JNH.parseURL("HTTP", address, port));
     }
     
     /**
@@ -350,8 +351,7 @@ public class RpcQueryNode {
     private static RpcRequestExecutor newLocalhostExecutor(int port) {
         if (port <= 0 || port > 65535)
             throw new IllegalArgumentException("Invalid port number.");
-        return new HttpRequestExecutor(
-                JNH.unchecked(() -> new URL("HTTP", "::1", port, "")));
+        return new HttpRequestExecutor(JNH.parseURL("HTTP", "::1", port));
     }
     
     
