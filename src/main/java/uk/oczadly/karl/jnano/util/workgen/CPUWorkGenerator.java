@@ -29,7 +29,7 @@ import java.util.concurrent.ThreadFactory;
  * <p>Instances of this class should be re-used throughout your application, as each instance will spawn new
  * background threads. This practice also ensures that tasks are queued correctly in the order of request.</p>
  */
-public final class CPUWorkGenerator extends WorkGenerator {
+public final class CPUWorkGenerator extends AbstractWorkGenerator {
     
     private static final ThreadFactory WORKER_THREAD_FACTORY = JNH.threadFactory("CPUWorkGenerator-Generator", true);
     private static final Random RANDOM = new Random();
@@ -42,7 +42,7 @@ public final class CPUWorkGenerator extends WorkGenerator {
      * {@code n} is the CPU core count.
      */
     public CPUWorkGenerator() {
-        this(WorkGenerator.DEFAULT_POLICY);
+        this(AbstractWorkGenerator.DEFAULT_POLICY);
     }
     
     /**
@@ -51,7 +51,7 @@ public final class CPUWorkGenerator extends WorkGenerator {
      * @param threadCount the number of threads to compute with (256 maximum)
      */
     public CPUWorkGenerator(int threadCount) {
-        this(WorkGenerator.DEFAULT_POLICY, threadCount);
+        this(AbstractWorkGenerator.DEFAULT_POLICY, threadCount);
     }
     
     /**

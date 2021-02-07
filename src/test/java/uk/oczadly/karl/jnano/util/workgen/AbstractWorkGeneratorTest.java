@@ -23,7 +23,7 @@ import static org.junit.Assert.assertSame;
 /**
  * @author Karl Oczadly
  */
-public class WorkGeneratorTest {
+public class AbstractWorkGeneratorTest {
     
     // TODO unit tests need to be improved to cover all returned values
     
@@ -52,7 +52,7 @@ public class WorkGeneratorTest {
     
     
     
-    static class TestGenerator extends WorkGenerator {
+    static class TestGenerator extends AbstractWorkGenerator {
         final List<Request> requests = new ArrayList<>();
         
         protected TestGenerator(WorkDifficultyPolicy policy) {

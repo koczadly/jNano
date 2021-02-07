@@ -28,7 +28,7 @@ import java.net.URL;
  * @see #forNano(String, String)
  * @see #forBanano(String, String)
  */
-public final class DPOWWorkGenerator extends WorkGenerator {
+public final class DPOWWorkGenerator extends AbstractWorkGenerator {
     
     /**
      * The secure endpoint URL for the Nano <i>Distributed Proof of Work</i> work generation service.

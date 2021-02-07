@@ -20,7 +20,7 @@ import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
  * <p>Instances of this class should be re-used throughout your application, as each instance will spawn new
  * background threads. This practice also ensures that tasks are queued correctly in the order of request.</p>
  */
-public class NodeWorkGenerator extends WorkGenerator {
+public class NodeWorkGenerator extends AbstractWorkGenerator {
 
     private final RpcQueryNode rpc;
     private final boolean usePeers;
