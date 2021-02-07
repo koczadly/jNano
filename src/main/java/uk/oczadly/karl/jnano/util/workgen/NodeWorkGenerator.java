@@ -64,7 +64,22 @@ public class NodeWorkGenerator extends AbstractWorkGenerator {
         this.usePeers = usePeers;
     }
     
-
+    
+    /**
+     * @return the {@code RpcQueryNode} instance
+     */
+    public final RpcQueryNode getRpcInstance() {
+        return rpc;
+    }
+    
+    /**
+     * @return true if work peers should be used
+     */
+    public final boolean getUsePeers() {
+        return usePeers;
+    }
+    
+    
     @Override
     protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty) throws Exception {
         RequestWorkGenerate req = new RequestWorkGenerate(root.toHexString(), usePeers, difficulty);
