@@ -192,14 +192,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     }
     
     StateBlock(StateBlockSubType subtype, HexData signature, WorkSolution work, NanoAccount account,
-               HexData prevHash, NanoAccount rep, NanoAmount balance,
-               HexData linkHex, NanoAccount linkAcc) {
-        this(subtype, signature, work, account, prevHash, rep,
-                balance, parseLinkData(subtype, linkHex, linkAcc));
-    }
-    
-    StateBlock(StateBlockSubType subtype, HexData signature, WorkSolution work, NanoAccount account,
-               HexData previous, NanoAccount representative, NanoAmount balance, LinkData link) {
+               HexData previous, NanoAccount rep, NanoAmount balance, HexData linkHex, NanoAccount linkAcc) {
         super(BlockType.STATE, signature, work);
         
         if (subtype == null)
@@ -210,7 +203,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
             throw new IllegalArgumentException("Previous hash cannot be null.");
         if (previous.length() != NanoConst.LEN_HASH_B)
             throw new IllegalArgumentException("Previous hash length is incorrect.");
-        if (representative == null)
+        if (rep == null)
             throw new IllegalArgumentException("Representative cannot be null.");
         if (balance == null)
             throw new IllegalArgumentException("Account balance cannot be null.");
@@ -218,9 +211,9 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         this.subtype = subtype;
         this.account = account;
         this.previous = previous;
-        this.rep = representative;
+        this.rep = rep;
         this.balance = balance;
-        this.link = link;
+        this.link = parseLinkData(subtype, linkHex, linkAcc);
     }
     
     
