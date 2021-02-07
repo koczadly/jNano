@@ -46,17 +46,17 @@ public class NodeWorkGenerator extends WorkGenerator {
      * @see NodeWorkDifficultyPolicy
      */
     public NodeWorkGenerator(RpcQueryNode rpc, boolean usePeers) {
-        this(new NodeWorkDifficultyPolicy(rpc), rpc, usePeers);
+        this(rpc, usePeers, new NodeWorkDifficultyPolicy(rpc));
     }
     
     /**
      * Constructs a {@code NodeWorkGenerator} using the specified difficulty policy.
      *
-     * @param difficultyPolicy the difficulty policy to use (may be null)
      * @param rpc              the RPC endpoint
      * @param usePeers         whether work peers should be used
+     * @param difficultyPolicy the difficulty policy to use
      */
-    public NodeWorkGenerator(WorkDifficultyPolicy difficultyPolicy, RpcQueryNode rpc, boolean usePeers) {
+    public NodeWorkGenerator(RpcQueryNode rpc, boolean usePeers, WorkDifficultyPolicy difficultyPolicy) {
         super(difficultyPolicy);
         if (rpc == null)
             throw new IllegalArgumentException("RPC node object cannot be null.");

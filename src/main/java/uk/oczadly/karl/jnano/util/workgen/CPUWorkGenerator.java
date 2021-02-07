@@ -58,7 +58,7 @@ public class CPUWorkGenerator extends WorkGenerator {
      * Constructs a {@code CPUWorkGenerator} using the provided difficulty policy, and {@code n-1} threads, where
      * {@code n} is the CPU core count.
      *
-     * @param policy the difficulty policy to use (may be null)
+     * @param policy the difficulty policy to use
      */
     public CPUWorkGenerator(WorkDifficultyPolicy policy) {
         this(policy, Math.max(Runtime.getRuntime().availableProcessors() - 1, 1));
@@ -67,7 +67,7 @@ public class CPUWorkGenerator extends WorkGenerator {
     /**
      * Constructs a {@code CPUWorkGenerator} using the provided difficulty policy and thread count.
      *
-     * @param policy      the difficulty policy to use (may be null)
+     * @param policy      the difficulty policy to use
      * @param threadCount the number of threads to compute with
      */
     public CPUWorkGenerator(WorkDifficultyPolicy policy, int threadCount) {
