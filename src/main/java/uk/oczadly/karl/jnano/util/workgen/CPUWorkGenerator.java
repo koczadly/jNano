@@ -34,7 +34,7 @@ public final class CPUWorkGenerator extends WorkGenerator {
     private static final ThreadFactory WORKER_THREAD_FACTORY = JNH.threadFactory("CPUWorkGenerator-Generator", true);
     private static final Random RANDOM = new Random();
     
-    private final int threadCount;
+    private final int threadCount, threadSpacing;
     private final ExecutorService executorService;
     
     /**
@@ -48,7 +48,7 @@ public final class CPUWorkGenerator extends WorkGenerator {
     /**
      * Constructs a {@code CPUWorkGenerator} with the default Nano difficulty policy, using the specified thread count.
      *
-     * @param threadCount the number of threads to compute with
+     * @param threadCount the number of threads to compute with (256 maximum)
      */
     public CPUWorkGenerator(int threadCount) {
         this(WorkGenerator.DEFAULT_POLICY, threadCount);
@@ -68,14 +68,16 @@ public final class CPUWorkGenerator extends WorkGenerator {
      * Constructs a {@code CPUWorkGenerator} using the provided difficulty policy and thread count.
      *
      * @param policy      the difficulty policy to use
-     * @param threadCount the number of threads to compute with
+     * @param threadCount the number of threads to compute with (256 maximum)
      */
     public CPUWorkGenerator(WorkDifficultyPolicy policy, int threadCount) {
         super(policy);
         if (threadCount < 1)
             throw new IllegalArgumentException("Must have at least 1 thread.");
+        if (threadCount > 256) threadCount = 256; // Limit threads
         this.threadCount = threadCount;
         this.executorService = Executors.newFixedThreadPool(threadCount, WORKER_THREAD_FACTORY);
+        this.threadSpacing = 256 / threadCount;
     }
     
     
@@ -112,7 +114,7 @@ public final class CPUWorkGenerator extends WorkGenerator {
         // Submit tasks to executor
         for (int i = 0; i < threadCount; i++) {
             byte[] initialWork = Arrays.copyOf(initialWorkTemplate, initialWorkTemplate.length);
-            initialWork[7] += (byte)(i * 11); // Space initial work values apart from each thread
+            initialWork[7] += (byte)(i * threadSpacing); // Space initial work values apart from each thread
     
             executorService.submit(new GeneratorTask(rootBytes, threshold, initialWork, result));
         }
