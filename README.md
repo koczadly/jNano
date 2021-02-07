@@ -2,22 +2,24 @@
 [![Maven Central](https://img.shields.io/maven-central/v/uk.oczadly.karl/jnano)](https://search.maven.org/artifact/uk.oczadly.karl/jnano)
 
 jNano is a Java library used to interface with the official [Nano node](https://github.com/nanocurrency/nano-node)
- via RPC requests. It also includes many native utilities and tools so that a node isn't always necessary.
+ via RPC requests. It also includes many built-in utilities so that a node isn't always necessary.
  
-This library can be built using Java versions 8 and 9 (module `uk.oczadly.karl.jnano` for Java versions 9 and above).
+This library is compatible with Java versions 8 and above (module `uk.oczadly.karl.jnano` for versions 9+).
  
 Nano is a crypto-currency which aims to offer instantaneous feeless transactions. For more information, visit
 [https://nano.org](https://nano.org).
 
 ## Features
 This library provides you simple access to the following:
-- Synchronous and asynchronous methods for [executing RPC calls](https://github.com/koczadly/jNano/wiki/Query-requests) (all commands up to V21 are supported).
-- [WebSocket support](https://github.com/koczadly/jNano/wiki/WebSocket-communication) for receiving live data feeds
- and events from the node.
-- A [server for listening to real-time block callbacks](https://github.com/koczadly/jNano/wiki/Block-callback) from
- the node.
-- Various [utility classes](https://github.com/koczadly/jNano/wiki/Utilities) for signing, validating, computing and
- processing blocks and accounts, without the need of a connected node.
+- [RPC Queries](https://github.com/koczadly/jNano/wiki/Query-requests)
+- [WebSocket updates](https://github.com/koczadly/jNano/wiki/WebSocket-communication)
+- [~~HTTP Callback Server~~](https://github.com/koczadly/jNano/wiki/Block-callback) (deprecated, prefer websockets)
+- Various built-in utilities:
+  - Blocks: [creation](https://github.com/koczadly/jNano/wiki/Utilities#creation--construction) / [signing](https://github.com/koczadly/jNano/wiki/Utilities#signing) / [hashing](https://github.com/koczadly/jNano/wiki/Utilities#hashing)
+  - [Work generation (with support for DPoW)](https://github.com/koczadly/jNano/wiki/Utilities#work-generation)
+  - Accounts: [parsing](https://github.com/koczadly/jNano/wiki/Utilities#accounts) / [validation](https://github.com/koczadly/jNano/wiki/Utilities#validation)
+  - [Unit conversions](https://github.com/koczadly/jNano/wiki/Utilities#unit-conversion)
+  - [Constants for Nano and Banano](https://github.com/koczadly/jNano/wiki/Utilities#constants)
 
 ## Usage
 ### Maven
