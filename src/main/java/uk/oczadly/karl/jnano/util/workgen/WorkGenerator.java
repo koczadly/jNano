@@ -34,15 +34,18 @@ public abstract class WorkGenerator {
     
     private static final ThreadFactory CONSUMER_THREAD_FACTORY = JNH.threadFactory("WorkGenerator-Consumer", true);
     
+    /** The default Nano difficulty policy. */
     protected static final WorkDifficultyPolicy DEFAULT_POLICY = NetworkConstants.NANO.getWorkDifficulties();
     
     private final ExecutorService executor = Executors.newSingleThreadExecutor(CONSUMER_THREAD_FACTORY);
     private final WorkDifficultyPolicy policy;
     
     /**
-     * @param policy the work difficulty policy (may be null)
+     * @param policy the work difficulty policy
      */
     protected WorkGenerator(WorkDifficultyPolicy policy) {
+        if (policy == null)
+            throw new IllegalArgumentException("Policy cannot be null.");
         this.policy = policy;
     }
     
@@ -59,10 +62,10 @@ public abstract class WorkGenerator {
     
     /**
      * Generates a {@link WorkSolution} for the provided block, using the difficulty retrieved from the difficulty
-     * policy.
+     * policy, and applying the recommended multiplier.
      *
-     * @param block the block to compute work for
-     * @return the (future) computed work solution
+     * @param block the block to generate work for
+     * @return the computed work solution, as a Future (not yet computed)
      * @throws UnsupportedOperationException if no difficulty policy is specified
      *
      * @see WorkDifficultyPolicy#forBlock(Block)
@@ -72,75 +75,76 @@ public abstract class WorkGenerator {
     }
     
     /**
-     * Generates a {@link WorkSolution} for the provided block, using the specified difficulty.
+     * Generates a {@link WorkSolution} for the provided block, using the specified difficulty. The current multiplier
+     * recommended by the policy will also be applied to the supplied base difficulty.
      *
-     * @param block      the block to compute work for
-     * @param difficulty the minimum difficulty threshold of the work
-     * @return the (future) computed work solution
+     * @param block          the block to generate work for
+     * @param baseDifficulty the minimum base difficulty threshold of the work
+     * @return the computed work solution, as a Future (not yet computed)
      */
-    public final Future<GeneratedWork> generate(Block block, WorkDifficulty difficulty) {
-        return generate(NanoUtil.getWorkRoot(block), difficulty);
+    public final Future<GeneratedWork> generate(Block block, WorkDifficulty baseDifficulty) {
+        return generate(NanoUtil.getWorkRoot(block), baseDifficulty);
     }
     
     /**
      * Generates a {@link WorkSolution} for the provided block, using the specified multiplier on top of the
-     * specified difficulty policy.
+     * specified difficulty policy and recommended multiplier.
      *
      * <p>The provided difficulty multiplier is stacked on top of the recommended multiplier value returned by the
      * {@link NodeWorkDifficultyPolicy}. For example, if the policy specifies a multiplier of {@code 3} and you
      * provide a multiplier of {@code 2}, the resulting work must be at least {@code 6} times the base difficulty.</p>
      *
-     * @param block      the block to compute work for
+     * @param block      the block to generate work for
      * @param multiplier the difficulty multiplier
-     * @return the (future) computed work solution
+     * @return the computed work solution, as a Future (not yet computed)
      * @throws UnsupportedOperationException if no difficulty policy is specified
      *
      * @see WorkDifficultyPolicy#forBlock(Block)
      */
     public final Future<GeneratedWork> generate(Block block, double multiplier) {
-        if (policy == null)
-            throw new UnsupportedOperationException("No difficulty policy is specified.");
         if (block == null)
             throw new IllegalArgumentException("Block cannot be null.");
         if (multiplier <= 0)
             throw new IllegalArgumentException("Difficulty multiplier must be a positive value.");
+        
         return enqueueWork(new WorkRequestSpec.WithBlock(policy, block, multiplier));
     }
     
     /**
      * Generates a {@link WorkSolution} for the provided block root hash using the "any" difficulty provided by the
-     * difficulty policy.
+     * difficulty policy, and applying the recommended multiplier.
      *
-     * @param root the root hash
-     * @return the (future) computed work solution
+     * @param root the root hash (note: <strong>not</strong> the block's hash)
+     * @return the computed work solution, as a Future (not yet computed)
      * @throws UnsupportedOperationException if no difficulty policy is specified
      *
      * @see WorkSolution#getRoot(Block)
      * @see WorkDifficultyPolicy#forAny()
      */
     public final Future<GeneratedWork> generate(HexData root) {
-        if (policy == null)
-            throw new UnsupportedOperationException("No difficulty policy is specified.");
         if (root == null)
             throw new IllegalArgumentException("Root cannot be null.");
+        
         return enqueueWork(new WorkRequestSpec.WithRoot(policy, root, null));
     }
     
     /**
-     * Generates a {@link WorkSolution} for the provided block root hash, using the specified difficulty.
+     * Generates a {@link WorkSolution} for the provided block root hash, using the specified difficulty. The current
+     * multiplier recommended by the policy will also be applied to the supplied base difficulty.
      *
-     * @param root       the root hash
-     * @param difficulty the minimum difficulty threshold of the work
-     * @return the (future) computed work solution
+     * @param root           the root hash (note: <strong>not</strong> the block's hash)
+     * @param baseDifficulty the minimum base difficulty threshold of the work
+     * @return the computed work solution, as a Future (not yet computed)
      *
      * @see WorkSolution#getRoot(Block)
      */
-    public final Future<GeneratedWork> generate(HexData root, WorkDifficulty difficulty) {
+    public final Future<GeneratedWork> generate(HexData root, WorkDifficulty baseDifficulty) {
         if (root == null)
             throw new IllegalArgumentException("Root cannot be null.");
-        if (difficulty == null)
+        if (baseDifficulty == null)
             throw new IllegalArgumentException("Difficulty cannot be null.");
-        return enqueueWork(new WorkRequestSpec.WithRoot(policy, root, difficulty));
+        
+        return enqueueWork(new WorkRequestSpec.WithRoot(policy, root, baseDifficulty));
     }
     
     
