@@ -152,13 +152,18 @@ public final class CPUWorkGenerator extends WorkGenerator {
                     // Hash digest
                     digest.update(bytes, 0, 40);
                     digest.digest(difficulty, 0);
-    
-                    // Validate against threshold
-                    for (int i = 0; i < 8; i++)
-                        if ((difficulty[i] & 0xFF) < threshold[i])
-                            continue genLoop; // Not valid
                     
-                    // Result is valid
+                    // Validate against threshold
+                    for (int i = 7; i >= 0; i--) {
+                        int diffByte = difficulty[i] & 0xFF;
+                        if (diffByte < threshold[i]) {
+                            continue genLoop; // Invalid
+                        } else if (diffByte > threshold[i]) {
+                            break; // Valid
+                        }
+                    }
+                    
+                    // Work is valid
                     byte[] workBytes = JNH.reverseArray(Arrays.copyOfRange(bytes, 0, 8));
                     WorkSolution work = new WorkSolution(JNH.bytesToLong(workBytes));
                     result.complete(work);
