@@ -119,7 +119,7 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
         
         if (response.has("error")) {
             // Error
-            throw new GenerationException(response.get("error").getAsString(), response.has("timeout"));
+            throw new RemoteException(response.get("error").getAsString(), response.has("timeout"));
         } else {
             // Success
             return new WorkSolution(response.get("work").getAsString());
@@ -187,10 +187,13 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
     }
     
     
-    public static class GenerationException extends Exception {
+    /**
+     * Thrown when a remote error occurs when requesting or generating work.
+     */
+    public static class RemoteException extends Exception {
         final boolean timeout;
         
-        GenerationException(String message, boolean timeout) {
+        RemoteException(String message, boolean timeout) {
             super(message);
             this.timeout = timeout;
         }
