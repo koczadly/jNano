@@ -86,10 +86,9 @@ public abstract class WorkGenerator {
      * Generates a {@link WorkSolution} for the provided block, using the specified multiplier on top of the
      * specified difficulty policy.
      *
-     * <p>The provided difficulty multiplier is applied to the absolute difficulty retrieved from the difficulty
-     * policy. If the difficulty policy applies it's own multiplier (as is typically the case with
-     * {@link NodeWorkDifficultyPolicy}), then this multiplier will be stacked on top of the previous
-     * multiplication, rather than overriding.</p>
+     * <p>The provided difficulty multiplier is stacked on top of the recommended multiplier value returned by the
+     * {@link NodeWorkDifficultyPolicy}. For example, if the policy specifies a multiplier of {@code 3} and you
+     * provide a multiplier of {@code 2}, the resulting work must be at least {@code 6} times the base difficulty.</p>
      *
      * @param block      the block to compute work for
      * @param multiplier the difficulty multiplier
@@ -188,10 +187,10 @@ public abstract class WorkGenerator {
         @Override
         public GeneratedWork call() throws Exception {
             HexData root = spec.getRoot();
-            WorkDifficulty difficulty = spec.getDifficulty();
+            WorkRequestSpec.DifficultySet difficulty = spec.getDifficulty();
             
-            WorkSolution work = generateWork(root, difficulty);
-            return new GeneratedWork(work, root, difficulty);
+            WorkSolution work = generateWork(root, difficulty.getTarget());
+            return new GeneratedWork(work, root, difficulty.getBase(), difficulty.getTarget());
         }
     }
 

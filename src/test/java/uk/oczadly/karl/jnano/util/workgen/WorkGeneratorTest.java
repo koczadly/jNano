@@ -24,7 +24,9 @@ import static org.junit.Assert.assertSame;
  * @author Karl Oczadly
  */
 public class WorkGeneratorTest {
-
+    
+    // TODO unit tests need to be improved to cover all returned values
+    
     @Test
     public void testGeneration() throws Exception {
         TestGenerator generator = new TestGenerator(new ConstantDifficultyPolicyV1(new WorkDifficulty(1337)));

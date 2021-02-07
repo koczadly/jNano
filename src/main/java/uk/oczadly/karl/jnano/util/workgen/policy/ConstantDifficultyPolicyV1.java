@@ -34,9 +34,4 @@ public final class ConstantDifficultyPolicyV1 implements ConstantWorkDifficultyP
         return difficulty;
     }
     
-    @Override
-    public double multiplier() {
-        return 1;
-    }
-    
 }

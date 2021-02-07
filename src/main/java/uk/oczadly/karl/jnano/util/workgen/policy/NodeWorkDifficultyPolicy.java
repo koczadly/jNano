@@ -18,7 +18,10 @@ import java.io.IOException;
  * A dynamic work difficulty policy retrieved from an external node. This policy will retrieve the thresholds via the
  * {@code active_difficulty} RPC command.
  *
- * <p>The work values will be internally cached for a short period, unless specified otherwise in the constructors.</p>
+ * <p>Note that the difficulty retrieval methods should not vary dynamically, and only the {@link #multiplier()} value
+ * will change with network load. All difficulty retrievals should be multiplied by the multiplier.</p>
+ *
+ * <p>The values will be internally cached for a short period, unless specified otherwise in the constructors.</p>
  *
  * <p>Note that the methods will throw a {@link DifficultyRetrievalException} if the node returns an
  * {@link RpcException} or an {@link IOException} occurs.</p>
@@ -28,7 +31,6 @@ public class NodeWorkDifficultyPolicy implements WorkDifficultyPolicy {
     private static final RequestActiveDifficulty REQUEST_DIFF = new RequestActiveDifficulty(false);
     
     private final RpcQueryNode rpc;
-    private final boolean useCurrent;
     private final int cacheMillis;
     
     private volatile WorkDifficultyPolicy cachedDifficulties;
@@ -37,55 +39,30 @@ public class NodeWorkDifficultyPolicy implements WorkDifficultyPolicy {
     /**
      * Constructs a new {@code NodeWorkDifficultyPolicy} with the given {@link RpcQueryNode} instance.
      *
-     * <p>This policy will return the current recommended difficulty values based on network load, and will cache
-     * difficulty values for 10 seconds before refreshing the internal cache.</p>
+     * <p>This method will cache the difficulty and multiplier values for 10 seconds before refreshing the internal
+     * cache.</p>
      *
      * @param rpc the rpc endpoint
      */
     public NodeWorkDifficultyPolicy(RpcQueryNode rpc) {
-        this(rpc, true);
+        this(rpc, 10000);
     }
     
     /**
      * Constructs a new {@code NodeWorkDifficultyPolicy} with the given {@link RpcQueryNode} instance.
      *
-     * <p>If {@code useCurrent} is true, the methods will return the current recommended difficulty values based on
-     * network load. If set to false, then the minimum difficulty thresholds will be returned, regardless of network
-     * load. The multiplier will also always return {@code 1} in this case.</p>
-     *
-     * <p>This method will cache difficulty values for 10 seconds before refreshing the internal cache if {@code
-     * useCurrent} is true. If false, the cache expiry duration is 5 minutes (the retrieved value should ideally never
-     * vary).</p>
-     *
-     * @param rpc        the rpc endpoint
-     * @param useCurrent if true, the current recommended difficulty values will be returned
-     */
-    public NodeWorkDifficultyPolicy(RpcQueryNode rpc, boolean useCurrent) {
-        this(rpc, useCurrent, useCurrent ? 10000 : 300000);
-    }
-    
-    /**
-     * Constructs a new {@code NodeWorkDifficultyPolicy} with the given {@link RpcQueryNode} instance.
-     *
-     * <p>This policy will return the current recommended difficulty values based on network load.</p>
-     *
-     * <p>This method will cache difficulty values for the specified time period before refreshing the internal
-     * cache.</p>
+     * <p>This method will cache the difficulty and multiplier values for the specified time period before refreshing
+     * the internal cache.</p>
      *
      * @param rpc         the rpc endpoint
      * @param cacheMillis the cache expiry duration in milliseconds, or {@code 0} for no caching
      */
     public NodeWorkDifficultyPolicy(RpcQueryNode rpc, int cacheMillis) {
-        this(rpc, true, cacheMillis);
-    }
-    
-    private NodeWorkDifficultyPolicy(RpcQueryNode rpc, boolean useCurrent, int cacheMillis) {
         if (rpc == null)
             throw new IllegalArgumentException("RPC object cannot be null.");
         if (cacheMillis < 0)
             throw new IllegalArgumentException("Cache duration must be zero or positive.");
         this.rpc = rpc;
-        this.useCurrent = useCurrent;
         this.cacheMillis = cacheMillis;
     }
     
@@ -107,16 +84,15 @@ public class NodeWorkDifficultyPolicy implements WorkDifficultyPolicy {
     
     
     private synchronized WorkDifficultyPolicy fetchDifficulties() throws DifficultyRetrievalException {
-        if (cacheMillis == 0 || cachedDifficulties == null
-                || (System.currentTimeMillis() - cachedTime) > cacheMillis) {
+        if (hasCacheExpired()) {
             try {
                 ResponseActiveDifficulty res = rpc.processRequest(REQUEST_DIFF);
                 
                 cachedTime = System.currentTimeMillis();
                 cachedDifficulties = new ConstantDifficultyPolicyV2(
-                        useCurrent ? res.getNetworkCurrent() : res.getNetworkMinimum(),
-                        useCurrent ? res.getNetworkReceiveCurrent() : res.getNetworkReceiveMinimum(),
-                        useCurrent ? res.getMultiplier().doubleValue() : 1);
+                        res.getNetworkMinimum(),
+                        res.getNetworkReceiveMinimum(),
+                        res.getMultiplier().doubleValue());
             } catch (RpcException e) {
                 throw new DifficultyRetrievalException(e);
             } catch (IOException e) {
@@ -124,6 +100,11 @@ public class NodeWorkDifficultyPolicy implements WorkDifficultyPolicy {
             }
         }
         return cachedDifficulties;
+    }
+    
+    private boolean hasCacheExpired() {
+        return cacheMillis == 0 || cachedDifficulties == null
+                || (System.currentTimeMillis() - cachedTime) > cacheMillis;
     }
     
 }

@@ -26,8 +26,8 @@ public class NodeWorkGenerator extends WorkGenerator {
     private final boolean usePeers;
     
     /**
-     * Constructs a {@code NodeWorkGenerator} using the {@link NodeWorkDifficultyPolicy} difficulty policy with the
-     * current recommended active difficulty, and {@code usePeers} set to true.
+     * Constructs a {@code NodeWorkGenerator} using the {@link NodeWorkDifficultyPolicy} difficulty policy, and
+     * {@code usePeers} set to true.
      *
      * @param rpc the RPC endpoint
      *
@@ -38,8 +38,7 @@ public class NodeWorkGenerator extends WorkGenerator {
     }
     
     /**
-     * Constructs a {@code NodeWorkGenerator} using the {@link NodeWorkDifficultyPolicy} difficulty policy with the
-     * current recommended active difficulty.
+     * Constructs a {@code NodeWorkGenerator} using the {@link NodeWorkDifficultyPolicy} difficulty policy.
      *
      * @param rpc      the RPC endpoint
      * @param usePeers whether work peers should be used

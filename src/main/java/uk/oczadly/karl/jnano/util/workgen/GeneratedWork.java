@@ -18,12 +18,13 @@ public final class GeneratedWork {
     
     private final WorkSolution work;
     private final HexData reqRoot;
-    private final WorkDifficulty reqDifficulty;
+    private final WorkDifficulty baseDifficulty, targetDifficulty;
     
-    GeneratedWork(WorkSolution work, HexData reqRoot, WorkDifficulty reqDifficulty) {
+    GeneratedWork(WorkSolution work, HexData reqRoot, WorkDifficulty baseDifficulty, WorkDifficulty targetDifficulty) {
         this.work = work;
         this.reqRoot = reqRoot;
-        this.reqDifficulty = reqDifficulty;
+        this.baseDifficulty = baseDifficulty;
+        this.targetDifficulty = targetDifficulty;
     }
     
     
@@ -44,18 +45,18 @@ public final class GeneratedWork {
     }
     
     /**
-     * Returns the difficulty multiplier of the generated work solution, in respect to the requested difficulty (or
-     * difficulty specified by the {@link WorkDifficultyPolicy}).
+     * Returns the difficulty multiplier of the generated work solution, <em>in respect to the requested base
+     * difficulty</em>. The base difficulty in this instance is either the specified difficulty constant, or the
+     * difficulty provided by the {@link WorkDifficultyPolicy}).
      *
-     * <p>The value returned by this method also factors in the original multiplier, if one was specified in the
-     * request. If the call to {@link WorkGenerator#generate(Block, double)} requested a multiplier of {@code 4}
-     * and the generated work was exactly {@code 4} times the difficulty specified by the policy, then this method would
-     * return {@code 1.0}, despite being 4 times the recommended difficulty.</p>
+     * <p>This value factors in all difficulty multipliers; the original request multiplier (if specified through
+     * {@link WorkGenerator#generate(Block, double)}), and the recommended multiplier specified by the
+     * {@link WorkDifficultyPolicy#multiplier()}.</p>
      *
-     * @return the difficulty multiplier of the work
+     * @return the difficulty multiplier in respect to the base difficulty
      */
     public double getMultiplier() {
-        return getDifficulty().calculateMultiplier(reqDifficulty);
+        return getDifficulty().calculateMultiplier(getRequestBaseDifficulty());
     }
     
     /**
@@ -71,14 +72,24 @@ public final class GeneratedWork {
     }
     
     /**
-     * Returns the requested minimum difficulty threshold. If no difficulty was specified, then this would be
-     * provided by the {@link WorkDifficultyPolicy}.
+     * Returns the requested minimum base difficulty threshold, not including any multipliers. If no difficulty was
+     * specified, then this would be provided by the {@link WorkDifficultyPolicy}.
      *
-     * @return the requested difficulty
+     * @return the requested base difficulty
      */
-    public WorkDifficulty getRequestDifficulty() {
-        return reqDifficulty;
+    public WorkDifficulty getRequestBaseDifficulty() {
+        return baseDifficulty;
     }
+    
+    /**
+     * Returns the requested target difficulty, including all difficulty multipliers.
+     *
+     * @return the requested target difficulty
+     */
+    public WorkDifficulty getRequestTargetDifficulty() {
+        return targetDifficulty;
+    }
+    
     
     @Override
     public String toString() {

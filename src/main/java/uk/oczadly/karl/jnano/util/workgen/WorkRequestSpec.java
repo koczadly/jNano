@@ -37,7 +37,7 @@ abstract class WorkRequestSpec {
         return root;
     }
     
-    public abstract WorkDifficulty getDifficulty() throws DifficultyRetrievalException;
+    public abstract DifficultySet getDifficulty() throws DifficultyRetrievalException;
     
     
     
@@ -53,8 +53,10 @@ abstract class WorkRequestSpec {
         }
         
         @Override
-        public WorkDifficulty getDifficulty() throws DifficultyRetrievalException {
-            return getPolicy().forBlock(block).multiply(multiplier);
+        public DifficultySet getDifficulty() throws DifficultyRetrievalException {
+            WorkDifficulty base = getPolicy().forBlock(block);
+            return new DifficultySet(base,
+                    base.multiply(getPolicy().multiplier() * multiplier));
         }
     }
     
@@ -68,8 +70,33 @@ abstract class WorkRequestSpec {
         }
         
         @Override
-        public WorkDifficulty getDifficulty() throws DifficultyRetrievalException {
-            return difficulty != null ? difficulty : getPolicy().forAny();
+        public DifficultySet getDifficulty() throws DifficultyRetrievalException {
+            if (difficulty == null) {
+                // Policy
+                WorkDifficulty base = getPolicy().forAny();
+                return new DifficultySet(base, base.multiply(getPolicy().multiplier()));
+            } else {
+                // Difficulty
+                return new DifficultySet(difficulty, difficulty);
+            }
+        }
+    }
+    
+    
+    static final class DifficultySet {
+        private final WorkDifficulty base, target;
+    
+        public DifficultySet(WorkDifficulty base, WorkDifficulty target) {
+            this.base = base;
+            this.target = target;
+        }
+        
+        public WorkDifficulty getBase() {
+            return base;
+        }
+    
+        public WorkDifficulty getTarget() {
+            return target;
         }
     }
     
