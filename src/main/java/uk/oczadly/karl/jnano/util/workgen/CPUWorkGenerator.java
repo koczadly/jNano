@@ -31,15 +31,16 @@ import java.util.concurrent.ThreadFactory;
  */
 public final class CPUWorkGenerator extends AbstractWorkGenerator {
     
-    private static final ThreadFactory WORKER_THREAD_FACTORY = JNH.threadFactory("CPUWorkGenerator-Generator", true);
-    private static final Random RANDOM = new Random();
+    private static final ThreadFactory WORKER_THREAD_FACTORY =
+            JNH.threadFactory("CPUWorkGenerator-Generator", true, 3);
+    private static final Random RANDOM = new Random(); // Used for work initialization
     
     private final int threadCount, threadSpacing;
     private final ExecutorService executorService;
     
     /**
-     * Constructs a {@code CPUWorkGenerator} with the default Nano difficulty policy, and {@code n-1} threads, where
-     * {@code n} is the CPU core count.
+     * Constructs a {@code CPUWorkGenerator} with the default Nano difficulty policy, with a thread count the same as
+     * the available CPU core count.
      */
     public CPUWorkGenerator() {
         this(AbstractWorkGenerator.DEFAULT_POLICY);
@@ -55,13 +56,13 @@ public final class CPUWorkGenerator extends AbstractWorkGenerator {
     }
     
     /**
-     * Constructs a {@code CPUWorkGenerator} using the provided difficulty policy, and {@code n-1} threads, where
-     * {@code n} is the CPU core count.
+     * Constructs a {@code CPUWorkGenerator} using the provided difficulty policy, with a thread count the same as the
+     * available CPU core count.
      *
      * @param policy the difficulty policy to use
      */
     public CPUWorkGenerator(WorkDifficultyPolicy policy) {
-        this(policy, Math.max(Runtime.getRuntime().availableProcessors() - 1, 1));
+        this(policy, Runtime.getRuntime().availableProcessors());
     }
     
     /**

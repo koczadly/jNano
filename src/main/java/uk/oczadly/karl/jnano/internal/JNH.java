@@ -274,6 +274,10 @@ public class JNH {
     }
     
     public static ThreadFactory threadFactory(String namePrefix, boolean daemon) {
+        return threadFactory(namePrefix, daemon, Thread.NORM_PRIORITY);
+    }
+    
+    public static ThreadFactory threadFactory(String namePrefix, boolean daemon, int priority) {
         return new ThreadFactory() {
             final AtomicInteger id = new AtomicInteger();
             
@@ -281,6 +285,7 @@ public class JNH {
             public Thread newThread(Runnable r) {
                 Thread thread = new Thread(r, namePrefix + "-" + id.getAndIncrement());
                 thread.setDaemon(daemon);
+                thread.setPriority(priority);
                 return thread;
             }
         };
