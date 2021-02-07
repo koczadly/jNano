@@ -25,6 +25,8 @@ import java.io.IOException;
  *
  * <p>Note that the methods will throw a {@link DifficultyRetrievalException} if the node returns an
  * {@link RpcException} or an {@link IOException} occurs.</p>
+ *
+ * @see BoundedWorkDifficultyPolicy
  */
 public class NodeWorkDifficultyPolicy implements WorkDifficultyPolicy {
     
