@@ -29,9 +29,9 @@ import java.util.concurrent.ThreadFactory;
  * <p>Instances of this class should be re-used throughout your application, as each instance will spawn new
  * background threads. This practice also ensures that tasks are queued correctly in the order of request.</p>
  */
-public class CPUWorkGenerator extends WorkGenerator {
+public final class CPUWorkGenerator extends WorkGenerator {
     
-    private static final ThreadFactory WORKER_THREAD_FACTORY = JNH.threadFactory("CPUWorkGenerator-Worker", true);
+    private static final ThreadFactory WORKER_THREAD_FACTORY = JNH.threadFactory("CPUWorkGenerator-Generator", true);
     private static final Random RANDOM = new Random();
     
     private final int threadCount;
@@ -112,13 +112,14 @@ public class CPUWorkGenerator extends WorkGenerator {
         // Submit tasks to executor
         for (int i = 0; i < threadCount; i++) {
             byte[] initialWork = Arrays.copyOf(initialWorkTemplate, initialWorkTemplate.length);
-            initialWork[7] += (byte)(i * 37); // Try to ensure different work value for each thread
+            initialWork[7] += (byte)(i * 11); // Space initial work values apart from each thread
     
             executorService.submit(new GeneratorTask(rootBytes, threshold, initialWork, result));
         }
     
         return result.get();
     }
+    
     
     static class GeneratorTask implements Runnable {
         final byte[] root, initalWork;
@@ -145,37 +146,29 @@ public class CPUWorkGenerator extends WorkGenerator {
             
             while (!thisThread.isInterrupted() && !result.isDone()) {
                 // Compute a batch of 256 iterations
-                byte i = 0;
-                do {
-                    bytes[0] = i;
-                    
+                genLoop: for (bytes[0] = 0; bytes[0] != -1; bytes[0]++) {
                     // Hash digest
                     digest.update(bytes, 0, 40);
                     digest.digest(difficulty, 0);
-                    
+    
                     // Validate against threshold
-                    boolean isValid = true;
-                    for (int j = 0; j < 8; j++) {
-                        if ((difficulty[j] & 0xFF) < threshold[j]) {
-                            isValid = false;
-                            break;
-                        }
-                    }
+                    for (int i = 0; i < 8; i++)
+                        if ((difficulty[i] & 0xFF) < threshold[i])
+                            continue genLoop; // Not valid
                     
-                    // Check and handle valid responses
-                    if (isValid) {
-                        byte[] workBytes = JNH.reverseArray(Arrays.copyOfRange(bytes, 0, 8));
-                        WorkSolution work = new WorkSolution(JNH.bytesToLong(workBytes));
-                        result.complete(work);
-                        return;
-                    }
-                } while (++i != 0);
+                    // Result is valid
+                    byte[] workBytes = JNH.reverseArray(Arrays.copyOfRange(bytes, 0, 8));
+                    WorkSolution work = new WorkSolution(JNH.bytesToLong(workBytes));
+                    result.complete(work);
+                    return;
+                }
                 
                 // Increment work value
-                for (int j = 1; j < 8; j++) {
-                    if (++bytes[j] != 0) break;
-                }
+                for (int i = 1; i < 8; i++)
+                    if (++bytes[i] != 0) break;
             }
+            
+            // Either complete (and will be ignored), or interrupted and should throw exception
             result.completeExceptionally(new InterruptedException("Work task interrupted."));
         }
     }
