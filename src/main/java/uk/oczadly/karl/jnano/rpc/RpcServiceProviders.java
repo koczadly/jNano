@@ -16,7 +16,8 @@ import java.net.URL;
 /**
  * This class contains a set of static initializers for publicly available third-party RPC endpoints.
  */
-public class RpcServiceProviders {
+public final class RpcServiceProviders {
+    private RpcServiceProviders() {}
     
     private static final String URL_NANEX_CC = "https://api.nanex.cc";
     private static final String URL_NINJA    = "https://mynano.ninja/api/node";
