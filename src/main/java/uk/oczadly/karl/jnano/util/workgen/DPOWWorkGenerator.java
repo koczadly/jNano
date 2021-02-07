@@ -70,7 +70,7 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
     /**
      * @return the URL of the service
      */
-    public URL getUrl() {
+    public URL getServiceURL() {
         return url;
     }
     
@@ -84,14 +84,14 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
     /**
      * @return the API key credential
      */
-    public String getApiKey() {
+    public String getAPIKey() {
         return apiKey;
     }
     
     /**
      * @return the work generation timeout, in seconds
      */
-    public int getTimeout() {
+    public int getTimeoutDuration() {
         return timeout;
     }
     
