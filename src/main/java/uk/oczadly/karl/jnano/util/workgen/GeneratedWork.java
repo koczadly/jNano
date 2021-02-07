@@ -37,7 +37,7 @@ public final class GeneratedWork {
     }
     
     /**
-     * Returns the difficulty of the generated work solution.
+     * Returns the difficulty of the generated work solution for the provided root hash.
      * @return the difficulty of the work
      */
     public WorkDifficulty getDifficulty() {
