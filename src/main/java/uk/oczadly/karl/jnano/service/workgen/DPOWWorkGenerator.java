@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.util.workgen;
+package uk.oczadly.karl.jnano.service.workgen;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -12,8 +12,8 @@ import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
+import uk.oczadly.karl.jnano.service.workgen.policy.WorkDifficultyPolicy;
 import uk.oczadly.karl.jnano.util.NetworkConstants;
-import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
 
 import java.net.HttpURLConnection;
 import java.net.URL;

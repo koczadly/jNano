@@ -14,7 +14,7 @@ import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockAccount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
-import uk.oczadly.karl.jnano.util.workgen.WorkGenerator;
+import uk.oczadly.karl.jnano.service.workgen.WorkGenerator;
 
 import java.lang.reflect.Type;
 import java.util.Objects;

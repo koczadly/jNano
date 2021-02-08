@@ -3,7 +3,7 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.util.workgen;
+package uk.oczadly.karl.jnano.service.workgen;
 
 import org.junit.Test;
 import uk.oczadly.karl.jnano.TestConstants;

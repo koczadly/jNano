@@ -12,8 +12,8 @@ import uk.oczadly.karl.jnano.model.epoch.EpochUpgrade;
 import uk.oczadly.karl.jnano.model.epoch.EpochUpgradeRegistry;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.util.workgen.policy.ConstantDifficultyPolicyV1;
-import uk.oczadly.karl.jnano.util.workgen.policy.ConstantDifficultyPolicyV2;
+import uk.oczadly.karl.jnano.service.workgen.policy.ConstantDifficultyPolicyV1;
+import uk.oczadly.karl.jnano.service.workgen.policy.ConstantDifficultyPolicyV2;
 
 import java.util.Set;
 

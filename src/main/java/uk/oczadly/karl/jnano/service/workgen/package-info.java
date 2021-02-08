@@ -6,6 +6,6 @@
 /**
  * This package provides classes for generating proof-of-work solutions.
  *
- * @see uk.oczadly.karl.jnano.util.workgen.WorkGenerator
+ * @see uk.oczadly.karl.jnano.service.workgen.WorkGenerator
  */
-package uk.oczadly.karl.jnano.util.workgen;
+package uk.oczadly.karl.jnano.service.workgen;

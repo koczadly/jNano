@@ -3,14 +3,14 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.util.workgen;
+package uk.oczadly.karl.jnano.service.workgen;
 
 import uk.oczadly.karl.jnano.internal.utils.NanoUtil;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
-import uk.oczadly.karl.jnano.util.workgen.policy.DifficultyRetrievalException;
-import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
+import uk.oczadly.karl.jnano.service.workgen.policy.DifficultyRetrievalException;
+import uk.oczadly.karl.jnano.service.workgen.policy.WorkDifficultyPolicy;
 
 /**
  * Represents a work request specification: the block root, and the difficulty value which should be chosen.

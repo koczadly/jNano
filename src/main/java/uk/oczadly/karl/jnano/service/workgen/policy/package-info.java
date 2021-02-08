@@ -6,4 +6,4 @@
 /**
  * This package provides classes for representing proof-of-work difficulty policies.
  */
-package uk.oczadly.karl.jnano.util.workgen.policy;
+package uk.oczadly.karl.jnano.service.workgen.policy;
