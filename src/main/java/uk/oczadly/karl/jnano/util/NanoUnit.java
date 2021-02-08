@@ -45,7 +45,7 @@ public enum NanoUnit implements NanoAmount.Denomination {
     /**
      * The 2nd largest divisor, equivalent to 10<sup>30</sup> raw.
      */
-    MEGA  (30, "Nano"),
+    MEGA  (30, "NANO"),
     
     /**
      * The 3rd largest divisor, equivalent to 10<sup>27</sup> raw.
@@ -72,14 +72,16 @@ public enum NanoUnit implements NanoAmount.Denomination {
      */
     RAW   (0,  "raw");
     
-    
     /**
-     * <p>The standard base unit currently used by most services, block explorers and exchanges.</p>
+     * The standard base unit currently used by most services, block explorers and exchanges.
+     *
      * <p>End-users are likely to be most familiar with this unit, and it is recommended that this constant is used so
      * your application can be automatically updated should the units system ever change.</p>
-     * <p>As of this current version, this is equal to the {@link #MEGA} unit.</p>
+     *
+     * <p>As of now, this is equal to the {@link #MEGA} unit.</p>
      */
     public static final NanoUnit BASE_UNIT = NanoUnit.MEGA;
+    
     
     final int exponent;
     final BigInteger rawValue;
