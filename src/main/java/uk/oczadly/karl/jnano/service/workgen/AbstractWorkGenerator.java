@@ -153,7 +153,7 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
         @Override
         public GeneratedWork call() throws Exception {
             HexData root = spec.root;
-            WorkRequestSpec.DifficultySet difficulty = spec.getDifficulty();
+            WorkRequestSpec.DifficultySet difficulty = spec.fetchDifficulty();
             RequestContext context = new RequestContext(spec.block, difficulty.getMultiplier(), difficulty.getBase());
             
             WorkSolution work = generateWork(root, difficulty.getTarget(), context);

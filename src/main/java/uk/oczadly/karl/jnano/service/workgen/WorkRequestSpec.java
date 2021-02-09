@@ -46,7 +46,7 @@ class WorkRequestSpec {
     }
     
     
-    public DifficultySet getDifficulty() throws DifficultyRetrievalException {
+    public DifficultySet fetchDifficulty() throws DifficultyRetrievalException {
         WorkDifficulty base;
         if (reqDifficulty != null) {
             base = reqDifficulty;           // Using difficulty constant
