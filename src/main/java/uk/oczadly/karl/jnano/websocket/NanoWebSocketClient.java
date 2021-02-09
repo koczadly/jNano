@@ -8,12 +8,13 @@ package uk.oczadly.karl.jnano.websocket;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import uk.oczadly.karl.jnano.internal.JNC;
-import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.utils.IDRequestTracker;
 
 import java.net.URI;
-import java.util.Map;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * <p>This class represents a WebSocket which can interact with the Nano WebSocket RPC API.</p>
@@ -46,9 +47,8 @@ public final class NanoWebSocketClient {
     private final URI uri;
     private volatile WebSocketHandler ws;
     private volatile WsObserver wsObserver = WsObserver.DEFAULT;
+    private volatile IDRequestTracker<Void> requestTracker;
     
-    private final AtomicLong nextReqId = new AtomicLong(0);
-    private final Map<Long, CountDownLatch> requestTrackers = new ConcurrentHashMap<>();
     private final Gson gson = JNC.GSON;
     private final ExecutorService listenerExecutors = Executors.newFixedThreadPool(500);
     private final TopicRegistry topicRegistry = new TopicRegistry(this);
@@ -58,7 +58,7 @@ public final class NanoWebSocketClient {
      * Configures a WebSocket endpoint on localhost, port 7078.
      */
     public NanoWebSocketClient() {
-        this(JNH.unchecked(() -> new URI("ws://[::1]:7078")));
+        this(URI.create("ws://[::1]:7078"));
     }
     
     /**
@@ -94,12 +94,9 @@ public final class NanoWebSocketClient {
     public boolean connect() throws InterruptedException {
         if (isOpen())
             throw new IllegalStateException("WebSocket is already open.");
-        
-        // Clear state
-        requestTrackers.clear();
-        nextReqId.set(0);
-        
-        this.ws = new WebSocketHandler(uri, this);
+    
+        this.requestTracker = new IDRequestTracker<>();
+        this.ws = new WebSocketHandler(uri, topicRegistry, requestTracker, wsObserver, listenerExecutors);
         return ws.connectBlocking();
     }
     
@@ -130,7 +127,6 @@ public final class NanoWebSocketClient {
     public void setObserver(WsObserver wsObserver) {
         if (isOpen())
             throw new IllegalStateException("The socket listener cannot be updated while the WebSocket is open.");
-        
         this.wsObserver = wsObserver;
     }
     
@@ -150,38 +146,43 @@ public final class NanoWebSocketClient {
     }
     
     
-    Map<Long, CountDownLatch> getRequestTrackers() {
-        return requestTrackers;
-    }
-    
-    ExecutorService getListenerExecutor() {
-        return listenerExecutors;
-    }
-    
-    protected void processRequest(JsonObject json) {
+    /**
+     * Asynchronously send the JSON object to the node.
+     * @param json the json data
+     */
+    protected void send(JsonObject json) {
         if (!isOpen())
             throw new IllegalStateException("WebSocket is not currently open.");
-        
         ws.send(json.toString());
     }
     
-    protected boolean processRequestAck(JsonObject json, long timeout) throws InterruptedException {
+    /**
+     * Send the JSON object to the node, and block until acknowledged.
+     * @param json    the json data
+     * @param timeout the timeout in millis
+     * @return true if acknowledged
+     * @throws InterruptedException if interrupted whilst waiting
+     */
+    protected boolean sendAck(JsonObject json, long timeout) throws InterruptedException {
         if (!isOpen())
             throw new IllegalStateException("WebSocket is not currently open.");
         
-        CountDownLatch completionLatch = new CountDownLatch(1);
-        long id = nextReqId.getAndIncrement();
-        requestTrackers.put(id, completionLatch);
-        json.addProperty("id", Long.toString(id, 16));
+        // Send
+        IDRequestTracker<Void>.Tracker tracker = requestTracker.newTracker();
+        json.addProperty("id", tracker.getID());
         json.addProperty("ack", true);
-        
         ws.send(json.toString());
         
-        if (timeout <= 0) {
-            completionLatch.await(); // Indefinite
-            return isOpen();
-        } else {
-            return completionLatch.await(timeout, TimeUnit.MILLISECONDS) && isOpen(); // Timeout
+        // Await ack
+        try {
+            if (timeout <= 0) {
+                tracker.await();
+            } else {
+                tracker.await(timeout, TimeUnit.MILLISECONDS);
+            }
+            return true;
+        } catch (IDRequestTracker.TrackerExpiredException | TimeoutException e) {
+            return false;
         }
     }
 

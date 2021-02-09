@@ -170,7 +170,7 @@ public class Topic<M> {
      * @param request the request object
      */
     protected final void processRequest(JsonObject request) {
-        client.processRequest(request);
+        client.send(request);
     }
     
     /**
@@ -181,7 +181,7 @@ public class Topic<M> {
      * @throws InterruptedException if the thread is interrupted
      */
     protected final boolean processRequest(JsonObject request, long timeout) throws InterruptedException {
-        return client.processRequestAck(request, timeout);
+        return client.sendAck(request, timeout);
     }
     
     

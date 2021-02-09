@@ -9,29 +9,33 @@ import com.google.gson.JsonObject;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.utils.IDRequestTracker;
 
 import java.net.URI;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 
 class WebSocketHandler extends WebSocketClient {
     
-    private final NanoWebSocketClient client;
+    private final TopicRegistry topicRegistry;
+    private final IDRequestTracker<Void> requestTracker;
+    private final WsObserver observer;
+    private final ExecutorService listenerExecutor;
     
-    public WebSocketHandler(URI serverUri, NanoWebSocketClient client) {
+    public WebSocketHandler(URI serverUri, TopicRegistry topicRegistry, IDRequestTracker<Void> requestTracker,
+                            WsObserver observer, ExecutorService listenerExecutor) {
         super(serverUri);
-        this.client = client;
+        this.topicRegistry = topicRegistry;
+        this.requestTracker = requestTracker;
+        this.observer = observer;
+        this.listenerExecutor = listenerExecutor;
     }
     
     
     @Override
-    public void onOpen(ServerHandshake handshakedata) {
+    public void onOpen(ServerHandshake handshake) {
         // Notify socket observer
-        WsObserver observer = client.getObserver();
-        if (observer != null) {
-            client.getListenerExecutor().submit(() -> {
-                observer.onOpen(handshakedata.getHttpStatus());
-            });
-        }
+        if (observer != null)
+            listenerExecutor.submit(() -> observer.onOpen(handshake.getHttpStatus()));
     }
     
     @Override
@@ -41,32 +45,22 @@ class WebSocketHandler extends WebSocketClient {
             boolean handled = false;
     
             if (json.has("ack") && json.has("id")) {
-                // Acknowledgement response
-                long id = Long.parseLong(json.get("id").getAsString(), 16);
-                CountDownLatch latch = client.getRequestTrackers().remove(id);
-                if (latch != null && latch.getCount() > 0) {
-                    latch.countDown(); // Trigger
-                    handled = true;
-                }
+                // Acknowledgement response (notify trackers)
+                requestTracker.complete(json.get("id").getAsString(), null);
+                handled = true;
             } else if (json.has("message")) {
                 // New message
-                Topic<?> wsTopic = client.getTopics().get(json.get("topic").getAsString());
-        
+                Topic<?> wsTopic = topicRegistry.get(json.get("topic").getAsString());
                 if (wsTopic != null) {
-                    client.getListenerExecutor().submit(() -> {
-                        wsTopic.notifyListeners(json);
-                    });
+                    listenerExecutor.submit(() -> wsTopic.notifyListeners(json));
                     handled = true;
                 }
             }
     
             // Notify socket observer
-            WsObserver observer = client.getObserver();
             if (observer != null) {
                 boolean finalHandled = handled;
-                client.getListenerExecutor().submit(() -> {
-                    observer.onMessage(json, finalHandled);
-                });
+                listenerExecutor.submit(() -> observer.onMessage(json, finalHandled));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,32 +69,19 @@ class WebSocketHandler extends WebSocketClient {
     
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        // Notify waiting subscriptions
-        for (CountDownLatch latch : client.getRequestTrackers().values()) {
-            if (latch != null && latch.getCount() > 0) {
-                latch.countDown(); // Trigger
-            }
-        }
-        client.getRequestTrackers().clear();
+        // Notify waiting trackers
+        requestTracker.cancelAll();
     
         // Notify socket observer
-        WsObserver observer = client.getObserver();
-        if (observer != null) {
-            client.getListenerExecutor().submit(() -> {
-                observer.onClose(code, reason, remote);
-            });
-        }
+        if (observer != null)
+            listenerExecutor.submit(() -> observer.onClose(code, reason, remote));
     }
     
     @Override
     public void onError(Exception ex) {
         // Notify socket observer
-        WsObserver observer = client.getObserver();
-        if (observer != null) {
-            client.getListenerExecutor().submit(() -> {
-                observer.onSocketError(ex);
-            });
-        }
+        if (observer != null)
+            listenerExecutor.submit(() -> observer.onSocketError(ex));
     }
     
 }
