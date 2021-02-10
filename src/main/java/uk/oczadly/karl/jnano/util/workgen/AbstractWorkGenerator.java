@@ -101,25 +101,17 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
     }
     
     
-    /**
-     * Returns the work difficulty policy to be used when generating work.
-     * @return the work difficulty policy
-     */
+    @Override
     public final WorkDifficultyPolicy getDifficultyPolicy() {
         return policy;
     }
     
-    /**
-     * Returns whether this generator has been shut down by calling {@link #shutdown()}.
-     * @return true if this generator has been shut down.
-     */
+    @Override
     public final boolean isShutdown() {
         return executor.isShutdown();
     }
     
-    /**
-     * Attempts to cancel all pending work generations, and stops the main consumer thread from running.
-     */
+    @Override
     public void shutdown() {
         executor.shutdownNow();
     }

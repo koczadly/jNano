@@ -95,5 +95,24 @@ public interface WorkGenerator {
      * @see WorkSolution#getRoot(Block)
      */
     Future<GeneratedWork> generate(HexData root, double diffMultiplier);
+    
+    
+    /**
+     * Returns the work difficulty policy to be used when generating work.
+     * @return the work difficulty policy
+     */
+    WorkDifficultyPolicy getDifficultyPolicy();
+    
+    /**
+     * Returns whether this generator has been shut down by calling {@link #shutdown()}.
+     * @return true if this generator has been shut down
+     */
+    boolean isShutdown();
+    
+    /**
+     * Attempts to cancel all pending work generations, and terminates all background threads and connections. A
+     * WorkGenerator object cannot be reused once shutdown.
+     */
+    void shutdown();
 
 }
