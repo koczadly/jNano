@@ -18,13 +18,25 @@ public final class GeneratedWork {
     
     private final WorkSolution work;
     private final HexData reqRoot;
-    private final WorkDifficulty baseDifficulty, targetDifficulty;
+    private final WorkDifficulty difficulty, baseDifficulty, targetDifficulty;
+    private final double multiplier, reqMultiplier;
     
-    GeneratedWork(WorkSolution work, HexData reqRoot, WorkDifficulty baseDifficulty, WorkDifficulty targetDifficulty) {
+    /**
+     * @param work             the computed work solution
+     * @param reqRoot          the request block root
+     * @param baseDifficulty   the request base (threshold) difficulty
+     * @param targetDifficulty the request target difficulty
+     */
+    public GeneratedWork(WorkSolution work, HexData reqRoot, WorkDifficulty baseDifficulty,
+                         WorkDifficulty targetDifficulty) {
         this.work = work;
         this.reqRoot = reqRoot;
         this.baseDifficulty = baseDifficulty;
         this.targetDifficulty = targetDifficulty;
+        
+        this.difficulty = work.calculateDifficulty(reqRoot);
+        this.multiplier = difficulty.calculateMultiplier(baseDifficulty);
+        this.reqMultiplier = targetDifficulty.calculateMultiplier(baseDifficulty);
     }
     
     
@@ -41,7 +53,7 @@ public final class GeneratedWork {
      * @return the difficulty of the work
      */
     public WorkDifficulty getDifficulty() {
-        return work.calculateDifficulty(reqRoot);
+        return difficulty;
     }
     
     /**
@@ -56,7 +68,7 @@ public final class GeneratedWork {
      * @return the difficulty multiplier in respect to the base difficulty
      */
     public double getMultiplier() {
-        return getDifficulty().calculateMultiplier(getRequestBaseDifficulty());
+        return multiplier;
     }
     
     /**
@@ -82,12 +94,22 @@ public final class GeneratedWork {
     }
     
     /**
-     * Returns the requested target difficulty, including all difficulty multipliers.
+     * Returns the requested target difficulty, including all difficulty multipliers. Note that this may be lower
+     * than the base difficulty if a multiplier smaller than {@code 1} was used.
      *
      * @return the requested target difficulty
      */
     public WorkDifficulty getRequestTargetDifficulty() {
         return targetDifficulty;
+    }
+    
+    /**
+     * Returns the requested difficulty multiplier, <em>in respect to the base difficulty</em>.
+     *
+     * @return the requested difficulty multiplier
+     */
+    public double getRequestMultiplier() {
+        return reqMultiplier;
     }
     
     
