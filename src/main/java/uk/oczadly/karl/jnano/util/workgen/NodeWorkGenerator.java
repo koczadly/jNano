@@ -3,15 +3,15 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.service.workgen;
+package uk.oczadly.karl.jnano.util.workgen;
 
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 import uk.oczadly.karl.jnano.rpc.RpcQueryNode;
 import uk.oczadly.karl.jnano.rpc.request.node.RequestWorkGenerate;
-import uk.oczadly.karl.jnano.service.workgen.policy.NodeWorkDifficultyPolicy;
-import uk.oczadly.karl.jnano.service.workgen.policy.WorkDifficultyPolicy;
+import uk.oczadly.karl.jnano.util.workgen.policy.NodeWorkDifficultyPolicy;
+import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
 
 /**
  * This {@code WorkGenerator} computes the work solution on the provided RPC endpoint, using whichever computation

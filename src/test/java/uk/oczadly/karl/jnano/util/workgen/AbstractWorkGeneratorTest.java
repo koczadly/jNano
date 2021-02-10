@@ -3,15 +3,15 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.service.workgen;
+package uk.oczadly.karl.jnano.util.workgen;
 
 import org.junit.Test;
 import uk.oczadly.karl.jnano.TestConstants;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.service.workgen.policy.ConstantDifficultyPolicyV1;
-import uk.oczadly.karl.jnano.service.workgen.policy.WorkDifficultyPolicy;
+import uk.oczadly.karl.jnano.util.workgen.policy.ConstantDifficultyPolicyV1;
+import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
 
 import java.util.ArrayList;
 import java.util.List;

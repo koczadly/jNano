@@ -3,14 +3,14 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.service.workgen;
+package uk.oczadly.karl.jnano.util.workgen;
 
 import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.service.workgen.policy.WorkDifficultyPolicy;
+import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
 
 import java.util.Arrays;
 import java.util.Random;

@@ -18,8 +18,8 @@ module uk.oczadly.karl.jnano {
     exports uk.oczadly.karl.jnano.rpc.response;
     // Utils
     exports uk.oczadly.karl.jnano.util;
-    exports uk.oczadly.karl.jnano.service.workgen;
-    exports uk.oczadly.karl.jnano.service.workgen.policy;
+    exports uk.oczadly.karl.jnano.util.workgen;
+    exports uk.oczadly.karl.jnano.util.workgen.policy;
     // WebSocket
     exports uk.oczadly.karl.jnano.websocket;
     exports uk.oczadly.karl.jnano.websocket.topic;

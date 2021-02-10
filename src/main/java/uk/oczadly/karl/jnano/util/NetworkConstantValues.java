@@ -10,7 +10,7 @@ import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.OpenBlock;
 import uk.oczadly.karl.jnano.model.epoch.EpochUpgradeRegistry;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.service.workgen.policy.ConstantWorkDifficultyPolicy;
+import uk.oczadly.karl.jnano.util.workgen.policy.ConstantWorkDifficultyPolicy;
 
 /**
  * This class contains and represents a collection of constant values for a specific network or fork of the Nano

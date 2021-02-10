@@ -11,8 +11,8 @@ import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.service.workgen.WorkGenerator;
 import uk.oczadly.karl.jnano.util.NanoUnit;
+import uk.oczadly.karl.jnano.util.workgen.WorkGenerator;
 
 import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
