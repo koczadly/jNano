@@ -31,7 +31,7 @@ public class WorkSolution {
     private final String hexVal;
     
     /**
-     * @param hexVal the work solution, encoded as a hexadecimal string
+     * @param hexVal the work solution, encoded as a hexadecimal string, eg: {@code d1075495f302e300}
      */
     public WorkSolution(String hexVal) {
         this(Long.parseUnsignedLong(hexVal.startsWith("0x") ? hexVal.substring(2) : hexVal, 16));

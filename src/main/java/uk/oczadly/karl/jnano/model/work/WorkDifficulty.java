@@ -29,7 +29,7 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
     private final String hexVal;
     
     /**
-     * @param hexVal the absolute work difficulty value, encoded as a hexadecimal string
+     * @param hexVal the absolute work difficulty value, encoded as a hexadecimal string, eg: {@code fffffe0000000000}
      */
     public WorkDifficulty(String hexVal) {
         this(Long.parseUnsignedLong(hexVal.startsWith("0x") ? hexVal.substring(2) : hexVal, 16));
@@ -99,7 +99,7 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
     
     
     /**
-     * Calculates the difficulty multiplier between the given base difficulty value and this difficulty.
+     * Calculates the difficulty multiplier of this difficulty compared to the provided base difficulty.
      *
      * <p>The base difficulty is the reference point that this difficulty is compared to. If this difficulty is
      * larger ("<i>more difficult</i>") than the supplied {@code baseDiff}, then the result will be larger than
@@ -121,7 +121,7 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
     }
     
     /**
-     * Multiplies this difficulty by the given multiplier.
+     * Returns a {@code WorkDifficulty} which is this difficulty multiplied by the given multiplier.
      *
      * <p>The difficulty multiplier is based on the required time to compute a work value. Multiplying by {@code 3}
      * would mean that on average, it should take 3 times longer to compute the work solution.</p>
