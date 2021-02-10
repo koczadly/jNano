@@ -18,11 +18,11 @@ import java.util.Objects;
 @JsonAdapter(WorkDifficulty.WorkDifficultyJsonAdapter.class)
 public final class WorkDifficulty implements Comparable<WorkDifficulty> {
     
-    /** The maximum possible work difficulty, represented by {@code ffffffffffffffff}. */
+    /** The maximum possible work difficulty, represented as {@code ffffffffffffffff}. */
     public static final WorkDifficulty MAX_VALUE = new WorkDifficulty(-1);
     
-    /** The minimum possible work difficulty (no work), represented by {@code 0000000000000000}. */
-    public static final WorkDifficulty MIN_VALUE = new WorkDifficulty(0);
+    /** The minimum possible work difficulty ({@code 1}), represented as {@code 0000000000000001}. */
+    public static final WorkDifficulty MIN_VALUE = new WorkDifficulty(1);
     
     
     private final long longVal;
@@ -39,6 +39,9 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
      * @param longVal the absolute work difficulty value, encoded as an unsigned long
      */
     public WorkDifficulty(long longVal) {
+        if (longVal == 0)
+            throw new IllegalArgumentException("Work difficulty cannot be zero.");
+        
         this.longVal = longVal;
         this.hexVal = JNH.leftPadString(Long.toHexString(longVal), 16, '0');
     }
@@ -127,10 +130,9 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
      * @return the calculated absolute difficulty
      */
     public WorkDifficulty multiply(double multiplier) {
-        if (multiplier < 0)
-            throw new IllegalArgumentException("Difficulty multiplier cannot be negative.");
+        if (multiplier <= 0)
+            throw new IllegalArgumentException("Difficulty multiplier must be positive.");
         
-        if (multiplier == 0) return MIN_VALUE;
         if (multiplier == 1) return this;
         return new WorkDifficulty(~(long)(~longVal / multiplier));
     }
