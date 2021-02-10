@@ -7,23 +7,33 @@ package uk.oczadly.karl.jnano.service.workgen;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import uk.oczadly.karl.jnano.internal.HTTPUtil;
-import uk.oczadly.karl.jnano.internal.JNH;
+import org.java_websocket.handshake.ServerHandshake;
+import uk.oczadly.karl.jnano.internal.utils.IDRequestTracker;
+import uk.oczadly.karl.jnano.internal.utils.ReconnectingWebsocketClient;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 import uk.oczadly.karl.jnano.service.workgen.policy.WorkDifficultyPolicy;
 import uk.oczadly.karl.jnano.util.NetworkConstants;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * A WorkGenerator which uses an external authenticated DPoW/BPoW service. Note that you will need to obtain and
- * provide credentials to use these external services.
+ * A WorkGenerator which uses an external authenticated DPoW/BPoW service over a WebSocket. Note that you will need to
+ * obtain and provide credentials to use these third-party services.
  *
- * <p>Instances of this class should be re-used throughout your application, as each instance will spawn new
- * background threads. This practice also ensures that tasks are queued correctly in the order of request.</p>
+ * <p>The WebSocket will attempt to connect as soon as the class is instantiated. If disconnected, the WebSocket
+ * will continuously attempt to re-connect every 2 seconds to ensure a readily available connection to the service,
+ * and will not close until {@link #shutdown()} is invoked.</p>
+ *
+ * <p>Instances of this class should be re-used throughout your application, as each instance will spawn a new
+ * background thread and websocket connection. This practice also ensures that tasks are queued correctly in the order
+ * of request.</p>
  *
  * @see #forNano(String, String)
  * @see #forBanano(String, String)
@@ -31,25 +41,27 @@ import java.net.URL;
 public final class DPOWWorkGenerator extends AbstractWorkGenerator {
     
     /**
-     * The secure endpoint URL for the Nano <i>Distributed Proof of Work</i> work generation service.
+     * The URI of the secure WebSocket for the Nano <i>Distributed Proof of Work</i> work generation service.
      * @see <a href="https://dpow.nanocenter.org/">https://dpow.nanocenter.org/</a>
      */
-    public static final URL URL_NANO_DPOW = JNH.parseURL("https://dpow.nanocenter.org/service/");
+    public static final URI URI_DPOW_WS = URI.create("wss://dpow.nanocenter.org/service_ws/");
     
     /**
-     * The secure endpoint URL for the Banano <i>BoomPow</i> work generation service.
+     * The URI of the secure WebSocket for the Banano <i>BoomPow</i> work generation service.
      * @see <a href="https://bpow.banano.cc/">https://bpow.banano.cc/</a>
      */
-    public static final URL URL_BANANO_BPOW = JNH.parseURL("https://bpow.banano.cc/service/");
+    public static final URI URI_BPOW_WS = URI.create("wss://bpow.banano.cc/service_ws/");
     
     
-    private final URL url;
+    private final URI uri;
     private final String user, apiKey;
     private final int timeout;
+    private final WSHandler websocket;
+    private final IDRequestTracker<JsonObject> tracker = new IDRequestTracker<>();
     
     /**
      * Creates a new {@code DPOWWorkGenerator} which generates work on the external DPoW service.
-     * @param url     the URL of the service
+     * @param uri     the URI of the service's WebSocket
      * @param user    the username credential
      * @param apiKey  the API key credential
      * @param timeout the generation timeout, in seconds
@@ -58,20 +70,24 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
      * @see #forNano(String, String)
      * @see #forBanano(String, String)
      */
-    public DPOWWorkGenerator(URL url, String user, String apiKey, int timeout, WorkDifficultyPolicy policy) {
+    public DPOWWorkGenerator(URI uri, String user, String apiKey, int timeout, WorkDifficultyPolicy policy) {
         super(policy);
-        this.url = url;
+        if (!uri.getScheme().equalsIgnoreCase("ws") && !uri.getScheme().equalsIgnoreCase("wss"))
+            throw new IllegalArgumentException("Unsupported URI scheme; must be a websocket.");
+        this.uri = uri;
         this.user = user;
         this.apiKey = apiKey;
         this.timeout = timeout;
+        this.websocket = new WSHandler(uri, tracker);
+        this.websocket.connect();
     }
     
     
     /**
-     * @return the URL of the service
+     * @return the URI of the service's WebSocket
      */
-    public URL getServiceURL() {
-        return url;
+    public URI getServiceURI() {
+        return uri;
     }
     
     /**
@@ -97,34 +113,49 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
     
     
     @Override
+    public void shutdown() {
+        try {
+            websocket.close();
+        } finally {
+            super.shutdown();
+        }
+    }
+    
+    @Override
     protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
             throws Exception {
-        // Build request
-        JsonObject requestJson = new JsonObject();
-        requestJson.addProperty("user",       user);
-        requestJson.addProperty("api_key",    apiKey);
-        requestJson.addProperty("timeout",    timeout);
-        requestJson.addProperty("hash",       root.toHexString());
-        requestJson.addProperty("difficulty", difficulty.getAsHexadecimal());
-        context.getAccount().ifPresent(acc -> requestJson.addProperty("account", acc.toAddress())); // For precaching
+        // Await connection
+        websocket.awaitConnection(timeout, TimeUnit.SECONDS);
         
-        // Make request
-        HttpURLConnection con = (HttpURLConnection)url.openConnection();
-        con.setRequestMethod("POST");
-        con.setReadTimeout(timeout * 1000 + 500);
-        con.setDoInput(true);
-        con.setDoOutput(true);
+        // Send
+        IDRequestTracker<JsonObject>.Tracker tr = tracker.newTracker();
+        String request = buildRequest(tr.getID(), root, difficulty, context);
+        websocket.send(request);
         
-        String responseStr = HTTPUtil.request(con, requestJson.toString());
-        JsonObject response = JsonParser.parseString(responseStr).getAsJsonObject();
-        
-        if (response.has("error")) {
-            // Error
-            throw new RemoteException(response.get("error").getAsString(), response.has("timeout"));
-        } else {
-            // Success
-            return new WorkSolution(response.get("work").getAsString());
+        JsonObject response = tr.await(timeout, TimeUnit.SECONDS); // Await response
+        return parseResponse(response); // Parse and return response
+    }
+    
+    
+    protected String buildRequest(String id, HexData root, WorkDifficulty difficulty, RequestContext context) {
+        JsonObject json = new JsonObject();
+        json.addProperty("id",         id);
+        json.addProperty("user",       user);
+        json.addProperty("api_key",    apiKey);
+        json.addProperty("timeout",    timeout);
+        json.addProperty("hash",       root.toHexString());
+        json.addProperty("difficulty", difficulty.getAsHexadecimal());
+        context.getAccount().ifPresent(acc -> json.addProperty("account", acc.toAddress())); // For precaching
+        return json.toString();
+    }
+    
+    protected WorkSolution parseResponse(JsonObject json) throws RemoteException {
+        if (json.has("work")) {
+            return new WorkSolution(json.get("work").getAsString());
+        } else if (json.has("error")) {
+            throw new RemoteException(json.get("error").getAsString());
         }
+        throw new RemoteException("Unexpected response.");
     }
     
     
@@ -135,7 +166,9 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
      * @param user   the username credential
      * @param apiKey the API key credential
      * @return the created generator
-     * @see #URL_NANO_DPOW
+     *
+     * @see #URI_DPOW_WS
+     * @see NetworkConstants#NANO
      * @see <a href="https://dpow.nanocenter.org/">https://dpow.nanocenter.org/</a>
      */
     public static DPOWWorkGenerator forNano(String user, String apiKey) {
@@ -150,11 +183,13 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
      * @param apiKey  the API key credential
      * @param timeout the generation timeout, in seconds
      * @return the created generator
-     * @see #URL_NANO_DPOW
+     *
+     * @see #URI_DPOW_WS
+     * @see NetworkConstants#NANO
      * @see <a href="https://dpow.nanocenter.org/">https://dpow.nanocenter.org/</a>
      */
     public static DPOWWorkGenerator forNano(String user, String apiKey, int timeout) {
-        return new DPOWWorkGenerator(URL_NANO_DPOW, user, apiKey, timeout,
+        return new DPOWWorkGenerator(URI_DPOW_WS, user, apiKey, timeout,
                 NetworkConstants.NANO.getWorkDifficulties());
     }
     
@@ -165,7 +200,9 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
      * @param user   the username credential
      * @param apiKey the API key credential
      * @return the created generator
-     * @see #URL_BANANO_BPOW
+     *
+     * @see #URI_BPOW_WS
+     * @see NetworkConstants#BANANO
      * @see <a href="https://bpow.banano.cc/">https://bpow.banano.cc/</a>
      */
     public static DPOWWorkGenerator forBanano(String user, String apiKey) {
@@ -179,11 +216,13 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
      * @param apiKey  the API key credential
      * @param timeout the generation timeout, in seconds
      * @return the created generator
-     * @see #URL_BANANO_BPOW
+     *
+     * @see #URI_BPOW_WS
+     * @see NetworkConstants#BANANO
      * @see <a href="https://bpow.banano.cc/">https://bpow.banano.cc/</a>
      */
     public static DPOWWorkGenerator forBanano(String user, String apiKey, int timeout) {
-        return new DPOWWorkGenerator(URL_BANANO_BPOW, user, apiKey, timeout,
+        return new DPOWWorkGenerator(URI_BPOW_WS, user, apiKey, timeout,
                 NetworkConstants.BANANO.getWorkDifficulties());
     }
     
@@ -192,18 +231,52 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
      * Thrown when a remote error occurs when requesting or generating work.
      */
     public static class RemoteException extends Exception {
-        final boolean timeout;
+        RemoteException(String message) { super(message); }
+    }
+    
+    private static class WSHandler extends ReconnectingWebsocketClient {
+        private final IDRequestTracker<JsonObject> tracker;
+        private final Lock notifyLock = new ReentrantLock();
+        private final Condition notifyCond = notifyLock.newCondition();
+        private volatile boolean open = false;
         
-        RemoteException(String message, boolean timeout) {
-            super(message);
-            this.timeout = timeout;
+        public WSHandler(URI serverUri, IDRequestTracker<JsonObject> tracker) {
+            super(serverUri, 2000);
+            this.tracker = tracker;
+        }
+        
+        @Override
+        public void onClose(int code, String reason, boolean remote, boolean reconnectAttempt) {
+            open = false;
+        }
+        
+        @Override
+        public void onOpen(ServerHandshake handshakedata, boolean reconnect) {
+            notifyLock.lock();
+            open = true;
+            notifyCond.signalAll();
+            notifyLock.unlock();
         }
     
-        /**
-         * @return true if the cause was a timeout
-         */
-        public boolean isTimeout() {
-            return timeout;
+        @Override
+        public void onMessage(String message) {
+            JsonObject json = JsonParser.parseString(message).getAsJsonObject();
+            tracker.complete(json.get("id").getAsString(), json);
+        }
+    
+        @Override
+        public void onError(Exception ex) {}
+    
+        
+        public void awaitConnection(long time, TimeUnit unit) throws InterruptedException, TimeoutException {
+            try {
+                notifyLock.lock();
+                if (open) return; // Already open
+                if (!notifyCond.await(time, unit))
+                    throw new TimeoutException("WebSocket was not connected.");
+            } finally {
+                notifyLock.unlock();
+            }
         }
     }
     
