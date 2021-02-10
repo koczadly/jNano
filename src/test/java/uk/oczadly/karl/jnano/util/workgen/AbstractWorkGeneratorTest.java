@@ -10,7 +10,7 @@ import uk.oczadly.karl.jnano.TestConstants;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.util.workgen.policy.ConstantDifficultyPolicyV1;
+import uk.oczadly.karl.jnano.util.workgen.policy.ConstantDifficultyPolicy;
 import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class AbstractWorkGeneratorTest {
     
     @Test
     public void testGeneration() throws Exception {
-        TestGenerator generator = new TestGenerator(new ConstantDifficultyPolicyV1(new WorkDifficulty(1337)));
+        TestGenerator generator = new TestGenerator(new ConstantDifficultyPolicy(new WorkDifficulty(1337)));
         
         HexData root1 = TestConstants.randHash();
         HexData root2 = TestConstants.randHash();

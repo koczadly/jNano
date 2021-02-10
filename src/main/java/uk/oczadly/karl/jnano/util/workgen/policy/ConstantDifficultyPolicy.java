@@ -11,7 +11,7 @@ import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 /**
  * This work difficulty policy returns a single given difficulty for all given block types.
  */
-public final class ConstantDifficultyPolicyV1 implements ConstantWorkDifficultyPolicy {
+public final class ConstantDifficultyPolicy implements ConstantWorkDifficultyPolicy {
     
     private final WorkDifficulty difficulty;
     
@@ -20,7 +20,7 @@ public final class ConstantDifficultyPolicyV1 implements ConstantWorkDifficultyP
      *
      * @param difficulty the work difficulty
      */
-    public ConstantDifficultyPolicyV1(WorkDifficulty difficulty) {
+    public ConstantDifficultyPolicy(WorkDifficulty difficulty) {
         this.difficulty = difficulty;
     }
     

@@ -12,7 +12,7 @@ import uk.oczadly.karl.jnano.model.epoch.EpochUpgrade;
 import uk.oczadly.karl.jnano.model.epoch.EpochUpgradeRegistry;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.util.workgen.policy.ConstantDifficultyPolicyV1;
+import uk.oczadly.karl.jnano.util.workgen.policy.ConstantDifficultyPolicy;
 import uk.oczadly.karl.jnano.util.workgen.policy.ConstantDifficultyPolicyV2;
 
 import java.util.Set;
@@ -68,7 +68,7 @@ public final class NetworkConstants {
             "533DCAB343547B93C4128E779848DEA5877D3278CB5EA948BB3A9AA1AE0DB293DE6D9DA4F69E8D1DDFA385F9B4C5E4F38DFA4" +
                     "2C00D7B183560435D07AFA18900", new WorkSolution("fa055f79fa56abcf"),
             "2514452A978F08D1CF76BB40B6AD064183CF275D3CC5D3E0515DC96E2112AD4E",
-            new ConstantDifficultyPolicyV1(new WorkDifficulty("fffffe0000000000")),
+            new ConstantDifficultyPolicy(new WorkDifficulty("fffffe0000000000")),
             new EpochUpgradeRegistry());
     
     
