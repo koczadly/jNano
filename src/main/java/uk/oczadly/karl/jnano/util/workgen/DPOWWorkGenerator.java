@@ -61,6 +61,9 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
     
     /**
      * Creates a new {@code DPOWWorkGenerator} which generates work on the external DPoW service.
+     * <p>Use of the static creation methods should be preferred unless using a custom configuration.</p>
+     *
+     *
      * @param uri     the URI of the service's WebSocket
      * @param user    the username credential
      * @param apiKey  the API key credential
