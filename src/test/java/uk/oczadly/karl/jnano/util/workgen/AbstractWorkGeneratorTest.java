@@ -11,7 +11,6 @@ import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 import uk.oczadly.karl.jnano.util.workgen.policy.ConstantDifficultyPolicy;
-import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,44 +24,59 @@ import static org.junit.Assert.assertSame;
  */
 public class AbstractWorkGeneratorTest {
     
-    // TODO unit tests need to be improved to cover all returned values
+    @Test
+    public void testQueue() throws Exception {
+        TestGenerator generator = new TestGenerator();
+    
+        // Send to process (async)
+        Future<GeneratedWork> req1 = generator.generate(TestConstants.randHash());
+        Future<GeneratedWork> req2 = generator.generate(TestConstants.randHash());
+        Future<GeneratedWork> req3 = generator.generate(TestConstants.randHash());
+        
+        // Wait for results
+        WorkSolution work1 = req1.get().getWork();
+        WorkSolution work2 = req2.get().getWork();
+        WorkSolution work3 = req3.get().getWork();
+    
+        // Compare
+        assertSame(generator.requestLog.get(0).result, work1);
+        assertSame(generator.requestLog.get(1).result, work2);
+        assertSame(generator.requestLog.get(2).result, work3);
+    }
     
     @Test
     public void testGeneration() throws Exception {
-        TestGenerator generator = new TestGenerator(new ConstantDifficultyPolicy(new WorkDifficulty(1337)));
+        TestGenerator generator = new TestGenerator();
         
         HexData root1 = TestConstants.randHash();
         HexData root2 = TestConstants.randHash();
-        Future<GeneratedWork> fwork1 = generator.generate(root1);                          // Standard policy
-        Future<GeneratedWork> fwork2 = generator.generate(root2, new WorkDifficulty(420)); // Specified difficulty
-    
-        GeneratedWork work1 = fwork1.get();
-        GeneratedWork work2 = fwork2.get();
-        
-        // Assert results
-        assertSame(generator.requests.get(0).result, work1.getWork());
-        assertSame(generator.requests.get(1).result, work2.getWork());
+        GeneratedWork work1 = generator.generate(root1).get();                          // Standard policy
+        GeneratedWork work2 = generator.generate(root2, new WorkDifficulty(420)).get(); // Specified difficulty
         
         // Assert requests
-        assertEquals(generator.requests.get(0).root, root1);
-        assertEquals(generator.requests.get(0).difficulty, new WorkDifficulty(1337));
-        assertEquals(generator.requests.get(1).root, root2);
-        assertEquals(generator.requests.get(1).difficulty, new WorkDifficulty(420));
+        assertEquals(generator.requestLog.get(0).root, root1);                              // Root hash
+        assertEquals(generator.requestLog.get(0).difficulty, new WorkDifficulty(1337));     // Difficulty (policy)
+        assertSame(generator.requestLog.get(0).result, work1.getWork());                    // Work
+        
+        assertEquals(generator.requestLog.get(1).root, root2);                              // Root hash
+        assertEquals(generator.requestLog.get(1).difficulty, new WorkDifficulty(420));      // Difficulty (manual)
+        assertSame(generator.requestLog.get(1).result, work2.getWork());                    // Work
+    
     }
     
     
     
     static class TestGenerator extends AbstractWorkGenerator {
-        final List<Request> requests = new ArrayList<>();
+        final List<Request> requestLog = new ArrayList<>();
         
-        protected TestGenerator(WorkDifficultyPolicy policy) {
-            super(policy);
+        protected TestGenerator() {
+            super(new ConstantDifficultyPolicy(new WorkDifficulty(1337)));
         }
     
         @Override
         protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context) {
             WorkSolution work = new WorkSolution(0);
-            requests.add(new Request(root, difficulty, work));
+            requestLog.add(new Request(root, difficulty, work));
             return work;
         }
         
