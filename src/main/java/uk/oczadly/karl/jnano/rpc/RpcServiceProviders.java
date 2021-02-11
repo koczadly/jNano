@@ -7,7 +7,10 @@ package uk.oczadly.karl.jnano.rpc;
 
 import com.google.gson.JsonObject;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.rpc.exception.RpcException;
+import uk.oczadly.karl.jnano.rpc.exception.RpcThirdPartyException;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
+import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -74,8 +77,25 @@ public final class RpcServiceProviders {
      */
     public static RpcQueryNode myNanoNinja(String apiKey) {
         return new RpcQueryNode.Builder()
-                .setRequestExecutor(new HttpRequestExecutorWithAuth(JNH.parseURL(URL_NINJA), apiKey))
-                .build();
+                .setRequestExecutor(new ExecutorWithAuth(JNH.parseURL(URL_NINJA), apiKey))
+                .setDeserializer(new JsonResponseDeserializer() {
+                    @Override
+                    protected <R extends RpcResponse> R deserialize(JsonObject json, Class<R> responseClass)
+                            throws RpcException {
+                        if (json.size() == 1 && json.has("message")) {
+                            String message = json.get("message").getAsString();
+                            if (message.equals("Too Many Requests")) {
+                                throw new RpcThirdPartyException.TokensExhaustedException("Free requests exhausted.");
+                            } else if (message.equals("Insufficient funds / User not found")) {
+                                throw new RpcThirdPartyException.TokensExhaustedException(
+                                        "Not enough API access tokens.");
+                            } else {
+                                throw new RpcThirdPartyException(message);
+                            }
+                        }
+                        return super.deserialize(json, responseClass);
+                    }
+                }).build();
     }
     
     /**
@@ -113,17 +133,26 @@ public final class RpcServiceProviders {
      */
     public static RpcQueryNode nanos(String apiKey) {
         return new RpcQueryNode.Builder(JNH.parseURL(URL_NANOS_CC))
-                .setSerializer(new JsonRequestSerializerWithToken("token_key", apiKey))
-                .build();
+                .setSerializer(new SerializerWithToken("token_key", apiKey))
+                .setDeserializer(new JsonResponseDeserializer() {
+                    @Override
+                    protected JsonObject parseJson(String response) throws RpcException {
+                        if (response.equals("You are making requests too fast, please slow down!"))
+                            throw new RpcThirdPartyException.TooManyRequestsException("Sending requests too fast.");
+                        if (response.indexOf('{') == -1 && response.contains("Max allowed requests of"))
+                            throw new RpcThirdPartyException.TokensExhaustedException(
+                                    "Free allowance or paid tokens depleted.");
+                        return super.parseJson(response);
+                    }
+                }).build();
     }
     
     
     
     /** HTTP executor which sends an Authorization header */
-    private static class HttpRequestExecutorWithAuth extends HttpRequestExecutor {
+    private static class ExecutorWithAuth extends HttpRequestExecutor {
         private final String auth;
-        
-        public HttpRequestExecutorWithAuth(URL url, String auth) {
+        public ExecutorWithAuth(URL url, String auth) {
             super(url);
             this.auth = auth;
         }
@@ -131,16 +160,14 @@ public final class RpcServiceProviders {
         @Override
         protected void setRequestHeaders(HttpURLConnection con) throws IOException {
             super.setRequestHeaders(con);
-            if (auth != null)
-                con.setRequestProperty("Authorization", auth);
+            if (auth != null) con.setRequestProperty("Authorization", auth);
         }
     }
     
     /** JSON serializer with key/value token in request */
-    private static class JsonRequestSerializerWithToken extends JsonRequestSerializer {
+    private static class SerializerWithToken extends JsonRequestSerializer {
         private final String key, value;
-        
-        public JsonRequestSerializerWithToken(String key, String value) {
+        public SerializerWithToken(String key, String value) {
             this.key = key;
             this.value = value;
         }
@@ -148,10 +175,9 @@ public final class RpcServiceProviders {
         @Override
         public JsonObject serializeJsonObject(RpcRequest<?> request) {
             JsonObject json = super.serializeJsonObject(request);
-            if (key != null && value != null)
-                json.addProperty(key, value);
+            if (key != null && value != null) json.addProperty(key, value);
             return json;
         }
     }
-
+    
 }

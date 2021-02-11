@@ -5,10 +5,8 @@
 
 package uk.oczadly.karl.jnano.rpc.exception;
 
-import com.google.gson.JsonParseException;
-
 /**
- * Thrown if the node returns an invalid JSON response.
+ * Thrown if the node returns an invalid (JSON) response.
  *
  * <p>This exception being thrown could indicate a possible error with the configured deserializer(s) used by the
  * response class.</p>
@@ -25,19 +23,17 @@ public class RpcInvalidResponseException extends RpcException {
         this.response = response;
     }
     
-    public RpcInvalidResponseException(String response, JsonParseException source) {
-        super("Unable to parse/deserialize the received JSON response.", source);
+    public RpcInvalidResponseException(String response, Throwable cause) {
+        super("Unable to parse/deserialize the received JSON response.", cause);
         this.response = response;
     }
     
     
+    /**
+     * @return the raw response data
+     */
     public String getResponseBody() {
         return response;
-    }
-    
-    @Override
-    public synchronized JsonParseException getCause() {
-        return (JsonParseException)super.getCause();
     }
     
 }

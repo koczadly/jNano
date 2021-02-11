@@ -39,7 +39,7 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
     
     @Override
     @SuppressWarnings("unchecked")
-    public <R extends RpcResponse> R deserialize(String response, Class<R> responseClass) throws RpcException {
+    public final <R extends RpcResponse> R deserialize(String response, Class<R> responseClass) throws RpcException {
         if (response == null)
             throw new IllegalArgumentException("Response data cannot be null.");
         if (responseClass == null)
@@ -49,22 +49,20 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
         
         try {
             // Parse response into JSON
-            JsonObject responseJson = JNH.parseJson(response);
+            JsonObject jsonResponse = parseJson(response);
             
             // Check for returned RPC error
-            JsonElement errorElement = responseJson.get("error");
-            if (errorElement != null) {
-                String errorStr = errorElement.getAsString().trim();
+            JsonElement error = jsonResponse.get("error");
+            if (error != null) {
+                String errorStr = error.getAsString().trim();
                 if (responseClass == ResponseSuccessful.class && errorStr.equalsIgnoreCase("Empty response")) {
                     return (R)new ResponseSuccessful(true); // Fix for empty response error
                 }
                 throw parseException(errorStr);
             }
-    
-            // Deserialize response
-            R responseObj = getGson().fromJson(responseJson, responseClass);
-            RpcResponse.initJsonField(responseObj, responseJson);
-            return responseObj;
+            
+            // Deserialize and return
+            return deserialize(jsonResponse, responseClass);
         } catch (JsonParseException ex) {
             throw new RpcInvalidResponseException(response, ex); // If unable to parse
         }
@@ -72,13 +70,46 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
     
     
     /**
+     * Parses the response string to a json object.
+     * @param response the response data
+     * @return the response data, as a JsonObject
+     * @throws RpcException if some other unexpected error occurs
+     */
+    protected JsonObject parseJson(String response) throws RpcException {
+        return JNH.parseJson(response);
+    }
+    
+    /**
+     * Deserializes the response. Exception should already be parsed before this method is called.
+     * @param json          the response json
+     * @param responseClass the response class
+     * @param <R>           the response class type
+     * @return the deserialized value
+     * @throws RpcException if some other unexpected error occurs
+     */
+    protected <R extends RpcResponse> R deserialize(JsonObject json, Class<R> responseClass) throws RpcException {
+        // Deserialize response
+        R responseObj = getGson().fromJson(json, responseClass);
+        RpcResponse.initJsonField(responseObj, json);
+        return responseObj;
+    }
+    
+    /**
+     * Parses the exception "error" message.
+     * @param msg the message
+     * @return the exception
+     */
+    protected RpcException parseException(String msg) {
+        return parseErrorMessage(msg);
+    }
+    
+    
+    /**
      * Parses an {@link RpcException} from a given response message.
      * @param msg the received error message
      * @return the parsed exception object
-     * @deprecated Method may be changed or removed in the future.
      */
-    @Deprecated
-    public static RpcException parseException(String msg) {
+    public static RpcException parseErrorMessage(String msg) {
         String msgLc = msg.toLowerCase();
         
         // Check and parse error type
