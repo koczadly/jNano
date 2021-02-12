@@ -115,7 +115,10 @@ public final class GeneratedWork {
     
     @Override
     public String toString() {
-        return work.getAsHexadecimal();
+        return "GeneratedWork{" +
+                "work=" + work +
+                ", difficulty=" + difficulty +
+                ", blockRoot=" + reqRoot +
+                '}';
     }
-    
 }
