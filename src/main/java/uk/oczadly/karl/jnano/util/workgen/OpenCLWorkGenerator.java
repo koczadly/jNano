@@ -176,19 +176,18 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
         long[] work_size = { threadCount, 0, 0 };
         long[] arg_attempt = { RANDOM.nextLong() };
         Pointer attemptPointer = Pointer.to(arg_attempt);
-    
-        Thread thread = Thread.currentThread();
-        long ignoreResult = resultBuffer[0]; // Ignore the initial value
+        long ignoreResult = resultBuffer[0];
         
         do {
-            if (thread.isInterrupted())
+            if (Thread.currentThread().isInterrupted())
                 throw new InterruptedException("Work generation interrupted.");
+            
             arg_attempt[0] += threadCount;
             clEnqueueWriteBuffer(clQueue, clMemAttempt, true, 0, Sizeof.cl_ulong, attemptPointer, 0, null, null);
             clEnqueueNDRangeKernel(clQueue, clKernel, 1, null, work_size, null, 0, null, null);
             clEnqueueReadBuffer(clQueue, clMemResult, true, 0, Sizeof.cl_ulong, clMemResultPtr, 0, null, null);
             clFinish(clQueue);
-        } while (resultBuffer[0] == ignoreResult);
+        } while (resultBuffer[0] == ignoreResult); // Skip initial value (result from previous)
         return new WorkSolution(resultBuffer[0]);
     }
     
