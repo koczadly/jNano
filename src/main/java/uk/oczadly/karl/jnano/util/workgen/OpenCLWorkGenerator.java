@@ -48,10 +48,22 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     
     /**
      * Constructs an {@code OpenCLWorkGenerator} with the default Nano difficulty policy using {@value #DEFAULT_THREADS}
+     * work threads on the default OpenCL device (platform {@code 0}, device {@code 0}).
+     *
+     * @throws OpenCLException if no default device cannot be found, or OpenCL isn't supported
+     */
+    public OpenCLWorkGenerator() {
+        this(0, 0);
+    }
+    
+    /**
+     * Constructs an {@code OpenCLWorkGenerator} with the default Nano difficulty policy using {@value #DEFAULT_THREADS}
      * work threads on the specified OpenCL device.
      *
      * @param platformId the OpenCL platform ID/index
      * @param deviceId   the OpenCL device ID/index
+     *
+     * @throws OpenCLException if the device cannot be found, or OpenCL isn't supported
      */
     public OpenCLWorkGenerator(int platformId, int deviceId) {
         this(platformId, deviceId, DEFAULT_THREADS, AbstractWorkGenerator.DEFAULT_POLICY);
@@ -64,6 +76,8 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
      * @param platformId  the OpenCL platform ID/index
      * @param deviceId    the OpenCL device ID/index
      * @param threadCount the number of parallel compute threads
+     *
+     * @throws OpenCLException if the device cannot be found, or OpenCL isn't supported
      */
     public OpenCLWorkGenerator(int platformId, int deviceId, int threadCount) {
         this(platformId, deviceId, threadCount, AbstractWorkGenerator.DEFAULT_POLICY);
@@ -76,6 +90,8 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
      * @param platformId the OpenCL platform ID/index
      * @param deviceId   the OpenCL device ID/index
      * @param policy     the work difficulty policy
+     *
+     * @throws OpenCLException if the device cannot be found, or OpenCL isn't supported
      */
     public OpenCLWorkGenerator(int platformId, int deviceId, WorkDifficultyPolicy policy) {
         this(platformId, deviceId, DEFAULT_THREADS, policy);
@@ -89,6 +105,8 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
      * @param deviceId    the OpenCL device ID/index
      * @param threadCount the number of parallel compute threads
      * @param policy      the work difficulty policy
+     *
+     * @throws OpenCLException if the device cannot be found, or OpenCL isn't supported
      */
     public OpenCLWorkGenerator(int platformId, int deviceId, int threadCount, WorkDifficultyPolicy policy) {
         super(policy);
@@ -100,7 +118,11 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
         this.deviceId = deviceId;
         this.threadCount = threadCount;
         
-        initCL(platformId, deviceId);
+        try {
+            initCL();
+        } catch (CLException e) {
+            throw new OpenCLException(e);
+        }
     }
     
     
@@ -172,18 +194,20 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     }
     
     
-    private void initCL(int platformIndex, int deviceIndex) {
+    private void initCL() {
         setExceptionsEnabled(true); //TODO: parse errors manually
         
         // Obtain the number of platforms
         int[] numPlatformsArray = new int[1];
         clGetPlatformIDs(0, null, numPlatformsArray);
         int numPlatforms = numPlatformsArray[0];
+        if (platformId >= numPlatforms)
+            throw new OpenCLException("Platform ID not valid.");
         
         // Obtain a platform ID
         cl_platform_id[] platforms = new cl_platform_id[numPlatforms];
         clGetPlatformIDs(platforms.length, platforms, null);
-        cl_platform_id platform = platforms[platformIndex];
+        cl_platform_id platform = platforms[platformId];
         
         // Initialize the context properties
         cl_context_properties contextProperties = new cl_context_properties();
@@ -193,11 +217,13 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
         int[] numDevicesArray = new int[1];
         clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, 0, null, numDevicesArray);
         int numDevices = numDevicesArray[0];
+        if (deviceId >= numDevices)
+            throw new OpenCLException("Device ID not valid.");
         
         // Obtain a device ID
         cl_device_id[] devices = new cl_device_id[numDevices];
         clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, numDevices, devices, null);
-        cl_device_id device = devices[deviceIndex];
+        cl_device_id device = devices[deviceId];
     
         // Create a context for the selected device
         cl_context clContext = clCreateContext(contextProperties, 1, new cl_device_id[] {device}, null, null, null);
@@ -238,6 +264,20 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
             return new String(Files.readAllBytes(Paths.get(resourceUrl.toURI())), StandardCharsets.UTF_8);
         } catch (URISyntaxException | IOException e) {
             throw new AssertionError("Could not load resource workgen.cl");
+        }
+    }
+    
+    
+    /**
+     * Thrown when an OpenCL exception occurs.
+     */
+    public final static class OpenCLException extends RuntimeException {
+        OpenCLException(String message) {
+            super(message);
+        }
+        
+        OpenCLException(Throwable cause) {
+            super(cause);
         }
     }
     
