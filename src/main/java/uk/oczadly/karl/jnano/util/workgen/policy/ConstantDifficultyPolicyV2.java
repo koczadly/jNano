@@ -33,6 +33,7 @@ public final class ConstantDifficultyPolicyV2 implements ConstantWorkDifficultyP
         this(diffSend, diffReceive, 1);
     }
     
+    /** Only to be used internally. */
     ConstantDifficultyPolicyV2(WorkDifficulty diffSend, WorkDifficulty diffReceive, double multiplier) {
         this.send = diffSend;
         this.receive = diffReceive;
@@ -60,6 +61,10 @@ public final class ConstantDifficultyPolicyV2 implements ConstantWorkDifficultyP
         return base;
     }
     
+    /**
+     * Returns a fixed value of {@code 1.0}.
+     * @return {@code 1.0}
+     */
     @Override
     public double multiplier() {
         return multiplier;

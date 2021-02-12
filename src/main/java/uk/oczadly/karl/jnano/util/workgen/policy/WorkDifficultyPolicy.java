@@ -17,7 +17,7 @@ import uk.oczadly.karl.jnano.util.NetworkConstants;
 public interface WorkDifficultyPolicy {
     
     /**
-     * Returns the minimum work difficulty threshold for a given block.
+     * Returns the required work difficulty threshold for a given block.
      *
      * <p>The difficulty value returned by this method should not factor in the recommended {@link #multiplier()} value,
      * and should simply return the base difficulty. If you want to multiply the value, call
@@ -30,7 +30,7 @@ public interface WorkDifficultyPolicy {
     WorkDifficulty forBlock(Block block) throws DifficultyRetrievalException;
     
     /**
-     * Returns the minimum work difficulty threshold for any and all block types.
+     * Returns the required work difficulty threshold suitable for all block types.
      *
      * <p>The difficulty value returned by this method should not factor in the recommended {@link #multiplier()} value,
      * and should simply return the base difficulty. If you want to multiply the value, call

@@ -34,4 +34,13 @@ public final class ConstantDifficultyPolicy implements ConstantWorkDifficultyPol
         return difficulty;
     }
     
+    /**
+     * Returns a fixed value of {@code 1.0}.
+     * @return {@code 1.0}
+     */
+    @Override
+    public double multiplier() {
+        return 1;
+    }
+    
 }
