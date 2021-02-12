@@ -39,6 +39,9 @@ public final class GeneratedWork {
         this.difficulty = work.calculateDifficulty(reqRoot);
         this.multiplier = difficulty.calculateMultiplier(baseDifficulty);
         this.reqMultiplier = targetDifficulty.calculateMultiplier(baseDifficulty);
+        
+        if (!difficulty.isValid(targetDifficulty))
+            throw new IllegalArgumentException("Computed work did not meet target difficulty.");
     }
     
     
