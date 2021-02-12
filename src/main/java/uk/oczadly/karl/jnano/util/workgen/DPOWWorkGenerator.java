@@ -38,7 +38,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @see #forNano(String, String)
  * @see #forBanano(String, String)
  */
-public final class DPOWWorkGenerator extends AbstractWorkGenerator {
+public class DPOWWorkGenerator extends AbstractWorkGenerator {
     
     /**
      * The URI of the secure WebSocket for the Nano <i>Distributed Proof of Work</i> work generation service.
@@ -89,28 +89,28 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
     /**
      * @return the URI of the service's WebSocket
      */
-    public URI getServiceURI() {
+    public final URI getServiceURI() {
         return uri;
     }
     
     /**
      * @return the username credential
      */
-    public String getUsername() {
+    public final String getUsername() {
         return user;
     }
     
     /**
      * @return the API key credential
      */
-    public String getAPIKey() {
+    public final String getAPIKey() {
         return apiKey;
     }
     
     /**
      * @return the work generation timeout, in seconds
      */
-    public int getTimeoutDuration() {
+    public final int getTimeoutDuration() {
         return timeout;
     }
     
@@ -125,7 +125,7 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
     }
     
     @Override
-    protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
+    protected final WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
             throws Exception {
         // Await connection
         websocket.awaitConnection(timeout, TimeUnit.SECONDS);
@@ -140,6 +140,14 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
     }
     
     
+    /**
+     * Build the request body (JSON).
+     * @param id         the request ID
+     * @param root       the root hash
+     * @param difficulty the difficulty
+     * @param context    the generation request context
+     * @return the created request body
+     */
     protected String buildRequest(String id, HexData root, WorkDifficulty difficulty, RequestContext context) {
         JsonObject json = new JsonObject();
         json.addProperty("id",         id);
@@ -152,6 +160,12 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
         return json.toString();
     }
     
+    /**
+     * Parse the response from the server.
+     * @param json the response data
+     * @return the parsed work response
+     * @throws RemoteException if an error is returned
+     */
     protected WorkSolution parseResponse(JsonObject json) throws RemoteException {
         if (json.has("work")) {
             return new WorkSolution(json.get("work").getAsString());
@@ -236,6 +250,7 @@ public final class DPOWWorkGenerator extends AbstractWorkGenerator {
     public static class RemoteException extends Exception {
         RemoteException(String message) { super(message); }
     }
+    
     
     private static class WSHandler extends ReconnectingWebsocketClient {
         private final IDRequestTracker<JsonObject> tracker;
