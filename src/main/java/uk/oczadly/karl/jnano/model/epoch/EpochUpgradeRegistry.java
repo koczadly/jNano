@@ -81,8 +81,8 @@ public class EpochUpgradeRegistry {
     /**
      * Returns the {@link EpochUpgrade} which the given epoch block represents, or an empty value if the supplied block
      * is not an epoch block.
-     * @param block the block
-     * @return the corresponding upgrade, or null if the block is not an epoch block
+     * @param block the block (should be an epoch block)
+     * @return the corresponding upgrade, or an empty value if the block is not an epoch block
      * @throws UnrecognizedEpochException if the block is an epoch block, but no matching upgrade is found
      */
     public Optional<EpochUpgrade> fromEpochBlock(Block block) {
