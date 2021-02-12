@@ -118,10 +118,7 @@ public final class GeneratedWork {
     
     @Override
     public String toString() {
-        return "GeneratedWork{" +
-                "work=" + work +
-                ", difficulty=" + difficulty +
-                ", blockRoot=" + reqRoot +
-                '}';
+        return String.format("GeneratedWork{work=%s, difficulty=%s, multiplier=x%.3f, root=%s}",
+                work, difficulty, multiplier, reqRoot);
     }
 }
