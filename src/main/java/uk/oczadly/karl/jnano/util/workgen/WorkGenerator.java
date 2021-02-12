@@ -16,6 +16,9 @@ import java.util.concurrent.Future;
 
 /**
  * This interface is to be implemented by classes which can generate proof-of-work solutions.
+ *
+ * The following implementations are provided: {@link OpenCLWorkGenerator}, {@link CPUWorkGenerator},
+ * {@link NodeWorkGenerator} and {@link DPOWWorkGenerator}.
  */
 public interface WorkGenerator {
     
