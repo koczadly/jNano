@@ -11,12 +11,11 @@ import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Random;
 
 import static org.jocl.CL.*;
@@ -257,13 +256,19 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     }
     
     private static String getProgramSource() {
-        URL resourceUrl = OpenCLWorkGenerator.class.getClassLoader().getResource("workgen.cl");
-        if (resourceUrl == null)
-            throw new AssertionError("Could not load resource workgen.cl");
+        InputStream resource = OpenCLWorkGenerator.class.getClassLoader().getResourceAsStream("workgen.cl");
+        if (resource == null)
+            throw new AssertionError("Could not locate resource workgen.cl");
+        
         try {
-            return new String(Files.readAllBytes(Paths.get(resourceUrl.toURI())), StandardCharsets.UTF_8);
-        } catch (URISyntaxException | IOException e) {
-            throw new AssertionError("Could not load resource workgen.cl");
+            BufferedReader br = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null)
+                sb.append(line).append('\n');
+            return sb.toString();
+        } catch (IOException e) {
+            throw new AssertionError("Could not load resource workgen.cl", e);
         }
     }
     
