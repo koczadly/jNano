@@ -30,5 +30,6 @@ module uk.oczadly.karl.jnano {
     requires blake2b;
     requires net.i2p.crypto.eddsa;
     requires Java.WebSocket;
+    requires jocl;
 
 }
