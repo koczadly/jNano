@@ -156,7 +156,7 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
     /**
      * Contains additional contextual information on the work request.
      */
-    protected static class RequestContext {
+    public static class RequestContext {
         private final Block block;
         private final double multiplier;
         private final WorkDifficulty baseDifficulty;
@@ -177,10 +177,11 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
     
         /**
          * @return the account holder of the block
+         * @see #getBlock()
          */
         public Optional<NanoAccount> getAccount() {
             if (block != null && block instanceof IBlockAccount) {
-                return Optional.of(((IBlockAccount)block).getAccount());
+                return Optional.ofNullable(((IBlockAccount)block).getAccount());
             }
             return Optional.empty();
         }
@@ -193,7 +194,7 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
         }
     
         /**
-         * @return the base threshold difficulty (difficulty without multipliers)
+         * @return the base threshold difficulty (before multipliers have been applied)
          */
         public WorkDifficulty getBaseDifficulty() {
             return baseDifficulty;
