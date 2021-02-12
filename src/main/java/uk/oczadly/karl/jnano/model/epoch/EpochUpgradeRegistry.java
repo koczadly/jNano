@@ -34,13 +34,11 @@ public class EpochUpgradeRegistry {
                 throw new IllegalArgumentException("EpochVersion array elements cannot be null.");
             
             allUpgrades.add(ver);
-            boolean verExists = mapByVer.put(ver.getVersion(), ver) != null;
-            boolean idExists = mapById.put(ver.getIdentifier(), ver) != null;
-            
-            if (verExists || idExists)
-                throw new IllegalArgumentException("Overlapping version or identifier values.");
+            if (mapByVer.put(ver.getVersion(), ver) != null)
+                throw new IllegalArgumentException("Conflicting epoch version values.");
+            if (mapById.put(ver.getIdentifier(), ver) != null)
+                throw new IllegalArgumentException("Conflicting epoch identifier values.");
         }
-        
         this.upgrades = Collections.unmodifiableSortedSet(allUpgrades);
     }
     
@@ -75,25 +73,25 @@ public class EpochUpgradeRegistry {
     public EpochUpgrade ofIdentifier(HexData identifier) {
         EpochUpgrade result = mapById.get(identifier);
         if (result == null)
-            throw new UnrecognizedEpochException(String.format("Unknown epoch with identifier \"%s\".",
-                    identifier));
+            throw new UnrecognizedEpochException(
+                    String.format("Unknown epoch with identifier \"%s\".", identifier));
         return result;
     }
     
     /**
-     * Returns the {@link EpochUpgrade} which the given epoch block represents, or null if the supplied block is not an
-     * epoch block.
+     * Returns the {@link EpochUpgrade} which the given epoch block represents, or an empty value if the supplied block
+     * is not an epoch block.
      * @param block the block
      * @return the corresponding upgrade, or null if the block is not an epoch block
      * @throws UnrecognizedEpochException if the block is an epoch block, but no matching upgrade is found
      */
-    public EpochUpgrade fromEpochBlock(Block block) {
+    public Optional<EpochUpgrade> fromEpochBlock(Block block) {
         if (block instanceof StateBlock) {
             StateBlock sb = (StateBlock)block;
             if (sb.getSubType() == StateBlockSubType.EPOCH)
-                return ofIdentifier(sb.getLink().asHex());
+                return Optional.of(ofIdentifier(sb.getLink().asHex()));
         }
-        return null;
+        return Optional.empty();
     }
     
 }
