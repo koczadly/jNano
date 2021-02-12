@@ -35,6 +35,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     private static final Random RANDOM = new Random(); // Used for work initialization
     
     private final int platformId, deviceId, threadCount;
+    private String deviceName;
     
     private cl_command_queue clQueue;
     private cl_kernel clKernel;
@@ -137,16 +138,24 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
      * Returns the OpenCL platform index of the device.
      * @return the OpenCL platform id
      */
-    public int getCLPlatformId() {
+    public int getDevicePlatformId() {
         return platformId;
     }
     
     /**
-     * Returns the OpenCL device index which work will be generated on.
+     * Returns the OpenCL device index on which the work will be generated.
      * @return the OpenCL device id
      */
-    public int getCLDeviceId() {
+    public int getDeviceId() {
         return deviceId;
+    }
+    
+    /**
+     * Returns the OpenCL device name on which the work will be generated.
+     * @return the OpenCL device id
+     */
+    public String getDeviceName() {
+        return deviceName;
     }
     
     
@@ -164,6 +173,15 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
         }
     }
     
+    @Override
+    public String toString() {
+        return "OpenCLWorkGenerator{" +
+                "platformId=" + platformId +
+                ", deviceId=" + deviceId +
+                ", threadCount=" + threadCount +
+                ", deviceName='" + deviceName + '\'' +
+                '}';
+    }
     
     @Override
     protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
@@ -222,7 +240,12 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
         cl_device_id[] devices = new cl_device_id[numDevices];
         clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, numDevices, devices, null);
         cl_device_id device = devices[deviceId];
-    
+        
+        // Fetch device name
+        byte[] deviceName = new byte[256];
+        clGetDeviceInfo(device, CL_DEVICE_NAME, 256, Pointer.to(deviceName), null);
+        this.deviceName = new String(deviceName, StandardCharsets.UTF_8);
+        
         // Create a context for the selected device
         cl_context clContext = clCreateContext(contextProperties, 1, new cl_device_id[] {device}, null, null, null);
     
