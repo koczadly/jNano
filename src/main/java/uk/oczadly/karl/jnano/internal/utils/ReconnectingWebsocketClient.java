@@ -19,6 +19,7 @@ public abstract class ReconnectingWebsocketClient extends WebSocketClient {
     
     private final int reconDelay;
     private volatile boolean isReconnecting, manuallyClosed;
+    private volatile Thread reconThread;
     private final Object reconMonitor = new Object();
     
     public ReconnectingWebsocketClient(URI serverUri, int reconDelay) {
@@ -69,8 +70,13 @@ public abstract class ReconnectingWebsocketClient extends WebSocketClient {
     
     @Override
     public void close() {
-        manuallyClosed = true;
-        super.close();
+        try {
+            manuallyClosed = true;
+            if (reconThread != null)
+                reconThread.interrupt();
+        } finally {
+            super.close();
+        }
     }
     
     public abstract void onOpen(ServerHandshake handshakedata, boolean reconnect);
@@ -81,9 +87,9 @@ public abstract class ReconnectingWebsocketClient extends WebSocketClient {
     protected final void doReconnect() {
         if (!isReconnecting) {
             synchronized (reconMonitor) {
-                if (!isReconnecting) {
+                if (!isReconnecting && !manuallyClosed) {
                     isReconnecting = true;
-                    Thread reconThread = new Thread(new ReconTask());
+                    reconThread = new Thread(new ReconTask());
                     reconThread.setDaemon(true);
                     reconThread.start();
                 }
