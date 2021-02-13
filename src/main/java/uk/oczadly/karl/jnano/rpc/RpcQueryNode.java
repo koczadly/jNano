@@ -81,7 +81,7 @@ public class RpcQueryNode {
      * @see Builder
      */
     public RpcQueryNode(int port) {
-        this(0, DEFAULT_SERIALIZER, DEFAULT_DESERIALIZER, newLocalhostExecutor(port), newThreadExecutor());
+        this(0, DEFAULT_SERIALIZER, DEFAULT_DESERIALIZER, newLocalhostExecutor(port), newDefaultExecutor());
     }
     
     /**
@@ -105,7 +105,7 @@ public class RpcQueryNode {
      * @see Builder
      */
     public RpcQueryNode(URL url) {
-        this(0, DEFAULT_SERIALIZER, DEFAULT_DESERIALIZER, new HttpRequestExecutor(url), newThreadExecutor());
+        this(0, DEFAULT_SERIALIZER, DEFAULT_DESERIALIZER, new HttpRequestExecutor(url), newDefaultExecutor());
     }
     
     private RpcQueryNode(int defaultTimeout, RpcRequestSerializer serializer, RpcResponseDeserializer deserializer,
@@ -344,8 +344,8 @@ public class RpcQueryNode {
     }
     
     
-    private static ExecutorService newThreadExecutor() {
-        return Executors.newFixedThreadPool(100, THREAD_FACTORY);
+    private static ExecutorService newDefaultExecutor() {
+        return Executors.newFixedThreadPool(250, THREAD_FACTORY);
     }
     
     private static RpcRequestExecutor newLocalhostExecutor(int port) {
@@ -566,7 +566,7 @@ public class RpcQueryNode {
                     serializer == null ? DEFAULT_SERIALIZER : serializer,
                     deserializer == null ? DEFAULT_DESERIALIZER : deserializer,
                     requestExecutor == null ? newLocalhostExecutor(DEFAULT_PORT) : requestExecutor,
-                    executorService != null ? executorService : newThreadExecutor());
+                    executorService != null ? executorService : newDefaultExecutor());
         }
     }
     
