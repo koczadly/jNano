@@ -37,75 +37,58 @@ The latest Javadoc pages can be [viewed online through Javadoc.io](https://www.j
 Additional documentation can be found on the [wiki pages](https://github.com/koczadly/jNano/wiki/).
 
 ### Examples
-#### Executing RPC queries
+#### RPC Queries [\[Wiki\]](https://github.com/koczadly/jNano/wiki/RPC-Queries)
 To make queries to an external Nano node through the RPC system, you will need to use [RpcQueryNode](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk/oczadly/karl/jnano/rpc/RpcQueryNode.html)
  class.
-
-The following example will define a node on `localhost:7076` (default for the parameterless constructor). Other
- addresses and ports can be specified using the constructor arguments. Alternatively, the nested [Builder](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk/oczadly/karl/jnano/rpc/RpcQueryNode.Builder.html)
- class can be used to construct instances with additional control over the object.
 ```java
-RpcQueryNode rpc = new RpcQueryNode();
+RpcQueryNode rpc = new RpcQueryNode(); // Defaults to localhost:7076
 ```
-##### Synchronous (blocking) queries
 This example will print an account's balance to the console using a synchronous (blocking) call.
 ```java
-// Construct the request (with arguments)
-RequestAccountBalance request = new RequestAccountBalance(
-        "nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz");
-
-// Execute the request and obtain the result
-ResponseBalance balance = rpc.processRequest(request);
+// Construct and execute the request, and obtain the response
+ResponseBalance balance = rpc.processRequest(new RequestAccountBalance(
+        "nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz"));
 
 // Handle the result object however you wish (eg. print the balance)
 System.out.println("Account balance: " + balance.getTotal());
 ```
-##### Asynchronous queries
-This example will execute the query in a separate thread, and print the node version to the console. Alternatively,
- you can retrieve the `Future` response object returned by the method instead of using a [QueryCallback](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk/oczadly/karl/jnano/rpc/QueryCallback.html).
-```java
-rpc.processRequestAsync(new RequestVersion(), new QueryCallback<>() {
-    @Override
-    public void onResponse(ResponseVersion response, RequestVersion request) {
-        // Successful, handle the response
-        System.out.println("Version: " + response.getNodeVendor());
-    }
-    
-    @Override
-    public void onFailure(RpcException ex, RequestVersion request) {
-        // An RPC error occured
-        ex.printStackTrace();
-    }
-    
-    @Override
-    public void onFailure(IOException ex, RequestVersion request) {
-        // An IO (network) error occured
-        ex.printStackTrace();
-    }
-});
-```
-#### Listening for real-time blocks (WebSocket)
-The following will create a WebSocket listener which connects to port 7078 on localhost. For each new block confirmed
- by the node, the hash will be printed to the console.
+
+#### WebSockets (listening for blocks) [\[Wiki\]](https://github.com/koczadly/jNano/wiki/WebSocket-communication)
+The following will create a WebSocket listener which connects to port `7078` on `localhost`. For each new block
+ confirmed by the node, the hash and type will be printed to the console.
 ```java
 NanoWebSocketClient ws = new NanoWebSocketClient(); // Defaults to localhost:7078
 ws.connect(); // Connect to the endpoint
 
-// Register a listener for block confirmations
+// Register a listener (will be called for each new block)
 ws.getTopics().topicConfirmedBlocks().registerListener((message, context) -> {
     // Print the hash and type of all confirmed blocks
     System.out.printf("Confirmed block: %s (%s)%n",
             message.getHash(), message.getBlock().getType());
 });
 
-// Subscribe to the block confirmations topic (and specify an account filter)
-ws.getTopics().topicConfirmedBlocks().subscribeBlocking(
-        new TopicConfirmation.SubArgs()
-                .filterAccounts(
-                        "nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz",
-                        "nano_1ipx847tk8o46pwxt5qjdbncjqcbwcc1rrmqnkztrfjy5k7z4imsrata9est")
-                .includeBlockContents()
-);
+// Subscribe to the block confirmations topic
+ws.getTopics().topicConfirmedBlocks().subscribeBlocking(new TopicConfirmation.SubArgs()
+        .includeBlockContents() // Include block info in messages
+        .filterAccounts( // Only receive blocks for these accounts
+                "nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz",
+                "nano_1ipx847tk8o46pwxt5qjdbncjqcbwcc1rrmqnkztrfjy5k7z4imsrata9est"));
+```
+
+#### Block Creation [\[Wiki\]](https://github.com/koczadly/jNano/wiki/Utilities#creation--construction)
+The following sample will create a new `state` block. The block will be signed using the provided private key, and
+ work will be generated in the JVM using the CPU.
+```java
+WorkGenerator workGenerator = new CPUWorkGenerator();
+
+StateBlock block = new StateBlockBuilder(StateBlockSubType.OPEN)
+        .setLink("BF4A559FEF44D4A9C9CEF4972886A51FC83AD1A2BEE4CDD732F62F3C166D6D4F")
+        .setBalance("123000000000000000000000000")
+        .generateWork(workGenerator)
+        .buildAndSign("A3293644AC105DEE5A0202B7EF976A06E790908EE0E8CC43AEF845380BFF954E"); // Private key
+
+String hash = block.getHash().toHexString();
+String blockJson = block.toJsonString();
 ```
 
 
