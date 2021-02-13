@@ -78,7 +78,7 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
     }
     
     @Override
-    public Future<GeneratedWork> generate(Block block, WorkDifficulty baseDifficulty) {
+    public final Future<GeneratedWork> generate(Block block, WorkDifficulty baseDifficulty) {
         if (block == null)
             throw new IllegalArgumentException("Block cannot be null.");
         if (baseDifficulty == null)
@@ -108,7 +108,7 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
     }
     
     @Override
-    public Future<GeneratedWork> generate(HexData root, double diffMultiplier) {
+    public final Future<GeneratedWork> generate(HexData root, double diffMultiplier) {
         if (root == null)
             throw new IllegalArgumentException("Root cannot be null.");
         if (diffMultiplier <= 0)
