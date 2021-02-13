@@ -62,12 +62,13 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
     
     
     /**
-     * Subclasses must override this method, compute and then return the work solution.
+     * Subclasses must override this method, compute and then return the work solution. The thread will be
+     * interrupted if the work was requested to be cancelled.
      * @param root       the work root
      * @param difficulty the work difficulty
      * @param context    additional contextual info on the request
      * @return the computed work solution
-     * @throws Exception whenever
+     * @throws Exception if something goes wrong with generation
      */
     protected abstract WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
             throws Exception;
@@ -128,7 +129,7 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
     private Future<GeneratedWork> enqueueWork(WorkRequestSpec spec) {
         if (isShutdown())
             throw new IllegalStateException("Work generator is shut down and cannot accept new requests.");
-        return requestExecutor.submit(new WorkGeneratorTask(spec));
+        return new FutureWrapper<>(requestExecutor.submit(new WorkGeneratorTask(spec)));
     }
     
     
@@ -272,6 +273,40 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
         public CachedWork(GeneratedWork work) {
             this.work = work.getWork();
             this.difficulty = work.getDifficulty();
+        }
+    }
+    
+    /** Wraps a future to ensure that all cancellations have mayInterruptIfRunning set to true. */
+    private static class FutureWrapper<V> implements Future<V> {
+        private final Future<V> future;
+        
+        public FutureWrapper(Future<V> future) {
+            this.future = future;
+        }
+        
+        @Override
+        public boolean cancel(boolean mayInterruptIfRunning) {
+            return future.cancel(true);
+        }
+    
+        @Override
+        public boolean isCancelled() {
+            return future.isCancelled();
+        }
+    
+        @Override
+        public boolean isDone() {
+            return future.isDone();
+        }
+    
+        @Override
+        public V get() throws InterruptedException, ExecutionException {
+            return future.get();
+        }
+    
+        @Override
+        public V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+            return future.get(timeout, unit);
         }
     }
 
