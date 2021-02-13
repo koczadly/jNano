@@ -101,12 +101,6 @@ public interface WorkGenerator {
     
     
     /**
-     * Returns the work difficulty policy to be used when generating work.
-     * @return the work difficulty policy
-     */
-    WorkDifficultyPolicy getDifficultyPolicy();
-    
-    /**
      * Returns whether this generator has been shut down by calling {@link #shutdown()}.
      * @return true if this generator has been shut down
      */

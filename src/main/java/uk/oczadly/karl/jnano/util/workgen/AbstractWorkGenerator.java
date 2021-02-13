@@ -73,15 +73,14 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
             throws Exception;
     
     
-    /**
-     * Returns whether this work generator is currently generating some work.
-     * @return true if work is currently being generated
-     */
     public final boolean isGenerating() {
         return isGenerating;
     }
     
-    @Override
+    /**
+     * Returns the work difficulty policy to be used when generating work.
+     * @return the work difficulty policy
+     */
     public final WorkDifficultyPolicy getDifficultyPolicy() {
         return policy;
     }
