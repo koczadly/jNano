@@ -21,9 +21,9 @@ This library provides you simple access to the following:
   - [Constants for Nano and Banano](https://github.com/koczadly/jNano/wiki/Utilities#constants)
 
 ## Usage
-### Maven
-This project is hosted on [Maven Central](https://search.maven.org/artifact/uk.oczadly.karl/jnano). To import this
- library, add the following dependency into your `pom.xml`:
+### Download
+This project is hosted on [Maven Central](https://search.maven.org/artifact/uk.oczadly.karl/jnano).
+#### Maven
 ```xml
 <dependency>
     <groupId>uk.oczadly.karl</groupId>
@@ -31,17 +31,24 @@ This project is hosted on [Maven Central](https://search.maven.org/artifact/uk.o
     <version>2.17.2</version>
 </dependency>
 ```
+#### Gradle
+```json
+dependencies {
+    implementation 'uk.oczadly.karl:jnano:2.17.2'
+}
+```
 
 ### Documentation
-The latest Javadoc pages can be [viewed online through Javadoc.io](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk.oczadly.karl.jnano-summary.html).
-Additional documentation can be found on the [wiki pages](https://github.com/koczadly/jNano/wiki/).
+- [Javadocs (via Javadoc.io)](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk.oczadly.karl.jnano-summary.html)
+- [Wiki docs & examples](https://github.com/koczadly/jNano/wiki/)
 
 ### Examples
 #### RPC Queries [\[Wiki\]](https://github.com/koczadly/jNano/wiki/RPC-Queries)
-To make queries to an external Nano node through the RPC system, you will need to use [RpcQueryNode](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk/oczadly/karl/jnano/rpc/RpcQueryNode.html)
- class.
+To make queries to an external Nano node through the RPC system, you will need to use the [RpcQueryNode](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk/oczadly/karl/jnano/rpc/RpcQueryNode.html)
+ class. You can customize these objects even further by constructing using the nested `Builder` class.
 ```java
-RpcQueryNode rpc = new RpcQueryNode(); // Defaults to localhost:7076
+RpcQueryNode rpc = new RpcQueryNode()           // Using localhost:7076
+RpcQueryNode rpc = RpcServiceProviders.nanex(); // Using nanex.cc public API
 ```
 This example will print an account's balance to the console using a synchronous (blocking) call.
 ```java
