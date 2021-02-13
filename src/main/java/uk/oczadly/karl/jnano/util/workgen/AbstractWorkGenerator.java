@@ -87,7 +87,7 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
     }
     
     @Override
-    public final Future<GeneratedWork> generate(Block block, WorkDifficulty baseDifficulty) {
+    public final FutureWork generate(Block block, WorkDifficulty baseDifficulty) {
         if (block == null)
             throw new IllegalArgumentException("Block cannot be null.");
         if (baseDifficulty == null)
@@ -97,7 +97,7 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
     }
     
     @Override
-    public final Future<GeneratedWork> generate(Block block, double diffMultiplier) {
+    public final FutureWork generate(Block block, double diffMultiplier) {
         if (block == null)
             throw new IllegalArgumentException("Block cannot be null.");
         if (diffMultiplier <= 0)
@@ -107,7 +107,7 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
     }
     
     @Override
-    public final Future<GeneratedWork> generate(HexData root, WorkDifficulty baseDifficulty) {
+    public final FutureWork generate(HexData root, WorkDifficulty baseDifficulty) {
         if (root == null)
             throw new IllegalArgumentException("Root cannot be null.");
         if (baseDifficulty == null)
@@ -117,7 +117,7 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
     }
     
     @Override
-    public final Future<GeneratedWork> generate(HexData root, double diffMultiplier) {
+    public final FutureWork generate(HexData root, double diffMultiplier) {
         if (root == null)
             throw new IllegalArgumentException("Root cannot be null.");
         if (diffMultiplier <= 0)
@@ -126,10 +126,11 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
         return enqueueWork(new WorkRequestSpec(policy, root, diffMultiplier, null));
     }
     
-    private Future<GeneratedWork> enqueueWork(WorkRequestSpec spec) {
+    private FutureWork enqueueWork(WorkRequestSpec spec) {
         if (isShutdown())
             throw new IllegalStateException("Work generator is shut down and cannot accept new requests.");
-        return new FutureWrapper<>(requestExecutor.submit(new WorkGeneratorTask(spec)));
+        Future<GeneratedWork> result = requestExecutor.submit(new WorkGeneratorTask(spec));
+        return new FutureWork(result, spec.root);
     }
     
     
@@ -273,40 +274,6 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
         public CachedWork(GeneratedWork work) {
             this.work = work.getWork();
             this.difficulty = work.getDifficulty();
-        }
-    }
-    
-    /** Wraps a future to ensure that all cancellations have mayInterruptIfRunning set to true. */
-    private static class FutureWrapper<V> implements Future<V> {
-        private final Future<V> future;
-        
-        public FutureWrapper(Future<V> future) {
-            this.future = future;
-        }
-        
-        @Override
-        public boolean cancel(boolean mayInterruptIfRunning) {
-            return future.cancel(true);
-        }
-    
-        @Override
-        public boolean isCancelled() {
-            return future.isCancelled();
-        }
-    
-        @Override
-        public boolean isDone() {
-            return future.isDone();
-        }
-    
-        @Override
-        public V get() throws InterruptedException, ExecutionException {
-            return future.get();
-        }
-    
-        @Override
-        public V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-            return future.get(timeout, unit);
         }
     }
 

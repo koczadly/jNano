@@ -12,8 +12,6 @@ import uk.oczadly.karl.jnano.model.work.WorkSolution;
 import uk.oczadly.karl.jnano.util.workgen.policy.NodeWorkDifficultyPolicy;
 import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
 
-import java.util.concurrent.Future;
-
 /**
  * This interface is to be implemented by classes which can generate proof-of-work solutions.
  *
@@ -31,7 +29,7 @@ public interface WorkGenerator {
      *
      * @see WorkDifficultyPolicy#forBlock(Block)
      */
-    default Future<GeneratedWork> generate(Block block) {
+    default FutureWork generate(Block block) {
         return generate(block, 1);
     }
     
@@ -43,7 +41,7 @@ public interface WorkGenerator {
      * @param baseDifficulty the minimum base difficulty threshold of the work
      * @return the computed work solution, as a Future (not yet computed)
      */
-    Future<GeneratedWork> generate(Block block, WorkDifficulty baseDifficulty);
+    FutureWork generate(Block block, WorkDifficulty baseDifficulty);
     
     /**
      * Generates a {@link WorkSolution} for the provided block, using the specified multiplier on top of the
@@ -59,7 +57,7 @@ public interface WorkGenerator {
      *
      * @see WorkDifficultyPolicy#forBlock(Block)
      */
-    Future<GeneratedWork> generate(Block block, double diffMultiplier);
+    FutureWork generate(Block block, double diffMultiplier);
     
     /**
      * Generates a {@link WorkSolution} for the provided block root hash using the "any" difficulty provided by the
@@ -71,7 +69,7 @@ public interface WorkGenerator {
      * @see WorkSolution#getRoot(Block)
      * @see WorkDifficultyPolicy#forAny()
      */
-    default Future<GeneratedWork> generate(HexData root) {
+    default FutureWork generate(HexData root) {
         return generate(root, 1);
     }
     
@@ -85,7 +83,7 @@ public interface WorkGenerator {
      *
      * @see WorkSolution#getRoot(Block)
      */
-    Future<GeneratedWork> generate(HexData root, WorkDifficulty baseDifficulty);
+    FutureWork generate(HexData root, WorkDifficulty baseDifficulty);
     
     /**
      * Generates a {@link WorkSolution} for the provided block root hash, using the "any" difficulty provided by the
@@ -97,7 +95,7 @@ public interface WorkGenerator {
      *
      * @see WorkSolution#getRoot(Block)
      */
-    Future<GeneratedWork> generate(HexData root, double diffMultiplier);
+    FutureWork generate(HexData root, double diffMultiplier);
     
     
     /**
