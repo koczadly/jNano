@@ -32,7 +32,7 @@ This project is hosted on [Maven Central](https://search.maven.org/artifact/uk.o
 </dependency>
 ```
 #### Gradle
-```json
+```gradle
 dependencies {
     implementation 'uk.oczadly.karl:jnano:2.17.2'
 }
