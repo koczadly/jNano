@@ -53,7 +53,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
      *
      * @throws OpenCLInitializerException if no default device cannot be found, or OpenCL isn't supported
      */
-    public OpenCLWorkGenerator() {
+    public OpenCLWorkGenerator() throws OpenCLInitializerException {
         this(0, 0);
     }
     
@@ -66,7 +66,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
      *
      * @throws OpenCLInitializerException if the device cannot be found, or OpenCL isn't supported
      */
-    public OpenCLWorkGenerator(int platformId, int deviceId) {
+    public OpenCLWorkGenerator(int platformId, int deviceId) throws OpenCLInitializerException {
         this(platformId, deviceId, DEFAULT_THREADS, AbstractWorkGenerator.DEFAULT_POLICY);
     }
     
@@ -80,7 +80,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
      *
      * @throws OpenCLInitializerException if the device cannot be found, or OpenCL isn't supported
      */
-    public OpenCLWorkGenerator(int platformId, int deviceId, int threadCount) {
+    public OpenCLWorkGenerator(int platformId, int deviceId, int threadCount) throws OpenCLInitializerException {
         this(platformId, deviceId, threadCount, AbstractWorkGenerator.DEFAULT_POLICY);
     }
     
@@ -94,7 +94,8 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
      *
      * @throws OpenCLInitializerException if the device cannot be found, or OpenCL isn't supported
      */
-    public OpenCLWorkGenerator(int platformId, int deviceId, WorkDifficultyPolicy policy) {
+    public OpenCLWorkGenerator(int platformId, int deviceId, WorkDifficultyPolicy policy)
+            throws OpenCLInitializerException {
         this(platformId, deviceId, DEFAULT_THREADS, policy);
     }
     
@@ -109,7 +110,8 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
      *
      * @throws OpenCLInitializerException if the device cannot be found, or OpenCL isn't supported
      */
-    public OpenCLWorkGenerator(int platformId, int deviceId, int threadCount, WorkDifficultyPolicy policy) {
+    public OpenCLWorkGenerator(int platformId, int deviceId, int threadCount, WorkDifficultyPolicy policy)
+            throws OpenCLInitializerException {
         super(policy);
         if (platformId < 0 || deviceId < 0)
             throw new IllegalArgumentException("Invalid platform or device ID.");
@@ -189,10 +191,10 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
             clEnqueueWriteBuffer(clQueue, clMemRoot, true, 0, Sizeof.cl_uchar * 32,
                     Pointer.to(root.toByteArray()), 0, null, null);
             clEnqueueWriteBuffer(clQueue, clMemDifficulty, true, 0, Sizeof.cl_ulong,
-                    Pointer.to(new long[] {difficulty.getAsLong()}), 0, null, null);
+                    Pointer.to(new long[] { difficulty.getAsLong() }), 0, null, null);
     
-            long[] work_size = {threadCount, 0, 0};
-            long[] arg_attempt = {RANDOM.nextLong()};
+            long[] work_size = { threadCount, 0, 0 };
+            long[] arg_attempt = { RANDOM.nextLong() };
             Pointer attemptPointer = Pointer.to(arg_attempt);
             long ignoreResult = resultBuffer[0];
     
@@ -213,7 +215,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     }
     
     
-    private void initCL() {
+    private void initCL() throws OpenCLInitializerException {
         try {
             String programSrc = getProgramSource();
             
@@ -313,7 +315,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     /**
      * Thrown when an OpenCL exception occurs during initialization.
      */
-    public final static class OpenCLInitializerException extends RuntimeException {
+    public final static class OpenCLInitializerException extends Exception {
         OpenCLInitializerException(String message) {
             super(message);
         }
