@@ -37,6 +37,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     private final int platformId, deviceId, threadCount;
     private String deviceName;
     
+    // OpenCL buffers and params
     private cl_command_queue clQueue;
     private cl_kernel clKernel;
     private cl_mem clMemAttempt;
@@ -50,7 +51,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
      * Constructs an {@code OpenCLWorkGenerator} with the default Nano difficulty policy using {@value #DEFAULT_THREADS}
      * work threads on the default OpenCL device (platform {@code 0}, device {@code 0}).
      *
-     * @throws OpenCLException if no default device cannot be found, or OpenCL isn't supported
+     * @throws OpenCLInitializerException if no default device cannot be found, or OpenCL isn't supported
      */
     public OpenCLWorkGenerator() {
         this(0, 0);
@@ -63,7 +64,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
      * @param platformId the OpenCL platform ID/index
      * @param deviceId   the OpenCL device ID/index
      *
-     * @throws OpenCLException if the device cannot be found, or OpenCL isn't supported
+     * @throws OpenCLInitializerException if the device cannot be found, or OpenCL isn't supported
      */
     public OpenCLWorkGenerator(int platformId, int deviceId) {
         this(platformId, deviceId, DEFAULT_THREADS, AbstractWorkGenerator.DEFAULT_POLICY);
@@ -77,7 +78,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
      * @param deviceId    the OpenCL device ID/index
      * @param threadCount the number of parallel compute threads
      *
-     * @throws OpenCLException if the device cannot be found, or OpenCL isn't supported
+     * @throws OpenCLInitializerException if the device cannot be found, or OpenCL isn't supported
      */
     public OpenCLWorkGenerator(int platformId, int deviceId, int threadCount) {
         this(platformId, deviceId, threadCount, AbstractWorkGenerator.DEFAULT_POLICY);
@@ -91,7 +92,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
      * @param deviceId   the OpenCL device ID/index
      * @param policy     the work difficulty policy
      *
-     * @throws OpenCLException if the device cannot be found, or OpenCL isn't supported
+     * @throws OpenCLInitializerException if the device cannot be found, or OpenCL isn't supported
      */
     public OpenCLWorkGenerator(int platformId, int deviceId, WorkDifficultyPolicy policy) {
         this(platformId, deviceId, DEFAULT_THREADS, policy);
@@ -106,7 +107,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
      * @param threadCount the number of parallel compute threads
      * @param policy      the work difficulty policy
      *
-     * @throws OpenCLException if the device cannot be found, or OpenCL isn't supported
+     * @throws OpenCLInitializerException if the device cannot be found, or OpenCL isn't supported
      */
     public OpenCLWorkGenerator(int platformId, int deviceId, int threadCount, WorkDifficultyPolicy policy) {
         super(policy);
@@ -117,12 +118,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
         this.platformId = platformId;
         this.deviceId = deviceId;
         this.threadCount = threadCount;
-        
-        try {
-            initCL();
-        } catch (CLException e) {
-            throw new OpenCLException(e);
-        }
+        initCL(); // Initialize OpenCL kernel
     }
     
     
@@ -138,7 +134,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
      * Returns the OpenCL platform index of the device.
      * @return the OpenCL platform id
      */
-    public int getDevicePlatformId() {
+    public int getPlatformId() {
         return platformId;
     }
     
@@ -160,8 +156,12 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     
     
     @Override
-    public void shutdown() {
+    public void cleanup() {
         try {
+            // Free memory
+            clFinish(clQueue);
+            clReleaseKernel(clKernel);
+            clReleaseCommandQueue(clQueue);
             clReleaseMemObject(clMemAttempt);
             clReleaseMemObject(clMemDifficulty);
             clReleaseMemObject(clMemResult);
@@ -169,18 +169,17 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
         } catch (CLException e) {
             e.printStackTrace();
         } finally {
-            super.shutdown();
+            super.cleanup();
         }
     }
     
     @Override
     public String toString() {
         return "OpenCLWorkGenerator{" +
-                "platformId=" + platformId +
+                "device='" + deviceName + '\'' +
+                ", platformId=" + platformId +
                 ", deviceId=" + deviceId +
-                ", threadCount=" + threadCount +
-                ", deviceName='" + deviceName + '\'' +
-                '}';
+                ", threadCount=" + threadCount + "'}";
     }
     
     @Override
@@ -190,15 +189,15 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
                 Pointer.to(root.toByteArray()), 0, null, null);
         clEnqueueWriteBuffer(clQueue, clMemDifficulty, true, 0, Sizeof.cl_ulong,
                 Pointer.to(new long[] { difficulty.getAsLong() }), 0, null, null);
-    
+
         long[] work_size = { threadCount, 0, 0 };
         long[] arg_attempt = { RANDOM.nextLong() };
         Pointer attemptPointer = Pointer.to(arg_attempt);
         long ignoreResult = resultBuffer[0];
-        
+
         do {
             if (Thread.currentThread().isInterrupted())
-                throw new InterruptedException("Work generation interrupted.");
+                throw new InterruptedException();
             
             arg_attempt[0] += threadCount;
             clEnqueueWriteBuffer(clQueue, clMemAttempt, true, 0, Sizeof.cl_ulong, attemptPointer, 0, null, null);
@@ -211,77 +210,89 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     
     
     private void initCL() {
-        setExceptionsEnabled(true); //TODO: parse errors manually
-        
-        // Obtain the number of platforms
-        int[] numPlatformsArray = new int[1];
-        clGetPlatformIDs(0, null, numPlatformsArray);
-        int numPlatforms = numPlatformsArray[0];
-        if (platformId >= numPlatforms)
-            throw new OpenCLException("Platform ID not valid.");
-        
-        // Obtain a platform ID
-        cl_platform_id[] platforms = new cl_platform_id[numPlatforms];
-        clGetPlatformIDs(platforms.length, platforms, null);
-        cl_platform_id platform = platforms[platformId];
-        
-        // Initialize the context properties
-        cl_context_properties contextProperties = new cl_context_properties();
-        contextProperties.addProperty(CL_CONTEXT_PLATFORM, platform);
+        try {
+            String programSrc = getProgramSource();
+            
+            setExceptionsEnabled(true); //TODO: parse errors manually
+            
+            // Obtain the number of platforms
+            int[] numPlatformsArray = new int[1];
+            clGetPlatformIDs(0, null, numPlatformsArray);
+            int numPlatforms = numPlatformsArray[0];
+            if (platformId >= numPlatforms)
+                throw new OpenCLInitializerException("Platform ID not recognized.");
+            
+            // Obtain a platform ID
+            cl_platform_id[] platforms = new cl_platform_id[numPlatforms];
+            clGetPlatformIDs(platforms.length, platforms, null);
+            cl_platform_id platform = platforms[platformId];
+            
+            // Initialize the context properties
+            cl_context_properties contextProperties = new cl_context_properties();
+            contextProperties.addProperty(CL_CONTEXT_PLATFORM, platform);
+            
+            // Obtain the number of devices for the platform
+            int[] numDevicesArray = new int[1];
+            clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, 0, null, numDevicesArray);
+            int numDevices = numDevicesArray[0];
+            if (deviceId >= numDevices)
+                throw new OpenCLInitializerException("Device ID not recognized.");
     
-        // Obtain the number of devices for the platform
-        int[] numDevicesArray = new int[1];
-        clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, 0, null, numDevicesArray);
-        int numDevices = numDevicesArray[0];
-        if (deviceId >= numDevices)
-            throw new OpenCLException("Device ID not valid.");
-        
-        // Obtain a device ID
-        cl_device_id[] devices = new cl_device_id[numDevices];
-        clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, numDevices, devices, null);
-        cl_device_id device = devices[deviceId];
-        
-        // Fetch device name
-        byte[] deviceName = new byte[256];
-        clGetDeviceInfo(device, CL_DEVICE_NAME, 256, Pointer.to(deviceName), null);
-        this.deviceName = new String(deviceName, StandardCharsets.UTF_8);
-        
-        // Create a context for the selected device
-        cl_context clContext = clCreateContext(contextProperties, 1, new cl_device_id[] {device}, null, null, null);
+            // Obtain a device ID
+            cl_device_id[] devices = new cl_device_id[numDevices];
+            clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, numDevices, devices, null);
+            cl_device_id device = devices[deviceId];
+            
+            // Fetch device name
+            byte[] deviceName = new byte[256];
+            clGetDeviceInfo(device, CL_DEVICE_NAME, 256, Pointer.to(deviceName), null);
+            this.deviceName = new String(deviceName, StandardCharsets.UTF_8);
     
-        // Create a command-queue for the selected device
-        cl_queue_properties properties = new cl_queue_properties();
-        clQueue = clCreateCommandQueueWithProperties(clContext, device, properties, null);
+            // Create a context for the selected device
+            cl_context context = clCreateContext(
+                    contextProperties, 1, new cl_device_id[] { device }, null, null, null);
+            
+            // Create a command-queue for the selected device
+            cl_queue_properties properties = new cl_queue_properties();
+            clQueue = clCreateCommandQueueWithProperties(context, device, properties, null);
     
-        // Create the program from the source code
-        cl_program clProgram = clCreateProgramWithSource(clContext, 1, new String[] {getProgramSource()}, null, null);
-        clBuildProgram(clProgram, 0, null, null, null, null);
-        
-        // Buffers
-        clMemAttempt = clCreateBuffer(clContext, CL_MEM_READ_ONLY | CL_MEM_HOST_WRITE_ONLY,
-                Sizeof.cl_ulong, null, null);
-        clMemResult = clCreateBuffer(clContext, CL_MEM_WRITE_ONLY | CL_MEM_HOST_READ_ONLY,
-                Sizeof.cl_ulong, null, null);
-        resultBuffer = new long[1];
-        clMemResultPtr = Pointer.to(resultBuffer);
-        clMemRoot = clCreateBuffer(clContext, CL_MEM_READ_ONLY | CL_MEM_HOST_WRITE_ONLY,
-                Sizeof.cl_uchar * 32, null, null);
-        clMemDifficulty = clCreateBuffer(clContext, CL_MEM_READ_ONLY | CL_MEM_HOST_WRITE_ONLY,
-                Sizeof.cl_ulong, null, null);
-        
-        // Create the kernel
-        clKernel = clCreateKernel(clProgram, "nano_work", null);
-        clSetKernelArg(clKernel, 0, Sizeof.cl_mem, Pointer.to(clMemAttempt));
-        clSetKernelArg(clKernel, 1, Sizeof.cl_mem, Pointer.to(clMemResult));
-        clSetKernelArg(clKernel, 2, Sizeof.cl_mem, Pointer.to(clMemRoot));
-        clSetKernelArg(clKernel, 3, Sizeof.cl_mem, Pointer.to(clMemDifficulty));
+            // Create the program from the source code
+            cl_program program = clCreateProgramWithSource(
+                    context, 1, new String[] { programSrc }, null, null);
+            clBuildProgram(program, 1, new cl_device_id[] { device }, null, null, null);
+            
+            // Buffers
+            clMemAttempt = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_HOST_WRITE_ONLY,
+                    Sizeof.cl_ulong, null, null);
+            clMemResult = clCreateBuffer(context, CL_MEM_WRITE_ONLY | CL_MEM_HOST_READ_ONLY,
+                    Sizeof.cl_ulong, null, null);
+            resultBuffer = new long[1];
+            clMemResultPtr = Pointer.to(resultBuffer);
+            clMemRoot = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_HOST_WRITE_ONLY,
+                    Sizeof.cl_uchar * 32, null, null);
+            clMemDifficulty = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_HOST_WRITE_ONLY,
+                    Sizeof.cl_ulong, null, null);
+    
+            // Create the kernel
+            clKernel = clCreateKernel(program, "nano_work", null);
+            clSetKernelArg(clKernel, 0, Sizeof.cl_mem, Pointer.to(clMemAttempt));
+            clSetKernelArg(clKernel, 1, Sizeof.cl_mem, Pointer.to(clMemResult));
+            clSetKernelArg(clKernel, 2, Sizeof.cl_mem, Pointer.to(clMemRoot));
+            clSetKernelArg(clKernel, 3, Sizeof.cl_mem, Pointer.to(clMemDifficulty));
+            
+            // Cleanup memory
+            clReleaseDevice(device);
+            clReleaseProgram(program);
+            clReleaseContext(context);
+        } catch (CLException e) {
+            throw new OpenCLInitializerException(e);
+        }
     }
     
     private static String getProgramSource() {
         InputStream resource = OpenCLWorkGenerator.class.getClassLoader().getResourceAsStream("workgen.cl");
         if (resource == null)
             throw new AssertionError("Could not locate resource workgen.cl");
-        
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
@@ -296,14 +307,14 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     
     
     /**
-     * Thrown when an OpenCL exception occurs.
+     * Thrown when an OpenCL exception occurs during initialization.
      */
-    public final static class OpenCLException extends RuntimeException {
-        OpenCLException(String message) {
+    public final static class OpenCLInitializerException extends RuntimeException {
+        OpenCLInitializerException(String message) {
             super(message);
         }
         
-        OpenCLException(Throwable cause) {
+        OpenCLInitializerException(Throwable cause) {
             super(cause);
         }
     }

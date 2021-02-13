@@ -91,11 +91,11 @@ public final class CPUWorkGenerator extends AbstractWorkGenerator {
     }
     
     @Override
-    public void shutdown() {
+    public void cleanup() {
         try {
             executorService.shutdownNow();
         } finally {
-            super.shutdown();
+            super.cleanup();
         }
     }
     

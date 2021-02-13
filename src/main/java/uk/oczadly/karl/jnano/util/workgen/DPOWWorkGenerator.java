@@ -116,11 +116,11 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
     
     
     @Override
-    public void shutdown() {
+    public void cleanup() {
         try {
             websocket.close();
         } finally {
-            super.shutdown();
+            super.cleanup();
         }
     }
     

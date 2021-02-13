@@ -30,13 +30,17 @@ import java.util.concurrent.*;
  */
 public abstract class AbstractWorkGenerator implements WorkGenerator {
     
-    private static final ThreadFactory CONSUMER_THREAD_FACTORY = JNH.threadFactory("WorkGenerator-Consumer", true);
+    private static final ThreadFactory CONSUMER_THREAD_FACTORY =
+            JNH.threadFactory("AbstractWorkGenerator-Consumer", true);
     
     /** The default Nano difficulty policy. */
     protected static final WorkDifficultyPolicy DEFAULT_POLICY = NetworkConstants.NANO.getWorkDifficulties();
     
-    private final ExecutorService executor = Executors.newSingleThreadExecutor(CONSUMER_THREAD_FACTORY);
+    private final ExecutorService requestExecutor = Executors.newSingleThreadExecutor(CONSUMER_THREAD_FACTORY);
     private final WorkDifficultyPolicy policy;
+    
+    private final Object shutdownLock = new Object();
+    private volatile boolean isShutdown, isGenerating;
     
     /**
      * @param policy the work difficulty policy
@@ -59,6 +63,19 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
     protected abstract WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
             throws Exception;
     
+    
+    /**
+     * Returns whether this work generator is currently generating some work.
+     * @return true if work is currently being generated
+     */
+    public final boolean isGenerating() {
+        return isGenerating;
+    }
+    
+    @Override
+    public final WorkDifficultyPolicy getDifficultyPolicy() {
+        return policy;
+    }
     
     @Override
     public Future<GeneratedWork> generate(Block block, WorkDifficulty baseDifficulty) {
@@ -100,38 +117,56 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
         return enqueueWork(new WorkRequestSpec(policy, root, diffMultiplier, null));
     }
     
-    
-    @Override
-    public final WorkDifficultyPolicy getDifficultyPolicy() {
-        return policy;
+    private Future<GeneratedWork> enqueueWork(WorkRequestSpec spec) {
+        if (isShutdown())
+            throw new IllegalStateException("Work generator is shut down and cannot accept new requests.");
+        return requestExecutor.submit(new WorkGeneratorTask(spec));
     }
+    
     
     @Override
     public final boolean isShutdown() {
-        return executor.isShutdown();
+        return isShutdown;
     }
     
     @Override
-    public void shutdown() {
-        executor.shutdownNow();
+    public final void shutdown() {
+        if (isShutdown) return;
+        synchronized (shutdownLock) {
+            if (!isShutdown) {
+                isShutdown = true;
+                runCleanupThread();
+            }
+        }
     }
     
-    private Future<GeneratedWork> enqueueWork(WorkRequestSpec spec) {
-        if (executor.isShutdown())
-            throw new IllegalStateException("Work generator is shut down and cannot accept new requests.");
-        
-        return executor.submit(new WorkGeneratorTask(spec));
-    }
+    /**
+     * Clean up (instances, end connections, terminate threads, etc) when this is called.
+     * Work production is guaranteed to have ended when this method is invoked.
+     */
+    protected void cleanup() {}
     
+    private void runCleanupThread() {
+        Thread shutdownThread = new Thread(() -> {
+            try {
+                // Shutdown executor and wait for completion
+                requestExecutor.shutdownNow();
+                while (!requestExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS));
+                // Run cleanup
+                cleanup();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        });
+        shutdownThread.setName("WorkGen-CleanupThread-" + shutdownThread.getId());
+        shutdownThread.setDaemon(true);
+        shutdownThread.start();
+    }
     
     @SuppressWarnings("deprecation")
     @Override
-    protected void finalize() throws Throwable {
-        try {
-            shutdown();
-        } finally {
-            super.finalize();
-        }
+    protected final void finalize() {
+        shutdown();
     }
     
     
@@ -141,15 +176,29 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
         public WorkGeneratorTask(WorkRequestSpec spec) {
             this.spec = spec;
         }
-    
+        
         @Override
         public GeneratedWork call() throws Exception {
-            HexData root = spec.root;
-            WorkRequestSpec.DifficultySet difficulty = spec.fetchDifficulty();
-            RequestContext context = new RequestContext(spec.block, difficulty.getMultiplier(), difficulty.getBase());
-            
-            WorkSolution work = generateWork(root, difficulty.getTarget(), context);
-            return new GeneratedWork(work, root, difficulty.getBase(), difficulty.getTarget());
+            if (isShutdown) throw new InterruptedException("Work generator was shut down.");
+            isGenerating = true;
+            try {
+                // Fetch request params
+                HexData root = spec.root;
+                WorkRequestSpec.DifficultySet diff = spec.fetchDifficulty();
+                RequestContext context = new RequestContext(spec.block, diff.getMultiplier(), diff.getBase());
+                
+                // Generate work
+                WorkSolution work = generateWork(root, diff.getTarget(), context);
+                if (work == null) throw new NullPointerException("Generated work solution was null.");
+                
+                // Return computed work
+                return new GeneratedWork(work, root, diff.getBase(), diff.getTarget());
+            } catch (InterruptedException e) {
+                if (isShutdown) throw new InterruptedException("Work generator was shut down.");
+                throw e;
+            } finally {
+                isGenerating = false;
+            }
         }
     }
     
@@ -180,12 +229,11 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
          * @see #getBlock()
          */
         public Optional<NanoAccount> getAccount() {
-            if (block != null && block instanceof IBlockAccount) {
-                return Optional.ofNullable(((IBlockAccount)block).getAccount());
-            }
+            if (block instanceof IBlockAccount)
+                return Optional.of(((IBlockAccount)block).getAccount());
             return Optional.empty();
         }
-    
+        
         /**
          * @return the difficulty multiplier in respect to the base difficulty
          */
