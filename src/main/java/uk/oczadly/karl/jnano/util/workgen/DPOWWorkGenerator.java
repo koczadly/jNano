@@ -57,7 +57,7 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
     private final String user, apiKey;
     private final int timeout;
     private final WSHandler websocket;
-    private final IDRequestTracker<JsonObject> tracker = new IDRequestTracker<>();
+    private final IDRequestTracker<JsonObject> reqTracker = new IDRequestTracker<>();
     
     /**
      * Creates a new {@code DPOWWorkGenerator} which generates work on the external DPoW service.
@@ -81,7 +81,7 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
         this.user = user;
         this.apiKey = apiKey;
         this.timeout = timeout;
-        this.websocket = new WSHandler(uri, tracker);
+        this.websocket = new WSHandler(uri, reqTracker);
         this.websocket.connect();
     }
     
@@ -127,21 +127,25 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
     @Override
     protected final WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
             throws WorkGenerationException, InterruptedException {
+        IDRequestTracker<JsonObject>.Tracker tracker = null;
         try {
             // Await connection
             websocket.awaitConnection(timeout, TimeUnit.SECONDS);
-    
+            
             // Send
-            IDRequestTracker<JsonObject>.Tracker tr = tracker.newTracker();
-            String request = buildRequest(tr.getID(), root, difficulty, context);
+            tracker = reqTracker.newTracker();
+            String request = buildRequest(tracker.getID(), root, difficulty, context);
             websocket.send(request);
     
-            JsonObject response = tr.await(timeout, TimeUnit.SECONDS); // Await response
+            JsonObject response = tracker.await(timeout, TimeUnit.SECONDS); // Await response
             return parseResponse(response); // Parse and return response
         } catch (TimeoutException e) {
             throw new WorkGenerationException("Connection timeout.", e);
         } catch (IDRequestTracker.TrackerExpiredException e) {
             throw new AssertionError("Tracker expired.", e);
+        } finally {
+            if (tracker != null)
+                tracker.expire();
         }
     }
     

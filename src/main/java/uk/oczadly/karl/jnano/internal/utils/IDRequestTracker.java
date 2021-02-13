@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * Tracks a pending request.
  */
 public class IDRequestTracker<T> {
-
+    
     private final AtomicLong nextId = new AtomicLong();
     private final Map<String, Tracker> map = new ConcurrentHashMap<>();
     
@@ -88,7 +88,13 @@ public class IDRequestTracker<T> {
                 map.remove(id.toLowerCase());
             }
         }
-    
+        
+        public void expire() {
+            if (latch.getCount() != 0)
+                set(null, false);
+            map.remove(id.toLowerCase());
+        }
+        
         private synchronized boolean set(T result, boolean success) {
             if (latch.getCount() > 0) {
                 this.result = result;

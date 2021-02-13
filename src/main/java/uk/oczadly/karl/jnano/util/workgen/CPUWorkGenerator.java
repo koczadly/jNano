@@ -121,6 +121,9 @@ public final class CPUWorkGenerator extends AbstractWorkGenerator {
             return result.get();
         } catch (ExecutionException e) {
             throw new WorkGenerationException(e.getCause());
+        } catch (InterruptedException e) {
+            result.completeExceptionally(e); // Notifies worker threads
+            throw e;
         }
     }
     
@@ -176,7 +179,7 @@ public final class CPUWorkGenerator extends AbstractWorkGenerator {
                 for (int i = 1; i < 8; i++)
                     if (++bytes[i] != 0) break;
             }
-            
+    
             // Either complete (and will be ignored), or interrupted and should throw exception
             result.completeExceptionally(new InterruptedException("Work task interrupted."));
         }
