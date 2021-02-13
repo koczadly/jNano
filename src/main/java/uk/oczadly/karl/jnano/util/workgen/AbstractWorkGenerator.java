@@ -68,10 +68,11 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
      * @param difficulty the work difficulty
      * @param context    additional contextual info on the request
      * @return the computed work solution
-     * @throws Exception if something goes wrong with generation
+     * @throws WorkGenerationException if the work could not be generated
+     * @throws InterruptedException    if the thread is interrupted (work cancellation)
      */
     protected abstract WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
-            throws Exception;
+            throws WorkGenerationException, InterruptedException;
     
     
     public final boolean isGenerating() {
@@ -189,7 +190,9 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
         
         @Override
         public GeneratedWork call() throws Exception {
-            if (isShutdown) throw new InterruptedException("Work generator was shut down.");
+            if (isShutdown)
+                throw new WorkGenerationException("Work generator was shut down.");
+            
             isGenerating = true;
             try {
                 // Fetch request params
@@ -211,8 +214,11 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
                 workCache.put(root, new CachedWork(genWork)); // Store in cache
                 return genWork;
             } catch (InterruptedException e) {
-                if (isShutdown) throw new InterruptedException("Work generator was shut down.");
-                throw e;
+                if (isShutdown) {
+                    throw new WorkGenerationException("Work generator was shut down.", e);
+                } else {
+                    throw new WorkGenerationException("Work request was cancelled.", e);
+                }
             } finally {
                 isGenerating = false;
             }

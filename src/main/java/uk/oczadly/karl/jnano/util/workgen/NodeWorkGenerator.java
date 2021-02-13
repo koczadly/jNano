@@ -100,7 +100,7 @@ public class NodeWorkGenerator extends AbstractWorkGenerator {
     
     @Override
     protected final WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
-            throws Exception {
+            throws WorkGenerationException, InterruptedException {
         // We submit to an executor so that we can receive interrupts and send out a cancellation request.
         Future<WorkSolution> work = workExecutor.submit(() -> sendWorkRequest(root, difficulty));
         
@@ -113,9 +113,7 @@ public class NodeWorkGenerator extends AbstractWorkGenerator {
             throw e;
         } catch (ExecutionException e) {
             // Exception with computation or IO
-            if (e.getCause() instanceof Exception)
-                throw (Exception)e.getCause();
-            throw new Error(e.getCause()); // Unexpected exception type
+            throw new WorkGenerationException(e.getCause());
         }
     }
     

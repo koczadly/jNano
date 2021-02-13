@@ -184,28 +184,32 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     
     @Override
     protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
-            throws Exception {
-        clEnqueueWriteBuffer(clQueue, clMemRoot, true, 0, Sizeof.cl_uchar * 32,
-                Pointer.to(root.toByteArray()), 0, null, null);
-        clEnqueueWriteBuffer(clQueue, clMemDifficulty, true, 0, Sizeof.cl_ulong,
-                Pointer.to(new long[] { difficulty.getAsLong() }), 0, null, null);
-
-        long[] work_size = { threadCount, 0, 0 };
-        long[] arg_attempt = { RANDOM.nextLong() };
-        Pointer attemptPointer = Pointer.to(arg_attempt);
-        long ignoreResult = resultBuffer[0];
-
-        do {
-            if (Thread.currentThread().isInterrupted())
-                throw new InterruptedException();
-            
-            arg_attempt[0] += threadCount;
-            clEnqueueWriteBuffer(clQueue, clMemAttempt, true, 0, Sizeof.cl_ulong, attemptPointer, 0, null, null);
-            clEnqueueNDRangeKernel(clQueue, clKernel, 1, null, work_size, null, 0, null, null);
-            clEnqueueReadBuffer(clQueue, clMemResult, true, 0, Sizeof.cl_ulong, clMemResultPtr, 0, null, null);
-            clFinish(clQueue);
-        } while (resultBuffer[0] == ignoreResult); // Skip initial value (result from previous)
-        return new WorkSolution(resultBuffer[0]);
+            throws WorkGenerationException, InterruptedException {
+        try {
+            clEnqueueWriteBuffer(clQueue, clMemRoot, true, 0, Sizeof.cl_uchar * 32,
+                    Pointer.to(root.toByteArray()), 0, null, null);
+            clEnqueueWriteBuffer(clQueue, clMemDifficulty, true, 0, Sizeof.cl_ulong,
+                    Pointer.to(new long[] {difficulty.getAsLong()}), 0, null, null);
+    
+            long[] work_size = {threadCount, 0, 0};
+            long[] arg_attempt = {RANDOM.nextLong()};
+            Pointer attemptPointer = Pointer.to(arg_attempt);
+            long ignoreResult = resultBuffer[0];
+    
+            do {
+                if (Thread.currentThread().isInterrupted())
+                    throw new InterruptedException();
+        
+                arg_attempt[0] += threadCount;
+                clEnqueueWriteBuffer(clQueue, clMemAttempt, true, 0, Sizeof.cl_ulong, attemptPointer, 0, null, null);
+                clEnqueueNDRangeKernel(clQueue, clKernel, 1, null, work_size, null, 0, null, null);
+                clEnqueueReadBuffer(clQueue, clMemResult, true, 0, Sizeof.cl_ulong, clMemResultPtr, 0, null, null);
+                clFinish(clQueue);
+            } while (resultBuffer[0] == ignoreResult); // Skip initial value (result from previous)
+            return new WorkSolution(resultBuffer[0]);
+        } catch (CLException e) {
+            throw new WorkGenerationException("A problem with OpenCL occurred.", e);
+        }
     }
     
     

@@ -14,10 +14,7 @@ import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
 
 import java.util.Arrays;
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.*;
 
 /**
  * This {@code WorkGenerator} computes the work solution on the system's CPU within the JVM, without requiring an
@@ -101,7 +98,7 @@ public final class CPUWorkGenerator extends AbstractWorkGenerator {
     
     @Override
     protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
-            throws Exception {
+            throws WorkGenerationException, InterruptedException {
         // Prepare parameters
         byte[] rootBytes = root.toByteArray();
         byte[] thresholdBytes = JNH.reverseArray(JNH.longToBytes(difficulty.getAsLong()));
@@ -117,11 +114,14 @@ public final class CPUWorkGenerator extends AbstractWorkGenerator {
         for (int i = 0; i < threadCount; i++) {
             byte[] initialWork = Arrays.copyOf(initialWorkTemplate, initialWorkTemplate.length);
             initialWork[7] += (byte)(i * threadSpacing); // Space initial work values apart from each thread
-    
             executorService.submit(new GeneratorTask(rootBytes, threshold, initialWork, result));
         }
-    
-        return result.get();
+        
+        try {
+            return result.get();
+        } catch (ExecutionException e) {
+            throw new WorkGenerationException(e.getCause());
+        }
     }
     
     

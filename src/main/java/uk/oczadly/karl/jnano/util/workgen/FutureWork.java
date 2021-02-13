@@ -16,7 +16,7 @@ import java.util.concurrent.TimeoutException;
  * Represents a {@code Future<GeneratedWork>} object which has yet to complete. Allows retrieval of root hash, and
  * provides a convenience cancel() method with no arguments.
  */
-public final class FutureWork implements Future<GeneratedWork> {
+public class FutureWork implements Future<GeneratedWork> {
     
     private final Future<GeneratedWork> future;
     private final HexData root;
@@ -35,7 +35,7 @@ public final class FutureWork implements Future<GeneratedWork> {
      * Returns the root hash of the work request.
      * @return the root hash of the request
      */
-    public HexData getRequestBlockRoot() {
+    public final HexData getRequestBlockRoot() {
         return root;
     }
     
@@ -65,27 +65,28 @@ public final class FutureWork implements Future<GeneratedWork> {
      */
     @Override
     @Deprecated
-    public boolean cancel(boolean mayInterruptIfRunning) {
+    public final boolean cancel(boolean mayInterruptIfRunning) {
         return cancel();
     }
     
     @Override
-    public boolean isCancelled() {
+    public final boolean isCancelled() {
         return future.isCancelled();
     }
     
     @Override
-    public boolean isDone() {
+    public final boolean isDone() {
         return future.isDone();
     }
     
     @Override
-    public GeneratedWork get() throws InterruptedException, ExecutionException {
+    public final GeneratedWork get() throws InterruptedException, ExecutionException {
         return future.get();
     }
     
     @Override
-    public GeneratedWork get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public final GeneratedWork get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException,
+                                                                       TimeoutException {
         return future.get(timeout, unit);
     }
     

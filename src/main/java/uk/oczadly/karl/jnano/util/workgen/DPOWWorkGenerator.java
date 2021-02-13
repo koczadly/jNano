@@ -126,17 +126,23 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
     
     @Override
     protected final WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
-            throws Exception {
-        // Await connection
-        websocket.awaitConnection(timeout, TimeUnit.SECONDS);
-        
-        // Send
-        IDRequestTracker<JsonObject>.Tracker tr = tracker.newTracker();
-        String request = buildRequest(tr.getID(), root, difficulty, context);
-        websocket.send(request);
-        
-        JsonObject response = tr.await(timeout, TimeUnit.SECONDS); // Await response
-        return parseResponse(response); // Parse and return response
+            throws WorkGenerationException, InterruptedException {
+        try {
+            // Await connection
+            websocket.awaitConnection(timeout, TimeUnit.SECONDS);
+    
+            // Send
+            IDRequestTracker<JsonObject>.Tracker tr = tracker.newTracker();
+            String request = buildRequest(tr.getID(), root, difficulty, context);
+            websocket.send(request);
+    
+            JsonObject response = tr.await(timeout, TimeUnit.SECONDS); // Await response
+            return parseResponse(response); // Parse and return response
+        } catch (TimeoutException e) {
+            throw new WorkGenerationException("Connection timeout.", e);
+        } catch (IDRequestTracker.TrackerExpiredException e) {
+            throw new AssertionError("Tracker expired.", e);
+        }
     }
     
     
@@ -247,8 +253,10 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
     /**
      * Thrown when a remote error occurs when requesting or generating work.
      */
-    public static class RemoteException extends Exception {
-        RemoteException(String message) { super(message); }
+    public static class RemoteException extends WorkGenerationException {
+        RemoteException(String message) {
+            super(message);
+        }
     }
     
     
