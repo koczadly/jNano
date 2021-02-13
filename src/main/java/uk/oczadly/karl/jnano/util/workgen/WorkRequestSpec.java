@@ -50,12 +50,17 @@ class WorkRequestSpec {
         WorkDifficulty base;
         if (reqDifficulty != null) {
             base = reqDifficulty;           // Using difficulty constant
-        } else if (block != null) {
-            base = policy.forBlock(block);  // Using block
+        } else if (policy != null) {
+            if (block != null) {
+                base = policy.forBlock(block);  // Using block
+            } else {
+                base = policy.forAny();         // Using "any" difficulty
+            }
         } else {
-            base = policy.forAny();         // Using "any" difficulty
+            throw new AssertionError("Cannot determine work difficulty.");
         }
-        return new DifficultySet(base, policy.multiplier() * reqMultiplier);
+        double baseMulti = policy != null ? policy.multiplier() : 1;
+        return new DifficultySet(base, baseMulti * reqMultiplier);
     }
     
     

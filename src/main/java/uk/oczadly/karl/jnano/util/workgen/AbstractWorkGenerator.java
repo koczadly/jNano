@@ -87,6 +87,7 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
         return policy;
     }
     
+    
     @Override
     public final FutureWork generate(Block block, WorkDifficulty baseDifficulty) {
         if (block == null)
@@ -130,8 +131,8 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
     private FutureWork enqueueWork(WorkRequestSpec spec) {
         if (isShutdown())
             throw new IllegalStateException("Work generator is shut down and cannot accept new requests.");
-        Future<GeneratedWork> result = requestExecutor.submit(new WorkGeneratorTask(spec));
-        return new FutureWork(result, spec.root);
+        
+        return new FutureWork(requestExecutor.submit(new WorkGeneratorTask(spec)));
     }
     
     

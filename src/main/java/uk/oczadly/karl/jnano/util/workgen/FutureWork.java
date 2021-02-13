@@ -5,8 +5,6 @@
 
 package uk.oczadly.karl.jnano.util.workgen;
 
-import uk.oczadly.karl.jnano.model.HexData;
-
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -19,24 +17,12 @@ import java.util.concurrent.TimeoutException;
 public class FutureWork implements Future<GeneratedWork> {
     
     private final Future<GeneratedWork> future;
-    private final HexData root;
     
     /**
-     * @param future the future object
-     * @param root   the request root hash
+     * @param future the future proxy object
      */
-    public FutureWork(Future<GeneratedWork> future, HexData root) {
+    public FutureWork(Future<GeneratedWork> future) {
         this.future = future;
-        this.root = root;
-    }
-    
-    
-    /**
-     * Returns the root hash of the work request.
-     * @return the root hash of the request
-     */
-    public final HexData getRequestBlockRoot() {
-        return root;
     }
     
     
