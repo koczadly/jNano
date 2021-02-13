@@ -6,6 +6,7 @@
 package uk.oczadly.karl.jnano.util.workgen;
 
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.internal.utils.LimitedCacheMap;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.Block;
@@ -15,6 +16,8 @@ import uk.oczadly.karl.jnano.model.work.WorkSolution;
 import uk.oczadly.karl.jnano.util.NetworkConstants;
 import uk.oczadly.karl.jnano.util.workgen.policy.WorkDifficultyPolicy;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.*;
 
@@ -25,6 +28,9 @@ import java.util.concurrent.*;
  * policy object will defer computation and retrieval of the policy until they begin processing, ensuring that
  * time-sensitive policies are still applicable to generated work.</p>
  *
+ * <p>Work generations will be globally cached automatically, shared across all implementations. This cache will
+ * store up to {@code 100} work generation requests before purging them.</p>
+ *
  * <p>Instances of this class should be re-used throughout your application, as each instance will spawn new
  * background threads. This practice also ensures that tasks are queued correctly in the order of request.</p>
  */
@@ -32,6 +38,9 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
     
     private static final ThreadFactory CONSUMER_THREAD_FACTORY =
             JNH.threadFactory("AbstractWorkGenerator-Consumer", true);
+    
+    private static final Map<HexData, CachedWork> workCache =
+            Collections.synchronizedMap(new LimitedCacheMap<>(100));
     
     /** The default Nano difficulty policy. */
     protected static final WorkDifficultyPolicy DEFAULT_POLICY = NetworkConstants.NANO.getWorkDifficulties();
@@ -187,12 +196,19 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
                 WorkRequestSpec.DifficultySet diff = spec.fetchDifficulty();
                 RequestContext context = new RequestContext(spec.block, diff.getMultiplier(), diff.getBase());
                 
+                // Check cache for precomputed value
+                CachedWork cache = workCache.get(root);
+                if (cache != null && cache.difficulty.isValid(diff.getTarget()))
+                    return new GeneratedWork(cache.work, root, diff.getBase(), diff.getTarget());
+                
                 // Generate work
                 WorkSolution work = generateWork(root, diff.getTarget(), context);
                 if (work == null) throw new NullPointerException("Generated work solution was null.");
                 
                 // Return computed work
-                return new GeneratedWork(work, root, diff.getBase(), diff.getTarget());
+                GeneratedWork genWork = new GeneratedWork(work, root, diff.getBase(), diff.getTarget());
+                workCache.put(root, new CachedWork(genWork)); // Store in cache
+                return genWork;
             } catch (InterruptedException e) {
                 if (isShutdown) throw new InterruptedException("Work generator was shut down.");
                 throw e;
@@ -246,6 +262,17 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
          */
         public WorkDifficulty getBaseDifficulty() {
             return baseDifficulty;
+        }
+    }
+    
+    /** Stores the work and difficulty for the given root. */
+    private static class CachedWork {
+        private final WorkSolution work;
+        private final WorkDifficulty difficulty;
+        
+        public CachedWork(GeneratedWork work) {
+            this.work = work.getWork();
+            this.difficulty = work.getDifficulty();
         }
     }
 
