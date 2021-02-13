@@ -80,7 +80,7 @@ public final class NanoWebSocketClient {
     /**
      * @return true if the websocket is currently running
      */
-    public boolean isOpen() {
+    public synchronized boolean isOpen() {
         return ws != null && ws.isOpen();
     }
     
@@ -91,7 +91,7 @@ public final class NanoWebSocketClient {
      * @return true if the websocket has connected
      * @throws InterruptedException if the thread is interrupted
      */
-    public boolean connect() throws InterruptedException {
+    public synchronized boolean connect() throws InterruptedException {
         if (isOpen())
             throw new IllegalStateException("WebSocket is already open.");
     
@@ -103,7 +103,7 @@ public final class NanoWebSocketClient {
     /**
      * Closes the currently-open websocket.
      */
-    public void close() {
+    public synchronized void close() {
         if (!isOpen())
             throw new IllegalStateException("The WebSocket is not currently open.");
         ws.close();
@@ -124,7 +124,7 @@ public final class NanoWebSocketClient {
      * @param wsObserver the socket listener
      * @throws IllegalStateException if the socket is currently open
      */
-    public void setObserver(WsObserver wsObserver) {
+    public synchronized void setObserver(WsObserver wsObserver) {
         if (isOpen())
             throw new IllegalStateException("The socket listener cannot be updated while the WebSocket is open.");
         this.wsObserver = wsObserver;
