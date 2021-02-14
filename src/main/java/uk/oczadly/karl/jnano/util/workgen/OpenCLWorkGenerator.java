@@ -35,17 +35,17 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     private static final Random RANDOM = new Random(); // Used for work initialization
     
     private final int platformId, deviceId, threadCount;
-    private String deviceName;
+    private volatile String deviceName;
     
     // OpenCL buffers and params
-    private cl_command_queue clQueue;
-    private cl_kernel clKernel;
-    private cl_mem clMemAttempt;
-    private cl_mem clMemRoot;
-    private cl_mem clMemDifficulty;
-    private cl_mem clMemResult;
-    private long[] resultBuffer;
-    private Pointer clMemResultPtr;
+    private volatile cl_command_queue clQueue;
+    private volatile cl_kernel clKernel;
+    private volatile cl_mem clMemAttempt;
+    private volatile cl_mem clMemRoot;
+    private volatile cl_mem clMemDifficulty;
+    private volatile cl_mem clMemResult;
+    private volatile long[] resultBuffer;
+    private volatile Pointer clMemResultPtr;
     
     /**
      * Constructs an {@code OpenCLWorkGenerator} with the default Nano difficulty policy using {@value #DEFAULT_THREADS}
@@ -149,8 +149,8 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     }
     
     /**
-     * Returns the OpenCL device name on which the work will be generated.
-     * @return the OpenCL device id
+     * Returns the name of the OpenCL device on which the work will be generated.
+     * @return the OpenCL device name
      */
     public String getDeviceName() {
         return deviceName;
@@ -188,27 +188,30 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     protected WorkSolution generateWork(HexData root, WorkDifficulty difficulty, RequestContext context)
             throws WorkGenerationException, InterruptedException {
         try {
+            // Set root hash arg
             clEnqueueWriteBuffer(clQueue, clMemRoot, true, 0, Sizeof.cl_uchar * 32,
                     Pointer.to(root.toByteArray()), 0, null, null);
+            // Set difficulty arg
             clEnqueueWriteBuffer(clQueue, clMemDifficulty, true, 0, Sizeof.cl_ulong,
                     Pointer.to(new long[] { difficulty.getAsLong() }), 0, null, null);
-    
+            
             long[] work_size = { threadCount, 0, 0 };
             long[] arg_attempt = { RANDOM.nextLong() };
             Pointer attemptPointer = Pointer.to(arg_attempt);
             long ignoreResult = resultBuffer[0];
-    
+            
+            // Repeatedly process generation attempts until a result is found
             do {
-                if (Thread.currentThread().isInterrupted())
-                    throw new InterruptedException();
-        
-                arg_attempt[0] += threadCount;
+                if (Thread.interrupted()) throw new InterruptedException();
+                
+                arg_attempt[0] += threadCount; // Increment attempt
                 clEnqueueWriteBuffer(clQueue, clMemAttempt, true, 0, Sizeof.cl_ulong, attemptPointer, 0, null, null);
                 clEnqueueNDRangeKernel(clQueue, clKernel, 1, null, work_size, null, 0, null, null);
                 clEnqueueReadBuffer(clQueue, clMemResult, true, 0, Sizeof.cl_ulong, clMemResultPtr, 0, null, null);
                 clFinish(clQueue);
             } while (resultBuffer[0] == ignoreResult); // Skip initial value (result from previous)
-            return new WorkSolution(resultBuffer[0]);
+            
+            return new WorkSolution(resultBuffer[0]); // Solution found
         } catch (CLException e) {
             throw new WorkGenerationException("A problem with OpenCL occurred.", e);
         }
