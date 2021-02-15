@@ -15,6 +15,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
@@ -38,14 +40,14 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     private volatile String deviceName;
     
     // OpenCL buffers and params
+    private final ByteBuffer attemptBuf, resultBuf;
+    private final Pointer attemptPtr, resultPtr;
     private volatile cl_command_queue clQueue;
     private volatile cl_kernel clKernel;
     private volatile cl_mem clMemAttempt;
     private volatile cl_mem clMemRoot;
     private volatile cl_mem clMemDifficulty;
     private volatile cl_mem clMemResult;
-    private volatile long[] resultBuffer;
-    private volatile Pointer clMemResultPtr;
     
     /**
      * Constructs an {@code OpenCLWorkGenerator} with the default Nano difficulty policy using {@value #DEFAULT_THREADS}
@@ -120,6 +122,11 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
         this.platformId = platformId;
         this.deviceId = deviceId;
         this.threadCount = threadCount;
+    
+        attemptBuf = ByteBuffer.allocateDirect(8).order(ByteOrder.LITTLE_ENDIAN);
+        attemptPtr = Pointer.to(attemptBuf);
+        resultBuf = ByteBuffer.allocateDirect(8).order(ByteOrder.LITTLE_ENDIAN);
+        resultPtr = Pointer.to(resultBuf);
         initCL(); // Initialize OpenCL kernel
     }
     
@@ -195,23 +202,24 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
             clEnqueueWriteBuffer(clQueue, clMemDifficulty, true, 0, Sizeof.cl_ulong,
                     Pointer.to(new long[] { difficulty.getAsLong() }), 0, null, null);
             
-            long[] work_size = { threadCount, 0, 0 };
-            long[] arg_attempt = { RANDOM.nextLong() };
-            Pointer attemptPointer = Pointer.to(arg_attempt);
-            long ignoreResult = resultBuffer[0];
+            attemptBuf.putLong(0, RANDOM.nextLong());
+            long ignoreVal = resultBuf.getLong(0);
+            long[] workSize = { threadCount, 0, 0 };
             
             // Repeatedly process generation attempts until a result is found
+            long result;
             do {
                 if (Thread.interrupted()) throw new InterruptedException();
                 
-                arg_attempt[0] += threadCount; // Increment attempt
-                clEnqueueWriteBuffer(clQueue, clMemAttempt, true, 0, Sizeof.cl_ulong, attemptPointer, 0, null, null);
-                clEnqueueNDRangeKernel(clQueue, clKernel, 1, null, work_size, null, 0, null, null);
-                clEnqueueReadBuffer(clQueue, clMemResult, true, 0, Sizeof.cl_ulong, clMemResultPtr, 0, null, null);
+                attemptBuf.putLong(0, attemptBuf.getLong(0) + threadCount); // Increment attempt
+                clEnqueueWriteBuffer(clQueue, clMemAttempt, false, 0, Sizeof.cl_ulong, attemptPtr, 0, null, null);
+                clEnqueueNDRangeKernel(clQueue, clKernel, 1, null, workSize, null, 0, null, null);
+                clEnqueueReadBuffer(clQueue, clMemResult, false, 0, Sizeof.cl_ulong, resultPtr, 0, null, null);
                 clFinish(clQueue);
-            } while (resultBuffer[0] == ignoreResult); // Skip initial value (result from previous)
+                result = resultBuf.getLong(0);
+            } while (result == ignoreVal); // Compute until value is changed (solution found)
             
-            return new WorkSolution(resultBuffer[0]); // Solution found
+            return new WorkSolution(result);
         } catch (CLException e) {
             throw new WorkGenerationException("A problem with OpenCL occurred.", e);
         }
@@ -220,7 +228,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     
     private void initCL() throws OpenCLInitializerException {
         try {
-            String programSrc = getProgramSource();
+            String programSrc = getProgramSource("workgen.cl");
             
             setExceptionsEnabled(true); //TODO: parse errors manually
             
@@ -246,7 +254,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
             int numDevices = numDevicesArray[0];
             if (deviceId >= numDevices)
                 throw new OpenCLInitializerException("Device ID not recognized.");
-    
+            
             // Obtain a device ID
             cl_device_id[] devices = new cl_device_id[numDevices];
             clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, numDevices, devices, null);
@@ -256,7 +264,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
             byte[] deviceName = new byte[256];
             clGetDeviceInfo(device, CL_DEVICE_NAME, 256, Pointer.to(deviceName), null);
             this.deviceName = new String(deviceName, StandardCharsets.UTF_8);
-    
+            
             // Create a context for the selected device
             cl_context context = clCreateContext(
                     contextProperties, 1, new cl_device_id[] { device }, null, null, null);
@@ -264,24 +272,22 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
             // Create a command-queue for the selected device
             cl_queue_properties properties = new cl_queue_properties();
             clQueue = clCreateCommandQueueWithProperties(context, device, properties, null);
-    
+            
             // Create the program from the source code
             cl_program program = clCreateProgramWithSource(
                     context, 1, new String[] { programSrc }, null, null);
             clBuildProgram(program, 1, new cl_device_id[] { device }, null, null, null);
             
             // Buffers
-            clMemAttempt = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_HOST_WRITE_ONLY,
-                    Sizeof.cl_ulong, null, null);
-            clMemResult = clCreateBuffer(context, CL_MEM_WRITE_ONLY | CL_MEM_HOST_READ_ONLY,
-                    Sizeof.cl_ulong, null, null);
-            resultBuffer = new long[1];
-            clMemResultPtr = Pointer.to(resultBuffer);
+            clMemAttempt = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_HOST_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
+                    Sizeof.cl_ulong, attemptPtr, null);
+            clMemResult = clCreateBuffer(context, CL_MEM_WRITE_ONLY | CL_MEM_HOST_READ_ONLY | CL_MEM_USE_HOST_PTR,
+                    Sizeof.cl_ulong, resultPtr, null);
             clMemRoot = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_HOST_WRITE_ONLY,
                     Sizeof.cl_uchar * 32, null, null);
             clMemDifficulty = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_HOST_WRITE_ONLY,
                     Sizeof.cl_ulong, null, null);
-    
+            
             // Create the kernel
             clKernel = clCreateKernel(program, "nano_work", null);
             clSetKernelArg(clKernel, 0, Sizeof.cl_mem, Pointer.to(clMemAttempt));
@@ -298,8 +304,8 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
         }
     }
     
-    private static String getProgramSource() {
-        InputStream resource = OpenCLWorkGenerator.class.getClassLoader().getResourceAsStream("workgen.cl");
+    private static String getProgramSource(String filename) {
+        InputStream resource = OpenCLWorkGenerator.class.getClassLoader().getResourceAsStream(filename);
         if (resource == null)
             throw new AssertionError("Could not locate resource workgen.cl");
         try {
