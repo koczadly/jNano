@@ -52,7 +52,7 @@ public class WorkCacheTest {
         assertTrue(cache.store(work2, root));  // Greater difficulty
         assertFalse(cache.store(work1, root)); // Lower difficulty (rejected)
         
-        assertEquals(1, cache.getSize());
+        assertEquals(1, cache.size());
         assertEquals(work2, cache.get(root, WorkDifficulty.MIN_VALUE).get());
     }
     
@@ -67,7 +67,7 @@ public class WorkCacheTest {
         cache.store(new WorkSolution("7ab1268112920c1d"),
                 new HexData("081B12E107B1E805F2B4F5F0F1D00C2D0F62634670921C505867FF20F6A8335E"));
         
-        assertEquals(2, cache.getSize());
+        assertEquals(2, cache.size());
     }
     
 }

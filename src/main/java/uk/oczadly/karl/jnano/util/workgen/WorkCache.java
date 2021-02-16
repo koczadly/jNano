@@ -38,6 +38,9 @@ public final class WorkCache {
      * @param maxSize the maximum number of work solutions to cache
      */
     public WorkCache(int maxSize) {
+        if (maxSize < 1)
+            throw new IllegalArgumentException("Must have a maximum cache size of at least 1.");
+        
         this.maxSize = maxSize;
         this.map = new CachingMap<>();
     }
@@ -55,7 +58,7 @@ public final class WorkCache {
      * Returns the current number of items stored in the cache.
      * @return the current size of the cache
      */
-    public synchronized int getSize() {
+    public synchronized int size() {
         return map.size();
     }
     
@@ -142,7 +145,7 @@ public final class WorkCache {
     public String toString() {
         return "WorkCache{" +
                 "maxSize=" + getMaxSize() +
-                ", size=" + getSize() + '}';
+                ", size=" + size() + '}';
     }
     
     
