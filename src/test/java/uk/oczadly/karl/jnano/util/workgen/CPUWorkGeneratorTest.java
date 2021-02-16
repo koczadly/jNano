@@ -21,11 +21,11 @@ public class CPUWorkGeneratorTest {
     public void testGeneration() throws Exception {
         WorkGenerator workGen = new CPUWorkGenerator();
         WorkDifficulty threshold = new WorkDifficulty("ffe0000000000000");
-        HexData root = TestConstants.randHash();
     
         System.out.println("Generating 5000 works... This may take a few secs...");
         
         for (int i = 0; i < 5000; i++) {
+            HexData root = TestConstants.randHash();
             GeneratedWork work = workGen.generate(root, threshold).get();
             if (work.getDifficulty().compareTo(threshold) < 0)
                 fail("Generated work was below the requested threshold.");

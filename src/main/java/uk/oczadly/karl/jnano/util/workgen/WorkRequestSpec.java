@@ -46,7 +46,7 @@ class WorkRequestSpec {
     }
     
     
-    public DifficultySet fetchDifficulty() throws DifficultyRetrievalException {
+    public DifficultySpec fetchDifficulty() throws DifficultyRetrievalException {
         WorkDifficulty base;
         if (reqDifficulty != null) {
             base = reqDifficulty;           // Using difficulty constant
@@ -60,15 +60,15 @@ class WorkRequestSpec {
             throw new AssertionError("Cannot determine work difficulty.");
         }
         double baseMulti = policy != null ? policy.multiplier() : 1;
-        return new DifficultySet(base, baseMulti * reqMultiplier);
+        return new DifficultySpec(base, baseMulti * reqMultiplier);
     }
     
     
-    static final class DifficultySet {
+    static final class DifficultySpec {
         private final WorkDifficulty base, target;
         private final double multiplier;
     
-        public DifficultySet(WorkDifficulty base, double targetMultiplier) {
+        public DifficultySpec(WorkDifficulty base, double targetMultiplier) {
             this.base = base;
             this.multiplier = targetMultiplier;
             this.target = base.multiply(targetMultiplier);
