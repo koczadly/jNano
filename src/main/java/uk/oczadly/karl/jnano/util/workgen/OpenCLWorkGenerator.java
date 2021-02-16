@@ -188,7 +188,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
                 "device='" + deviceName + '\'' +
                 ", platformId=" + platformId +
                 ", deviceId=" + deviceId +
-                ", threadCount=" + threadCount + "'}";
+                ", threadCount=" + threadCount + "}";
     }
     
     @Override
@@ -202,15 +202,14 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
             clEnqueueWriteBuffer(clQueue, clMemDifficulty, true, 0, Sizeof.cl_ulong,
                     Pointer.to(new long[] { difficulty.getAsLong() }), 0, null, null);
             
-            attemptBuf.putLong(0, RANDOM.nextLong());
-            long ignoreVal = resultBuf.getLong(0);
-            long[] workSize = { threadCount, 0, 0 };
+            attemptBuf.putLong(0, RANDOM.nextLong()); // Initialize with random work
+            long ignoreVal = resultBuf.getLong(0); // Ignore the current result value
+            long[] workSize = { threadCount };
             
             // Repeatedly process generation attempts until a result is found
             long result;
             do {
                 if (Thread.interrupted()) throw new InterruptedException();
-                
                 attemptBuf.putLong(0, attemptBuf.getLong(0) + threadCount); // Increment attempt
                 clEnqueueWriteBuffer(clQueue, clMemAttempt, false, 0, Sizeof.cl_ulong, attemptPtr, 0, null, null);
                 clEnqueueNDRangeKernel(clQueue, clKernel, 1, null, workSize, null, 0, null, null);
@@ -218,7 +217,6 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
                 clFinish(clQueue);
                 result = resultBuf.getLong(0);
             } while (result == ignoreVal); // Compute until value is changed (solution found)
-            
             return new WorkSolution(result);
         } catch (CLException e) {
             throw new WorkGenerationException("A problem with OpenCL occurred.", e);
@@ -228,9 +226,9 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     
     private void initCL() throws OpenCLInitializerException {
         try {
-            String programSrc = getProgramSource("workgen.cl");
-            
             setExceptionsEnabled(true); //TODO: parse errors manually
+            
+            String programSrc = getProgramSource("workgen.cl");
             
             // Obtain the number of platforms
             int[] numPlatformsArray = new int[1];
