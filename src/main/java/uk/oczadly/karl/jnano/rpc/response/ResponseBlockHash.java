@@ -6,17 +6,15 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.JsonAdapter;
-import uk.oczadly.karl.jnano.internal.gsonadapters.SingleValueJsonAdapter;
+import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.HexData;
 
 /**
  * This response class contains a single block hash.
  */
-@JsonAdapter(SingleValueJsonAdapter.class)
 public class ResponseBlockHash extends RpcResponse {
     
-    @Expose
+    @Expose @SerializedName(value = "hash", alternate = "block")
     private HexData blockHash;
     
     

@@ -6,17 +6,15 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.JsonAdapter;
-import uk.oczadly.karl.jnano.internal.gsonadapters.SingleValueJsonAdapter;
+import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 
 /**
  * This response class contains a single account address.
  */
-@JsonAdapter(SingleValueJsonAdapter.class)
 public class ResponseAccount extends RpcResponse {
     
-    @Expose
+    @Expose @SerializedName(value = "account", alternate = "representative")
     private NanoAccount address;
     
     

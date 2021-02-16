@@ -6,8 +6,7 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.JsonAdapter;
-import uk.oczadly.karl.jnano.internal.gsonadapters.SingleValueJsonAdapter;
+import com.google.gson.annotations.SerializedName;
 
 import java.math.BigInteger;
 
@@ -15,10 +14,9 @@ import java.math.BigInteger;
 /**
  * This response class contains a single amount of Nano.
  */
-@JsonAdapter(SingleValueJsonAdapter.class)
 public class ResponseAmountInt extends RpcResponse {
     
-    @Expose
+    @Expose @SerializedName("amount")
     private BigInteger amount;
     
     

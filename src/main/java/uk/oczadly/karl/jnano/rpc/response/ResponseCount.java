@@ -6,16 +6,14 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.JsonAdapter;
-import uk.oczadly.karl.jnano.internal.gsonadapters.SingleValueJsonAdapter;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * This response class contains a single numerical count.
  */
-@JsonAdapter(SingleValueJsonAdapter.class)
 public class ResponseCount extends RpcResponse {
     
-    @Expose
+    @Expose @SerializedName("count")
     private long count;
     
     

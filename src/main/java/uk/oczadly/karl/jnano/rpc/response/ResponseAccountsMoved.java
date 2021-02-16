@@ -6,16 +6,14 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.JsonAdapter;
-import uk.oczadly.karl.jnano.internal.gsonadapters.SingleValueJsonAdapter;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * This response class contains a single number of accounts that have been moved.
  */
-@JsonAdapter(SingleValueJsonAdapter.class)
 public class ResponseAccountsMoved extends RpcResponse {
     
-    @Expose
+    @Expose @SerializedName("moved")
     private int accountsMoved;
     
     

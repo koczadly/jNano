@@ -6,18 +6,16 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.JsonAdapter;
-import uk.oczadly.karl.jnano.internal.gsonadapters.SingleValueJsonAdapter;
+import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 
 
 /**
  * This response class contains a single amount of Nano.
  */
-@JsonAdapter(SingleValueJsonAdapter.class)
 public class ResponseAmount extends RpcResponse {
     
-    @Expose
+    @Expose @SerializedName(value = "amount", alternate = {"weight", "available"})
     private NanoAmount amount;
     
     
