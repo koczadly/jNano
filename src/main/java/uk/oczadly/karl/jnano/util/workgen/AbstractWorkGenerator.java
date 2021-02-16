@@ -236,7 +236,7 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
     /**
      * Contains additional contextual information on the work request.
      */
-    protected static class RequestContext {
+    protected static final class RequestContext {
         private final Block block;
         private final double multiplier;
         private final WorkDifficulty baseDifficulty;
