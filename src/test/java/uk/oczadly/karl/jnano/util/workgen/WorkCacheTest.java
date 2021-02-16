@@ -26,7 +26,7 @@ public class WorkCacheTest {
         WorkDifficulty diff2 = new WorkDifficulty("fffffffff0000000");
         
         WorkCache cache = new WorkCache(5);
-        cache.store(root1, work1);
+        cache.store(work1, root1);
         
         // Root 1
         assertTrue(cache.get(root1, WorkDifficulty.MIN_VALUE).isPresent());
@@ -48,11 +48,11 @@ public class WorkCacheTest {
         WorkSolution work2 = new WorkSolution("b11ebc4f400a0e67"); // Higher diff
         
         WorkCache cache = new WorkCache(5);
-        cache.store(root, work1);
-        cache.store(root, work2);
-        cache.store(root, work1);
+        assertTrue(cache.store(work1, root));  // New entry
+        assertTrue(cache.store(work2, root));  // Greater difficulty
+        assertFalse(cache.store(work1, root)); // Lower difficulty (rejected)
         
-        assertEquals(1, cache.getCacheSize());
+        assertEquals(1, cache.getSize());
         assertEquals(work2, cache.get(root, WorkDifficulty.MIN_VALUE).get());
     }
     
@@ -60,14 +60,14 @@ public class WorkCacheTest {
     public void testCacheLimit() {
         WorkCache cache = new WorkCache(2);
         
-        cache.store(new HexData("60B420BB3851D9D47ACB933DBE70399BF6C92DA33AF01D4FB770E98C0325F41D"),
-                new WorkSolution("7a3388034b63c165"));
-        cache.store(new HexData("3EBAF8986DA712C82BCD4D554BF0B54023C29B624DE9EF9C2F931EFC580F9AFB"),
-                new WorkSolution("e9bfc25aaf7f7f7a"));
-        cache.store(new HexData("081B12E107B1E805F2B4F5F0F1D00C2D0F62634670921C505867FF20F6A8335E"),
-                new WorkSolution("7ab1268112920c1d"));
+        cache.store(new WorkSolution("7a3388034b63c165"),
+                new HexData("60B420BB3851D9D47ACB933DBE70399BF6C92DA33AF01D4FB770E98C0325F41D"));
+        cache.store(new WorkSolution("e9bfc25aaf7f7f7a"),
+                new HexData("3EBAF8986DA712C82BCD4D554BF0B54023C29B624DE9EF9C2F931EFC580F9AFB"));
+        cache.store(new WorkSolution("7ab1268112920c1d"),
+                new HexData("081B12E107B1E805F2B4F5F0F1D00C2D0F62634670921C505867FF20F6A8335E"));
         
-        assertEquals(2, cache.getCacheSize());
+        assertEquals(2, cache.getSize());
     }
     
 }

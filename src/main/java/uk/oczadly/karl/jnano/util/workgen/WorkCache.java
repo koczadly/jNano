@@ -39,7 +39,7 @@ public final class WorkCache {
      */
     public WorkCache(int maxSize) {
         this.maxSize = maxSize;
-        this.map = new LimitedMap<>();
+        this.map = new CachingMap<>();
     }
     
     
@@ -55,7 +55,7 @@ public final class WorkCache {
      * Returns the current number of items stored in the cache.
      * @return the current size of the cache
      */
-    public synchronized int getCacheSize() {
+    public synchronized int getSize() {
         return map.size();
     }
     
@@ -68,41 +68,63 @@ public final class WorkCache {
     
     /**
      * Stores the generated work in the cache.
+     *
      * @param work the generated work to cache
+     * @return true if the work was written to the cache, false if the cache already has a higher difficulty value
+     *         stored for this root
      */
-    public synchronized void store(GeneratedWork work) {
+    public synchronized boolean store(GeneratedWork work) {
         if (work == null) throw new IllegalArgumentException("Work cannot be null.");
-        store(work.getRequestRoot(), work.getWork(), work.getDifficulty());
+        return store(work.getWork(), work.getDifficulty(), work.getRequestRoot());
     }
     
     /**
      * Stores the generated work in the cache.
-     * @param root the root the work was generated for
+     *
      * @param work the generated work solution
+     * @param root the root the work was generated for
+     * @return true if the work was written to the cache, false if the cache already has a higher difficulty value
+     *         stored for this root
      */
-    public synchronized void store(HexData root, WorkSolution work) {
-        if (root == null) throw new IllegalArgumentException("Root cannot be null.");
+    public synchronized boolean store(WorkSolution work, HexData root) {
         if (work == null) throw new IllegalArgumentException("Work cannot be null.");
-        store(root, work, work.calculateDifficulty(root));
+        if (root == null) throw new IllegalArgumentException("Root cannot be null.");
+        return store(work, work.calculateDifficulty(root), root);
     }
     
-    private synchronized void store(HexData root, WorkSolution work, WorkDifficulty difficulty) {
+    private synchronized boolean store(WorkSolution work, WorkDifficulty difficulty, HexData root) {
         if (root.length() != NanoConst.LEN_HASH_B) throw new IllegalArgumentException("Invalid root length.");
         
         CachedWork current = map.get(root);
         if (current != null && difficulty.compareTo(current.difficulty) < 0) {
-            map.put(root, current); // Bump existing cache
+            // Bump existing cache (but don't overwrite)
+            map.put(root, current);
+            return false;
         } else {
-            map.put(root, new CachedWork(work, difficulty)); // Add to cache
+            // Add to cache
+            map.put(root, new CachedWork(work, difficulty));
+            return true;
         }
     }
     
     /**
-     * Returns the current cached value for the given root <em>if</em> the cached work meets the specified difficulty
+     * Removes any cached work for the specified root.
+     *
+     * @param root the root hash
+     * @return true if a cached work value was removed
+     */
+    public synchronized boolean remove(HexData root) {
+        if (root == null) throw new IllegalArgumentException("Root cannot be null.");
+        if (root.length() != NanoConst.LEN_HASH_B) throw new IllegalArgumentException("Invalid root length.");
+        return map.remove(root) != null;
+    }
+    
+    /**
+     * Returns the current cached value for the given root if the cached work is greater than the specified difficulty
      * threshold.
      *
      * @param root      the root hash that the work is for
-     * @param threshold the minimum difficulty threshold
+     * @param threshold the minimum acceptable difficulty threshold of the work
      * @return the cached work value, or empty if not cached or if the work doesn't meet the difficulty threshold
      */
     public synchronized Optional<WorkSolution> get(HexData root, WorkDifficulty threshold) {
@@ -120,7 +142,7 @@ public final class WorkCache {
     public String toString() {
         return "WorkCache{" +
                 "maxSize=" + getMaxSize() +
-                ", cacheSize=" + getCacheSize() + '}';
+                ", size=" + getSize() + '}';
     }
     
     
@@ -136,7 +158,7 @@ public final class WorkCache {
     }
     
     /** Map limited to the maxSize */
-    private class LimitedMap<K, V> extends LinkedHashMap<K, V> {
+    private class CachingMap<K, V> extends LinkedHashMap<K, V> {
         @Override
         public V put(K key, V value) {
             // Re-insert to head of list by removing and re-adding
