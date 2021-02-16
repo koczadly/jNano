@@ -301,7 +301,8 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @param val the integer or decimal value, in Nano (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
      *
-     * @throws NumberFormatException if val is not a valid decimal number
+     * @throws NumberFormatException if val is not a valid integer or decimal number
+     * @throws ArithmeticException if the source {@code val} has too many decimal digits for the unit
      */
     public static NanoAmount valueOfNano(String val) {
         return valueOf(val, BASE_UNIT);
