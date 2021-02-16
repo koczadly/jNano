@@ -202,15 +202,15 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
             clEnqueueWriteBuffer(clQueue, clMemDifficulty, true, 0, Sizeof.cl_ulong,
                     Pointer.to(new long[] { difficulty.getAsLong() }), 0, null, null);
             
-            attemptBuf.putLong(0, RANDOM.nextLong()); // Initialize with random work
+            long attempt = RANDOM.nextLong(); // Initialize with random work
             long ignoreVal = resultBuf.getLong(0); // Ignore the current result value
             long[] workSize = { threadCount };
             
             // Repeatedly process generation attempts until a result is found
             long result;
             do {
-                if (Thread.interrupted()) throw new InterruptedException();
-                attemptBuf.putLong(0, attemptBuf.getLong(0) + threadCount); // Increment attempt
+                if (Thread.interrupted()) throw new InterruptedException(); // Terminate if interrupted
+                attemptBuf.putLong(0, attempt += threadCount); // Increment and update attempt
                 clEnqueueWriteBuffer(clQueue, clMemAttempt, false, 0, Sizeof.cl_ulong, attemptPtr, 0, null, null);
                 clEnqueueNDRangeKernel(clQueue, clKernel, 1, null, workSize, null, 0, null, null);
                 clEnqueueReadBuffer(clQueue, clMemResult, false, 0, Sizeof.cl_ulong, resultPtr, 0, null, null);
@@ -302,11 +302,11 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
         }
     }
     
-    private static String getProgramSource(String filename) {
+    private static String getProgramSource(String filename) throws OpenCLInitializerException {
         InputStream resource = OpenCLWorkGenerator.class.getClassLoader().getResourceAsStream(filename);
         if (resource == null)
-            throw new AssertionError("Could not locate resource workgen.cl");
-        try {
+            throw new OpenCLInitializerException("Could not locate resource workgen.cl");
+        try (resource) {
             BufferedReader br = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             String line;
@@ -314,7 +314,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
                 sb.append(line).append('\n');
             return sb.toString();
         } catch (IOException e) {
-            throw new AssertionError("Could not load resource workgen.cl", e);
+            throw new OpenCLInitializerException("Could not load resource workgen.cl", e);
         }
     }
     
@@ -329,6 +329,10 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
         
         OpenCLInitializerException(Throwable cause) {
             super(cause);
+        }
+    
+        OpenCLInitializerException(String message, Throwable cause) {
+            super(message, cause);
         }
     }
     
