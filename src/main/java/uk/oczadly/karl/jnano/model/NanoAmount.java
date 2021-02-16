@@ -50,7 +50,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * <p><b>Warning:</b> This is based on the current {@link NanoUnit#BASE_UNIT} constant, which may be prone to
      * change in the future if the official Nano denomination system changes.</p>
      */
-    public static final NanoAmount ONE_NANO = NanoAmount.valueOfNano(BigInteger.ONE);
+    public static final NanoAmount ONE_NANO = NanoAmount.valueOfNano(BigDecimal.ONE);
     
     
     private final BigInteger rawValue;
@@ -289,9 +289,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @throws NumberFormatException if val is not a valid integer
      */
     public static NanoAmount valueOfRaw(long raw) {
-        if (raw == 0) return ZERO;
-        if (raw == 1) return ONE_RAW;
-        return new NanoAmount(BigInteger.valueOf(raw));
+        return valueOfRaw(BigInteger.valueOf(raw));
     }
     
     /**
@@ -300,10 +298,12 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * <p><b>Warning:</b> This method uses the current {@link NanoUnit#BASE_UNIT} constant, which may be prone to
      * change in the future if the official Nano denomination system changes.</p>
      *
-     * @param val the numeric value, in Nanos (must be zero or positive)
+     * @param val the integer or decimal value, in Nano (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
+     *
+     * @throws NumberFormatException if val is not a valid decimal number
      */
-    public static NanoAmount valueOfNano(BigInteger val) {
+    public static NanoAmount valueOfNano(String val) {
         return valueOf(val, BASE_UNIT);
     }
     
@@ -313,7 +313,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * <p><b>Warning:</b> This method uses the current {@link NanoUnit#BASE_UNIT} constant, which may be prone to
      * change in the future if the official Nano denomination system changes.</p>
      *
-     * @param val the numeric value, in Nanos (must be zero or positive)
+     * @param val the numeric value, in Nano (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
      * @throws ArithmeticException if the source {@code val} has too many decimal digits for the specified
      *                             {@code unit}
@@ -328,7 +328,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * <p><b>Warning:</b> This method uses the current {@link NanoUnit#BASE_UNIT} constant, which may be prone to
      * change in the future if the official Nano denomination system changes.</p>
      *
-     * @param val the numeric value, in Nanos (must be zero or positive)
+     * @param val the numeric value, in Nano (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
      */
     public static NanoAmount valueOfNano(long val) {
