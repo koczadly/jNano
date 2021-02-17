@@ -39,7 +39,7 @@ public class UnitHelper {
         
         result = result.stripTrailingZeros();
         if (result.scale() > destExp)
-            throw new ArithmeticException("Value could not be exactly converted.");
+            throw new ArithmeticException("Value could not be converted exactly (too many decimals).");
         return result;
     }
     
