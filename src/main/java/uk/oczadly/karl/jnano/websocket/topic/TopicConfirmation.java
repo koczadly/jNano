@@ -14,7 +14,7 @@ import uk.oczadly.karl.jnano.websocket.topic.message.TopicMessageConfirmation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 /**
@@ -53,7 +53,7 @@ public class TopicConfirmation extends TopicWithUpdateParams<TopicMessageConfirm
         private Boolean allLocalAccounts;
         
         @Expose @SerializedName("accounts")
-        private List<NanoAccount> accounts;
+        private Collection<NanoAccount> accounts;
         
         @Expose @SerializedName("include_block")
         private Boolean includeBlock;
@@ -77,7 +77,7 @@ public class TopicConfirmation extends TopicWithUpdateParams<TopicMessageConfirm
          * @param accounts a list of account addresses, or null to disable the filter
          * @return this argument builder
          */
-        public SubArgs filterAccounts(List<NanoAccount> accounts) {
+        public SubArgs filterAccounts(Collection<NanoAccount> accounts) {
             this.accounts = accounts;
             return this;
         }
@@ -136,10 +136,10 @@ public class TopicConfirmation extends TopicWithUpdateParams<TopicMessageConfirm
      */
     public static final class UpdateArgs {
         @Expose @SerializedName("accounts_add")
-        private final List<NanoAccount> accountsAdd = new ArrayList<>();
+        private final Collection<NanoAccount> accountsAdd = new ArrayList<>();
         
         @Expose @SerializedName("accounts_del")
-        private final List<NanoAccount> accountsRemove = new ArrayList<>();
+        private final Collection<NanoAccount> accountsRemove = new ArrayList<>();
     
     
         /**
@@ -147,7 +147,7 @@ public class TopicConfirmation extends TopicWithUpdateParams<TopicMessageConfirm
          * @param accounts the accounts to add to the filter
          * @return this argument builder
          */
-        public UpdateArgs addAccountsFilter(List<NanoAccount> accounts) {
+        public UpdateArgs addAccountsFilter(Collection<NanoAccount> accounts) {
             this.accountsAdd.addAll(accounts);
             return this;
         }
@@ -178,7 +178,7 @@ public class TopicConfirmation extends TopicWithUpdateParams<TopicMessageConfirm
          * @param accounts the accounts to remove from the filter
          * @return this argument builder
          */
-        public UpdateArgs removeAccountsFilter(List<NanoAccount> accounts) {
+        public UpdateArgs removeAccountsFilter(Collection<NanoAccount> accounts) {
             this.accountsRemove.addAll(accounts);
             return this;
         }
