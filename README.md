@@ -1,4 +1,4 @@
-# <img src="https://svgur.com/i/U0r.svg" height=28/> jNano
+# <img src="https://svgur.com/i/U0r.svg" height=28/> jNano | Java library for Nano
 [![Maven Central](https://img.shields.io/maven-central/v/uk.oczadly.karl/jnano)](https://maven-badges.herokuapp.com/maven-central/uk.oczadly.karl/jnano)
 
 jNano is a Java library used to interface with the official [Nano node](https://github.com/nanocurrency/nano-node)
