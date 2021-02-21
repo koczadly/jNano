@@ -24,8 +24,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * A WorkGenerator which uses an external authenticated DPoW/BPoW service over a WebSocket. Note that you will need to
- * obtain and provide credentials to use these third-party services.
+ * A WorkGenerator which uses an external authenticated DPoW/BPoW service over a WebSocket. You will need to request
+ * and obtain access to use these third-party services.
  *
  * <p>The WebSocket will attempt to connect as soon as the class is instantiated. If disconnected, the WebSocket
  * will continuously attempt to re-connect every 2 seconds to ensure a readily available connection to the service,
@@ -35,9 +35,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * background thread and websocket connection. This practice also ensures that tasks are queued correctly in the order
  * of request.</p>
  *
- * @see #dpowForNano(String, String)
- * @see #bpowForNano(String, String)
- * @see #bpowForBanano(String, String)
+ * @see <a href="https://github.com/guilhermelawless/nano-dpow/blob/master/service/README.md">DPoW information</a>
+ * @see <a href="https://github.com/BananoCoin/boompow/blob/master/service/README.md">BPoW information</a>
  */
 public class DPOWWorkGenerator extends AbstractWorkGenerator {
     
@@ -56,7 +55,7 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
     
     private final URI uri;
     private final String user, apiKey;
-    private final int timeout;
+    private final long timeoutMillis, timeoutSecs;
     private final WSHandler websocket;
     private final IDRequestTracker<JsonObject> reqTracker = new IDRequestTracker<>();
     
@@ -67,21 +66,28 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
      * @param uri     the URI of the service's WebSocket
      * @param user    the API username credential
      * @param apiKey  the API key credential
-     * @param timeout the generation timeout, in seconds
+     * @param timeout the generation timeout, in milliseconds
      * @param policy  the difficulty policy
      *
      * @see #dpowForNano(String, String)
      * @see #bpowForNano(String, String)
      * @see #bpowForBanano(String, String)
      */
-    public DPOWWorkGenerator(URI uri, String user, String apiKey, int timeout, WorkDifficultyPolicy policy) {
+    public DPOWWorkGenerator(URI uri, String user, String apiKey, long timeout, WorkDifficultyPolicy policy) {
         super(policy);
+        if (uri == null)
+            throw new IllegalArgumentException("URI cannot be null.");
         if (!uri.getScheme().equalsIgnoreCase("ws") && !uri.getScheme().equalsIgnoreCase("wss"))
             throw new IllegalArgumentException("Unsupported URI scheme; must be a websocket.");
+        if (timeout < 0)
+            throw new IllegalArgumentException("Timeout cannot be negative.");
+        if (user == null || apiKey == null)
+            throw new IllegalArgumentException("User and API key arguments must be provided, and cannot be null.");
         this.uri = uri;
         this.user = user;
         this.apiKey = apiKey;
-        this.timeout = timeout;
+        this.timeoutMillis = timeout;
+        this.timeoutSecs = (long)Math.ceil(timeout / 1000d);
         this.websocket = new WSHandler(uri, reqTracker);
         this.websocket.connect();
     }
@@ -109,10 +115,17 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
     }
     
     /**
-     * @return the work generation timeout, in seconds
+     * @return the work generation timeout, in milliseconds
      */
-    public final int getTimeoutDuration() {
-        return timeout;
+    public final long getTimeout() {
+        return timeoutMillis;
+    }
+    
+    /**
+     * @return the timeout period in seconds (rounded up)
+     */
+    protected final long getTimeoutSeconds() {
+        return timeoutSecs;
     }
     
     
@@ -131,14 +144,14 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
         IDRequestTracker<JsonObject>.Tracker tracker = null;
         try {
             // Await connection
-            websocket.awaitConnection(timeout, TimeUnit.SECONDS);
+            websocket.awaitConnection(timeoutMillis, TimeUnit.MILLISECONDS);
             
             // Send
             tracker = reqTracker.newTracker();
             JsonObject request = buildRequest(tracker.getID(), root, difficulty, context);
             websocket.send(request.toString());
     
-            JsonObject response = tracker.await(timeout, TimeUnit.SECONDS); // Await response
+            JsonObject response = tracker.await(timeoutMillis, TimeUnit.MILLISECONDS); // Await response
             return parseResponse(response); // Parse and return response
         } catch (TimeoutException e) {
             throw new WorkGenerationException("Connection timeout.", e);
@@ -161,13 +174,14 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
      */
     protected JsonObject buildRequest(String id, HexData root, WorkDifficulty difficulty, RequestContext context) {
         JsonObject json = new JsonObject();
-        json.addProperty("id",         id);
+        json.addProperty("id",         id); // Unique request ID
         json.addProperty("user",       user);
         json.addProperty("api_key",    apiKey);
-        json.addProperty("timeout",    timeout);
+        json.addProperty("timeout",    timeoutSecs); // Remote timeout (seconds)
         json.addProperty("hash",       root.toHexString());
         json.addProperty("difficulty", difficulty.getAsHexadecimal());
-        context.getAccount().ifPresent(acc -> json.addProperty("account", acc.toAddress())); // For precaching
+        // Add block account (if available) for precaching
+        context.getAccount().ifPresent(acc -> json.addProperty("account", acc.toAddress()));
         return json;
     }
     
@@ -183,7 +197,7 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
         } else if (json.has("error")) {
             throw new RemoteException(json.get("error").getAsString());
         }
-        throw new RemoteException("Unexpected response.");
+        throw new RemoteException("Unknown response data.");
     }
     
     
@@ -200,7 +214,7 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
      * @see <a href="https://dpow.nanocenter.org/">https://dpow.nanocenter.org/</a>
      */
     public static DPOWWorkGenerator dpowForNano(String user, String apiKey) {
-        return dpowForNano(user, apiKey, 5);
+        return dpowForNano(user, apiKey, 5000);
     }
     
     /**
@@ -209,14 +223,14 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
      *
      * @param user    the username credential
      * @param apiKey  the API key credential
-     * @param timeout the generation timeout, in seconds
+     * @param timeout the generation timeout, in milliseconds
      * @return the created generator
      *
      * @see #URI_DPOW
      * @see NetworkConstants#NANO
      * @see <a href="https://dpow.nanocenter.org/">https://dpow.nanocenter.org/</a>
      */
-    public static DPOWWorkGenerator dpowForNano(String user, String apiKey, int timeout) {
+    public static DPOWWorkGenerator dpowForNano(String user, String apiKey, long timeout) {
         return new DPOWWorkGenerator(URI_DPOW, user, apiKey, timeout, NetworkConstants.NANO.getWorkDifficulties());
     }
     
@@ -233,7 +247,7 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
      * @see <a href="https://bpow.banano.cc/">https://bpow.banano.cc/</a>
      */
     public static DPOWWorkGenerator bpowForNano(String user, String apiKey) {
-        return bpowForNano(user, apiKey, 5);
+        return bpowForNano(user, apiKey, 5000);
     }
     
     /**
@@ -241,14 +255,14 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
      *
      * @param user    the username credential
      * @param apiKey  the API key credential
-     * @param timeout the generation timeout, in seconds
+     * @param timeout the generation timeout, in milliseconds
      * @return the created generator
      *
      * @see #URI_BPOW
      * @see NetworkConstants#NANO
      * @see <a href="https://bpow.banano.cc/">https://bpow.banano.cc/</a>
      */
-    public static DPOWWorkGenerator bpowForNano(String user, String apiKey, int timeout) {
+    public static DPOWWorkGenerator bpowForNano(String user, String apiKey, long timeout) {
         return new DPOWWorkGenerator(URI_BPOW, user, apiKey, timeout, NetworkConstants.NANO.getWorkDifficulties());
     }
     
@@ -265,7 +279,7 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
      * @see <a href="https://bpow.banano.cc/">https://bpow.banano.cc/</a>
      */
     public static DPOWWorkGenerator bpowForBanano(String user, String apiKey) {
-        return bpowForBanano(user, apiKey, 5);
+        return bpowForBanano(user, apiKey, 5000);
     }
     
     /**
@@ -273,14 +287,14 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
      *
      * @param user    the username credential
      * @param apiKey  the API key credential
-     * @param timeout the generation timeout, in seconds
+     * @param timeout the generation timeout, in milliseconds
      * @return the created generator
      *
      * @see #URI_BPOW
      * @see NetworkConstants#BANANO
      * @see <a href="https://bpow.banano.cc/">https://bpow.banano.cc/</a>
      */
-    public static DPOWWorkGenerator bpowForBanano(String user, String apiKey, int timeout) {
+    public static DPOWWorkGenerator bpowForBanano(String user, String apiKey, long timeout) {
         return new DPOWWorkGenerator(URI_BPOW, user, apiKey, timeout, NetworkConstants.BANANO.getWorkDifficulties());
     }
     
