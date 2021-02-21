@@ -24,6 +24,8 @@ public class UnitHelper {
             throw new IllegalArgumentException("Source amount cannot be negative.");
         if (sourceExp < 0 || destExp < 0)
             throw new IllegalArgumentException("Invalid source or destination exponent.");
+        if (sourceAmount.stripTrailingZeros().scale() > sourceExp)
+            throw new IllegalArgumentException("Source amount has too many decimal places.");
         
         BigDecimal result;
         if (sourceExp == destExp) {
@@ -39,7 +41,7 @@ public class UnitHelper {
         
         result = result.stripTrailingZeros();
         if (result.scale() > destExp)
-            throw new ArithmeticException("Value could not be converted exactly (too many decimals).");
+            throw new ArithmeticException("Value could not be converted exactly.");
         return result;
     }
     

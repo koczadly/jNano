@@ -24,7 +24,7 @@ public class NanoAmountTest {
     NanoAmount VAL_C = NanoAmount.valueOfRaw("1230000000000000000000000000000");
     
     
-    @Test(expected = ArithmeticException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testOverflowValueOf() {
         NanoAmount.valueOfNano(new BigDecimal("1.0000000000000000000000000000001"));
     }
