@@ -11,18 +11,18 @@ Nano is a crypto-currency which aims to offer instantaneous feeless transactions
 ## Features
 This library provides you simple access to the following:
 - [RPC Queries](https://github.com/koczadly/jNano/wiki/RPC-Queries)
-- [WebSocket updates](https://github.com/koczadly/jNano/wiki/WebSocket-communication)
-- [~~HTTP Block callback server~~](https://github.com/koczadly/jNano/wiki/Block-callback) (deprecated, prefer websockets)
+- [WebSocket notifications](https://github.com/koczadly/jNano/wiki/WebSocket-communication)
+- [~~HTTP Block callback server~~](https://github.com/koczadly/jNano/wiki/Block-callback) (deprecated, prefer websockets where possible)
 - Various built-in utilities:
   - Block [creation](https://github.com/koczadly/jNano/wiki/Utilities#creation--construction) / [signing](https://github.com/koczadly/jNano/wiki/Utilities#signing) / [hashing](https://github.com/koczadly/jNano/wiki/Utilities#hashing)
   - [Work generation](https://github.com/koczadly/jNano/wiki/Utilities#work-generation) (with support for GPU and [DPoW](https://dpow.nanocenter.org/))
   - Account [parsing](https://github.com/koczadly/jNano/wiki/Utilities#accounts) / [validation](https://github.com/koczadly/jNano/wiki/Utilities#validation)
   - [Unit conversions](https://github.com/koczadly/jNano/wiki/Utilities#unit-conversion)
-  - [Constants for Nano and Banano](https://github.com/koczadly/jNano/wiki/Utilities#constants)
+  - [Constants for Nano (and Banano)](https://github.com/koczadly/jNano/wiki/Utilities#constants)
 
 ## Usage
 ### Download
-This project is hosted on Maven Central. You can also download the compiled JAR directly from [this page](https://maven-badges.herokuapp.com/maven-central/uk.oczadly.karl/jnano).
+This project is hosted on Maven Central. You can also download the compiled JAR directly from [here](https://maven-badges.herokuapp.com/maven-central/uk.oczadly.karl/jnano).
 #### Maven
 ```xml
 <dependency>
@@ -94,8 +94,8 @@ StateBlock block = new StateBlockBuilder(StateBlockSubType.OPEN)
         .generateWork(workGenerator)
         .buildAndSign("A3293644AC105DEE5A0202B7EF976A06E790908EE0E8CC43AEF845380BFF954E"); // Private key
 
-String hash = block.getHash().toHexString();
-String blockJson = block.toJsonString();
+String hash = block.getHash().toHexString(); // Hashes the block
+String blockJson = block.toJsonString(); // Serializes the block to a JSON object
 ```
 
 
