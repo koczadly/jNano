@@ -22,9 +22,11 @@ import java.net.URL;
 public final class RpcServiceProviders {
     private RpcServiceProviders() {}
     
-    private static final String URL_NANEX_CC = "https://api.nanex.cc";
-    private static final String URL_NINJA    = "https://mynano.ninja/api/node";
-    private static final String URL_NANOS_CC = "https://proxy.nanos.cc/proxy";
+    private static final String URL_NANEX_CC  = "https://api.nanex.cc";
+    private static final String URL_NINJA     = "https://mynano.ninja/api/node";
+    private static final String URL_NANOS_CC  = "https://proxy.nanos.cc/proxy";
+    private static final String URL_SOMENANO  = "https://node.somenano.com/proxy";
+    private static final String URL_POWERNODE = "https://proxy.powernode.cc/proxy";
     
     
     /**
@@ -46,7 +48,7 @@ public final class RpcServiceProviders {
      * Creates an {@code RpcQueryNode} object which connects to the <a href="https://mynano.ninja/api/node">
      * mynano.ninja</a> API endpoint securely via {@code https}.
      *
-     * <p><strong>Note:</strong> This service only permits {@code 500} free requests each hour.</p>
+     * <p><strong>Note:</strong> this service only permits {@code 500} free requests each hour.</p>
      *
      * <p>Some commands may be unavailable or restricted, and no guarantees on the reliability or security are provided.
      * You should never send any private keys, seeds or passwords to remote endpoints.</p>
@@ -64,15 +66,15 @@ public final class RpcServiceProviders {
      * Creates an {@code RpcQueryNode} object which connects to the <a href="https://mynano.ninja/api/node">
      * mynano.ninja</a> API endpoint securely via {@code https}.
      *
-     * <p><strong>Note:</strong> This service requires an API key to use, and charges for each query.</p>
+     * <p><strong>Note:</strong> this service requires an API key to use, and charges for each query.</p>
      *
      * <p>Some commands may be unavailable or restricted, and no guarantees on the reliability or security are provided.
      * You should never send any private keys, seeds or passwords to remote endpoints.</p>
      *
-     * @param apiKey your API key for authorization
+     * @param apiKey your API key for authentication
      * @return the configured RPC node object
      *
-     * @see #myNanoNinja() 
+     * @see #myNanoNinja()
      * @see <a href="https://mynano.ninja/api/node">https://mynano.ninja/api/node</a>
      */
     public static RpcQueryNode myNanoNinja(String apiKey) {
@@ -102,7 +104,7 @@ public final class RpcServiceProviders {
      * Creates an {@code RpcQueryNode} object which connects to the <a href="https://api.nanos.cc/">nanos.cc</a> API
      * endpoint securely via {@code https}.
      *
-     * <p><strong>Note:</strong> This service only permits {@code 5000} free requests each day.</p>
+     * <p><strong>Note:</strong> this service only permits {@code 5000} free requests each day.</p>
      *
      * <p>Some commands may be unavailable or restricted, and no guarantees on the reliability or security are provided.
      * You should never send any private keys, seeds or passwords to remote endpoints.</p>
@@ -120,19 +122,88 @@ public final class RpcServiceProviders {
      * Creates an {@code RpcQueryNode} object which connects to the <a href="https://api.nanos.cc/">nanos.cc</a> API
      * endpoint securely via {@code https}.
      *
-     * <p><strong>Note:</strong> This service requires an API key to use, and charges for each query.</p>
+     * <p><strong>Note:</strong> this service requires an API key to use, and charges for each query.</p>
      *
      * <p>Some commands may be unavailable or restricted, and no guarantees on the reliability or security are provided.
      * You should never send any private keys, seeds or passwords to remote endpoints.</p>
      *
-     * @param apiKey your API key for authorization
+     * @param apiKey your API key for authentication
      * @return the configured RPC node object
      *
      * @see #nanos()
      * @see <a href="https://api.nanos.cc/">https://api.nanos.cc/</a>
      */
     public static RpcQueryNode nanos(String apiKey) {
-        return new RpcQueryNode.Builder(JNH.parseURL(URL_NANOS_CC))
+        return usingRpcProxy(JNH.parseURL(URL_NANOS_CC), apiKey);
+    }
+    
+    /**
+     * Creates an {@code RpcQueryNode} object which connects to the <a href="https://powernode.cc/api">powernode.cc</a>
+     * API endpoint securely via {@code https}.
+     *
+     * <p><strong>Note:</strong> this service only permits {@code 5000} free requests each day.</p>
+     *
+     * <p>Some commands may be unavailable or restricted, and no guarantees on the reliability or security are provided.
+     * You should never send any private keys, seeds or passwords to remote endpoints.</p>
+     *
+     * @return the configured RPC node object
+     *
+     * @see #powerNode(String)
+     * @see <a href="https://powernode.cc/api">https://powernode.cc/api</a>
+     */
+    public static RpcQueryNode powerNode() {
+        return powerNode(null);
+    }
+    
+    /**
+     * Creates an {@code RpcQueryNode} object which connects to the <a href="https://powernode.cc/api">powernode.cc</a>
+     * API endpoint securely via {@code https}.
+     *
+     * <p><strong>Note:</strong> this service requires an API key to use, and charges for each query.</p>
+     *
+     * <p>Some commands may be unavailable or restricted, and no guarantees on the reliability or security are provided.
+     * You should never send any private keys, seeds or passwords to remote endpoints.</p>
+     *
+     * @param apiKey your API key for authentication
+     * @return the configured RPC node object
+     *
+     * @see #powerNode()
+     * @see <a href="https://powernode.cc/api">https://powernode.cc/api</a>
+     */
+    public static RpcQueryNode powerNode(String apiKey) {
+        return usingRpcProxy(JNH.parseURL(URL_POWERNODE), apiKey);
+    }
+    
+    /**
+     * Creates an {@code RpcQueryNode} object which connects to the <a href="https://node.somenano.com/#node-rpc">
+     * somenano.com</a> API endpoint securely via {@code https}.
+     *
+     * <p><strong>Note:</strong> this service only permits {@code 5000} free requests each day.</p>
+     *
+     * <p>Some commands may be unavailable or restricted, and no guarantees on the reliability or security are provided.
+     * You should never send any private keys, seeds or passwords to remote endpoints.</p>
+     *
+     * @return the configured RPC node object
+     *
+     * @see <a href="https://node.somenano.com/#node-rpc">https://node.somenano.com/#node-rpc</a>
+     */
+    public static RpcQueryNode someNano() {
+        return usingRpcProxy(JNH.parseURL(URL_SOMENANO), null);
+    }
+    
+    
+    /**
+     * Creates an {@code RpcQueryNode} compatible with the <a href="https://github.com/Joohansson/NanoRPCProxy">RPC
+     * proxy tool</a>.
+     *
+     * @param url    the URL of the proxy service
+     * @param apiKey the API key ({@code token_key}) used for authentication, or null if not used
+     * @return the configured RPC node object
+     *
+     * @see <a href="https://github.com/Joohansson/NanoRPCProxy">NanoRPCProxy on GitHub</a>
+     */
+    public static RpcQueryNode usingRpcProxy(URL url, String apiKey) {
+        return new RpcQueryNode.Builder(url)
                 .setSerializer(new SerializerWithToken("token_key", apiKey))
                 .setDeserializer(new JsonResponseDeserializer() {
                     @Override
@@ -148,8 +219,7 @@ public final class RpcServiceProviders {
     }
     
     
-    
-    /** HTTP executor which sends an Authorization header */
+    /** HTTP executor which sends an authentication header */
     private static class ExecutorWithAuth extends HttpRequestExecutor {
         private final String auth;
         public ExecutorWithAuth(URL url, String auth) {
@@ -160,7 +230,7 @@ public final class RpcServiceProviders {
         @Override
         protected void setRequestHeaders(HttpURLConnection con) throws IOException {
             super.setRequestHeaders(con);
-            if (auth != null) con.setRequestProperty("Authorization", auth);
+            if (auth != null) con.setRequestProperty("authentication", auth);
         }
     }
     

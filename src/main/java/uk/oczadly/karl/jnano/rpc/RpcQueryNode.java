@@ -405,6 +405,8 @@ public class RpcQueryNode {
      *         threads</td></tr>
      *     </tbody>
      * </table>
+     *
+     * @see RpcServiceProviders
      */
     public static class Builder {
         private int defaultTimeout = 0;
