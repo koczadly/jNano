@@ -34,7 +34,10 @@ public class WorkSolution {
      * @param hexVal the work solution, encoded as a hexadecimal string, eg: {@code d1075495f302e300}
      */
     public WorkSolution(String hexVal) {
-        this(Long.parseUnsignedLong(hexVal.startsWith("0x") ? hexVal.substring(2) : hexVal, 16));
+        if (hexVal.length() != 16)
+            throw new IllegalArgumentException("Difficulty must be a 16-character hex string.");
+        this.longVal = Long.parseUnsignedLong(hexVal, 16);
+        this.hexVal = hexVal.toLowerCase();
     }
     
     /**

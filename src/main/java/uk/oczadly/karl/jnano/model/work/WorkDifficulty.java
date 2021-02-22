@@ -29,19 +29,20 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
     private final String hexVal;
     
     /**
-     * @param hexVal the absolute work difficulty value, encoded as a hexadecimal string, eg: {@code fffffe0000000000}
+     * @param hexVal the absolute work difficulty, encoded as a hexadecimal string, eg: {@code fffffff800000000}
      */
     public WorkDifficulty(String hexVal) {
-        this(Long.parseUnsignedLong(hexVal.startsWith("0x") ? hexVal.substring(2) : hexVal, 16));
+        if (hexVal.length() != 16)
+            throw new IllegalArgumentException("Difficulty must be a 16-character hex string.");
+        this.longVal = Long.parseUnsignedLong(hexVal, 16);
+        this.hexVal = hexVal.toLowerCase();
     }
     
     /**
      * @param longVal the absolute work difficulty value, encoded as an unsigned long
      */
     public WorkDifficulty(long longVal) {
-        if (longVal == 0)
-            throw new IllegalArgumentException("Work difficulty cannot be zero.");
-        
+        if (longVal == 0) throw new IllegalArgumentException("Work difficulty cannot be zero.");
         this.longVal = longVal;
         this.hexVal = JNH.leftPadString(Long.toHexString(longVal), 16, '0');
     }
