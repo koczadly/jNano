@@ -44,10 +44,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     private final Pointer attemptPtr, resultPtr;
     private volatile cl_command_queue clQueue;
     private volatile cl_kernel clKernel;
-    private volatile cl_mem clMemAttempt;
-    private volatile cl_mem clMemRoot;
-    private volatile cl_mem clMemDifficulty;
-    private volatile cl_mem clMemResult;
+    private volatile cl_mem clMemAttempt, clMemRoot, clMemDifficulty, clMemResult;
     
     /**
      * Constructs an {@code OpenCLWorkGenerator} with the default Nano difficulty policy using {@value #DEFAULT_THREADS}
@@ -277,13 +274,17 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
             clBuildProgram(program, 1, new cl_device_id[] { device }, null, null, null);
             
             // Buffers
-            clMemAttempt = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_HOST_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
+            clMemAttempt = clCreateBuffer(context,
+                    CL_MEM_READ_ONLY | CL_MEM_HOST_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
                     Sizeof.cl_ulong, attemptPtr, null);
-            clMemResult = clCreateBuffer(context, CL_MEM_WRITE_ONLY | CL_MEM_HOST_READ_ONLY | CL_MEM_USE_HOST_PTR,
+            clMemResult = clCreateBuffer(context,
+                    CL_MEM_WRITE_ONLY | CL_MEM_HOST_READ_ONLY | CL_MEM_USE_HOST_PTR,
                     Sizeof.cl_ulong, resultPtr, null);
-            clMemRoot = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_HOST_WRITE_ONLY,
+            clMemRoot = clCreateBuffer(context,
+                    CL_MEM_READ_ONLY | CL_MEM_HOST_WRITE_ONLY,
                     Sizeof.cl_uchar * 32, null, null);
-            clMemDifficulty = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_HOST_WRITE_ONLY,
+            clMemDifficulty = clCreateBuffer(context,
+                    CL_MEM_READ_ONLY | CL_MEM_HOST_WRITE_ONLY,
                     Sizeof.cl_ulong, null, null);
             
             // Create the kernel
