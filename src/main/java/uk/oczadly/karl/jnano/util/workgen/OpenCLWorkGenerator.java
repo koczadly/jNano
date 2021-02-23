@@ -307,7 +307,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
         InputStream resource = OpenCLWorkGenerator.class.getClassLoader().getResourceAsStream(filename);
         if (resource == null)
             throw new OpenCLInitializerException("Could not locate resource workgen.cl");
-        try (resource) {
+        try {
             BufferedReader br = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             String line;
@@ -316,6 +316,10 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
             return sb.toString();
         } catch (IOException e) {
             throw new OpenCLInitializerException("Could not load resource workgen.cl", e);
+        } finally {
+            try {
+                resource.close();
+            } catch (IOException ignored) {}
         }
     }
     
