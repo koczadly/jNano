@@ -41,13 +41,13 @@ public class NodeWorkDifficultyPolicy implements WorkDifficultyPolicy {
     /**
      * Constructs a new {@code NodeWorkDifficultyPolicy} with the given {@link RpcQueryNode} instance.
      *
-     * <p>This method will cache the difficulty and multiplier values for 10 seconds before refreshing the internal
+     * <p>This method will cache the difficulty and multiplier values for 30 seconds before refreshing the internal
      * cache.</p>
      *
      * @param rpc the rpc endpoint
      */
     public NodeWorkDifficultyPolicy(RpcQueryNode rpc) {
-        this(rpc, 10000);
+        this(rpc, 30000);
     }
     
     /**
