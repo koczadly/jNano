@@ -25,7 +25,7 @@ import java.util.Objects;
  * @see WorkGenerator
  */
 @JsonAdapter(WorkSolution.WorkSolutionJsonAdapter.class)
-public class WorkSolution {
+public final class WorkSolution {
     
     private final long longVal;
     private final String hexVal;
@@ -84,9 +84,9 @@ public class WorkSolution {
      * @see #calculateDifficulty(Block)
      */
     public WorkDifficulty calculateDifficulty(HexData root) {
-        if (root == null) throw new IllegalArgumentException("Root cannot be null.");
+        if (root == null) throw new IllegalArgumentException("Root hash cannot be null.");
         if (root.length() != NanoConst.LEN_HASH_B)
-            throw new IllegalArgumentException("Root argument is an incorrect length.");
+            throw new IllegalArgumentException("Root hash must be a 64-character hex value.");
         
         return calculateDifficulty(root.toByteArray());
     }

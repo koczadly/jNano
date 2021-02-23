@@ -114,11 +114,9 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
      * @return the difficulty multiplier
      */
     public double calculateMultiplier(WorkDifficulty baseDiff) {
-        if (baseDiff == null)
-            throw new IllegalArgumentException("Base difficulty cannot be null.");
-        
-        if (longVal == baseDiff.longVal) return 1;
-        return (double)(~baseDiff.longVal) / (~longVal);
+        if (baseDiff == null) throw new IllegalArgumentException("Base difficulty cannot be null.");
+        if (compareTo(baseDiff) == 0) return 1;
+        return baseDiff.invertedDoubleVal() / invertedDoubleVal();
     }
     
     /**
@@ -131,11 +129,17 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
      * @return the calculated absolute difficulty
      */
     public WorkDifficulty multiply(double multiplier) {
-        if (multiplier <= 0)
-            throw new IllegalArgumentException("Difficulty multiplier must be positive.");
-        
+        if (multiplier <= 0) throw new IllegalArgumentException("Difficulty multiplier must be positive.");
         if (multiplier == 1) return this;
-        return new WorkDifficulty(~(long)(~longVal / multiplier));
+        return new WorkDifficulty(~(long)(invertedDoubleVal() / multiplier));
+    }
+    
+    /** Returns the value as an inverted unsigned double. */
+    private double invertedDoubleVal() {
+        long val = ~longVal;
+        double dval = (double)(val & 0x7fffffffffffffffL);
+        if (val < 0) dval += 0x1.0p63;
+        return dval;
     }
     
     
@@ -146,7 +150,7 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
                 throws JsonParseException {
             return new WorkDifficulty(json.getAsString());
         }
-    
+        
         @Override
         public JsonElement serialize(WorkDifficulty src, Type typeOfSrc, JsonSerializationContext context) {
             return new JsonPrimitive(src.getAsHexadecimal());

@@ -7,11 +7,11 @@ package uk.oczadly.karl.jnano.model;
 
 import com.google.gson.JsonParser;
 import org.junit.Test;
+import uk.oczadly.karl.jnano.TestConstants;
 import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 public class WorkDifficultyTest {
     
@@ -33,9 +33,18 @@ public class WorkDifficultyTest {
     
     @Test
     public void testMultiplyCalculation() {
-        double multiplier = new WorkDifficulty(TEST_WORK_2)
-                .calculateMultiplier(new WorkDifficulty(TEST_WORK_1));
-        assertEquals(64, multiplier, 1e-6);
+        assertEquals(64, new WorkDifficulty(TEST_WORK_2)
+                .calculateMultiplier(new WorkDifficulty(TEST_WORK_1)), 1e-8);
+        assertEquals(0.00000000212244789497d, new WorkDifficulty("1f5612c899a7c4e6")
+                        .calculateMultiplier(new WorkDifficulty("fffffff800000000")), 1e-14);
+        
+        // Test random sample of data
+        for (int i = 0; i < 20000; i++) {
+            WorkDifficulty diff1 = new WorkDifficulty(TestConstants.RANDOM.nextLong());
+            WorkDifficulty diff2 = new WorkDifficulty(TestConstants.RANDOM.nextLong());
+            assertTrue(diff1.calculateMultiplier(diff2) >= 0);
+            assertTrue(diff2.calculateMultiplier(diff1) >= 0);
+        }
     }
     
     @Test
