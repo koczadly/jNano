@@ -92,11 +92,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @return the value, in the requested unit
      */
     public BigDecimal getAs(Denomination unit) {
-        if (unit == null)
-            throw new IllegalArgumentException("Unit cannot be null.");
-        if (unit.getExponent() == 0)
-            return new BigDecimal(rawValue);
-        
+        if (unit == null) throw new IllegalArgumentException("Unit cannot be null.");
         return UnitHelper.convert(new BigDecimal(rawValue), 0, unit.getExponent());
     }
     
@@ -167,8 +163,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @throws ArithmeticException if the resulting amount is above the maximum possible balance
      */
     public NanoAmount add(NanoAmount amount) {
-        if (amount.equals(ZERO))
-            return this;
+        if (amount.equals(ZERO)) return this;
         
         BigInteger newVal = rawValue.add(amount.rawValue);
         if (newVal.compareTo(MAX_VAL_RAW) > 0)
@@ -184,10 +179,8 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @throws ArithmeticException if {@code amount} is greater than this
      */
     public NanoAmount subtract(NanoAmount amount) {
-        if (this.compareTo(amount) < 0)
-            throw new ArithmeticException("Result amount is negative.");
-        if (this.equals(amount))
-            return ZERO;
+        if (this.equals(amount)) return ZERO;
+        if (this.compareTo(amount) < 0) throw new ArithmeticException("Result amount is negative.");
         return valueOfRaw(rawValue.subtract(amount.rawValue));
     }
     
@@ -286,7 +279,6 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      *
      * @param raw the numeric value, in raw (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
-     * @throws NumberFormatException if val is not a valid integer
      */
     public static NanoAmount valueOfRaw(long raw) {
         return valueOfRaw(BigInteger.valueOf(raw));
