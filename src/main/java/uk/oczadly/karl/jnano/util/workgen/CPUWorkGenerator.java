@@ -88,7 +88,7 @@ public final class CPUWorkGenerator extends AbstractWorkGenerator {
     }
     
     @Override
-    public void cleanup() {
+    protected void cleanup() {
         try {
             executorService.shutdownNow();
         } finally {

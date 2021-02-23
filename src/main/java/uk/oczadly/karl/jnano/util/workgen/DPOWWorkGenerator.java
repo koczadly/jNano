@@ -130,7 +130,7 @@ public class DPOWWorkGenerator extends AbstractWorkGenerator {
     
     
     @Override
-    public void cleanup() {
+    protected void cleanup() {
         try {
             websocket.close();
         } finally {

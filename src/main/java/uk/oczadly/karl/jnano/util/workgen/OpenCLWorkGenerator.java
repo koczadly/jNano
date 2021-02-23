@@ -162,7 +162,7 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
     
     
     @Override
-    public void cleanup() {
+    protected void cleanup() {
         try {
             // Free memory
             clFinish(clQueue);
