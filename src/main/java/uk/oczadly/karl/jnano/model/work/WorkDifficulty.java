@@ -116,7 +116,7 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
     public double calculateMultiplier(WorkDifficulty baseDiff) {
         if (baseDiff == null) throw new IllegalArgumentException("Base difficulty cannot be null.");
         if (compareTo(baseDiff) == 0) return 1;
-        return baseDiff.negatedDoubleVal() / negatedDoubleVal();
+        return JNH.ulongToDouble(-baseDiff.longVal) / JNH.ulongToDouble(-longVal);
     }
     
     /**
@@ -131,15 +131,9 @@ public final class WorkDifficulty implements Comparable<WorkDifficulty> {
     public WorkDifficulty multiply(double multiplier) {
         if (multiplier <= 0) throw new IllegalArgumentException("Difficulty multiplier must be positive.");
         if (multiplier == 1) return this;
-        return new WorkDifficulty(-(long)(negatedDoubleVal() / multiplier));
-    }
-    
-    /** Returns the value as an negated unsigned double. */
-    private double negatedDoubleVal() {
-        long val = -longVal;
-        double dval = (double)(val & 0x7fffffffffffffffL);
-        if (val < 0) dval += 0x1.0p63;
-        return dval;
+        long result = -(long)(JNH.ulongToDouble(-longVal) / multiplier);
+        if (result == 0) return MAX_VALUE;
+        return new WorkDifficulty(result);
     }
     
     

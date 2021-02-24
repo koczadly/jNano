@@ -166,6 +166,12 @@ public class JNH {
         return out;
     }
     
+    public static double ulongToDouble(long val) {
+        double dval = (double)(val & 0x7fffffffffffffffL);
+        if (val < 0) dval += 0x1p63;
+        return dval;
+    }
+    
     public static byte[] longToBytes(long val) {
         return new byte[] {
                 (byte)((val >> 56) & 0xFF),

@@ -49,8 +49,11 @@ public class WorkDifficultyTest {
     
     @Test
     public void testMultiply() {
-        WorkDifficulty result = new WorkDifficulty(TEST_WORK_1).multiply(64);
-        assertEquals(TEST_WORK_2, result.getAsHexadecimal());
+        assertEquals(TEST_WORK_2, new WorkDifficulty(TEST_WORK_1).multiply(64).getAsHexadecimal());
+        assertEquals(new WorkDifficulty("a000020000000000"), new WorkDifficulty("4000040000000001").multiply(2));
+        assertEquals(new WorkDifficulty("8800020000000000"), new WorkDifficulty("1000040000000002").multiply(2));
+        assertEquals(new WorkDifficulty("ffd5d89d89d89d8a"), new WorkDifficulty("feee000000000000").multiply(6.5));
+        assertEquals(WorkDifficulty.MAX_VALUE, WorkDifficulty.MAX_VALUE.multiply(Double.MAX_VALUE)); // Test overflow
     }
     
     @Test
