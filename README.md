@@ -28,13 +28,13 @@ This project is hosted on Maven Central. You can also download the compiled JAR 
 <dependency>
     <groupId>uk.oczadly.karl</groupId>
     <artifactId>jnano</artifactId>
-    <version>2.18.0</version>
+    <version>2.18.1</version>
 </dependency>
 ```
 #### Gradle
 ```gradle
 dependencies {
-    implementation 'uk.oczadly.karl:jnano:2.18.0'
+    implementation 'uk.oczadly.karl:jnano:2.18.1'
 }
 ```
 
