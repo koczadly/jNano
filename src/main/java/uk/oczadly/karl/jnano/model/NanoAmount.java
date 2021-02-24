@@ -32,6 +32,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     
     private static final BigInteger MAX_VAL_RAW = JNC.BIGINT_MAX_128;
     private static final Denomination BASE_UNIT = NanoUnit.BASE_UNIT;
+    private static final BigInteger TOSTRING_THRESH = BigInteger.TEN.pow(BASE_UNIT.getExponent() - 6);
     
     /** A zero-value amount. */
     public static final NanoAmount ZERO = new NanoAmount(BigInteger.ZERO);
@@ -98,16 +99,15 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     
     
     /**
-     * Returns this amount as a friendly string, complete with the unit name.
-     *
-     * <p><b>Warning:</b> This method uses the current {@link NanoUnit#BASE_UNIT} constant, which may be prone to
-     * change in the future if the official Nano denomination system changes.</p>
+     * Returns this amount as a friendly string, complete with the unit name. The value will be formatted either in
+     * the {@link NanoUnit#BASE_UNIT base unit}, or {@link NanoUnit#RAW raw} depending on which is more suitable.
      *
      * @return a friendly string of this amount
      */
     @Override
     public String toString() {
-        return toString(BASE_UNIT);
+        boolean useBase = rawValue.equals(BigInteger.ZERO) || rawValue.compareTo(TOSTRING_THRESH) >= 0;
+        return toString(useBase ? BASE_UNIT : NanoUnit.RAW);
     }
     
     /**
