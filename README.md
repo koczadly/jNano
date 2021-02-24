@@ -47,7 +47,7 @@ dependencies {
 To make queries to an external Nano node through the RPC system, you will need to use the [RpcQueryNode](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk/oczadly/karl/jnano/rpc/RpcQueryNode.html)
  class. You can customize these objects even further by constructing using the nested `Builder` class.
 ```java
-RpcQueryNode rpc = new RpcQueryNode()           // Using localhost:7076
+RpcQueryNode rpc = new RpcQueryNode();          // Using localhost:7076
 RpcQueryNode rpc = RpcServiceProviders.nanex(); // Using nanex.cc public API
 ```
 This example will print an account's balance to the console using a synchronous (blocking) call.

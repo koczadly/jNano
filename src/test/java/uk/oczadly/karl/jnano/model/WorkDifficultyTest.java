@@ -34,9 +34,9 @@ public class WorkDifficultyTest {
     @Test
     public void testMultiplyCalculation() {
         assertEquals(64, new WorkDifficulty(TEST_WORK_2)
-                .calculateMultiplier(new WorkDifficulty(TEST_WORK_1)), 1e-8);
+                .calculateMultiplier(new WorkDifficulty(TEST_WORK_1)), 1e-20);
         assertEquals(0.00000000212244789497d, new WorkDifficulty("1f5612c899a7c4e6")
-                        .calculateMultiplier(new WorkDifficulty("fffffff800000000")), 1e-14);
+                        .calculateMultiplier(new WorkDifficulty("fffffff800000000")), 1e-20);
         
         // Test random sample of data
         for (int i = 0; i < 20000; i++) {
