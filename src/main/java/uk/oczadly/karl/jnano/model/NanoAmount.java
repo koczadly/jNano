@@ -19,8 +19,8 @@ import java.util.Objects;
 /**
  * An immutable class which represents a quantity of Nano.
  *
- * This class can be used as a transactional amount or account balance. Only
- * unsigned values are supported, so this class cannot be used to represent a negative amount.
+ * <p>This class can be used as a transactional amount or account balance. Only unsigned values are supported, so this
+ * class cannot be used to represent a negative amount.</p>
  *
  * <p>To obtain an instance of this class, use one of the provided static {@code valueOf} methods, or one of the
  * constant field values. This class also supports built-in Gson serialization and deserialization as a raw value.</p>
@@ -164,7 +164,6 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      */
     public NanoAmount add(NanoAmount amount) {
         if (amount.equals(ZERO)) return this;
-        
         BigInteger newVal = rawValue.add(amount.rawValue);
         if (newVal.compareTo(MAX_VAL_RAW) > 0)
             throw new ArithmeticException("Result amount is greater than the largest representable amount.");
@@ -179,6 +178,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      * @throws ArithmeticException if {@code amount} is greater than this
      */
     public NanoAmount subtract(NanoAmount amount) {
+        if (amount.equals(ZERO)) return this;
         if (this.equals(amount)) return ZERO;
         if (this.compareTo(amount) < 0) throw new ArithmeticException("Result amount is negative.");
         return valueOfRaw(rawValue.subtract(amount.rawValue));
