@@ -257,8 +257,9 @@ public final class OpenCLWorkGenerator extends AbstractWorkGenerator {
             
             // Fetch device name
             byte[] deviceName = new byte[256];
-            clGetDeviceInfo(device, CL_DEVICE_NAME, 256, Pointer.to(deviceName), null);
-            this.deviceName = new String(deviceName, StandardCharsets.UTF_8);
+            long[] deviceNameLen = new long[1];
+            clGetDeviceInfo(device, CL_DEVICE_NAME, 256, Pointer.to(deviceName), deviceNameLen);
+            this.deviceName = new String(deviceName, 0, (int)deviceNameLen[0] - 1, StandardCharsets.UTF_8);
             
             // Create a context for the selected device
             cl_context context = clCreateContext(
