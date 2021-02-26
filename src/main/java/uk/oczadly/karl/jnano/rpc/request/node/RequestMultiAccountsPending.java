@@ -6,7 +6,6 @@
 package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseMultiAccountsPending;
 
@@ -20,28 +19,14 @@ import java.math.BigInteger;
  */
 public class RequestMultiAccountsPending extends RpcRequest<ResponseMultiAccountsPending> {
     
-    @Expose @SerializedName("source")
-    private final boolean source = true;
+    @Expose private final boolean source = true;
     
-    
-    @Expose @SerializedName("accounts")
-    private final String[] accounts;
-    
-    @Expose @SerializedName("count")
-    private final int count;
-    
-    
-    @Expose @SerializedName("threshold")
-    private final BigInteger threshold;
-    
-    @Expose @SerializedName("include_active")
-    private final Boolean includeActive;
-    
-    @Expose @SerializedName("sorting")
-    private final Boolean sorting;
-    
-    @Expose @SerializedName("include_only_confirmed")
-    private final Boolean includeOnlyConfirmed;
+    @Expose private final String[] accounts;
+    @Expose private final int count;
+    @Expose private final BigInteger threshold;
+    @Expose private final Boolean includeActive;
+    @Expose private final Boolean sorting;
+    @Expose private final Boolean includeOnlyConfirmed;
     
     
     /**
@@ -49,7 +34,7 @@ public class RequestMultiAccountsPending extends RpcRequest<ResponseMultiAccount
      * @param count    the limit
      */
     public RequestMultiAccountsPending(String[] accounts, int count) {
-        this(accounts, count, null, null, null, null);
+        this(accounts, count, null, null, null, true);
     }
     
     /**

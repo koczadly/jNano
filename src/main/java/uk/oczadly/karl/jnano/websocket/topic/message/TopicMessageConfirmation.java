@@ -37,7 +37,7 @@ public class TopicMessageConfirmation {
     
     
     /**
-     * Returns the account which the block belongs to.
+     * Returns the account which the block belongs to (not necessarily the filtered account).
      * @return the account which the block belongs to
      */
     public NanoAccount getAccount() {

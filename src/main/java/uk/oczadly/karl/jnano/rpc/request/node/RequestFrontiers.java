@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseMultiAccountFrontiers;
 
@@ -26,8 +27,23 @@ public class RequestFrontiers extends RpcRequest<ResponseMultiAccountFrontiers> 
     
     
     /**
+     * Constructs a request starting at the zero-index account.
+     * @param count   the number of frontiers to list
+     *
+     * @see #nextPage(RequestFrontiers, ResponseMultiAccountFrontiers)
+     */
+    public RequestFrontiers(int count) {
+        super("frontiers", ResponseMultiAccountFrontiers.class);
+        this.account = NanoAccount.ZERO_ACCOUNT.toAddress();
+        this.count = count;
+    }
+    
+    /**
+     * Constructs a request starting at the specified account.
      * @param account the account's address to start at
      * @param count   the number of frontiers to list
+     *
+     * @see #nextPage(RequestFrontiers, ResponseMultiAccountFrontiers)
      */
     public RequestFrontiers(String account, int count) {
         super("frontiers", ResponseMultiAccountFrontiers.class);
@@ -48,6 +64,20 @@ public class RequestFrontiers extends RpcRequest<ResponseMultiAccountFrontiers> 
      */
     public int getCount() {
         return count;
+    }
+    
+    
+    /**
+     * Constructs the next request when using pagination.
+     * @param req the previous request
+     * @param res the previous response data
+     * @return the next request for pagination, or null if the end has been reached
+     */
+    public static RequestFrontiers nextPage(RequestFrontiers req, ResponseMultiAccountFrontiers res) {
+        NanoAccount nextAccount = res.getNextAccount();
+        if (nextAccount != null)
+            return new RequestFrontiers(nextAccount.toAddress(), req.count);
+        return null;
     }
     
 }

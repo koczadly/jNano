@@ -6,7 +6,6 @@
 package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseAccountHistory;
 
@@ -18,28 +17,17 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseAccountHistory;
  */
 public class RequestAccountHistory extends RpcRequest<ResponseAccountHistory> {
     
-    @Expose @SerializedName("account")
-    private final String account;
-    
-    @Expose @SerializedName("count")
-    private final int transactionCount;
-    
-    
-    @Expose @SerializedName("head")
-    private final String head;
-    
-    @Expose @SerializedName("offset")
-    private final Integer offset;
-    
-    @Expose @SerializedName("reverse")
-    private final Boolean reverse;
-    
-    @Expose @SerializedName("account_filter")
-    private final String[] accountFilter;
+    @Expose private final String account, head;
+    @Expose private final int count;
+    @Expose private final Integer offset;
+    @Expose private final Boolean reverse, raw;
+    @Expose private final String[] accountFilter;
     
     
     /**
      * @param account the account's address
+     *
+     * @see #nextPage(RequestAccountHistory, ResponseAccountHistory)
      */
     public RequestAccountHistory(String account) {
         this(account, null);
@@ -47,29 +35,62 @@ public class RequestAccountHistory extends RpcRequest<ResponseAccountHistory> {
     
     /**
      * @param account          the account's address
-     * @param transactionCount (optional) the maximum number of transactions to fetch
+     * @param count (optional) the maximum number of transactions to fetch
+     *
+     * @see #nextPage(RequestAccountHistory, ResponseAccountHistory)
      */
-    public RequestAccountHistory(String account, Integer transactionCount) {
-        this(account, transactionCount, null, null, null, null);
+    public RequestAccountHistory(String account, Integer count) {
+        this(account, count, null, null, null, null);
+    }
+    
+    /**
+     * @param account the account's address
+     * @param count   (optional) the maximum number of transactions to fetch
+     * @param raw     if true, all block types will be returned, and the block contents will be included
+     *
+     * @see #nextPage(RequestAccountHistory, ResponseAccountHistory)
+     */
+    public RequestAccountHistory(String account, Integer count, boolean raw) {
+        this(account, count, null, null, raw, null, null);
     }
     
     /**
      * @param account          the account's address
-     * @param transactionCount (optional) the maximum number of transactions to fetch
+     * @param count (optional) the maximum number of transactions to fetch
      * @param head             (optional) the head block hash
      * @param offset           (optional) how many blocks to skip after the head
      * @param reverse          (optional) whether the list should list backwards from the head
      * @param accountFilter    (optional) a list of accounts to filter by
+     *
+     * @see #nextPage(RequestAccountHistory, ResponseAccountHistory)
      */
-    public RequestAccountHistory(String account, Integer transactionCount, String head, Integer offset, Boolean reverse,
+    public RequestAccountHistory(String account, Integer count, String head, Integer offset, Boolean reverse,
                                  String[] accountFilter) {
+        this(account, count, head, offset, null, reverse, accountFilter);
+    }
+    
+    /**
+     * @param account          the account's address
+     * @param count (optional) the maximum number of transactions to fetch
+     * @param head             (optional) the head block hash
+     * @param offset           (optional) how many blocks to skip after the head
+     * @param reverse          (optional) whether the list should list backwards from the head
+     * @param accountFilter    (optional) a list of accounts to filter by
+     * @param raw              (optional) if true, all block types will be returned, and the block contents will be
+     *                         included
+     *
+     * @see #nextPage(RequestAccountHistory, ResponseAccountHistory)
+     */
+    public RequestAccountHistory(String account, Integer count, String head, Integer offset, Boolean raw,
+                                 Boolean reverse, String[] accountFilter) {
         super("account_history", ResponseAccountHistory.class);
         this.account = account;
-        this.transactionCount = transactionCount != null ? transactionCount : -1;
+        this.count = count != null ? count : -1;
         this.head = head;
         this.offset = offset;
         this.reverse = reverse;
         this.accountFilter = accountFilter;
+        this.raw = raw;
     }
     
     
@@ -83,8 +104,8 @@ public class RequestAccountHistory extends RpcRequest<ResponseAccountHistory> {
     /**
      * @return the requested transaction limit
      */
-    public int getTransactionCount() {
-        return transactionCount;
+    public int getCount() {
+        return count;
     }
     
     /**
@@ -115,16 +136,23 @@ public class RequestAccountHistory extends RpcRequest<ResponseAccountHistory> {
         return accountFilter;
     }
     
+    /**
+     * @return true if all block types should be returned
+     */
+    public Boolean getRawTypes() {
+        return raw;
+    }
     
     /**
      * Constructs the next request when using pagination.
-     * @param prevReq the previous request
-     * @param prevRes the previous response data
-     * @return the next request for pagination
+     * @param req the previous request
+     * @param res the previous response data
+     * @return the next request for pagination, or null if the end has been reached
      */
-    public static RequestAccountHistory nextPage(RequestAccountHistory prevReq, ResponseAccountHistory prevRes) {
-        return new RequestAccountHistory(prevReq.account, prevReq.transactionCount,
-                prevRes.getSequenceBlockHash().toHexString(), 0, prevReq.reverse, prevReq.accountFilter);
+    public static RequestAccountHistory nextPage(RequestAccountHistory req, ResponseAccountHistory res) {
+        if (res.getSequenceBlockHash() == null) return null;
+        return new RequestAccountHistory(req.account, req.count, res.getSequenceBlockHash().toHexString(), 0,
+                req.raw, req.reverse, req.accountFilter);
     }
     
 }

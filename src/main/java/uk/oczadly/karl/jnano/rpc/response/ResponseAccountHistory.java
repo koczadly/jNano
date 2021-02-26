@@ -5,27 +5,37 @@
 
 package uk.oczadly.karl.jnano.rpc.response;
 
+import com.google.gson.*;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
+import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.BlockType;
 
+import java.lang.reflect.Type;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This response class contains historical information about an account.
  */
+@JsonAdapter(ResponseAccountHistory.Adapter.class)
 public class ResponseAccountHistory extends RpcResponse {
     
-    @Expose @SerializedName("account")  private NanoAccount account;
-    @Expose @SerializedName("history")  private List<BlockInfo> history;
-    @Expose @SerializedName("previous") private HexData previousHash;
-    @Expose @SerializedName("next")     private HexData nextHash;
+    private final NanoAccount account;
+    private final HexData previous, next;
+    private final List<BlockInfo> history;
+    
+    private ResponseAccountHistory(NanoAccount account, HexData previous, HexData next, List<BlockInfo> history) {
+        this.account = account;
+        this.previous = previous;
+        this.next = next;
+        this.history = history;
+    }
     
     
     /**
@@ -49,7 +59,7 @@ public class ResponseAccountHistory extends RpcResponse {
      * @see #getNextBlockHash()
      */
     public HexData getPreviousBlockHash() {
-        return previousHash;
+        return previous;
     }
     
     /**
@@ -58,7 +68,7 @@ public class ResponseAccountHistory extends RpcResponse {
      * @see #getPreviousBlockHash()
      */
     public HexData getNextBlockHash() {
-        return nextHash;
+        return next;
     }
     
     /**
@@ -67,42 +77,97 @@ public class ResponseAccountHistory extends RpcResponse {
      * @see #getPreviousBlockHash()
      */
     public HexData getSequenceBlockHash() {
-        return previousHash != null ? previousHash : nextHash;
+        return previous != null ? previous : next;
     }
     
     
     public static class BlockInfo {
-        @Expose @SerializedName("type")             private BlockType type;
-        @Expose @SerializedName("account")          private NanoAccount account;
-        @Expose @SerializedName("amount")           private NanoAmount amount;
-        @Expose @SerializedName("local_timestamp") @JsonAdapter(InstantAdapter.Seconds.class)
-        private Instant timestamp;
-        @Expose @SerializedName("height")           private int height;
-        @Expose @SerializedName("hash")             private HexData hash;
+        @Expose private BlockType type;
+        @Expose private NanoAccount account;
+        @Expose private NanoAmount amount;
+        @Expose @JsonAdapter(InstantAdapter.Seconds.class) private Instant localTimestamp;
+        @Expose private int height;
+        @Expose private HexData hash;
+        private transient Block contents; // Will be manually injected
     
     
+        /**
+         * @return the block type
+         */
         public BlockType getType() {
             return type;
         }
     
+        /**
+         * @return the account involved with the transaction
+         */
         public NanoAccount getAccount() {
             return account;
         }
     
+        /**
+         * @return the amount of the transaction
+         */
         public NanoAmount getAmount() {
             return amount;
         }
     
+        /**
+         * @return the local timestamp when the block was first seen
+         */
         public Instant getTimestamp() {
-            return timestamp;
+            return localTimestamp;
         }
     
+        /**
+         * @return the height of the block in the account
+         */
         public int getHeight() {
             return height;
         }
     
+        /**
+         * @return the hash of the block
+         */
         public HexData getHash() {
             return hash;
+        }
+    
+        /**
+         * @return the contents of the block, or null if {@code raw} is false
+         */
+        public Block getContents() {
+            return contents;
+        }
+    }
+    
+    /** Supports both raw and non-raw block deserialization. */
+    static class Adapter implements JsonDeserializer<ResponseAccountHistory> {
+        @Override
+        public ResponseAccountHistory deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            JsonObject jsonObj = json.getAsJsonObject();
+            JsonArray historyJson = jsonObj.getAsJsonArray("history");
+    
+            // Deserialize response
+            ResponseAccountHistory response = new ResponseAccountHistory(
+                    context.deserialize(jsonObj.get("account"), NanoAccount.class),
+                    context.deserialize(jsonObj.get("previous"), HexData.class),
+                    context.deserialize(jsonObj.get("next"), HexData.class),
+                    new ArrayList<>(historyJson.size()));
+            
+            // Deserialize block infos
+            for (JsonElement blockJsonEl : historyJson) {
+                JsonObject blockInfoJson = blockJsonEl.getAsJsonObject();
+                BlockInfo blockInfo = context.deserialize(blockInfoJson, BlockInfo.class); // Deserialize normally
+                if (blockInfoJson.has("signature")) {
+                    // Raw == true, inject block contents
+                    blockInfoJson.addProperty("account", response.account.toAddress()); // Use actual account
+                    blockInfo.contents = context.deserialize(blockInfoJson, Block.class);
+                }
+                response.history.add(blockInfo);
+            }
+            return response;
         }
     }
     

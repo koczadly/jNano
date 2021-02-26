@@ -12,7 +12,9 @@ import com.google.gson.JsonParser;
 import com.rfksystems.blake2b.Blake2b;
 import uk.oczadly.karl.jnano.internal.utils.Functions;
 import uk.oczadly.karl.jnano.model.HexData;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -304,6 +306,13 @@ public class JNH {
     
     public static URL parseURL(String url) {
         return unchecked(() -> new URL(url), IllegalArgumentException::new);
+    }
+    
+    public static NanoAccount nextSequentialAccount(NanoAccount account) {
+        if (account != null && account.getAccountIndex().compareTo(JNC.BIGINT_MAX_256) < 0)
+            return new NanoAccount(account.getAccountIndex().add(BigInteger.ONE))
+                    .withPrefix(account.getPrefix());
+        return null;
     }
     
 }

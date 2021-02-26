@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.internal;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import org.junit.Test;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 
 import static org.junit.Assert.*;
 
@@ -146,6 +147,15 @@ public class JNHTest {
         assertEquals("100", JNH.removeLeadingZeroes("000100"));
         assertEquals("1001", JNH.removeLeadingZeroes("0001001"));
         assertEquals("100", JNH.removeLeadingZeroes("100"));
+    }
+    
+    @Test
+    public void testNextSequentialAccount() {
+        assertNull(JNH.nextSequentialAccount(new NanoAccount(JNC.BIGINT_MAX_256)));
+        assertEquals(NanoAccount.parsePublicKey(
+                "1E2C33C7A3C614534AF636ADCBFDA66D875F4F883C0B39EBC4EB204AEA69F993", "ban"),
+                JNH.nextSequentialAccount(NanoAccount.parsePublicKey(
+                        "1E2C33C7A3C614534AF636ADCBFDA66D875F4F883C0B39EBC4EB204AEA69F992", "ban")));
     }
     
 }
