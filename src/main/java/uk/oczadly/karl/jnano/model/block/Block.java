@@ -308,6 +308,12 @@ public abstract class Block implements IBlock {
         return getHash().hashCode();
     }
     
+    /**
+     * Returns a block which is an identical clone of this block.
+     * @return a clone of this block
+     */
+    public abstract Block clone();
+    
     
     /**
      * Parses a block from a given JSON string using the default deserializer.

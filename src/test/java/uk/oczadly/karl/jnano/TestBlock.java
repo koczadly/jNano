@@ -73,4 +73,8 @@ public class TestBlock extends Block {
                 && Objects.equals(getVal(), tb.getVal());
     }
     
+    @Override
+    public Block clone() {
+        return new TestBlock(getSignature(), getWorkSolution(), val);
+    }
 }

@@ -7,7 +7,6 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
@@ -87,14 +86,9 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     private static final BlockIntent INTENT_GENESIS = new BlockIntent(false, true, true, true, false, true);
     
     
-    @Expose @SerializedName("source")
-    private final HexData sourceBlockHash;
-    
-    @Expose @SerializedName("account")
-    private final NanoAccount accountAddress;
-    
-    @Expose @SerializedName("representative")
-    private final NanoAccount representativeAccount;
+    @Expose private final HexData source;
+    @Expose private final NanoAccount account;
+    @Expose private final NanoAccount representative;
     
     
     /**
@@ -119,25 +113,25 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
         if (representative == null)
             throw new IllegalArgumentException("Block representative cannot be null.");
         
-        this.sourceBlockHash = source;
-        this.accountAddress = account;
-        this.representativeAccount = representative;
+        this.source = source;
+        this.account = account;
+        this.representative = representative;
     }
     
     
     @Override
     public final HexData getSourceBlockHash() {
-        return sourceBlockHash;
+        return source;
     }
     
     @Override
     public final NanoAccount getAccount() {
-        return accountAddress;
+        return account;
     }
     
     @Override
     public final NanoAccount getRepresentative() {
-        return representativeAccount;
+        return representative;
     }
     
     /**
@@ -177,6 +171,10 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
         };
     }
     
+    @Override
+    public OpenBlock clone() {
+        return new OpenBlock(getSignature(), getWorkSolution(), source, account, representative);
+    }
     
     /**
      * Parses an {@code open} block from a given JSON string using the default deserializer.

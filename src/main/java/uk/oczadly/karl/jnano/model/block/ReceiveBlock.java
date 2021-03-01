@@ -7,7 +7,6 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
@@ -78,11 +77,8 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     private static final BlockIntent INTENT = new BlockIntent(false, true, false, false, false, false);
     
     
-    @Expose @SerializedName("previous")
-    private final HexData previousBlockHash;
-    
-    @Expose @SerializedName("source")
-    private final HexData sourceBlockHash;
+    @Expose private final HexData previous;
+    @Expose private final HexData source;
     
     
     /**
@@ -105,19 +101,19 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
         if (source.length() != NanoConst.LEN_HASH_B)
             throw new IllegalArgumentException("Source block hash is an invalid length.");
         
-        this.previousBlockHash = previous;
-        this.sourceBlockHash = source;
+        this.previous = previous;
+        this.source = source;
     }
     
     
     @Override
     public final HexData getPreviousBlockHash() {
-        return previousBlockHash;
+        return previous;
     }
     
     @Override
     public final HexData getSourceBlockHash() {
-        return sourceBlockHash;
+        return source;
     }
     
     @Override
@@ -141,6 +137,12 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
                 getSourceBlockHash().toByteArray()
         };
     }
+    
+    @Override
+    public ReceiveBlock clone() {
+        return new ReceiveBlock(getSignature(), getWorkSolution(), previous, source);
+    }
+    
     
     /**
      * Parses a {@code receive} block from a given JSON string using the default deserializer.

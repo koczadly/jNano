@@ -7,7 +7,6 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
@@ -154,21 +153,11 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     private static final byte[] HASH_PREAMBLE = JNH.leftPadByteArray(new byte[] {6}, 32, false);
     
     
-    @Expose @SerializedName("account")
-    private final NanoAccount account;
-    
-    @Expose @SerializedName("previous")
-    private final HexData previous;
-    
-    @Expose @SerializedName("representative")
-    private final NanoAccount rep;
-    
-    @Expose @SerializedName("balance")
-    private final NanoAmount balance;
-    
-    @Expose @SerializedName("subtype")
-    private final StateBlockSubType subtype;
-    
+    @Expose private final NanoAccount account;
+    @Expose private final HexData previous;
+    @Expose private final NanoAccount representative;
+    @Expose private final NanoAmount balance;
+    @Expose private final StateBlockSubType subtype;
     private final transient LinkData link;
     
     
@@ -193,27 +182,27 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     
     StateBlock(StateBlockSubType subtype, HexData signature, WorkSolution work, NanoAccount account,
                HexData previous, NanoAccount rep, NanoAmount balance, HexData linkHex, NanoAccount linkAcc) {
+        this(subtype, signature, work, account, previous, rep, balance, parseLinkData(subtype, linkHex, linkAcc));
+    }
+    
+    private StateBlock(StateBlockSubType subtype, HexData signature, WorkSolution work, NanoAccount account,
+               HexData previous, NanoAccount rep, NanoAmount balance, LinkData link) {
         super(BlockType.STATE, signature, work);
         
-        if (subtype == null)
-            throw new IllegalArgumentException("Subtype cannot be null.");
-        if (account == null)
-            throw new IllegalArgumentException("Account cannot be null.");
-        if (previous == null)
-            throw new IllegalArgumentException("Previous hash cannot be null.");
+        if (subtype == null) throw new IllegalArgumentException("Subtype cannot be null.");
+        if (account == null) throw new IllegalArgumentException("Account cannot be null.");
+        if (previous == null) throw new IllegalArgumentException("Previous hash cannot be null.");
         if (previous.length() != NanoConst.LEN_HASH_B)
             throw new IllegalArgumentException("Previous hash length is incorrect.");
-        if (rep == null)
-            throw new IllegalArgumentException("Representative cannot be null.");
-        if (balance == null)
-            throw new IllegalArgumentException("Account balance cannot be null.");
+        if (rep == null) throw new IllegalArgumentException("Representative cannot be null.");
+        if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");
         
         this.subtype = subtype;
         this.account = account;
         this.previous = previous;
-        this.rep = rep;
+        this.representative = rep;
         this.balance = balance;
-        this.link = parseLinkData(subtype, linkHex, linkAcc);
+        this.link = link;
     }
     
     
@@ -237,7 +226,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     
     @Override
     public final NanoAccount getRepresentative() {
-        return rep;
+        return representative;
     }
     
     @Override
@@ -350,6 +339,13 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         json.addProperty("link_as_account", getLink().asAccount().toAddress());
         return json;
     }
+    
+    @Override
+    public StateBlock clone() {
+        return new StateBlock(subtype, getSignature(), getWorkSolution(), account, previous, representative, balance,
+                link);
+    }
+    
     
     /**
      * Parses a {@code state} block from a given JSON string using the default deserializer.

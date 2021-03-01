@@ -7,7 +7,6 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
@@ -85,14 +84,9 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     private static final BlockIntent INTENT = new BlockIntent(true, false, false, false, false, false);
     
     
-    @Expose @SerializedName("previous")
-    private final HexData previousBlockHash;
-    
-    @Expose @SerializedName("destination")
-    private final NanoAccount destinationAccount;
-    
-    @Expose @SerializedName("balance")
-    private final NanoAmount balance;
+    @Expose private final HexData previous;
+    @Expose private final NanoAccount destination;
+    @Expose private final NanoAmount balance;
     
     
     /**
@@ -117,22 +111,22 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
         if (balance == null)
             throw new IllegalArgumentException("Account balance cannot be null.");
         
-        this.previousBlockHash = previous;
-        this.destinationAccount = destination;
+        this.previous = previous;
+        this.destination = destination;
         this.balance = balance;
     }
     
     
     @Override
     public final HexData getPreviousBlockHash() {
-        return previousBlockHash;
+        return previous;
     }
     
     /**
      * @return the destination account which the funds will be sent to
      */
     public final NanoAccount getDestinationAccount() {
-        return destinationAccount;
+        return destination;
     }
     
     @Override
@@ -162,6 +156,11 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
                 getDestinationAccount().getPublicKeyBytes(),
                 JNH.leftPadByteArray(getBalance().getAsRaw().toByteArray(), 16, false)
         };
+    }
+    
+    @Override
+    public SendBlock clone() {
+        return new SendBlock(getSignature(), getWorkSolution(), previous, destination, balance);
     }
     
     

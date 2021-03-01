@@ -77,6 +77,11 @@ public class BlockTest {
         public BlockIntent getIntent() {
             return null;
         }
+    
+        @Override
+        public Block clone() {
+            return this;
+        }
     }
     
 }

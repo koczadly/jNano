@@ -7,7 +7,6 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
@@ -77,11 +76,8 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
     private static final BlockIntent INTENT = new BlockIntent(false, false, true, false, false, false);
     
     
-    @Expose @SerializedName("previous")
-    private final HexData previousBlockHash;
-    
-    @Expose @SerializedName("representative")
-    private final NanoAccount representativeAccount;
+    @Expose private final HexData previous;
+    @Expose private final NanoAccount representative;
     
     
     /**
@@ -102,19 +98,19 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
         if (representative == null)
             throw new IllegalArgumentException("Block representative cannot be null.");
         
-        this.previousBlockHash = previous;
-        this.representativeAccount = representative;
+        this.previous = previous;
+        this.representative = representative;
     }
     
     
     @Override
     public final HexData getPreviousBlockHash() {
-        return previousBlockHash;
+        return previous;
     }
     
     @Override
     public final NanoAccount getRepresentative() {
-        return representativeAccount;
+        return representative;
     }
     
     @Override
@@ -137,6 +133,11 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
                 getPreviousBlockHash().toByteArray(),
                 getRepresentative().getPublicKeyBytes()
         };
+    }
+    
+    @Override
+    public ChangeBlock clone() {
+        return new ChangeBlock(getSignature(), getWorkSolution(), previous, representative);
     }
     
     
