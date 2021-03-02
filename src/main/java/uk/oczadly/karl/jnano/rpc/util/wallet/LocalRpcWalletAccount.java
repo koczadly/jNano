@@ -119,6 +119,7 @@ public class LocalRpcWalletAccount {
     
     /**
      * Return the hash of the current frontier block of this account.
+     *
      * @return the current account frontier block hash
      * @throws WalletActionException if an error occurs when retrieving the account state
      */
@@ -128,6 +129,7 @@ public class LocalRpcWalletAccount {
     
     /**
      * Attempts to send an amount of funds to the specified account.
+     *
      * @param destination the destination account
      * @param amount      the amount of funds to send to the account
      * @return the hash of the published {@code send} block
@@ -145,7 +147,7 @@ public class LocalRpcWalletAccount {
                 throw new WalletActionException("Account doesn't have enough funds (no open block).");
             if (state.balance.compareTo(amount) < 0)
                 throw new WalletActionException("Account doesn't have enough funds.");
-        
+            
             // Create block
             return processBlock(newBlock(state)
                     .setSubtype(StateBlockSubType.SEND)
@@ -158,7 +160,37 @@ public class LocalRpcWalletAccount {
     }
     
     /**
+     * Attempts to send <em>all</em> of the balance to the specified account.
+     *
+     * <p>This method will not receive/send any pending blocks; that can be done by calling {@link #receiveAllPending()}
+     * prior to sending funds.</p>
+     *
+     * @param destination the destination account
+     * @return the hash of the published {@code send} block, or empty if the account has no funds
+     * @throws WalletActionException if an error occurs when sending the funds
+     */
+    public Optional<HexData> sendAllFunds(NanoAccount destination) throws WalletActionException {
+        lock.lock();
+        try {
+            // Retrieve latest state
+            State state = getState();
+            if (state.balance.equals(NanoAmount.ZERO))
+                return Optional.empty();
+            
+            // Create block
+            return Optional.of(processBlock(newBlock(state)
+                    .setSubtype(StateBlockSubType.SEND)
+                    .setBalance(NanoAmount.ZERO)
+                    .setLink(destination))
+                    .getHash());
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+    /**
      * Attempts to receive the specified pending block.
+     *
      * @param hash the hash of the pending block
      * @return the hash of the published {@code receive} block
      * @throws WalletActionException if an error occurs when receiving the pending block
@@ -182,23 +214,13 @@ public class LocalRpcWalletAccount {
         }
     }
     
-    private HexData receivePending(HexData hash, NanoAmount amount) throws WalletActionException {
-        lock.lock();
-        try {
-            // Create block
-            State state = getState();
-            return processBlock(newBlock(state)
-                    .setSubtype(state.hasBlock() ? StateBlockSubType.RECEIVE : StateBlockSubType.OPEN)
-                    .setLink(hash)
-                    .setBalance(state.balance.add(amount)))
-                    .getHash();
-        } finally {
-            lock.unlock();
-        }
-    }
-    
     /**
-     * Attempts to receive all pending blocks above {@code 0.000001 NANO} in value.
+     * Attempts to receive all pending blocks of at least {@code 0.000001 NANO} in value.
+     *
+     * <p>Note: if a large amount of transactions are pending, or an attacker continues to send funds to this
+     * account, this method may block and continue indefinitely. Receive operations are performed in batches of
+     * {@value #RECEIVE_BATCH_SIZE} receives to allow other operations to continue between batches.</p>
+     *
      * @return a set containing the hashes of the published {@code receive} blocks
      * @throws WalletActionException if an error occurs when receiving the pending blocks
      */
@@ -207,7 +229,12 @@ public class LocalRpcWalletAccount {
     }
     
     /**
-     * Attempts to receive all pending blocks above the specified threshold amount.
+     * Attempts to receive all pending blocks with a value greater than or equal to the specified threshold amount.
+     *
+     * <p>Note: if a large amount of transactions are pending, or an attacker continues to send funds to this
+     * account, this method may block and continue indefinitely. Receive operations are performed in batches of
+     * {@value #RECEIVE_BATCH_SIZE} receives to allow other operations to continue between batches.</p>
+     *
      * @param threshold the minimum amount threshold
      * @return a set containing the hashes of the published {@code receive} blocks
      * @throws WalletActionException if an error occurs when receiving the pending blocks
@@ -242,8 +269,24 @@ public class LocalRpcWalletAccount {
         return hashes;
     }
     
+    private HexData receivePending(HexData hash, NanoAmount amount) throws WalletActionException {
+        lock.lock();
+        try {
+            // Create block
+            State state = getState();
+            return processBlock(newBlock(state)
+                    .setSubtype(state.hasBlock() ? StateBlockSubType.RECEIVE : StateBlockSubType.OPEN)
+                    .setLink(hash)
+                    .setBalance(state.balance.add(amount)))
+                    .getHash();
+        } finally {
+            lock.unlock();
+        }
+    }
+    
     /**
      * Changes the representative of the account to the specified representative address.
+     *
      * @param representative the new representative
      * @return the hash of the representative change block, or empty if the representative is already set to the
      *         specified account
