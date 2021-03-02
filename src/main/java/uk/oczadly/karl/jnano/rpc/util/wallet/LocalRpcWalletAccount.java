@@ -105,7 +105,7 @@ public class LocalRpcWalletAccount {
     
     
     /**
-     * Returns the current balance of this account.
+     * Returns the current balance of this account. This does not include the pending amount.
      * @return the current account balance
      * @throws WalletActionException if an error occurs when retrieving the account state
      */
