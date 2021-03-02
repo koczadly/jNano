@@ -9,6 +9,7 @@ import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.rpc.exception.RpcException;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
+import uk.oczadly.karl.jnano.rpc.util.RpcServiceProviders;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

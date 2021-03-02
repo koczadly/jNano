@@ -3,14 +3,19 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.rpc;
+package uk.oczadly.karl.jnano.rpc.util;
 
 import com.google.gson.JsonObject;
 import uk.oczadly.karl.jnano.internal.JNH;
+import uk.oczadly.karl.jnano.rpc.HttpRequestExecutor;
+import uk.oczadly.karl.jnano.rpc.JsonRequestSerializer;
+import uk.oczadly.karl.jnano.rpc.JsonResponseDeserializer;
+import uk.oczadly.karl.jnano.rpc.RpcQueryNode;
 import uk.oczadly.karl.jnano.rpc.exception.RpcException;
 import uk.oczadly.karl.jnano.rpc.exception.RpcThirdPartyException;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
+import uk.oczadly.karl.jnano.rpc.util.wallet.LocalRpcWalletAccount;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -18,6 +23,9 @@ import java.net.URL;
 
 /**
  * This class contains a set of static initializers for publicly available third-party RPC endpoints.
+ *
+ * <p>Consider using the {@link LocalRpcWalletAccount} utility class when managing accounts and using a third-party
+ * RPC provider, as this class will not expose your private keys.</p>
  */
 public final class RpcServiceProviders {
     private RpcServiceProviders() {}
