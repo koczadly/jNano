@@ -8,14 +8,14 @@ package uk.oczadly.karl.jnano.rpc.exception;
 /**
  * Thrown if a requested command could not be processed due to one or more node configuration parameters prohibiting it.
  */
-public class RpcConfigForbiddenException extends RpcException {
+public class RpcConfigForbiddenException extends RpcExternalException {
     
-    public RpcConfigForbiddenException(String nodeMessage) {
-        super(null, nodeMessage);
+    public RpcConfigForbiddenException(String rawMessage) {
+        super(rawMessage);
     }
     
-    public RpcConfigForbiddenException(String message, String nodeMessage) {
-        super(message, nodeMessage);
+    public RpcConfigForbiddenException(String message, String rawMessage) {
+        super(message, rawMessage);
     }
     
 }

@@ -87,10 +87,11 @@ public final class RpcServiceProviders {
                         if (json.size() == 1 && json.has("message")) {
                             String message = json.get("message").getAsString();
                             if (message.equals("Too Many Requests")) {
-                                throw new RpcThirdPartyException.TokensExhaustedException("Free requests exhausted.");
+                                throw new RpcThirdPartyException.TokensExhaustedException(
+                                        "Free requests exhausted.", message);
                             } else if (message.equals("Insufficient funds / User not found")) {
                                 throw new RpcThirdPartyException.TokensExhaustedException(
-                                        "Not enough API access tokens.");
+                                        "Not enough API access tokens.", message);
                             } else {
                                 throw new RpcThirdPartyException(message);
                             }
@@ -209,10 +210,11 @@ public final class RpcServiceProviders {
                     @Override
                     protected JsonObject parseJson(String response) throws RpcException {
                         if (response.equals("You are making requests too fast, please slow down!"))
-                            throw new RpcThirdPartyException.TooManyRequestsException("Sending requests too fast.");
+                            throw new RpcThirdPartyException.TooManyRequestsException(
+                                    "Sending requests too fast.", response);
                         if (response.indexOf('{') == -1 && response.contains("Max allowed requests of"))
                             throw new RpcThirdPartyException.TokensExhaustedException(
-                                    "Free allowance or paid tokens depleted.");
+                                    "Free allowance or paid tokens depleted.", response);
                         return super.parseJson(response);
                     }
                 }).build();

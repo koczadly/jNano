@@ -16,24 +16,24 @@ package uk.oczadly.karl.jnano.rpc.exception;
  */
 public class RpcInvalidResponseException extends RpcException {
     
-    private final String response;
+    private final String responseBody;
     
-    public RpcInvalidResponseException(String message, String response) {
+    public RpcInvalidResponseException(String message, String responseBody) {
         super(message);
-        this.response = response;
+        this.responseBody = responseBody;
     }
     
-    public RpcInvalidResponseException(String response, Throwable cause) {
-        super("Unable to parse/deserialize the received JSON response.", cause);
-        this.response = response;
+    public RpcInvalidResponseException(Throwable cause, String responseBody) {
+        super("Unable to parse the response as JSON.", cause);
+        this.responseBody = responseBody;
     }
     
     
     /**
-     * @return the raw response data
+     * @return the raw response data received from the node
      */
     public String getResponseBody() {
-        return response;
+        return responseBody;
     }
     
 }

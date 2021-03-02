@@ -8,10 +8,11 @@ package uk.oczadly.karl.jnano.rpc.exception;
 /**
  * Thrown if the node does not understand the request command.
  */
-public class RpcUnknownCommandException extends RpcException {
+//todo: add ability to retrieve action name
+public class RpcUnknownCommandException extends RpcExternalException {
     
-    public RpcUnknownCommandException(String nodeMessage) {
-        super("An invalid request command was sent to the RPC server.", nodeMessage);
+    public RpcUnknownCommandException(String rawMessage) {
+        super("Unrecognized command action (is jNano updated?)", rawMessage);
     }
     
 }

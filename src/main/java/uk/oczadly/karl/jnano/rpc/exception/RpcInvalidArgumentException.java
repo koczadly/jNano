@@ -8,10 +8,10 @@ package uk.oczadly.karl.jnano.rpc.exception;
 /**
  * Thrown if one of the given request arguments are not valid.
  */
-public class RpcInvalidArgumentException extends RpcException {
+public class RpcInvalidArgumentException extends RpcExternalException {
     
-    public RpcInvalidArgumentException(String nodeMessage) {
-        super(null, nodeMessage);
+    public RpcInvalidArgumentException(String rawMessage) {
+        super(rawMessage);
     }
     
 }

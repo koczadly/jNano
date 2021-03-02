@@ -8,14 +8,14 @@ package uk.oczadly.karl.jnano.rpc.exception;
 /**
  * Thrown if the node encounters an internal error.
  */
-public class RpcInternalException extends RpcException {
+public class RpcInternalException extends RpcExternalException {
     
-    public RpcInternalException(String nodeMessage) {
-        super(null, nodeMessage);
+    public RpcInternalException(String rawMessage) {
+        super(rawMessage);
     }
     
-    public RpcInternalException(String message, String nodeMessage) {
-        super(message, nodeMessage);
+    public RpcInternalException(String message, String rawMessage) {
+        super(message, rawMessage);
     }
     
 }

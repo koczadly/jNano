@@ -64,7 +64,7 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
             // Deserialize and return
             return deserialize(jsonResponse, responseClass);
         } catch (JsonParseException ex) {
-            throw new RpcInvalidResponseException(response, ex); // If unable to parse
+            throw new RpcInvalidResponseException(ex, response); // If unable to parse
         }
     }
     

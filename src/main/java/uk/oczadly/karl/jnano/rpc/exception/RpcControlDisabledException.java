@@ -11,8 +11,8 @@ package uk.oczadly.karl.jnano.rpc.exception;
  */
 public class RpcControlDisabledException extends RpcFeatureDisabledException {
     
-    public RpcControlDisabledException(String nodeMessage) {
-        super("The specified command requires control to be enabled on the RPC server.", nodeMessage);
+    public RpcControlDisabledException(String rawMessage) {
+        super("The specified command requires control to be enabled on the RPC server.", rawMessage);
     }
     
 }
