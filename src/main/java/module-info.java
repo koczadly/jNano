@@ -16,6 +16,8 @@ module uk.oczadly.karl.jnano {
     exports uk.oczadly.karl.jnano.rpc.request.node;
     exports uk.oczadly.karl.jnano.rpc.request.wallet;
     exports uk.oczadly.karl.jnano.rpc.response;
+    exports uk.oczadly.karl.jnano.rpc.util;
+    exports uk.oczadly.karl.jnano.rpc.util.wallet;
     // Utils
     exports uk.oczadly.karl.jnano.util;
     exports uk.oczadly.karl.jnano.util.workgen;
