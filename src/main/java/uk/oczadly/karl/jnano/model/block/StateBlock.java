@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
+import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
@@ -182,13 +183,8 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     
     StateBlock(StateBlockSubType subtype, HexData signature, WorkSolution work, NanoAccount account,
                HexData previous, NanoAccount rep, NanoAmount balance, HexData linkHex, NanoAccount linkAcc) {
-        this(subtype, signature, work, account, previous, rep, balance, parseLinkData(subtype, linkHex, linkAcc));
-    }
-    
-    private StateBlock(StateBlockSubType subtype, HexData signature, WorkSolution work, NanoAccount account,
-               HexData previous, NanoAccount rep, NanoAmount balance, LinkData link) {
         super(BlockType.STATE, signature, work);
-        
+    
         if (subtype == null) throw new IllegalArgumentException("Subtype cannot be null.");
         if (account == null) throw new IllegalArgumentException("Account cannot be null.");
         if (previous == null) throw new IllegalArgumentException("Previous hash cannot be null.");
@@ -196,11 +192,22 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
             throw new IllegalArgumentException("Previous hash length is incorrect.");
         if (rep == null) throw new IllegalArgumentException("Representative cannot be null.");
         if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");
-        
+    
         this.subtype = subtype;
         this.account = account;
         this.previous = previous;
-        this.representative = rep;
+        this.representative = rep.withPrefix(account.getPrefix());
+        this.balance = balance;
+        this.link = parseLinkData(subtype, linkHex, linkAcc, account.getPrefix());
+    }
+    
+    private StateBlock(StateBlockSubType subtype, HexData signature, WorkSolution work, NanoAccount account,
+               HexData previous, NanoAccount rep, NanoAmount balance, LinkData link) {
+        super(BlockType.STATE, signature, work);
+        this.subtype = subtype;
+        this.account = account;
+        this.previous = previous;
+        this.representative = rep.withPrefix(account.getPrefix());
         this.balance = balance;
         this.link = link;
     }
@@ -373,18 +380,41 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
                 e -> new BlockDeserializer.BlockParseException("Block is not a state block.", e));
     }
     
+    /**
+     * Returns a new builder which can be used to construct state blocks.
+     * @return a new builder object
+     */
+    public static StateBlockBuilder builder() {
+        return new StateBlockBuilder();
+    }
     
-    static LinkData parseLinkData(StateBlockSubType subtype, HexData hex, NanoAccount account) {
+    
+    private static LinkData parseLinkData(StateBlockSubType subtype, HexData hex, NanoAccount account, String prefix) {
+        // Parse account and hex
+        if (hex == null && account == null) {
+            hex = new HexData(JNC.ZEROES_64);
+            account = NanoAccount.ZERO_ACCOUNT.withPrefix(prefix);
+        } else if (account == null) {
+            account = new NanoAccount(hex.toByteArray(), prefix);
+        } else {
+            account = account.withPrefix(prefix);
+            if (hex == null)
+                hex = new HexData(account.getPublicKeyBytes());
+        }
+        
         // Determine intent
         LinkData.Intent intent = LinkData.Intent.UNUSED;
         switch (subtype) {
             case SEND:
-                intent = LinkData.Intent.DESTINATION_ACCOUNT; break;
+                intent = LinkData.Intent.DESTINATION_ACCOUNT;
+                break;
             case RECEIVE:
             case OPEN:
-                intent = LinkData.Intent.SOURCE_HASH; break;
+                intent = LinkData.Intent.SOURCE_HASH;
+                break;
             case EPOCH:
-                intent = LinkData.Intent.EPOCH_IDENTIFIER; break;
+                intent = LinkData.Intent.EPOCH_IDENTIFIER;
+                break;
         }
         return new LinkData(intent, hex, account);
     }

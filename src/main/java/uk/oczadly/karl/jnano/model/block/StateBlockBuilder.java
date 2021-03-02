@@ -370,6 +370,8 @@ public final class StateBlockBuilder {
      * the work has been generated. If the work could not be generated, then this method will throw a
      * {@link BlockCreationException}.</p>
      *
+     * <p>All fields in the address format will use the prefix specified in the {@code account} field.</p>
+     *
      * @return a new instance of the {@link StateBlock} class using the configured parameters
      * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
      */
@@ -387,14 +389,15 @@ public final class StateBlockBuilder {
      * <p>Calling this method and signing the block will override any configured {@code account} and {@code signature}
      * value set in this builder object to match the private key. This will not update the state of this builder.</p>
      *
+     * <p>All fields in the address format will use the prefix specified in the {@code account} field if set, otherwise
+     * the {@link NanoAccount#DEFAULT_PREFIX default prefix} will be used.</p>
+     *
      * @param privateKey the private key of the account used to sign the block
      * @return a new instance of the {@link StateBlock} class using the configured parameters
      * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
      */
     public synchronized StateBlock buildAndSign(String privateKey) {
-        if (privateKey == null)
-            throw new IllegalArgumentException("Private key cannot be null.");
-        return buildAndSign(new HexData(privateKey));
+        return buildAndSign(privateKey, account != null ? account.getPrefix() : NanoAccount.DEFAULT_PREFIX);
     }
     
     /**
@@ -407,15 +410,62 @@ public final class StateBlockBuilder {
      * <p>Calling this method and signing the block will override any configured {@code account} and {@code signature}
      * value set in this builder object to match the private key. This will not update the state of this builder.</p>
      *
+     * <p>All fields in the address format will use the prefix specified in the {@code account} field if set, otherwise
+     * the {@link NanoAccount#DEFAULT_PREFIX default prefix} will be used.</p>
+     *
      * @param privateKey the private key of the account used to sign the block
      * @return a new instance of the {@link StateBlock} class using the configured parameters
      * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
      */
     public synchronized StateBlock buildAndSign(HexData privateKey) {
+        return buildAndSign(privateKey, account != null ? account.getPrefix() : NanoAccount.DEFAULT_PREFIX);
+    }
+    
+    /**
+     * Constructs a {@link StateBlock} from the configured parameters, and then signs the block.
+     *
+     * <p>If a {@link #generateWork(WorkGenerator) work generator} is specified, then this method will block until
+     * the work has been generated. If the work could not be generated, then this method will throw a
+     * {@link BlockCreationException}.</p>
+     *
+     * <p>Calling this method and signing the block will override any configured {@code account} and {@code signature}
+     * value set in this builder object to match the private key. This will not update the state of this builder.</p>
+     *
+     * <p>All fields in the address format will use the prefix specified when calling this method.</p>
+     *
+     * @param privateKey    the private key of the account used to sign the block
+     * @param addressPrefix the address prefix to be applied to account-related fields
+     * @return a new instance of the {@link StateBlock} class using the configured parameters
+     * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
+     */
+    public synchronized StateBlock buildAndSign(String privateKey, String addressPrefix) {
+        if (privateKey == null)
+            throw new IllegalArgumentException("Private key cannot be null.");
+        return buildAndSign(new HexData(privateKey), addressPrefix);
+    }
+    
+    /**
+     * Constructs a {@link StateBlock} from the configured parameters, and then signs the block.
+     *
+     * <p>If a {@link #generateWork(WorkGenerator) work generator} is specified, then this method will block until
+     * the work has been generated. If the work could not be generated, then this method will throw a
+     * {@link BlockCreationException}.</p>
+     *
+     * <p>Calling this method and signing the block will override any configured {@code account} and {@code signature}
+     * value set in this builder object to match the private key. This will not update the state of this builder.</p>
+     *
+     * <p>All fields in the address format will use the prefix specified when calling this method.</p>
+     *
+     * @param privateKey the private key of the account used to sign the block
+     * @param addressPrefix the address prefix to be applied to account-related fields
+     * @return a new instance of the {@link StateBlock} class using the configured parameters
+     * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
+     */
+    public synchronized StateBlock buildAndSign(HexData privateKey, String addressPrefix) {
         if (privateKey == null)
             throw new IllegalArgumentException("Private key cannot be null.");
         
-        NanoAccount account = NanoAccount.fromPrivateKey(privateKey);
+        NanoAccount account = NanoAccount.fromPrivateKey(privateKey, addressPrefix);
         StateBlock sb = build(subtype, null, work, workGenerator, account, prevHash, rep, balance, linkData,
                 linkAccount);
         sb.sign(privateKey); // Sign the block
@@ -447,6 +497,16 @@ public final class StateBlockBuilder {
             }
         }
         return block;
+    }
+    
+    
+    /**
+     * Constructs a new StateBlockBuilder based on the fields of the given block.
+     * @param block the block to copy from
+     * @return a new builder object
+     */
+    public static StateBlockBuilder copyOf(StateBlock block) {
+        return new StateBlockBuilder(block);
     }
     
     
