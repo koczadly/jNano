@@ -38,6 +38,10 @@ import java.util.concurrent.locks.ReentrantLock;
  * should be used when connecting via a third-party RPC provider. The class is also thread-safe, although use as a
  * single-threaded execution should be preferred.</p>
  *
+ * <p>Due to the asynchronous nature of the cryptocurrency, you should <em>not</em> use multiple instances
+ * representing the same account, nor should you use the account on another wallet or system at the same time. Doing
+ * so can result in failures with transactions.</p>
+ *
  * <p>Example usage:</p>
  * <pre>{@code
  *   // Construct the specification
