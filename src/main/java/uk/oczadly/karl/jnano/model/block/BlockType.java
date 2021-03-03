@@ -7,12 +7,8 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
-import uk.oczadly.karl.jnano.internal.JNH;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -25,30 +21,18 @@ public enum BlockType {
     CHANGE  (false, ChangeBlock.class,  ChangeBlock.DESERIALIZER),
     SEND    (true,  SendBlock.class,    SendBlock.DESERIALIZER),
     RECEIVE (true,  ReceiveBlock.class, ReceiveBlock.DESERIALIZER),
-    STATE   (true,  StateBlock.class,   StateBlock.DESERIALIZER, "utx");
-    
-    
-    private static final Map<String, BlockType> LOOKUP_MAP = new HashMap<>();
-    
-    static {
-        for (BlockType type : BlockType.values()) {
-            LOOKUP_MAP.put(type.getProtocolName().toLowerCase(), type);
-            type.getAlternateNames().forEach(n -> LOOKUP_MAP.put(n.toLowerCase(), type));
-        }
-    }
+    STATE   (true,  StateBlock.class,   StateBlock.DESERIALIZER);
     
     
     final boolean isTransaction;
     final Class<? extends Block> blockClass;
     final Function<JsonObject, ? extends Block> deserializer;
-    final Set<String> altNames;
     
     BlockType(boolean isTransaction, Class<? extends Block> blockClass,
-              Function<JsonObject, ? extends Block> deserializer, String...altNames) {
+              Function<JsonObject, ? extends Block> deserializer) {
         this.isTransaction = isTransaction;
         this.blockClass = blockClass;
         this.deserializer = deserializer;
-        this.altNames = JNH.ofSet(altNames);
     }
     
     
@@ -77,13 +61,6 @@ public enum BlockType {
     }
     
     /**
-     * @return a list of alternate protocol names
-     */
-    public Set<String> getAlternateNames() {
-        return altNames;
-    }
-    
-    /**
      * @return a function which converts a {@link JsonObject} into the appropriate {@link Block} instance
      */
     public Function<JsonObject, ? extends Block> getDeserializerFunction() {
@@ -103,7 +80,11 @@ public enum BlockType {
      * @return the corresponding type, or null if not found
      */
     public static BlockType fromName(String name) {
-        return LOOKUP_MAP.get(name.toLowerCase());
+        try {
+            return valueOf(name.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
     
     

@@ -49,7 +49,6 @@ public final class BlockDeserializer {
      */
     public void registerDeserializer(BlockType blockType, Function<JsonObject, ? extends Block> deserializer) {
         registerDeserializer(blockType.getProtocolName(), deserializer);
-        blockType.getAlternateNames().forEach(n -> registerDeserializer(n, deserializer));
     }
     
     /**

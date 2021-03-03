@@ -25,7 +25,6 @@ public class BlockDeserializerTest {
         des1.registerDeserializer(BlockType.STATE);
         assertSame(BlockType.STATE.getDeserializerFunction(), des1.getDeserializer(BlockType.STATE));
         assertSame(BlockType.STATE.getDeserializerFunction(), des1.getDeserializer("state"));
-        assertSame(BlockType.STATE.getDeserializerFunction(), des1.getDeserializer("utx"));
         // From name
         BlockDeserializer des2 = BlockDeserializer.withNone();
         des2.registerDeserializer("slug", TestBlock.DESERIALIZER);
