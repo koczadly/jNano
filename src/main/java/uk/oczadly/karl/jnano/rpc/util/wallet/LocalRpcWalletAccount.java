@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.BiConsumer;
 
 /**
  * This class provides a set of methods for performing wallet actions on an account, without sending the private key
@@ -72,6 +73,7 @@ public class LocalRpcWalletAccount {
     
     private static final NanoAmount DEFAULT_THRESHOLD = NanoAmount.valueOfRaw("1000000000000000000000000");
     private static final int RECEIVE_BATCH_SIZE = 15;
+    private static final int MAX_RETRY_COUNT = 5;
     
     private final RpcWalletSpecification spec;
     private final HexData privateKey;
@@ -115,7 +117,7 @@ public class LocalRpcWalletAccount {
      * @throws WalletActionException if an error occurs when retrieving the account state
      */
     public NanoAmount getBalance() throws WalletActionException {
-        return getState().balance;
+        return initState().balance;
     }
     
     /**
@@ -125,7 +127,7 @@ public class LocalRpcWalletAccount {
      * @throws WalletActionException if an error occurs when retrieving the account state
      */
     public Optional<HexData> getFrontierHash() throws WalletActionException {
-        return Optional.ofNullable(getState().frontier);
+        return Optional.ofNullable(initState().frontier);
     }
     
     /**
@@ -143,14 +145,14 @@ public class LocalRpcWalletAccount {
         lock.lock();
         try {
             // Retrieve latest state
-            State state = getState();
+            initState();
             if (!state.hasBlock())
                 throw new WalletActionException("Account doesn't have enough funds (no open block).");
             if (state.balance.compareTo(amount) < 0)
                 throw new WalletActionException("Account doesn't have enough funds.");
             
             // Create block
-            return processBlock(newBlock(state)
+            return processBlock((state, builder) -> builder
                     .setSubtype(StateBlockSubType.SEND)
                     .setBalance(state.balance.subtract(amount))
                     .setLink(destination));
@@ -173,12 +175,12 @@ public class LocalRpcWalletAccount {
         lock.lock();
         try {
             // Retrieve latest state
-            State state = getState();
+            initState();
             if (state.balance.equals(NanoAmount.ZERO))
                 return Optional.empty();
             
             // Create block
-            return Optional.of(processBlock(newBlock(state)
+            return Optional.of(processBlock((state, builder) -> builder
                     .setSubtype(StateBlockSubType.SEND)
                     .setBalance(NanoAmount.ZERO)
                     .setLink(destination)));
@@ -272,8 +274,7 @@ public class LocalRpcWalletAccount {
         lock.lock();
         try {
             // Create block
-            State state = getState();
-            return processBlock(newBlock(state)
+            return processBlock((state, builder) -> builder
                     .setSubtype(state.hasBlock() ? StateBlockSubType.RECEIVE : StateBlockSubType.OPEN)
                     .setLink(hash)
                     .setBalance(state.balance.add(amount)));
@@ -294,42 +295,54 @@ public class LocalRpcWalletAccount {
         lock.lock();
         try {
             // Retrieve latest state
-            State state = getState();
+            initState();
             if (!state.hasBlock())
                 throw new WalletActionException("Account needs to publish first block before changing rep.");
             if (state.representative.equalsIgnorePrefix(representative))
                 return Optional.empty(); // Already set
     
             // Create block
-            StateBlockBuilder sb = newBlock(state)
+            return Optional.of(processBlock((state, builder) -> builder
                     .setSubtype(StateBlockSubType.CHANGE)
-                    .setRepresentative(representative);
-            return Optional.of(processBlock(sb));
+                    .setRepresentative(representative)));
         } finally {
             lock.unlock();
         }
     }
     
-    private StateBlock processBlock(StateBlockBuilder blockBuilder) throws WalletActionException {
+    
+    private StateBlock processBlock(BiConsumer<State, StateBlockBuilder> blockSupplier) throws WalletActionException {
         lock.lock();
         try {
-            StateBlock block = blockBuilder.buildAndSign(privateKey, spec.getAddressPrefix());
-            spec.getRpcClient().processRequest(new RequestProcess(block, false)); // Publish
-            state.update(block.getBalance(), block.getRepresentative(), block.getHash()); // Update state
-            return block;
+            initState();
+            for (int attempt = 0; attempt < MAX_RETRY_COUNT; attempt++) {
+                try {
+                    // Create block
+                    StateBlockBuilder blockBuilder = newBlock(state);
+                    blockSupplier.accept(state, blockBuilder);
+                    StateBlock block = blockBuilder.buildAndSign(privateKey, spec.getAddressPrefix());
+                    // Publish block to network
+                    spec.getRpcClient().processRequest(new RequestProcess(block, false));
+                    // Update local state
+                    setState(block.getBalance(), block.getRepresentative(), block.getHash());
+                    return block;
+                } catch (RpcExternalException e) {
+                    if (e.getRawMessage().equals("Fork") || e.getRawMessage().equals("Gap previous block")) {
+                        // Refresh state if invalid 'previous' field and retry
+                        updateState();
+                    } else {
+                        throw e;
+                    }
+                }
+            }
+            // Too many retry attempts
+            throw new WalletActionException("Previous block was incorrect, retried too many times. " +
+                    "Is the account being concurrently used somewhere else?");
         } catch (StateBlockBuilder.BlockCreationException e) {
             throw new WalletActionException("Couldn't construct block.", e);
         } catch (IOException e) {
             throw new WalletActionException("Connection error with RPC client.", e);
         } catch (RpcException e) {
-            // Refresh state if invalid previous
-            if (e instanceof RpcExternalException) {
-                String message = ((RpcExternalException)e).getRawMessage();
-                if (message.equals("Fork") || message.equals("Gap previous block")) {
-                    updateState();
-                    throw new WalletActionException("Invalid previous hash, state has been refreshed.", e);
-                }
-            }
             throw new WalletActionException("Couldn't publish block.", e);
         } finally {
             lock.unlock();
@@ -337,7 +350,7 @@ public class LocalRpcWalletAccount {
     }
     
     private StateBlockBuilder newBlock(State state) {
-        return new StateBlockBuilder()
+        return StateBlock.builder()
                 .setAccount(account)
                 .setBalance(state.balance)
                 .setPreviousHash(state.frontier)
@@ -346,12 +359,12 @@ public class LocalRpcWalletAccount {
     }
     
     
-    private State getState() throws WalletActionException {
+    private State initState() throws WalletActionException {
         if (state == null) {
             lock.lock();
             try {
                 if (state == null)
-                    return updateState();
+                    updateState();
             } finally {
                 lock.unlock();
             }
@@ -359,16 +372,14 @@ public class LocalRpcWalletAccount {
         return state;
     }
     
-    private State updateState() throws WalletActionException {
+    private void updateState() throws WalletActionException {
         lock.lock();
         try {
             ResponseAccountInfo info = spec.getRpcClient().processRequest(new RequestAccountInfo(account.toAddress()));
-            if (state == null) state = new State();
-            state.update(info.getBalanceConfirmed(), info.getRepresentativeAccount(), info.getFrontierBlockHash());
+            setState(info.getBalanceConfirmed(), info.getRepresentativeAccount(), info.getFrontierBlockHash());
         } catch (RpcEntityNotFoundException e) {
             // Account doesn't exist yet
-            if (state == null) state = new State();
-            state.update(NanoAmount.ZERO, spec.getDefaultRepresentative(), null);
+            setState(NanoAmount.ZERO, spec.getDefaultRepresentative(), null);
         } catch (IOException e) {
             throw new WalletActionException("Connection error with RPC client.", e);
         } catch (RpcException e) {
@@ -376,7 +387,19 @@ public class LocalRpcWalletAccount {
         } finally {
             lock.unlock();
         }
-        return state;
+    }
+    
+    private void setState(NanoAmount balance, NanoAccount representative, HexData frontier) {
+        lock.lock();
+        try {
+            if (state == null)
+                state = new State();
+            state.balance = balance;
+            state.representative = representative;
+            state.frontier = frontier;
+        } finally {
+            lock.unlock();
+        }
     }
     
     
@@ -384,12 +407,6 @@ public class LocalRpcWalletAccount {
         private volatile NanoAmount balance;
         private volatile NanoAccount representative;
         private volatile HexData frontier;
-        
-        public void update(NanoAmount balance, NanoAccount representative, HexData frontier) {
-            this.balance = balance;
-            this.representative = representative;
-            this.frontier = frontier;
-        }
         
         public boolean hasBlock() {
             return frontier != null;
