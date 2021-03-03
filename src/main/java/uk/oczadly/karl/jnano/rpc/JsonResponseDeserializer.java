@@ -139,8 +139,8 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
                         "The server returned an \"empty response\" error.", msg);
         }
         // Try parse from prefix/suffix
-        if (msgLc.startsWith("bad") || msgLc.startsWith("invalid") || msgLc.startsWith("gap")
-                || msgLc.endsWith("invalid") || msgLc.endsWith("required") || msgLc.endsWith("do not match")) {
+        if (msgLc.startsWith("bad ") || msgLc.startsWith("invalid ") || msgLc.startsWith("gap ")
+                || msgLc.endsWith(" invalid") || msgLc.endsWith(" required") || msgLc.endsWith(" do not match")) {
             return new RpcInvalidArgumentException(msg);      // Invalid/bad argument
         } else if (msgLc.contains("not found")) {
             return new RpcEntityNotFoundException(msg);       // Unknown referenced entity
@@ -150,7 +150,7 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
             return new RpcCommandNotAllowedException(msg);    // Command not allowed
         } else if (msgLc.contains("config")) {
             return new RpcConfigForbiddenException(msg);      // Config forbids request
-        } else if (msgLc.contains("json")) {
+        } else if (msgLc.contains("json") || msgLc.contains("malformed")) {
             return new RpcInvalidRequestJsonException(msg);   // Disallowed/invalid JSON request
         } else if (msgLc.startsWith("internal")) {
             return new RpcInternalException(msg);             // Internal server error
