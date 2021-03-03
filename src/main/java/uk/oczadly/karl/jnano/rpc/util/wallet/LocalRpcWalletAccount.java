@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.rpc.util.wallet;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
+import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.StateBlock;
 import uk.oczadly.karl.jnano.model.block.StateBlockBuilder;
 import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
@@ -132,10 +133,10 @@ public class LocalRpcWalletAccount {
      *
      * @param destination the destination account
      * @param amount      the amount of funds to send to the account
-     * @return the hash of the published {@code send} block
+     * @return the generated and published {@code send} block
      * @throws WalletActionException if an error occurs when sending the funds
      */
-    public HexData sendFunds(NanoAccount destination, NanoAmount amount) throws WalletActionException {
+    public Block sendFunds(NanoAccount destination, NanoAmount amount) throws WalletActionException {
         if (amount.equals(NanoAmount.ZERO))
             throw new IllegalArgumentException("Amount must be greater than zero.");
         
@@ -152,8 +153,7 @@ public class LocalRpcWalletAccount {
             return processBlock(newBlock(state)
                     .setSubtype(StateBlockSubType.SEND)
                     .setBalance(state.balance.subtract(amount))
-                    .setLink(destination))
-                    .getHash();
+                    .setLink(destination));
         } finally {
             lock.unlock();
         }
@@ -166,10 +166,10 @@ public class LocalRpcWalletAccount {
      * prior to sending funds.</p>
      *
      * @param destination the destination account
-     * @return the hash of the published {@code send} block, or empty if the account has no funds
+     * @return the generated and published {@code send} block, or empty if the account has no funds to send
      * @throws WalletActionException if an error occurs when sending the funds
      */
-    public Optional<HexData> sendAllFunds(NanoAccount destination) throws WalletActionException {
+    public Optional<Block> sendAllFunds(NanoAccount destination) throws WalletActionException {
         lock.lock();
         try {
             // Retrieve latest state
@@ -181,8 +181,7 @@ public class LocalRpcWalletAccount {
             return Optional.of(processBlock(newBlock(state)
                     .setSubtype(StateBlockSubType.SEND)
                     .setBalance(NanoAmount.ZERO)
-                    .setLink(destination))
-                    .getHash());
+                    .setLink(destination)));
         } finally {
             lock.unlock();
         }
@@ -192,10 +191,10 @@ public class LocalRpcWalletAccount {
      * Attempts to receive the specified pending block.
      *
      * @param hash the hash of the pending block
-     * @return the hash of the published {@code receive} block
+     * @return the generated and published {@code receive} block
      * @throws WalletActionException if an error occurs when receiving the pending block
      */
-    public HexData receivePending(HexData hash) throws WalletActionException {
+    public Block receivePending(HexData hash) throws WalletActionException {
         lock.lock();
         try {
             // Retrieve pending block info
@@ -221,10 +220,10 @@ public class LocalRpcWalletAccount {
      * account, this method may block and continue indefinitely. Receive operations are performed in batches of
      * {@value #RECEIVE_BATCH_SIZE} receives to allow other operations to continue between batches.</p>
      *
-     * @return a set containing the hashes of the published {@code receive} blocks
+     * @return a set containing the generated and published {@code receive} blocks
      * @throws WalletActionException if an error occurs when receiving the pending blocks
      */
-    public Set<HexData> receiveAllPending() throws WalletActionException {
+    public Set<Block> receiveAllPending() throws WalletActionException {
         return receiveAllPending(DEFAULT_THRESHOLD);
     }
     
@@ -236,11 +235,11 @@ public class LocalRpcWalletAccount {
      * {@value #RECEIVE_BATCH_SIZE} receives to allow other operations to continue between batches.</p>
      *
      * @param threshold the minimum amount threshold
-     * @return a set containing the hashes of the published {@code receive} blocks
+     * @return a set containing the generated and published {@code receive} blocks
      * @throws WalletActionException if an error occurs when receiving the pending blocks
      */
-    public Set<HexData> receiveAllPending(NanoAmount threshold) throws WalletActionException {
-        Set<HexData> hashes = new HashSet<>();
+    public Set<Block> receiveAllPending(NanoAmount threshold) throws WalletActionException {
+        Set<Block> published = new HashSet<>();
         while (true) {
             lock.lock();
             try {
@@ -260,16 +259,16 @@ public class LocalRpcWalletAccount {
                         pendingBlocks.getPendingBlocks().entrySet();
                 if (blocks.isEmpty()) break; // No more blocks
                 for (Map.Entry<HexData, ResponsePending.PendingBlock> pendingBlock : blocks) {
-                    hashes.add(receivePending(pendingBlock.getKey(), pendingBlock.getValue().getAmount()));
+                    published.add(receivePending(pendingBlock.getKey(), pendingBlock.getValue().getAmount()));
                 }
             } finally {
                 lock.unlock();
             }
         }
-        return hashes;
+        return published;
     }
     
-    private HexData receivePending(HexData hash, NanoAmount amount) throws WalletActionException {
+    private Block receivePending(HexData hash, NanoAmount amount) throws WalletActionException {
         lock.lock();
         try {
             // Create block
@@ -277,8 +276,7 @@ public class LocalRpcWalletAccount {
             return processBlock(newBlock(state)
                     .setSubtype(state.hasBlock() ? StateBlockSubType.RECEIVE : StateBlockSubType.OPEN)
                     .setLink(hash)
-                    .setBalance(state.balance.add(amount)))
-                    .getHash();
+                    .setBalance(state.balance.add(amount)));
         } finally {
             lock.unlock();
         }
@@ -288,11 +286,11 @@ public class LocalRpcWalletAccount {
      * Changes the representative of the account to the specified representative address.
      *
      * @param representative the new representative
-     * @return the hash of the representative change block, or empty if the representative is already set to the
-     *         specified account
+     * @return the generated and published representative change block, or empty if the representative is already set
+     *         to the specified account
      * @throws WalletActionException if an error occurs when changing representative
      */
-    public Optional<HexData> changeRepresentative(NanoAccount representative) throws WalletActionException {
+    public Optional<Block> changeRepresentative(NanoAccount representative) throws WalletActionException {
         lock.lock();
         try {
             // Retrieve latest state
@@ -306,7 +304,7 @@ public class LocalRpcWalletAccount {
             StateBlockBuilder sb = newBlock(state)
                     .setSubtype(StateBlockSubType.CHANGE)
                     .setRepresentative(representative);
-            return Optional.of(processBlock(sb).getHash());
+            return Optional.of(processBlock(sb));
         } finally {
             lock.unlock();
         }
