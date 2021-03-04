@@ -6,11 +6,13 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.JsonAdapter;
+import uk.oczadly.karl.jnano.internal.gsonadapters.InstantAdapter;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 
+import java.time.Instant;
 import java.util.LinkedHashMap;
 
 /**
@@ -18,8 +20,7 @@ import java.util.LinkedHashMap;
  */
 public class ResponseLedger extends RpcResponse {
     
-    @Expose @SerializedName("accounts")
-    private LinkedHashMap<NanoAccount, AccountInfo> accounts;
+    @Expose private LinkedHashMap<NanoAccount, AccountInfo> accounts;
     
     
     /**
@@ -41,53 +42,35 @@ public class ResponseLedger extends RpcResponse {
     
     
     public static class AccountInfo {
-        @Expose @SerializedName("frontier")
-        private HexData frontierBlockHash;
-        
-        @Expose @SerializedName("open_block")
-        private HexData openBlockHash;
-        
-        @Expose @SerializedName("representative_block")
-        private HexData representativeBlockHash;
-        
-        @Expose @SerializedName("balance")
-        private NanoAmount balance;
-        
-        @Expose @SerializedName("modified_timestamp")
-        private int modifiedTimestamp;
-        
-        @Expose @SerializedName("block_count")
-        private int blockCount;
-        
-        @Expose @SerializedName("representative")
-        private NanoAccount representativeAccount;
-        
-        @Expose @SerializedName("weight")
-        private NanoAmount votingWeight;
-        
-        @Expose @SerializedName("pending")
-        private NanoAmount balancePending;
-        
+        @Expose private HexData frontier;
+        @Expose private HexData openBlock;
+        @Expose private HexData representativeBlock;
+        @Expose private NanoAmount weight;
+        @Expose @JsonAdapter(InstantAdapter.Seconds.class) private Instant modifiedTimestamp;
+        @Expose private long blockCount;
+        @Expose private NanoAccount representative;
+        @Expose private NanoAmount balance;
+        @Expose private NanoAmount pending;
         
         /**
          * @return the frontier (head) block hash
          */
         public HexData getFrontierBlockHash() {
-            return frontierBlockHash;
+            return frontier;
         }
         
         /**
          * @return the open (first) block hash
          */
         public HexData getOpenBlockHash() {
-            return openBlockHash;
+            return openBlock;
         }
         
         /**
          * @return the hash of the last block to set this account's representative
          */
         public HexData getRepresentativeBlockHash() {
-            return representativeBlockHash;
+            return representativeBlock;
         }
         
         /**
@@ -98,9 +81,9 @@ public class ResponseLedger extends RpcResponse {
         }
         
         /**
-         * @return the UNIX timestamp when this account was last locally modified
+         * @return the local timestamp when this account was last modified
          */
-        public long getModifiedTimestamp() {
+        public Instant getModifiedTimestamp() {
             return modifiedTimestamp;
         }
         
@@ -108,14 +91,14 @@ public class ResponseLedger extends RpcResponse {
          * @return the address of this account's representative
          */
         public NanoAccount getRepresentativeAccount() {
-            return representativeAccount;
+            return representative;
         }
         
         /**
          * @return the total voting weight delegated to this account
          */
         public NanoAmount getVotingWeight() {
-            return votingWeight;
+            return weight;
         }
         
         /**
@@ -129,9 +112,8 @@ public class ResponseLedger extends RpcResponse {
          * @return the total pending balance of this account in RAW
          */
         public NanoAmount getBalancePending() {
-            return balancePending;
+            return pending;
         }
-        
     }
     
 }

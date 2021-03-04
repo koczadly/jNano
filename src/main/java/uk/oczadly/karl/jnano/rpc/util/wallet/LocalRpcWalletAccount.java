@@ -376,7 +376,7 @@ public class LocalRpcWalletAccount {
         lock.lock();
         try {
             ResponseAccountInfo info = spec.getRpcClient().processRequest(new RequestAccountInfo(account.toAddress()));
-            setState(info.getBalanceConfirmed(), info.getRepresentativeAccount(), info.getFrontierBlockHash());
+            setState(info.getBalance(), info.getRepresentativeAccount(), info.getFrontierBlockHash());
         } catch (RpcEntityNotFoundException e) {
             // Account doesn't exist yet
             setState(NanoAmount.ZERO, spec.getDefaultRepresentative(), null);
