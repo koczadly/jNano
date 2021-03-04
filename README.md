@@ -1,24 +1,34 @@
 # <img src="https://svgur.com/i/U0r.svg" height=28/> jNano | Java library for Nano
 [![Maven Central](https://img.shields.io/maven-central/v/uk.oczadly.karl/jnano)](https://maven-badges.herokuapp.com/maven-central/uk.oczadly.karl/jnano)
 
-jNano is a Java library used to interface with the official [Nano node](https://github.com/nanocurrency/nano-node)
- via RPC requests. It also includes many built-in utilities so that a node isn't always necessary. 
-This library is compatible with Java versions 8 and above (module `uk.oczadly.karl.jnano` for versions 9+).
+jNano is a Java library used to make integrations with the [Nano](https://nano.org) cryptocurrency simple. 
+ This library allows you to interface with the [node](https://github.com/nanocurrency/nano-node)
+ via RPC requests, and also provides many native tools and utilities so that a node isn't always necessary.
  
-Nano is a crypto-currency which aims to offer instantaneous feeless transactions. For more information, visit
+Nano is a crypto-currency which offers instantaneous and fee-less transactions. For more information, visit
 [https://nano.org](https://nano.org).
 
+---
+
+## Technical details
+- This library requires **Java 8+** (using module `uk.oczadly.karl.jnano` for versions 9+)
+- Provides **full compatibility** with clone cryptocurrencies (eg. [Banano](https://banano.cc))
+- Built and managed through [Maven](https://maven.apache.org/)
+- [List of dependencies](#dependencies)
+
 ## Features
-This library provides you simple access to the following:
-- [RPC Queries](https://github.com/koczadly/jNano/wiki/RPC-Queries)
+This library provides simple access to the following facilities:
+- [RPC queries](https://github.com/koczadly/jNano/wiki/RPC-Queries)
 - [WebSocket notifications](https://github.com/koczadly/jNano/wiki/WebSocket-communication)
-- [~~HTTP Block callback server~~](https://github.com/koczadly/jNano/wiki/Block-callback) (deprecated, prefer websockets where possible)
+- [~~HTTP block callback server~~](https://github.com/koczadly/jNano/wiki/Block-callback) (deprecated, prefer websockets where possible)
 - Various built-in utilities:
   - Block [creation](https://github.com/koczadly/jNano/wiki/Utilities#creation--construction) / [signing](https://github.com/koczadly/jNano/wiki/Utilities#signing) / [hashing](https://github.com/koczadly/jNano/wiki/Utilities#hashing)
-  - [Work generation](https://github.com/koczadly/jNano/wiki/Utilities#work-generation) (with support for GPU and [DPoW](https://dpow.nanocenter.org/))
+  - [Work generation](https://github.com/koczadly/jNano/wiki/Utilities#work-generation) (with support for CPU, GPU and the [DPoW service](https://dpow.nanocenter.org/))
   - Account [parsing](https://github.com/koczadly/jNano/wiki/Utilities#accounts) / [validation](https://github.com/koczadly/jNano/wiki/Utilities#validation)
   - [Unit conversions](https://github.com/koczadly/jNano/wiki/Utilities#unit-conversion)
   - [Constants for Nano (and Banano)](https://github.com/koczadly/jNano/wiki/Utilities#constants)
+
+---
 
 ## Usage
 ### Download
@@ -40,7 +50,7 @@ dependencies {
 
 ### Documentation
 - [Javadocs (via Javadoc.io)](https://www.javadoc.io/doc/uk.oczadly.karl/jnano/latest/uk.oczadly.karl.jnano-summary.html)
-- [Wiki docs & examples](https://github.com/koczadly/jNano/wiki/)
+- [Wiki pages (including advanced examples)](https://github.com/koczadly/jNano/wiki/)
 
 ### Examples
 #### RPC Queries [\[Wiki\]](https://github.com/koczadly/jNano/wiki/RPC-Queries)
@@ -98,17 +108,18 @@ String hash = block.getHash().toHexString(); // Hashes the block
 String blockJson = block.toJsonString(); // Serializes the block to a JSON object
 ```
 
+---
 
 ## Dependencies
-This project uses the following dependencies, which are included automatically through Maven:
-- [Gson 2.8.6](https://github.com/google/gson)
-- [blake2b 1.0.0](https://github.com/rfksystems/blake2b)
-- [ed25519-java 0.3.0](https://github.com/str4d/ed25519-java)
-- [Java-WebSocket 1.5.1](https://github.com/TooTallNate/Java-WebSocket)
-- [JOCL 2.0.2](https://github.com/gpu/JOCL)
+This project requires the following dependencies, which are included automatically through Maven:
+- [Gson (2.8.6)](https://github.com/google/gson)
+- [blake2b (1.0.0)](https://github.com/rfksystems/blake2b)
+- [ed25519-java (0.3.0)](https://github.com/str4d/ed25519-java)
+- [Java-WebSocket (1.5.1)](https://github.com/TooTallNate/Java-WebSocket)
+- [JOCL (2.0.2)](https://github.com/gpu/JOCL)
 
 ---
 
 <sup>If you found this library useful and would like to support my work, donations may be sent to 
-<b>`nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz`</b> - any amount would be greatly
- appreciated :D</sup>
+[`nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz`](https://tools.nanos.cc/?tool=pay&address=nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz&amount=&recipient=Karl&message=Donation%20to%20Karl) -
+ any amount would be greatly appreciated :D</sup>
