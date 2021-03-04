@@ -136,7 +136,8 @@ public class ResponseMultiBlockInfo extends RpcResponse {
         }
     
         /**
-         * @return whether the funds have been accepted (if a send transaction)
+         * @return true if the block is a {@code send} and hasn't been accepted by a {@code receive} block, or false
+         *         the funds have been received or if the block isn't a send
          */
         public boolean getPending() {
             return pending;
@@ -198,7 +199,7 @@ public class ResponseMultiBlockInfo extends RpcResponse {
                     context.deserialize(json.get("block_account"), NanoAccount.class),
                     context.deserialize(json.get("amount"), NanoAmount.class),
                     context.deserialize(json.get("balance"), NanoAmount.class),
-                    context.deserialize(json.get("pending"), boolean.class),
+                    json.has("pending") ? context.deserialize(json.get("pending"), boolean.class) : false,
                     context.deserialize(json.get("source_account"), NanoAccount.class),
                     json.get("height").getAsLong(),
                     InstantAdapter.Seconds.INSTANCE.deserialize(json.get("local_timestamp"), Instant.class, context),
