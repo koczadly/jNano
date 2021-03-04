@@ -320,13 +320,13 @@ public class LocalRpcWalletAccount {
         try {
             initState();
             for (int attempt = 0; attempt < MAX_RETRY_COUNT; attempt++) {
+                // Create block
+                StateBlockBuilder blockBuilder = newBlock(state);
+                blockSupplier.accept(state, blockBuilder);
+                StateBlock block = blockBuilder.buildAndSign(privateKey, spec.getAddressPrefix());
                 try {
-                    // Create block
-                    StateBlockBuilder blockBuilder = newBlock(state);
-                    blockSupplier.accept(state, blockBuilder);
-                    StateBlock block = blockBuilder.buildAndSign(privateKey, spec.getAddressPrefix());
                     // Publish block to network
-                    spec.getRpcClient().processRequest(new RequestProcess(block, false));
+                    spec.getRpcClient().processRequest(new RequestProcess(block, false, false));
                     // Update local state
                     setState(block.getBalance(), block.getRepresentative(), block.getHash());
                     return block;

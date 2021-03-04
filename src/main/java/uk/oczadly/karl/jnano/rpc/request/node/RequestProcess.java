@@ -6,8 +6,9 @@
 package uk.oczadly.karl.jnano.rpc.request.node;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.block.StateBlock;
+import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHash;
 
@@ -19,70 +20,71 @@ import uk.oczadly.karl.jnano.rpc.response.ResponseBlockHash;
  */
 public class RequestProcess extends RpcRequest<ResponseBlockHash> {
     
-    @Expose @SerializedName("json_block")
-    private final boolean json = false;
+    @Expose private final boolean jsonBlock = true;
     
-    
-    @Expose @SerializedName("block")
-    private final String blockJson;
-    
-    @Expose @SerializedName("force")
-    private final boolean force;
-    
-    @Expose @SerializedName("watch_work")
-    private final Boolean watchWork;
-    
-    
-    @Expose @SerializedName("subtype")
-    private final String subtype;
+    @Expose private final Block block;
+    @Expose private final boolean force;
+    @Expose private final Boolean watchWork;
+    @Expose private final StateBlockSubType subtype;
     
     
     /**
-     * @param block the block data to publish
+     * @param block the block to process
+     */
+    public RequestProcess(Block block) {
+        this(block, null, null, null);
+    }
+    
+    /**
+     * @param block the block to process
      * @param force (optional) whether fork resolution should be forced
      */
     public RequestProcess(Block block, Boolean force) {
-        this(block.toJsonString(), force, null, null);
+        this(block, force, null, null);
     }
     
     /**
-     * @param blockJson the block's JSON contents
+     * @param block     the block to process
      * @param force     (optional) whether fork resolution should be forced
      * @param subtype   (optional) the subtype of the block
      */
-    public RequestProcess(String blockJson, Boolean force, String subtype) {
-        this(blockJson, force, null, subtype);
+    public RequestProcess(Block block, Boolean force, StateBlockSubType subtype) {
+        this(block, force, null, subtype);
     }
     
     /**
-     * @param blockJson the block's JSON contents
+     * @param block     the block to process
      * @param force     (optional) whether fork resolution should be forced
      * @param watchWork (optional) whether the block should be placed on watch for confirmation
      */
-    public RequestProcess(String blockJson, Boolean force, Boolean watchWork) {
-        this(blockJson, force, watchWork, null);
+    public RequestProcess(Block block, Boolean force, Boolean watchWork) {
+        this(block, force, watchWork, null);
     }
     
     /**
-     * @param blockJson the block's JSON contents
+     * @param block     the block to process
      * @param force     (optional) whether fork resolution should be forced
      * @param watchWork (optional) whether the block should be placed on watch for confirmation
      * @param subtype   (optional) the subtype of the block
      */
-    public RequestProcess(String blockJson, Boolean force, Boolean watchWork, String subtype) {
+    public RequestProcess(Block block, Boolean force, Boolean watchWork, StateBlockSubType subtype) {
         super("process", ResponseBlockHash.class);
-        this.blockJson = blockJson;
+        if (subtype == null && block instanceof StateBlock) {
+            this.subtype = ((StateBlock)block).getSubType(); // Infer from state block
+        } else {
+            this.subtype = subtype;
+        }
+        this.block = block;
         this.force = force;
-        this.subtype = subtype;
         this.watchWork = watchWork;
     }
     
     
     /**
-     * @return the requested block's JSON contents
+     * @return the requested block
      */
-    public String getBlockJson() {
-        return blockJson;
+    public Block getBlock() {
+        return block;
     }
     
     /**
@@ -95,7 +97,7 @@ public class RequestProcess extends RpcRequest<ResponseBlockHash> {
     /**
      * @return the requested block's subtype
      */
-    public String getSubtype() {
+    public StateBlockSubType getSubtype() {
         return subtype;
     }
     
