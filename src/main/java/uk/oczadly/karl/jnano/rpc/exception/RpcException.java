@@ -8,7 +8,7 @@ package uk.oczadly.karl.jnano.rpc.exception;
 /**
  * The default base RPC exception, thrown when there is a problem with an RPC request or the remote node.
  */
-public class RpcException extends Exception {
+public abstract class RpcException extends Exception {
     
     public RpcException(String message) {
         super(message);

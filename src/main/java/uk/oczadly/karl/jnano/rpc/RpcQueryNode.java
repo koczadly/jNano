@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.rpc;
 
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.rpc.exception.RpcException;
+import uk.oczadly.karl.jnano.rpc.exception.RpcUnhandledException;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
 import uk.oczadly.karl.jnano.rpc.util.RpcServiceProviders;
@@ -200,9 +201,12 @@ public class RpcQueryNode {
             throw new IllegalArgumentException("Request argument must not be null.");
         if (timeout < 0)
             throw new IllegalArgumentException("Timeout period must be zero or greater.");
-        
-        String requestJsonStr = requestSerializer.serialize(request); // Serialise the request into JSON
-        return processRequestRaw(requestJsonStr, timeout, request.getResponseClass());
+    
+        // Serialize the request
+        String requestJson = JNH.tryRethrow(
+                () -> requestSerializer.serialize(request),
+                e -> new RpcUnhandledException("An unhandled error occurred when serializing the request object.", e));
+        return processRequestRaw(requestJson, timeout, request.getResponseClass());
     }
     
     
@@ -313,18 +317,25 @@ public class RpcQueryNode {
         if (responseClass == null)
             throw new IllegalArgumentException("Response class argument cannot be null.");
         
+        // Send the request to the node
+        String responseData;
         try {
-            String responseJson = this.processRequestRaw(jsonRequest, timeout); // Send the request to the node
-            return responseDeserializer.deserialize(responseJson, responseClass);
-        } catch (IOException | RpcException e) {
+            responseData = processRequestRaw(jsonRequest, timeout);
+        } catch (IOException e) {
             throw e;
         } catch (Exception e) {
-            throw new RpcException("An unhandled exception occured.", e);
+            throw new RpcUnhandledException("An unhandled error occurred when submitting the request to the node.", e);
         }
+        
+        // Deserialize response and return
+        return JNH.tryRethrow(
+                () -> responseDeserializer.deserialize(responseData, responseClass),
+                e -> new RpcUnhandledException("An unhandled error occurred when deserializing the response.", e));
     }
     
     /**
-     * <p>Sends a raw JSON query to the RPC server, and then returns the raw JSON response.</p>
+     * Sends a raw JSON query to the RPC server, and then returns the raw JSON response.
+     *
      * <p>Note that this method will not deserialize the resulting JSON, or parse it for errors reported by the node.
      * You will need to implement this functionality yourself, or use the alternate {@link #processRequestRaw(String,
      * int, Class)} method.</p>
@@ -342,6 +353,15 @@ public class RpcQueryNode {
             throw new IllegalArgumentException("Timeout period must be zero or greater.");
         
         return requestExecutor.submit(jsonRequest, timeout);
+    }
+    
+    
+    /**
+     * Returns a new builder object for constructing {@code RpcQueryNode} objects.
+     * @return a new builder object
+     */
+    public static Builder builder() {
+        return new Builder();
     }
     
     

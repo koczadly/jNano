@@ -40,12 +40,9 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
     @Override
     @SuppressWarnings("unchecked")
     public final <R extends RpcResponse> R deserialize(String response, Class<R> responseClass) throws RpcException {
-        if (response == null)
-            throw new IllegalArgumentException("Response data cannot be null.");
-        if (responseClass == null)
-            throw new IllegalArgumentException("Response class cannot be null.");
-        if (response.isEmpty())
-            throw new RpcInvalidResponseException("Received response data is empty.", response);
+        if (response == null) throw new IllegalArgumentException("Response data cannot be null.");
+        if (responseClass == null) throw new IllegalArgumentException("Response class cannot be null.");
+        if (response.isEmpty()) throw new RpcInvalidResponseException("Received response data is empty.", response);
         
         try {
             // Parse response into JSON
@@ -55,9 +52,11 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
             JsonElement error = jsonResponse.get("error");
             if (error != null) {
                 String errorStr = error.getAsString().trim();
+                // Fix for empty response error
                 if (responseClass == ResponseSuccessful.class && errorStr.equalsIgnoreCase("Empty response")) {
-                    return (R)new ResponseSuccessful(true); // Fix for empty response error
+                    return (R)new ResponseSuccessful(true);
                 }
+                // Parse and throw exception
                 RpcExternalException exception = parseException(errorStr);
                 throw exception != null ? exception : new RpcUnrecognizedException(errorStr);
             }
@@ -71,7 +70,11 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
     
     
     /**
-     * Parses the response string to a json object.
+     * Parses the response string to a {@link JsonObject}, and performs any additional non-JSON exception parsing.
+     *
+     * <p>If an {@link JsonParseException} is thrown by this method, then an {@link RpcInvalidResponseException} will
+     * be automatically generated and thrown.</p>
+     *
      * @param response the response data
      * @return the response data, as a JsonObject
      * @throws RpcException if some other unexpected error occurs
@@ -91,16 +94,15 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
      * @throws RpcException if some other unexpected error occurs
      */
     protected <R extends RpcResponse> R deserialize(JsonObject json, Class<R> responseClass) throws RpcException {
-        // Deserialize response
-        R responseObj = getGson().fromJson(json, responseClass);
-        RpcResponse.initJsonField(responseObj, json);
+        R responseObj = gson.fromJson(json, responseClass);
+        responseObj.initJsonField(json);
         return responseObj;
     }
     
     /**
-     * Parses the returned "{@code error}" message into an {@link RpcExternalException}.
+     * Parses the received "{@code error}" message into the appropriate {@link RpcExternalException} subclass.
      * @param rawMessage the received raw error message
-     * @return the parsed exception object to be thrown
+     * @return the parsed exception object to be thrown, or null if the exception type could not be identified
      */
     protected RpcExternalException parseException(String rawMessage) {
         return parseErrorMessage(rawMessage);
@@ -138,7 +140,7 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
                 return new RpcCommandNotAllowedException(     // RPC unsafe
                         "The specified command is unsafe and disallowed by the node.", rawMessage);
             case "empty response":
-                return new RpcInternalErrorException(              // Empty response internal error
+                return new RpcNodeInternalErrorException(              // Empty response internal error
                         "The server returned an \"empty response\" error.", rawMessage);
         }
         // Try parse from prefix/suffix
@@ -156,7 +158,7 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
         } else if (msgLc.contains("json") || msgLc.contains("malformed")) {
             return new RpcInvalidRequestJsonException(rawMessage);   // Disallowed/invalid JSON request
         } else if (msgLc.startsWith("internal")) {
-            return new RpcInternalErrorException(rawMessage);             // Internal server error
+            return new RpcNodeInternalErrorException(rawMessage);             // Internal server error
         }
         // Couldn't parse, unknown exception type
         return new RpcUnrecognizedException(rawMessage);
