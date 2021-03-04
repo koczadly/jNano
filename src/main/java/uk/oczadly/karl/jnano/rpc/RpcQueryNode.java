@@ -451,6 +451,19 @@ public class RpcQueryNode {
             setAddress(address);
         }
     
+        /**
+         * Creates a builder copying the defined parameters of the constructed object. Note that this will also use
+         * the same {@code ExecutorService} for async queries, unless overwritten by the setter.
+         * @param rpc the {@code RpcQueryNode} object to copy
+         */
+        public Builder(RpcQueryNode rpc) {
+            this.defaultTimeout = rpc.defaultTimeout;
+            this.serializer = rpc.requestSerializer;
+            this.deserializer = rpc.responseDeserializer;
+            this.requestExecutor = rpc.requestExecutor;
+            this.executorService = rpc.executorService;
+        }
+    
         
         /**
          * Sets the endpoint address of the node to the given URL. The protocol of the URL must be either {@code http}
