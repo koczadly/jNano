@@ -316,7 +316,7 @@ public class RpcQueryNode {
             throw new IllegalArgumentException("JSON request cannot be null.");
         if (responseClass == null)
             throw new IllegalArgumentException("Response class argument cannot be null.");
-        
+    
         // Send the request to the node
         String responseData;
         try {
@@ -328,9 +328,13 @@ public class RpcQueryNode {
         }
         
         // Deserialize response and return
-        return JNH.tryRethrow(
-                () -> responseDeserializer.deserialize(responseData, responseClass),
-                e -> new RpcUnhandledException("An unhandled error occurred when deserializing the response.", e));
+        try {
+            return responseDeserializer.deserialize(responseData, responseClass);
+        } catch (RpcException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RpcUnhandledException("An unhandled error occurred when deserializing the response.", e);
+        }
     }
     
     /**
