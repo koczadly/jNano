@@ -58,8 +58,8 @@ public class JsonResponseDeserializerTest {
         assertThrows(RpcEntityNotFoundException.class, errorJson("Source not found"));
         assertThrows(RpcEntityNotFoundException.class, errorJson("Wallet not found"));
         assertThrows(RpcFeatureDisabledException.class, errorJson("Signing by block hash is disabled"));
-        assertThrows(RpcInternalException.class, errorJson("Internal error"));
-        assertThrows(RpcInternalException.class, errorJson("Empty response"));
+        assertThrows(RpcInternalErrorException.class, errorJson("Internal error"));
+        assertThrows(RpcInternalErrorException.class, errorJson("Empty response"));
         assertThrows(RpcInvalidArgumentException.class, errorJson("Block is invalid"));
         assertThrows(RpcInvalidArgumentException.class, errorJson("Bad account number"));
         assertThrows(RpcRequestCancelledException.class, errorJson("Cancelled"));

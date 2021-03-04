@@ -23,7 +23,7 @@ public class RpcInvalidResponseException extends RpcException {
         this.responseBody = responseBody;
     }
     
-    public RpcInvalidResponseException(Throwable cause, String responseBody) {
+    public RpcInvalidResponseException(Exception cause, String responseBody) {
         super("Unable to parse the response as JSON.", cause);
         this.responseBody = responseBody;
     }

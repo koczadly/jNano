@@ -6,7 +6,7 @@
 package uk.oczadly.karl.jnano.rpc.exception;
 
 /**
- * The default base RPC exception. This is thrown when there is an error with the request or node.
+ * The default base RPC exception, thrown when there is a problem with an RPC request or the remote node.
  */
 public class RpcException extends Exception {
     
@@ -14,8 +14,21 @@ public class RpcException extends Exception {
         super(message);
     }
     
-    public RpcException(String message, Throwable cause) {
+    public RpcException(String message, Exception cause) {
         super(message, cause);
+    }
+    
+    
+    @Override
+    public synchronized Exception getCause() {
+        return (Exception)super.getCause();
+    }
+    
+    @Override
+    public final synchronized Throwable initCause(Throwable cause) {
+        if (!(cause instanceof Exception))
+            throw new IllegalArgumentException("Cause must extend Exception.");
+        return super.initCause(cause);
     }
     
 }

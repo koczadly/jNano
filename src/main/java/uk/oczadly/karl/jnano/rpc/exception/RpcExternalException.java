@@ -5,8 +5,17 @@
 
 package uk.oczadly.karl.jnano.rpc.exception;
 
+import uk.oczadly.karl.jnano.rpc.JsonResponseDeserializer;
+import uk.oczadly.karl.jnano.rpc.RpcQueryNode;
+import uk.oczadly.karl.jnano.rpc.RpcResponseDeserializer;
+
 /**
  * This exception is thrown when an RPC error is externally generated and returned by the node.
+ *
+ * <p>Exceptions extending this base class should always pass the raw message argument directly from the
+ * deserializer. Custom exception parsing may be added to an {@link RpcQueryNode} instance by specifying your own
+ * {@link RpcResponseDeserializer} implementation, or by overriding the {@code parseException} method in the standard
+ * {@link JsonResponseDeserializer}.</p>
  */
 public abstract class RpcExternalException extends RpcException {
     
@@ -38,13 +47,13 @@ public abstract class RpcExternalException extends RpcException {
     }
     
     
-    protected static String formatMessage(String msg) {
-        if (msg == null || msg.isEmpty())
+    private static String formatMessage(String rawMessage) {
+        if (rawMessage == null || rawMessage.isEmpty())
             return null;
-        StringBuilder sb = new StringBuilder(msg.length() + 1);
-        sb.append(Character.toUpperCase(msg.charAt(0)));
-        sb.append(msg, 1, msg.length());
-        if (msg.charAt(msg.length() - 1) != '.')
+        StringBuilder sb = new StringBuilder(rawMessage.length() + 1);
+        sb.append(Character.toUpperCase(rawMessage.charAt(0)));
+        sb.append(rawMessage, 1, rawMessage.length());
+        if (rawMessage.charAt(rawMessage.length() - 1) != '.')
             sb.append('.');
         return sb.toString();
     }

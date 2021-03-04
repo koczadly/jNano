@@ -58,7 +58,8 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
                 if (responseClass == ResponseSuccessful.class && errorStr.equalsIgnoreCase("Empty response")) {
                     return (R)new ResponseSuccessful(true); // Fix for empty response error
                 }
-                throw parseException(errorStr);
+                RpcExternalException exception = parseException(errorStr);
+                throw exception != null ? exception : new RpcUnrecognizedException(errorStr);
             }
             
             // Deserialize and return
@@ -80,7 +81,9 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
     }
     
     /**
-     * Deserializes the response. Exception should already be parsed before this method is called.
+     * Deserializes the response to the specified response class. Any returned errors should already have been parsed
+     * by {@link #parseException(String)} when this method is called.
+     *
      * @param json          the response json
      * @param responseClass the response class
      * @param <R>           the response class type
@@ -95,68 +98,68 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
     }
     
     /**
-     * Parses the exception "error" message.
-     * @param msg the message
-     * @return the exception
+     * Parses the returned "{@code error}" message into an {@link RpcExternalException}.
+     * @param rawMessage the received raw error message
+     * @return the parsed exception object to be thrown
      */
-    protected RpcException parseException(String msg) {
-        return parseErrorMessage(msg);
+    protected RpcExternalException parseException(String rawMessage) {
+        return parseErrorMessage(rawMessage);
     }
     
     
     /**
-     * Parses an {@link RpcException} from a given response message.
-     * @param msg the received error message
-     * @return the parsed exception object
+     * Parses an {@link RpcExternalException} from a given response message.
+     * @param rawMessage the received raw error message
+     * @return the parsed exception object to be thrown
      */
-    public static RpcException parseErrorMessage(String msg) {
-        String msgLc = msg.toLowerCase();
+    public static RpcExternalException parseErrorMessage(String rawMessage) {
+        String msgLc = rawMessage.toLowerCase();
         
         // Check and parse error type
         switch (msgLc) {
             case "wallet is locked":
             case "wallet locked":
-                return new RpcWalletLockedException(msg);     // Wallet locked
+                return new RpcWalletLockedException(rawMessage);     // Wallet locked
             case "insufficient balance":
-                return new RpcInvalidArgumentException(msg);  // Invalid/bad argument
+                return new RpcInvalidArgumentException(rawMessage);  // Invalid/bad argument
             case "rpc control is disabled":
-                return new RpcControlDisabledException(msg);  // RPC control disabled
+                return new RpcControlDisabledException(rawMessage);  // RPC control disabled
             case "cancelled":
-                return new RpcRequestCancelledException(msg); // Request cancelled
+                return new RpcRequestCancelledException(rawMessage); // Request cancelled
             case "unable to parse json":
                 return new RpcInvalidRequestJsonException(    // Invalid request body
-                        "The RPC server was unable to parse the JSON request.", msg);
+                        "The RPC server was unable to parse the JSON request.", rawMessage);
             case "unknown command":
-                return new RpcUnknownCommandException(msg);   // Unknown command
+                return new RpcUnknownCommandException(rawMessage);   // Unknown command
             case "invalid header: body limit exceeded":
                 return new RpcInvalidRequestJsonException(    // JSON too long
-                        "The request JSON exceeded the configured maximum length.", msg);
+                        "The request JSON exceeded the configured maximum length.", rawMessage);
             case "unsafe rpc not allowed":
                 return new RpcCommandNotAllowedException(     // RPC unsafe
-                        "The specified command is unsafe and disallowed by the node.", msg);
+                        "The specified command is unsafe and disallowed by the node.", rawMessage);
             case "empty response":
-                return new RpcInternalException(              // Empty response internal error
-                        "The server returned an \"empty response\" error.", msg);
+                return new RpcInternalErrorException(              // Empty response internal error
+                        "The server returned an \"empty response\" error.", rawMessage);
         }
         // Try parse from prefix/suffix
         if (msgLc.startsWith("bad ") || msgLc.startsWith("invalid ") || msgLc.startsWith("gap ")
                 || msgLc.endsWith(" invalid") || msgLc.endsWith(" required") || msgLc.endsWith(" do not match")) {
-            return new RpcInvalidArgumentException(msg);      // Invalid/bad argument
+            return new RpcInvalidArgumentException(rawMessage);      // Invalid/bad argument
         } else if (msgLc.contains("not found")) {
-            return new RpcEntityNotFoundException(msg);       // Unknown referenced entity
+            return new RpcEntityNotFoundException(rawMessage);       // Unknown referenced entity
         } else if (msgLc.endsWith("is disabled")) {
-            return new RpcFeatureDisabledException(msg);      // Feature is disabled
+            return new RpcFeatureDisabledException(rawMessage);      // Feature is disabled
         } else if (msgLc.endsWith("not allowed")) {
-            return new RpcCommandNotAllowedException(msg);    // Command not allowed
+            return new RpcCommandNotAllowedException(rawMessage);    // Command not allowed
         } else if (msgLc.contains("config")) {
-            return new RpcConfigForbiddenException(msg);      // Config forbids request
+            return new RpcConfigForbiddenException(rawMessage);      // Config forbids request
         } else if (msgLc.contains("json") || msgLc.contains("malformed")) {
-            return new RpcInvalidRequestJsonException(msg);   // Disallowed/invalid JSON request
+            return new RpcInvalidRequestJsonException(rawMessage);   // Disallowed/invalid JSON request
         } else if (msgLc.startsWith("internal")) {
-            return new RpcInternalException(msg);             // Internal server error
+            return new RpcInternalErrorException(rawMessage);             // Internal server error
         }
         // Couldn't parse, unknown exception type
-        return new RpcUnrecognizedException(msg);
+        return new RpcUnrecognizedException(rawMessage);
     }
 
 }
