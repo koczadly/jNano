@@ -112,8 +112,9 @@ public class LocalRpcWalletAccount {
     
     
     /**
-     * Returns the current balance of this account. This does not include the pending amount.
-     * @return the current account balance
+     * Returns the current (potentially unconfirmed) balance of this account, not include any pending amounts. Will
+     * return a value of zero if the account hasn't been opened yet.
+     * @return the current balance of the account
      * @throws WalletActionException if an error occurs when retrieving the account state
      */
     public NanoAmount getBalance() throws WalletActionException {
@@ -121,7 +122,8 @@ public class LocalRpcWalletAccount {
     }
     
     /**
-     * Return the hash of the current frontier block of this account.
+     * Return the hash of the current frontier block of this account, or an empty value if the account hasn't been
+     * opened yet.
      *
      * @return the current account frontier block hash
      * @throws WalletActionException if an error occurs when retrieving the account state
@@ -136,7 +138,8 @@ public class LocalRpcWalletAccount {
      * @param destination the destination account
      * @param amount      the amount of funds to send to the account
      * @return the generated and published {@code send} block
-     * @throws WalletActionException if an error occurs when sending the funds
+     * @throws WalletActionException if an error occurs when sending the funds, or if there are not enough funds
+     *                               available in the accounts balance
      */
     public Block sendFunds(NanoAccount destination, NanoAmount amount) throws WalletActionException {
         if (amount.equals(NanoAmount.ZERO))
@@ -162,7 +165,8 @@ public class LocalRpcWalletAccount {
     }
     
     /**
-     * Attempts to send <em>all</em> of the balance to the specified account.
+     * Attempts to send <em>all</em> of the balance to the specified account, returning an empty value if there are
+     * no remaining funds to send.
      *
      * <p>This method will not receive/send any pending blocks; that can be done by calling {@link #receiveAllPending()}
      * prior to sending funds.</p>
