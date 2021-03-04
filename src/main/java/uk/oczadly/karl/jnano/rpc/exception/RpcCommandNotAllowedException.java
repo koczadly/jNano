@@ -15,7 +15,7 @@ public class RpcCommandNotAllowedException extends RpcFeatureDisabledException {
     }
     
     public RpcCommandNotAllowedException(String nodeMessage) {
-        super(null, nodeMessage);
+        super(nodeMessage);
     }
     
 }

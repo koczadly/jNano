@@ -11,6 +11,7 @@ import uk.oczadly.karl.jnano.rpc.HttpRequestExecutor;
 import uk.oczadly.karl.jnano.rpc.JsonRequestSerializer;
 import uk.oczadly.karl.jnano.rpc.JsonResponseDeserializer;
 import uk.oczadly.karl.jnano.rpc.RpcQueryNode;
+import uk.oczadly.karl.jnano.rpc.exception.RpcCommandNotAllowedException;
 import uk.oczadly.karl.jnano.rpc.exception.RpcException;
 import uk.oczadly.karl.jnano.rpc.exception.RpcThirdPartyException;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
@@ -94,14 +95,17 @@ public final class RpcServiceProviders {
                             throws RpcException {
                         if (json.size() == 1 && json.has("message")) {
                             String message = json.get("message").getAsString();
-                            if (message.equals("Too Many Requests")) {
-                                throw new RpcThirdPartyException.TokensExhaustedException(
-                                        "Free requests exhausted.", message);
-                            } else if (message.equals("Insufficient funds / User not found")) {
-                                throw new RpcThirdPartyException.TokensExhaustedException(
-                                        "Not enough API access tokens.", message);
-                            } else {
-                                throw new RpcThirdPartyException(message);
+                            switch (message) {
+                                case "Too Many Requests":
+                                    throw new RpcThirdPartyException.TokensExhaustedException(
+                                            "Free requests exhausted.", message);
+                                case "Insufficient funds / User not found":
+                                    throw new RpcThirdPartyException.TokensExhaustedException(
+                                            "Not enough API access tokens.", message);
+                                case "Action is not supported":
+                                    throw new RpcCommandNotAllowedException(message);
+                                default:
+                                    throw new RpcThirdPartyException(message);
                             }
                         }
                         return super.deserialize(json, responseClass);
