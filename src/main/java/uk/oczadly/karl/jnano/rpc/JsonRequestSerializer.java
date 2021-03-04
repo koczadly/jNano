@@ -45,20 +45,20 @@ public class JsonRequestSerializer implements RpcRequestSerializer {
     
     
     @Override
-    public String serialize(RpcRequest<?> request) {
-        return serializeJsonObject(request).toString();
+    public final String serialize(RpcRequest<?> request) {
+        JsonObject json = serializeJsonObject(request);
+        json.addProperty("action", request.getActionCommand());
+        return gson.toJson(json);
     }
     
     
     /**
-     * Default serialization method.
+     * Deserializes the request fields to a JSON object, excluding the {@code action} field.
      * @param request the request object
-     * @return the JSON object
+     * @return the request data as a {@link JsonObject}
      */
     public JsonObject serializeJsonObject(RpcRequest<?> request) {
-        JsonObject obj = gson.toJsonTree(request).getAsJsonObject();
-        obj.addProperty("action", request.getActionCommand());
-        return obj;
+        return gson.toJsonTree(request).getAsJsonObject();
     }
 
 }

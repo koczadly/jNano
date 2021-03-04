@@ -12,7 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * The standard implementation of {@link RpcRequestExecutor}, which submits requests through an HTTP POST request.
+ * The standard implementation of {@link RpcRequestExecutor}, which submits requests through an HTTP/HTTPS POST request.
  *
  * <p>The request method and headers may be changed by overriding the {@link #setRequestHeaders(HttpURLConnection)}
  * method.</p>
@@ -82,7 +82,7 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
      * @return the response body as a string
      * @throws IOException if an exception occurs
      */
-    protected static String makeRequest(HttpURLConnection con, String body) throws IOException {
+    public static String makeRequest(HttpURLConnection con, String body) throws IOException {
         return HTTPUtil.request(con, body);
     }
 
