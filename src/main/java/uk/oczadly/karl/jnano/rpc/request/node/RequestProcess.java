@@ -23,8 +23,7 @@ public class RequestProcess extends RpcRequest<ResponseBlockHash> {
     @Expose private final boolean jsonBlock = true;
     
     @Expose private final Block block;
-    @Expose private final boolean force;
-    @Expose private final Boolean watchWork;
+    @Expose private final Boolean force, watchWork;
     @Expose private final StateBlockSubType subtype;
     
     
@@ -90,7 +89,7 @@ public class RequestProcess extends RpcRequest<ResponseBlockHash> {
     /**
      * @return whether fork resolution should be forced
      */
-    public boolean shouldForce() {
+    public Boolean isForce() {
         return force;
     }
     
