@@ -98,17 +98,33 @@ public final class NetworkConstants {
     
     private final String networkName, addressPrefix;
     private final OpenBlock genesisBlock;
-    private final ConstantWorkDifficultyPolicy workDifficulty;
+    private final ConstantWorkDifficultyPolicy workDifficulties;
     private final EpochUpgradeRegistry epochs;
+    
+    /**
+     * @param networkName      the network name (eg. "{@code Nano}")
+     * @param addressPrefix    the address prefix (eg. {@code nano} as seen in {@code nano_34qjpc8t1u...})
+     * @param genesisBlock     the genesis block contents
+     * @param workDifficulties the active work difficulty policy
+     * @param epochs           a registry of account upgrade epochs
+     */
+    public NetworkConstants(String networkName, String addressPrefix, OpenBlock genesisBlock,
+                             ConstantWorkDifficultyPolicy workDifficulties, EpochUpgradeRegistry epochs) {
+        this.networkName = networkName;
+        this.addressPrefix = addressPrefix;
+        this.genesisBlock = genesisBlock;
+        this.workDifficulties = workDifficulties;
+        this.epochs = epochs;
+    }
     
     private NetworkConstants(String networkName, String addressPrefix, String genBlockSig,
                              WorkSolution genBlockWork, String genAccountPk,
-                             ConstantWorkDifficultyPolicy workDifficulty, EpochUpgradeRegistry epochs) {
+                             ConstantWorkDifficultyPolicy workDifficulties, EpochUpgradeRegistry epochs) {
         this.networkName = networkName;
         this.addressPrefix = addressPrefix;
         NanoAccount genesisAccount = NanoAccount.parsePublicKey(genAccountPk, addressPrefix);
         this.genesisBlock = createGenesisBlock(genesisAccount, genBlockWork, new HexData(genBlockSig));
-        this.workDifficulty = workDifficulty;
+        this.workDifficulties = workDifficulties;
         this.epochs = epochs;
     }
     
@@ -117,7 +133,7 @@ public final class NetworkConstants {
      * Returns the name of this network.
      * @return the name of this network
      */
-    public String getNetworkName() {
+    public final String getNetworkName() {
         return networkName;
     }
     
@@ -126,7 +142,7 @@ public final class NetworkConstants {
      *
      * @return the genesis block
      */
-    public OpenBlock getGenesisBlock() {
+    public final OpenBlock getGenesisBlock() {
         return genesisBlock.clone();
     }
     
@@ -134,15 +150,15 @@ public final class NetworkConstants {
      * Returns the account which holds the genesis block.
      * @return the genesis account
      */
-    public NanoAccount getGenesisAccount() {
-        return getGenesisBlock().getAccount();
+    public final NanoAccount getGenesisAccount() {
+        return getGenesisBlock().getAccount().withPrefix(getAddressPrefix());
     }
     
     /**
      * Returns the network identifier string. This is also the genesis block hash.
      * @return the network identifier
      */
-    public String getNetworkIdentifier() {
+    public final String getNetworkIdentifier() {
         return getGenesisBlock().getHash().toHexString();
     }
     
@@ -158,7 +174,7 @@ public final class NetworkConstants {
      * Returns the default address prefix used for accounts, which comes before the underscore symbol.
      * @return the prefix of account addresses
      */
-    public String getAddressPrefix() {
+    public final String getAddressPrefix() {
         return addressPrefix;
     }
     
@@ -166,15 +182,15 @@ public final class NetworkConstants {
      * Returns the current minimum work difficulty thresholds for this network.
      * @return the minimum work difficulty thresholds
      */
-    public ConstantWorkDifficultyPolicy getWorkDifficulties() {
-        return workDifficulty;
+    public final ConstantWorkDifficultyPolicy getWorkDifficulties() {
+        return workDifficulties;
     }
     
     /**
      * Returns a registry of supported and recognized account epoch upgrades.
      * @return a registry of epoch upgrades
      */
-    public EpochUpgradeRegistry getEpochUpgrades() {
+    public final EpochUpgradeRegistry getEpochUpgrades() {
         return epochs;
     }
     
