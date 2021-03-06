@@ -18,11 +18,11 @@ import java.util.Map;
 @JsonAdapter(StateBlockSubType.JsonAdapter.class)
 public enum StateBlockSubType {
     
-    SEND        (true,   BlockType.SEND),
-    RECEIVE     (true,   BlockType.RECEIVE),
-    OPEN        (true,   BlockType.OPEN),
-    CHANGE      (false,  BlockType.CHANGE),
-    EPOCH       (false,  null);
+    SEND    (true,  BlockType.SEND,    LinkData.Intent.DESTINATION_ACCOUNT),
+    RECEIVE (true,  BlockType.RECEIVE, LinkData.Intent.SOURCE_HASH),
+    OPEN    (true,  BlockType.OPEN,    LinkData.Intent.SOURCE_HASH),
+    CHANGE  (false, BlockType.CHANGE,  LinkData.Intent.UNUSED),
+    EPOCH   (false, null,              LinkData.Intent.EPOCH_IDENTIFIER);
     
     
     static final Map<BlockType, StateBlockSubType> LEGACY_LOOKUP_MAP = new HashMap<>();
@@ -35,12 +35,14 @@ public enum StateBlockSubType {
     }
     
     
-    boolean isTransaction;
-    BlockType legacyType;
+    private final boolean isTransaction;
+    private final BlockType legacyType;
+    private final LinkData.Intent linkIntent;
     
-    StateBlockSubType(boolean isTransaction, BlockType legacyType) {
+    StateBlockSubType(boolean isTransaction, BlockType legacyType, LinkData.Intent linkIntent) {
         this.isTransaction = isTransaction;
         this.legacyType = legacyType;
+        this.linkIntent = linkIntent;
     }
     
     
@@ -63,6 +65,13 @@ public enum StateBlockSubType {
      */
     public BlockType getLegacyType() {
         return legacyType;
+    }
+    
+    /**
+     * @return the intent of the {@code link} field for this transaction type
+     */
+    public LinkData.Intent getLinkIntent() {
+        return linkIntent;
     }
     
     @Override
