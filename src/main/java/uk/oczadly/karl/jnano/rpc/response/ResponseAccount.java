@@ -14,15 +14,15 @@ import uk.oczadly.karl.jnano.model.NanoAccount;
  */
 public class ResponseAccount extends RpcResponse {
     
-    @Expose @SerializedName(value = "account", alternate = "representative")
-    private NanoAccount address;
+    @Expose @SerializedName(value = "account", alternate = {"representative", "address"})
+    private NanoAccount account;
     
     
     /**
      * @return the account's address
      */
     public NanoAccount getAccountAddress() {
-        return address;
+        return account;
     }
     
 }
