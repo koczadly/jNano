@@ -20,6 +20,7 @@ module uk.oczadly.karl.jnano {
     exports uk.oczadly.karl.jnano.rpc.util.wallet;
     // Utils
     exports uk.oczadly.karl.jnano.util;
+    exports uk.oczadly.karl.jnano.util.blockproducer;
     exports uk.oczadly.karl.jnano.util.workgen;
     exports uk.oczadly.karl.jnano.util.workgen.policy;
     // WebSocket

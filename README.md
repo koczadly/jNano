@@ -11,8 +11,8 @@ Nano is a crypto-currency which offers instantaneous and fee-less transactions. 
 ---
 
 ## Technical details
-- This library requires **Java 8+** (using module `uk.oczadly.karl.jnano` for versions 9+)
-- Provides **full compatibility** with clone cryptocurrencies (eg. [Banano](https://banano.cc))
+- This library requires **Java 8+** (module `uk.oczadly.karl.jnano` for versions 9+)
+- **Fully compatible** with clone cryptocurrencies (eg. [Banano](https://banano.cc))
 - Built and managed through [Maven](https://maven.apache.org/)
 - [List of dependencies](#dependencies)
 
@@ -98,7 +98,8 @@ The following sample will create a new `state` block. The block will be signed u
 ```java
 WorkGenerator workGenerator = new CPUWorkGenerator();
 
-StateBlock block = new StateBlockBuilder(StateBlockSubType.OPEN)
+StateBlock block = StateBlock.builder()
+        .setSubtype(StateBlockSubType.OPEN)
         .setLink("BF4A559FEF44D4A9C9CEF4972886A51FC83AD1A2BEE4CDD732F62F3C166D6D4F")
         .setBalance("123000000000000000000000000")
         .generateWork(workGenerator)

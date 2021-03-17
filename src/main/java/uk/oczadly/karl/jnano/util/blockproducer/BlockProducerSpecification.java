@@ -3,41 +3,40 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.rpc.util.wallet;
+package uk.oczadly.karl.jnano.util.blockproducer;
 
 import uk.oczadly.karl.jnano.model.NanoAccount;
-import uk.oczadly.karl.jnano.rpc.RpcQueryNode;
+import uk.oczadly.karl.jnano.util.NetworkConstants;
+import uk.oczadly.karl.jnano.util.workgen.CPUWorkGenerator;
 import uk.oczadly.karl.jnano.util.workgen.NodeWorkGenerator;
 import uk.oczadly.karl.jnano.util.workgen.WorkGenerator;
 
+import java.util.Objects;
+
 /**
- * Represents a specification of a wallet. Use the provided {@link Builder builder} object to construct this class.
+ * Represents a specification of a block producer or local wallet. Use the provided {@link Builder builder} object to
+ * construct this class.
  *
  * @see #builder()
  */
-public class RpcWalletSpecification {
+public class BlockProducerSpecification {
     
-    private final RpcQueryNode rpcClient;
     private final NanoAccount defaultRepresentative;
     private final String addressPrefix;
     private final WorkGenerator workGenerator;
     
     
-    private RpcWalletSpecification(RpcQueryNode rpcClient, NanoAccount defaultRepresentative, String addressPrefix,
-                                  WorkGenerator workGenerator) {
-        this.rpcClient = rpcClient;
+    public BlockProducerSpecification() {
+        this(NanoAccount.ZERO_ACCOUNT, NanoAccount.DEFAULT_PREFIX, new CPUWorkGenerator());
+    }
+    
+    private BlockProducerSpecification(NanoAccount defaultRepresentative, String addressPrefix,
+                                       WorkGenerator workGenerator) {
         this.addressPrefix = addressPrefix;
         this.defaultRepresentative = defaultRepresentative.withPrefix(addressPrefix);
         this.workGenerator = workGenerator;
     }
     
-    
-    /**
-     * @return the RPC client through which requests are made
-     */
-    public RpcQueryNode getRpcClient() {
-        return rpcClient;
-    }
     
     /**
      * @return the address prefix
@@ -70,18 +69,18 @@ public class RpcWalletSpecification {
     
     
     public static final class Builder {
-        private RpcQueryNode rpcClient;
         private NanoAccount defaultRepresentative;
         private String addressPrefix;
         private WorkGenerator workGenerator;
+        private NetworkConstants network;
     
         /**
-         * Sets the RPC client over which requests will be made.
-         * @param rpcClient the RPC client to use
+         * Convenience method which sets the network to use for prefixes and work difficulties, if not manually set.
+         * @param network the network specification to use
          * @return this builder
          */
-        public Builder rpcClient(RpcQueryNode rpcClient) {
-            this.rpcClient = rpcClient;
+        public Builder usingNetwork(NetworkConstants network) {
+            this.network = network;
             return this;
         }
     
@@ -135,12 +134,12 @@ public class RpcWalletSpecification {
          * Builds and returns the wallet specification from the set parameters.
          * @return the constructed specification object
          */
-        public RpcWalletSpecification build() {
-            if (rpcClient == null) throw new IllegalStateException("No RPC client is specified.");
-            return new RpcWalletSpecification(rpcClient,
-                    defaultRepresentative != null ? defaultRepresentative : NanoAccount.ZERO_ACCOUNT,
-                    addressPrefix != null ? addressPrefix : NanoAccount.DEFAULT_PREFIX,
-                    workGenerator != null ? workGenerator : new NodeWorkGenerator(rpcClient));
+        public BlockProducerSpecification build() {
+            NetworkConstants network = Objects.requireNonNullElse(this.network, NetworkConstants.NANO);
+            return new BlockProducerSpecification(
+                    defaultRepresentative != null ? defaultRepresentative : network.getBurnAddress(),
+                    addressPrefix != null ? addressPrefix : network.getAddressPrefix(),
+                    workGenerator != null ? workGenerator : new CPUWorkGenerator(network.getWorkDifficulties()));
         }
     }
     
