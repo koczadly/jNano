@@ -145,7 +145,8 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
         }
         // Try parse from prefix/suffix
         if (msgLc.startsWith("bad ") || msgLc.startsWith("invalid ") || msgLc.startsWith("gap ")
-                || msgLc.endsWith(" invalid") || msgLc.endsWith(" required") || msgLc.endsWith(" do not match")) {
+                || msgLc.endsWith(" invalid") || msgLc.endsWith(" required") || msgLc.endsWith(" do not match")
+                || msgLc.contains("insufficient")) {
             return new RpcInvalidArgumentException(rawMessage);      // Invalid/bad argument
         } else if (msgLc.contains("not found")) {
             return new RpcEntityNotFoundException(rawMessage);       // Unknown referenced entity
