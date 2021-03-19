@@ -8,6 +8,7 @@ package uk.oczadly.karl.jnano.model.block;
 import org.junit.Test;
 import uk.oczadly.karl.jnano.TestConstants;
 import uk.oczadly.karl.jnano.internal.JNC;
+import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
@@ -22,7 +23,7 @@ public class StateBlockBuilderTest {
     
     public static StateBlockBuilder newBuilder() {
         return new StateBlockBuilder()
-                .setSubtype(StateBlockSubType.EPOCH)
+                .setSubtype(StateBlockSubType.SEND)
                 .setAccount(ACCOUNT)
                 .setPreviousHash("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97")
                 .setBalance("1337");
@@ -54,7 +55,7 @@ public class StateBlockBuilderTest {
         assertEquals(BlockType.STATE, block.getType());
     
         assertEquals(NanoAmount.valueOfRaw("1337"), block.getBalance());
-        assertEquals(StateBlockSubType.EPOCH, block.getSubType());
+        assertEquals(StateBlockSubType.SEND, block.getSubType());
         assertEquals(ACCOUNT, block.getAccount());
         assertEquals("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97",
                 block.getPreviousBlockHash().toHexString());
@@ -85,6 +86,37 @@ public class StateBlockBuilderTest {
         assertEquals(JNC.ZEROES_64_HD, newBuilder()
                 .setSubtype(StateBlockSubType.CHANGE).build()
                 .getLink().asHex());
+    }
+    
+    // TODO
+//    @Test
+//    public void testBuildWorkGen() {
+//        StateBlock b = newBuilder().setLink(DATA).generateWork(workGen);
+//    }
+    
+    @Test
+    public void testBuildSign() {
+        StateBlock b = newBuilder().setLink(DATA)
+                .usingAddressPrefix("ban")
+                .buildAndSign(new HexData("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97"));
+        assertEquals("A73A4178198943EDE5A14696A4F4B6E6F5AD051F9E49F1D10F8896A9148FA19557AD4A5A5F6250FDC69072CC43BCD" +
+                "2B29787171F1BD30060AC4D3BD6C862D30E", b.getSignature().toHexString());
+        assertEquals("ban", b.getAccount().getPrefix());
+    }
+    
+    @Test
+    public void testAddressPrefixes() {
+        // Using custom prefix
+        StateBlock b1 = newBuilder().setLink(ACCOUNT).usingAddressPrefix("ban").build();
+        assertEquals("ban", b1.getAccount().getPrefix());
+        assertEquals("ban", b1.getRepresentative().getPrefix());
+        assertEquals("ban", b1.getLink().asAccount().getPrefix());
+    
+        // Using prefix in 'account'
+        StateBlock b2 = newBuilder().setAccount(ACCOUNT.withPrefix("ban")).setLink(DATA).build();
+        assertEquals("ban", b2.getAccount().getPrefix());
+        assertEquals("ban", b2.getRepresentative().getPrefix());
+        assertEquals("ban", b2.getLink().asAccount().getPrefix());
     }
     
 }

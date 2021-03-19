@@ -27,14 +27,12 @@ import java.util.concurrent.ExecutionException;
 public final class StateBlockBuilder {
     
     private StateBlockSubType subtype;
-    private NanoAccount account;
-    private HexData prevHash;
-    private NanoAccount rep;
+    private NanoAccount account, rep, linkAccount;
     private NanoAmount balance;
-    private NanoAccount linkAccount;
-    private HexData linkData;
-    private HexData signature;
+    private HexData prevHash, signature;
     private WorkSolution work;
+    
+    private String addressPrefix;
     private WorkGenerator workGenerator;
     
     
@@ -65,6 +63,7 @@ public final class StateBlockBuilder {
         this.balance = block.getBalance();
         this.signature = block.getSignature();
         this.work = block.getWorkSolution();
+        this.addressPrefix = block.getAccount().getPrefix();
         setLink(block.getLink());
     }
     
@@ -80,10 +79,10 @@ public final class StateBlockBuilder {
         this.rep = builder.rep;
         this.balance = builder.balance;
         this.signature = builder.signature;
-        this.linkData = builder.linkData;
         this.linkAccount = builder.linkAccount;
         this.work = builder.work;
         this.workGenerator = builder.workGenerator;
+        this.addressPrefix = builder.addressPrefix;
     }
     
     
@@ -324,8 +323,7 @@ public final class StateBlockBuilder {
      * @see #setLink(String)
      */
     public synchronized StateBlockBuilder setLink(LinkData link) {
-        this.linkData = link == null ? null : link.asHex();
-        return this;
+        return setLink(link == null ? null : link.asHex());
     }
     
     /**
@@ -338,8 +336,7 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setLink(String link) {
-        setLink(link != null ? NanoAccount.parse(link) : null);
-        return this;
+        return setLink(link != null ? NanoAccount.parse(link) : null);
     }
     
     /**
@@ -354,10 +351,7 @@ public final class StateBlockBuilder {
     public synchronized StateBlockBuilder setLink(HexData link) {
         if (link != null && link.length() != NanoConst.LEN_HASH_B)
             throw new IllegalArgumentException("Invalid link length.");
-        
-        this.linkData = link;
-        this.linkAccount = null;
-        return this;
+        return setLink(link != null ? new NanoAccount(link.toByteArray()) : null);
     }
     
     /**
@@ -370,8 +364,21 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setLink(NanoAccount link) {
-        this.linkData = null;
         this.linkAccount = link;
+        return this;
+    }
+    
+    /**
+     * Sets the address prefix to be enforced and applied to all account-based fields.
+     *
+     * <p>If this value isn't set then the prefix will be obtained from the {@link #setAccount(NanoAccount) account}
+     * value, otherwise the default {@value NanoAccount#DEFAULT_PREFIX} prefix will be used.</p>
+     *
+     * @param prefix the address prefix, excluding the separator character (eg "{@code nano}")
+     * @return this builder instance
+     */
+    public synchronized StateBlockBuilder usingAddressPrefix(String prefix) {
+        this.addressPrefix = prefix;
         return this;
     }
     
@@ -383,126 +390,97 @@ public final class StateBlockBuilder {
      * the work has been generated. If the work could not be generated, then this method will throw a
      * {@link BlockCreationException}.</p>
      *
-     * <p>All fields in the address format will use the prefix specified in the {@code account} field.</p>
+     * <p>Fields with an address format ({@code account}, {@code representative} and {@code link_as_account}) will use
+     * the prefix specified by {@link #usingAddressPrefix(String)}. If no value has been set, then the prefix used by
+     * the {@code account} field will be used.</p>
      *
      * @return a new instance of the {@link StateBlock} class using the configured parameters
      * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
      */
     public synchronized StateBlock build() {
-        return build(subtype, signature, work, workGenerator, account, prevHash, rep, balance, linkData, linkAccount);
+        return build(subtype, signature, work, workGenerator, account, prevHash, rep, balance, linkAccount,
+                getAddressPrefix());
     }
     
     /**
      * Constructs a {@link StateBlock} from the configured parameters, and then signs the block.
      *
+     * <p>Calling this method and signing the block will override any configured {@code account} and {@code signature}
+     * value set in this builder object to match the private key. This will not update the state of this builder.</p>
+     *
      * <p>If a {@link #generateWork(WorkGenerator) work generator} is specified, then this method will block until
      * the work has been generated. If the work could not be generated, then this method will throw a
      * {@link BlockCreationException}.</p>
      *
-     * <p>Calling this method and signing the block will override any configured {@code account} and {@code signature}
-     * value set in this builder object to match the private key. This will not update the state of this builder.</p>
-     *
-     * <p>All fields in the address format will use the prefix specified in the {@code account} field if set, otherwise
-     * the {@link NanoAccount#DEFAULT_PREFIX default prefix} will be used.</p>
+     * <p>Fields with an address format ({@code account}, {@code representative} and {@code link_as_account}) will use
+     * the prefix specified by {@link #usingAddressPrefix(String)}. If no value has been set, then the prefix used by
+     * the {@code account} field will be used. If no account is set prior to signing, then the default Nano prefix will
+     * be used.</p>
      *
      * @param privateKey the private key of the account used to sign the block
      * @return a new instance of the {@link StateBlock} class using the configured parameters
      * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
      */
     public synchronized StateBlock buildAndSign(String privateKey) {
-        return buildAndSign(privateKey, account != null ? account.getPrefix() : NanoAccount.DEFAULT_PREFIX);
+        if (privateKey == null)
+            throw new IllegalArgumentException("Private key cannot be null.");
+        return buildAndSign(new HexData(privateKey));
     }
     
     /**
      * Constructs a {@link StateBlock} from the configured parameters, and then signs the block.
      *
+     * <p>Calling this method and signing the block will override any configured {@code account} and {@code signature}
+     * value set in this builder object to match the private key. This will not update the state of this builder.</p>
+     *
      * <p>If a {@link #generateWork(WorkGenerator) work generator} is specified, then this method will block until
      * the work has been generated. If the work could not be generated, then this method will throw a
      * {@link BlockCreationException}.</p>
      *
-     * <p>Calling this method and signing the block will override any configured {@code account} and {@code signature}
-     * value set in this builder object to match the private key. This will not update the state of this builder.</p>
-     *
-     * <p>All fields in the address format will use the prefix specified in the {@code account} field if set, otherwise
-     * the {@link NanoAccount#DEFAULT_PREFIX default prefix} will be used.</p>
+     * <p>Fields with an address format ({@code account}, {@code representative} and {@code link_as_account}) will use
+     * the prefix specified by {@link #usingAddressPrefix(String)}. If no value has been set, then the prefix used by
+     * the {@code account} field will be used. If no account is set prior to signing, then the default Nano prefix will
+     * be used.</p>
      *
      * @param privateKey the private key of the account used to sign the block
      * @return a new instance of the {@link StateBlock} class using the configured parameters
      * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
      */
     public synchronized StateBlock buildAndSign(HexData privateKey) {
-        return buildAndSign(privateKey, account != null ? account.getPrefix() : NanoAccount.DEFAULT_PREFIX);
-    }
-    
-    /**
-     * Constructs a {@link StateBlock} from the configured parameters, and then signs the block.
-     *
-     * <p>If a {@link #generateWork(WorkGenerator) work generator} is specified, then this method will block until
-     * the work has been generated. If the work could not be generated, then this method will throw a
-     * {@link BlockCreationException}.</p>
-     *
-     * <p>Calling this method and signing the block will override any configured {@code account} and {@code signature}
-     * value set in this builder object to match the private key. This will not update the state of this builder.</p>
-     *
-     * <p>All fields in the address format will use the prefix specified when calling this method.</p>
-     *
-     * @param privateKey    the private key of the account used to sign the block
-     * @param addressPrefix the address prefix to be applied to account-related fields
-     * @return a new instance of the {@link StateBlock} class using the configured parameters
-     * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
-     */
-    public synchronized StateBlock buildAndSign(String privateKey, String addressPrefix) {
-        if (privateKey == null)
-            throw new IllegalArgumentException("Private key cannot be null.");
-        return buildAndSign(new HexData(privateKey), addressPrefix);
-    }
-    
-    /**
-     * Constructs a {@link StateBlock} from the configured parameters, and then signs the block.
-     *
-     * <p>If a {@link #generateWork(WorkGenerator) work generator} is specified, then this method will block until
-     * the work has been generated. If the work could not be generated, then this method will throw a
-     * {@link BlockCreationException}.</p>
-     *
-     * <p>Calling this method and signing the block will override any configured {@code account} and {@code signature}
-     * value set in this builder object to match the private key. This will not update the state of this builder.</p>
-     *
-     * <p>All fields in the address format will use the prefix specified when calling this method.</p>
-     *
-     * @param privateKey the private key of the account used to sign the block
-     * @param addressPrefix the address prefix to be applied to account-related fields
-     * @return a new instance of the {@link StateBlock} class using the configured parameters
-     * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
-     */
-    public synchronized StateBlock buildAndSign(HexData privateKey, String addressPrefix) {
-        if (privateKey == null)
-            throw new IllegalArgumentException("Private key cannot be null.");
+        if (privateKey == null) throw new IllegalArgumentException("Private key cannot be null.");
         
+        String addressPrefix = getAddressPrefix();
         NanoAccount account = NanoAccount.fromPrivateKey(privateKey, addressPrefix);
-        StateBlock sb = build(subtype, null, work, workGenerator, account, prevHash, rep, balance, linkData,
-                linkAccount);
+        StateBlock sb = build(subtype, null, work, workGenerator, account, prevHash, rep, balance, linkAccount,
+                addressPrefix);
         sb.sign(privateKey); // Sign the block
         return sb;
     }
     
     private static StateBlock build(StateBlockSubType subtype, HexData signature, WorkSolution work,
                                     WorkGenerator workGen, NanoAccount account, HexData prevHash, NanoAccount rep,
-                                    NanoAmount bal, HexData linkHex, NanoAccount linkAcc) {
+                                    NanoAmount bal, NanoAccount linkAcc, String addressPrefix) {
         // Basic validation
         if (subtype == null) throw new BlockCreationException("Block subtype has not been set.");
         if (account == null) throw new BlockCreationException("Account field has not been set.");
         if (bal == null) throw new BlockCreationException("Balance field has not been set.");
         if (prevHash == null && subtype.requiresPrevious())
             throw new BlockCreationException("Previous field has not been set.");
-        if (linkHex == null && linkAcc == null && subtype.getLinkIntent() != LinkData.Intent.UNUSED)
+        if (linkAcc == null && subtype.getLinkIntent() != LinkData.Intent.UNUSED)
             throw new BlockCreationException("Link field has not been set.");
+        
+        // Preprocess objects
+        account = account.withPrefix(addressPrefix);
+        if (prevHash == null || subtype == StateBlockSubType.OPEN)
+            prevHash = JNC.ZEROES_64_HD;
+        if (linkAcc != null)
+            linkAcc = linkAcc.withPrefix(addressPrefix);
+        rep = rep != null ? rep.withPrefix(addressPrefix) : account;
         
         // Construct block
         StateBlock block;
         try {
-            block = new StateBlock(subtype, signature, work, account,
-                    (prevHash == null || subtype == StateBlockSubType.OPEN) ? JNC.ZEROES_64_HD : prevHash,
-                    rep == null ? account : rep, bal, linkHex, linkAcc);
+            block = new StateBlock(subtype, signature, work, account, prevHash, rep, bal, null, linkAcc);
         } catch (RuntimeException e) {
             throw new BlockCreationException(e);
         }
@@ -518,6 +496,16 @@ public final class StateBlockBuilder {
             }
         }
         return block;
+    }
+    
+    private synchronized String getAddressPrefix() {
+        if (addressPrefix != null) {
+            return addressPrefix;
+        } else if (account != null) {
+            return account.getPrefix();
+        } else {
+            return NanoAccount.DEFAULT_PREFIX;
+        }
     }
     
     

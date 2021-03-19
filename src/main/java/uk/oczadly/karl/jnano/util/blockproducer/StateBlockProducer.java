@@ -68,10 +68,11 @@ public class StateBlockProducer extends BlockProducer {
                 .setPreviousHash(state.getFrontierHash())
                 .setRepresentative(state.isOpened() ? state.getRepresentative() :
                         getSpecification().getDefaultRepresentative())
-                .generateWork(getSpecification().getWorkGenerator());
+                .generateWork(getSpecification().getWorkGenerator())
+                .usingAddressPrefix(getSpecification().getAddressPrefix());
         builderConsumer.accept(builder);
         // Build block
-        StateBlock block = builder.buildAndSign(privateKey, getSpecification().getAddressPrefix());
+        StateBlock block = builder.buildAndSign(privateKey);
         return new BlockAndState(block, AccountState.fromBlock(block));
     }
     

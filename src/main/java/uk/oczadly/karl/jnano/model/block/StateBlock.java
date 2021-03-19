@@ -184,7 +184,6 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     StateBlock(StateBlockSubType subtype, HexData signature, WorkSolution work, NanoAccount account,
                HexData previous, NanoAccount rep, NanoAmount balance, HexData linkHex, NanoAccount linkAcc) {
         super(BlockType.STATE, signature, work);
-    
         if (subtype == null) throw new IllegalArgumentException("Subtype cannot be null.");
         if (account == null) throw new IllegalArgumentException("Account cannot be null.");
         if (previous == null) throw new IllegalArgumentException("Previous hash cannot be null.");
@@ -192,13 +191,12 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
             throw new IllegalArgumentException("Previous hash length is incorrect.");
         if (rep == null) throw new IllegalArgumentException("Representative cannot be null.");
         if (balance == null) throw new IllegalArgumentException("Account balance cannot be null.");
-    
         this.subtype = subtype;
         this.account = account;
         this.previous = previous;
-        this.representative = rep.withPrefix(account.getPrefix());
+        this.representative = rep;
         this.balance = balance;
-        this.link = parseLinkData(subtype, linkHex, linkAcc, account.getPrefix());
+        this.link = parseLinkData(subtype.getLinkIntent(), linkHex, linkAcc, account.getPrefix());
     }
     
     private StateBlock(StateBlockSubType subtype, HexData signature, WorkSolution work, NanoAccount account,
@@ -389,8 +387,7 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     }
     
     
-    private static LinkData parseLinkData(StateBlockSubType subtype, HexData hex, NanoAccount account, String prefix) {
-        LinkData.Intent intent = subtype.getLinkIntent();
+    private static LinkData parseLinkData(LinkData.Intent intent, HexData hex, NanoAccount account, String prefix) {
         if (intent == LinkData.Intent.UNUSED) {
             return new LinkData(intent, JNC.ZEROES_64_HD, NanoAccount.ZERO_ACCOUNT.withPrefix(prefix));
         } else if (account != null) {
