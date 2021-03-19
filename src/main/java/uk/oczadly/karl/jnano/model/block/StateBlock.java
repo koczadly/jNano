@@ -391,14 +391,14 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     
     private static LinkData parseLinkData(StateBlockSubType subtype, HexData hex, NanoAccount account, String prefix) {
         LinkData.Intent intent = subtype.getLinkIntent();
-        if (account != null) {
+        if (intent == LinkData.Intent.UNUSED) {
+            return new LinkData(intent, JNC.ZEROES_64_HD, NanoAccount.ZERO_ACCOUNT.withPrefix(prefix));
+        } else if (account != null) {
             return new LinkData(intent, new HexData(account.getPublicKeyBytes()), account.withPrefix(prefix));
         } else if (hex != null) {
             return new LinkData(intent, hex, new NanoAccount(hex.toByteArray(), prefix));
         } else {
-            if (intent != LinkData.Intent.UNUSED)
-                throw new IllegalArgumentException("Both link objects cannot be null.");
-            return new LinkData(intent, JNC.ZEROES_64_HD, NanoAccount.ZERO_ACCOUNT.withPrefix(prefix));
+            throw new IllegalArgumentException("Both link objects cannot be null.");
         }
     }
     
