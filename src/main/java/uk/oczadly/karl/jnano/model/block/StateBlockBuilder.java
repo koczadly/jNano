@@ -157,10 +157,23 @@ public final class StateBlockBuilder {
      * @return this builder instance
      */
     public synchronized StateBlockBuilder setSubtype(StateBlockSubType subtype) {
-        if (subtype == null)
-            throw new IllegalArgumentException("Subtype cannot be null.");
+        if (subtype == null) throw new IllegalArgumentException("Subtype cannot be null.");
         this.subtype = subtype;
         return this;
+    }
+    
+    /**
+     * Sets the {@code subtype} field of the block.
+     * @param subtype the block subtype (case insensitive)
+     * @return this builder instance
+     * @throws IllegalArgumentException if the subtype string isn't a recognized subtype value
+     * @see #setSubtype(StateBlockSubType)
+     */
+    public synchronized StateBlockBuilder setSubtype(String subtype) {
+        if (subtype == null) throw new IllegalArgumentException("Subtype cannot be null.");
+        StateBlockSubType parsed = StateBlockSubType.getFromName(subtype.trim());
+        if (parsed == null) throw new IllegalArgumentException("Unrecognized subtype '" + subtype + "'.");
+        return setSubtype(parsed);
     }
     
     
@@ -484,18 +497,17 @@ public final class StateBlockBuilder {
         if (linkHex == null && linkAcc == null && subtype.getLinkIntent() != LinkData.Intent.UNUSED)
             throw new BlockCreationException("Link field has not been set.");
         
+        // Construct block
         StateBlock block;
         try {
-            block = new StateBlock(
-                    subtype, signature, work, account,
-                    subtype == StateBlockSubType.OPEN ? JNC.ZEROES_64_HD : prevHash,
-                    rep == null ? account : rep,
-                    bal, linkHex, linkAcc);
+            block = new StateBlock(subtype, signature, work, account,
+                    (prevHash == null || subtype == StateBlockSubType.OPEN) ? JNC.ZEROES_64_HD : prevHash,
+                    rep == null ? account : rep, bal, linkHex, linkAcc);
         } catch (RuntimeException e) {
             throw new BlockCreationException(e);
         }
         
-        // Work
+        // Generate work
         if (work == null && workGen != null) {
             try {
                 block.setWorkSolution(workGen.generate(block).get().getWork());
@@ -516,6 +528,156 @@ public final class StateBlockBuilder {
      */
     public static StateBlockBuilder copyOf(StateBlock block) {
         return new StateBlockBuilder(block);
+    }
+    
+    
+    /**
+     * Constructs a new {@link StateBlockBuilder} which acts as an {@link StateBlockSubType#OPEN open} block,
+     * initializing the account and receiving a pending transactional block.
+     *
+     * <p>This will <em>not</em> assign any values to the {@code account}, {@code work} or {@code signature} fields.
+     * You will need to manually assign these values yourself using the setter or {@code build} methods.</p>
+     *
+     * @param srcHash   the hash of the pending {@code send} block
+     * @param srcAmount the amount which the pending {@code send} block sent to this account
+     * @return a new builder object for the first block in the account
+     */
+    public static StateBlockBuilder open(HexData srcHash, NanoAmount srcAmount) {
+        if (srcHash == null) throw new IllegalArgumentException("Source hash cannot be null.");
+        if (srcAmount == null) throw new IllegalArgumentException("Source amount cannot be null.");
+        
+        return new StateBlockBuilder(StateBlockSubType.OPEN)
+                .setBalance(srcAmount)
+                .setLink(srcHash);
+    }
+    
+    /**
+     * Constructs a new {@link StateBlockBuilder} which acts as a {@link StateBlockSubType#RECEIVE receive} block,
+     * receiving a pending transactional block into this account.
+     *
+     * <p>This will <em>not</em> assign any values to the {@code work} or {@code signature} fields. You will need to
+     * manually assign these values yourself using the setter or {@code build} methods.</p>
+     *
+     * @param previous  the current frontier block of the account which this block is being created for
+     * @param srcHash   the hash of the pending {@code send} block
+     * @param srcAmount the amount which the pending {@code send} block sent to this account
+     * @return a new builder object for the next block in the account
+     * @throws IllegalArgumentException if the account is attempting to receive more funds than possible
+     *                                  ({@code balance + srcAmount > MAX_BALANCE})
+     */
+    public static StateBlockBuilder receive(StateBlock previous, HexData srcHash, NanoAmount srcAmount) {
+        if (previous == null) throw new IllegalArgumentException("Previous block cannot be null.");
+        if (srcHash == null) throw new IllegalArgumentException("Source hash cannot be null.");
+        if (srcAmount == null) throw new IllegalArgumentException("Source amount cannot be null.");
+        try {
+            return next(previous)
+                    .setSubtype(StateBlockSubType.RECEIVE)
+                    .setLink(srcHash)
+                    .setBalance(previous.getBalance().add(srcAmount));
+        } catch (ArithmeticException e) {
+            throw new IllegalArgumentException("Receiving more funds than possible.");
+        }
+    }
+    
+    /**
+     * Constructs a new {@link StateBlockBuilder} which acts as a {@link StateBlockSubType#SEND send} block, sending
+     * the specified amount of funds to the given account.
+     *
+     * <p>This will <em>not</em> assign any values to the {@code work} or {@code signature} fields. You will need to
+     * manually assign these values yourself using the setter or {@code build} methods.</p>
+     *
+     * @param previous    the current frontier block of the account which this block is being created for
+     * @param destination the account where the funds will be sent
+     * @param amount      the amount of funds to be sent to {@code destination}
+     * @return a new builder object for the next block in the account
+     * @throws IllegalArgumentException if there aren't enough funds to send ({@code amount > balance})
+     */
+    public static StateBlockBuilder send(StateBlock previous, NanoAccount destination, NanoAmount amount) {
+        if (previous == null) throw new IllegalArgumentException("Previous block cannot be null.");
+        if (destination == null) throw new IllegalArgumentException("Destination account cannot be null.");
+        if (amount == null) throw new IllegalArgumentException("Send amount cannot be null.");
+        if (amount.compareTo(previous.getBalance()) > 0)
+            throw new IllegalArgumentException("Attempting to send more funds than the account has.");
+        
+        return next(previous)
+                .setSubtype(StateBlockSubType.SEND)
+                .setLink(destination)
+                .setBalance(previous.getBalance().subtract(amount));
+    }
+    
+    /**
+     * Constructs a new {@link StateBlockBuilder} which acts as a {@link StateBlockSubType#SEND send} block, sending
+     * the entire balance to the given account.
+     *
+     * <p>This will <em>not</em> assign any values to the {@code work} or {@code signature} fields. You will need to
+     * manually assign these values yourself using the setter or {@code build} methods.</p>
+     *
+     * @param previous    the current frontier block of the account which this block is being created for
+     * @param destination the account where the funds will be sent
+     * @return a new builder object for the next block in the account
+     * @throws IllegalArgumentException if the account has no balance/funds to send
+     */
+    public static StateBlockBuilder sendAll(StateBlock previous, NanoAccount destination) {
+        if (previous == null) throw new IllegalArgumentException("Previous block cannot be null.");
+        if (destination == null) throw new IllegalArgumentException("Destination account cannot be null.");
+        if (previous.getBalance().compareTo(NanoAmount.ZERO) <= 0)
+            throw new IllegalArgumentException("Account has zero balance.");
+        
+        return next(previous)
+                .setSubtype(StateBlockSubType.SEND)
+                .setLink(destination)
+                .setBalance(NanoAmount.ZERO);
+    }
+    
+    /**
+     * Constructs a new {@link StateBlockBuilder} which acts as a {@link StateBlockSubType#CHANGE change} block,
+     * changing the account's representative.
+     *
+     * <p>This will <em>not</em> assign any values to the {@code work} or {@code signature} fields. You will need to
+     * manually assign these values yourself using the setter or {@code build} methods.</p>
+     *
+     * @param previous       the current frontier block of the account which this block is being created for
+     * @param representative the new representative of the account
+     * @return a new builder object for the next block in the account
+     * @throws IllegalArgumentException if the representative is already set to the given account
+     */
+    public static StateBlockBuilder change(StateBlock previous, NanoAccount representative) {
+        if (previous == null) throw new IllegalArgumentException("Previous block cannot be null.");
+        if (representative == null) throw new IllegalArgumentException("Representative account cannot be null.");
+        if (previous.getRepresentative().equalsIgnorePrefix(representative))
+            throw new IllegalArgumentException("Representative is already set to the given account.");
+        
+        return next(previous)
+                .setSubtype(StateBlockSubType.CHANGE)
+                .setRepresentative(representative);
+    }
+    
+    /**
+     * Constructs a new {@link StateBlockBuilder} with the fields pre-assigned for the next block in the account.
+     *
+     * <p>This will not set all of the necessary fields, including {@link #setSubtype(StateBlockSubType) subtype},
+     * {@link #setLink(HexData) link} (if required), {@link #setWork(WorkSolution) work} and
+     * {@link #setSignature(HexData) signature}. The following fields are initialized by this method (and may be
+     * manually overridden after):</p>
+     * <ul>
+     *     <li>{@link #setPreviousHash(HexData) previous} — the hash of {@code frontier}</li>
+     *     <li>{@link #setAccount(NanoAccount) account} — the account of {@code frontier}</li>
+     *     <li>{@link #setRepresentative(NanoAccount) representative} — the representative of {@code frontier}</li>
+     *     <li>{@link #setBalance(NanoAmount) balance} — the same balance as {@code frontier}</li>
+     * </ul>
+     *
+     * @param previous the current frontier block of the account which this block is being created for
+     * @return a new builder object for the next block in the account
+     */
+    public static StateBlockBuilder next(StateBlock previous) {
+        if (previous == null)
+            throw new IllegalArgumentException("Previous block cannot be null.");
+        
+        return new StateBlockBuilder()
+                .setPreviousHash(previous)
+                .setRepresentative(previous.getRepresentative())
+                .setAccount(previous.getAccount())
+                .setBalance(previous.getBalance());
     }
     
     
