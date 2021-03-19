@@ -475,6 +475,15 @@ public final class StateBlockBuilder {
     private static StateBlock build(StateBlockSubType subtype, HexData signature, WorkSolution work,
                                     WorkGenerator workGen, NanoAccount account, HexData prevHash, NanoAccount rep,
                                     NanoAmount bal, HexData linkHex, NanoAccount linkAcc) {
+        // Basic validation
+        if (subtype == null) throw new BlockCreationException("Block subtype has not been set.");
+        if (account == null) throw new BlockCreationException("Account field has not been set.");
+        if (bal == null) throw new BlockCreationException("Balance field has not been set.");
+        if (prevHash == null && subtype.requiresPrevious())
+            throw new BlockCreationException("Previous field has not been set.");
+        if (linkHex == null && linkAcc == null && subtype.getLinkIntent() != LinkData.Intent.UNUSED)
+            throw new BlockCreationException("Link field has not been set.");
+        
         StateBlock block;
         try {
             block = new StateBlock(
@@ -518,6 +527,10 @@ public final class StateBlockBuilder {
     
         BlockCreationException(Throwable cause) {
             super(cause);
+        }
+        
+        BlockCreationException(String message) {
+            super(message);
         }
     }
     
