@@ -37,14 +37,14 @@ public class StateBlockTest {
     static final StateBlockSubType TB_SUBTYPE = StateBlockSubType.SEND;
     
     static final StateBlockBuilder TEST_BUILDER = new StateBlockBuilder()
-            .setSignature(TB_SIGNATURE)
-            .setWork(TB_WORK)
-            .setSubtype(TB_SUBTYPE)
-            .setAccount(TB_ACCOUNT)
-            .setRepresentative(TB_REP)
-            .setPreviousHash(TB_PREVIOUS)
-            .setBalance(TB_BALANCE)
-            .setLink(TB_LINK);
+            .signature(TB_SIGNATURE)
+            .work(TB_WORK)
+            .subtype(TB_SUBTYPE)
+            .account(TB_ACCOUNT)
+            .representative(TB_REP)
+            .previous(TB_PREVIOUS)
+            .balance(TB_BALANCE)
+            .link(TB_LINK);
     
     static final String TEST_BLOCK_JSON = "{\n" +
             "    \"type\": \"state\",\n" +
@@ -85,17 +85,17 @@ public class StateBlockTest {
     @Test
     public void testEquality() {
         StateBlock block1 = builder()
-                .setLink(NanoAccount.parseAddress(
+                .link(NanoAccount.parseAddress(
                         "nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
                 .build();
         
         StateBlock block2 = builder()
-                .setLink(NanoAccount.parseAddress(
+                .link(NanoAccount.parseAddress(
                         "nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
                 .build();
         
         StateBlock block3 = builder()
-                .setLink("62204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488")
+                .link("62204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488")
                 .build();
     
         // Equal
@@ -119,7 +119,7 @@ public class StateBlockTest {
     @Test
     public void testSigning() {
         StateBlock b = builder()
-                .setSignature((HexData)null)
+                .signature((HexData)null)
                 .build();
         assertNull(b.getSignature());
         b.sign(TB_PRIVKEY);
@@ -159,7 +159,7 @@ public class StateBlockTest {
         // Standard block
         assertTrue(TEST_BLOCK.verifySignature());
         // Standard block incorrect sig
-        assertFalse(builder().setSignature(JNC.ZEROES_128_HD).build().verifySignature());
+        assertFalse(builder().signature(JNC.ZEROES_128_HD).build().verifySignature());
         // Epoch
         StateBlock epoch = StateBlock.parse("{\n" +
                 "    \"type\": \"state\",\n" +
@@ -184,22 +184,22 @@ public class StateBlockTest {
         // Send
         assertEquals(LinkData.Intent.DESTINATION_ACCOUNT,
                 TestConstants.randStateBlock()
-                        .setSubtype(StateBlockSubType.SEND)
+                        .subtype(StateBlockSubType.SEND)
                         .build().getLink().getIntent());
         // Receive
         assertEquals(LinkData.Intent.SOURCE_HASH,
                 TestConstants.randStateBlock()
-                        .setSubtype(StateBlockSubType.RECEIVE)
+                        .subtype(StateBlockSubType.RECEIVE)
                         .build().getLink().getIntent());
         // Epoch
         assertEquals(LinkData.Intent.EPOCH_IDENTIFIER,
                 TestConstants.randStateBlock()
-                        .setSubtype(StateBlockSubType.EPOCH)
+                        .subtype(StateBlockSubType.EPOCH)
                         .build().getLink().getIntent());
         // Change
         assertEquals(LinkData.Intent.UNUSED,
                 TestConstants.randStateBlock()
-                        .setSubtype(StateBlockSubType.CHANGE)
+                        .subtype(StateBlockSubType.CHANGE)
                         .build().getLink().getIntent());
     }
     
@@ -209,7 +209,7 @@ public class StateBlockTest {
         
         // Test receive
         intent = TestConstants.randStateBlock()
-                .setSubtype(StateBlockSubType.RECEIVE)
+                .subtype(StateBlockSubType.RECEIVE)
                 .build().getIntent();
         assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isChangeRep());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isEpochUpgrade());
@@ -222,7 +222,7 @@ public class StateBlockTest {
         
         // Test send
         intent = TestConstants.randStateBlock()
-                .setSubtype(StateBlockSubType.SEND)
+                .subtype(StateBlockSubType.SEND)
                 .build().getIntent();
         assertEquals(BlockIntent.UncertainBool.UNKNOWN, intent.isChangeRep());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isEpochUpgrade());
@@ -235,7 +235,7 @@ public class StateBlockTest {
     
         // Test open (with OPEN subtype)
         intent = TestConstants.randStateBlock()
-                .setSubtype(StateBlockSubType.OPEN)
+                .subtype(StateBlockSubType.OPEN)
                 .build().getIntent();
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isChangeRep());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isEpochUpgrade());
@@ -248,7 +248,7 @@ public class StateBlockTest {
         
         // Test change
         intent = TestConstants.randStateBlock()
-                .setSubtype(StateBlockSubType.CHANGE)
+                .subtype(StateBlockSubType.CHANGE)
                 .build().getIntent();
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isChangeRep());
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isEpochUpgrade());
@@ -261,7 +261,7 @@ public class StateBlockTest {
     
         // Test epoch
         intent = TestConstants.randStateBlock()
-                .setSubtype(StateBlockSubType.EPOCH)
+                .subtype(StateBlockSubType.EPOCH)
                 .build().getIntent();
         assertEquals(BlockIntent.UncertainBool.FALSE, intent.isChangeRep());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isEpochUpgrade());
@@ -274,9 +274,9 @@ public class StateBlockTest {
     
         // Test epoch (with OPEN subtype)
         intent = TestConstants.randStateBlock()
-                .setSubtype(StateBlockSubType.OPEN)
-                .setPreviousHash(JNC.ZEROES_64)
-                .setBalance(BigInteger.ZERO)
+                .subtype(StateBlockSubType.OPEN)
+                .previous(JNC.ZEROES_64)
+                .balance(BigInteger.ZERO)
                 .build().getIntent();
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isChangeRep());
         assertEquals(BlockIntent.UncertainBool.TRUE, intent.isEpochUpgrade());

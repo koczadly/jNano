@@ -35,7 +35,7 @@ public class WorkSolutionTest {
         assertEquals(stateBlock.getPreviousBlockHash(), WorkSolution.getRoot(stateBlock));
     
         // Account
-        stateBlock = TestConstants.randStateBlock().setSubtype(StateBlockSubType.OPEN).build();
+        stateBlock = TestConstants.randStateBlock().subtype(StateBlockSubType.OPEN).build();
         assertEquals(new HexData(stateBlock.getAccount().toPublicKey()), WorkSolution.getRoot(stateBlock));
     
         // Account

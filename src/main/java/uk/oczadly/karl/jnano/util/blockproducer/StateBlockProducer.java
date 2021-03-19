@@ -32,9 +32,9 @@ public class StateBlockProducer extends BlockProducer {
     public BlockAndState _createSend(HexData privateKey, AccountState state, NanoAccount destination,
                                      NanoAmount amount) {
         return createBlock(privateKey, state, builder -> builder
-                .setSubtype(StateBlockSubType.SEND)
-                .setBalance(state.getBalance().subtract(amount))
-                .setLink(destination));
+                .subtype(StateBlockSubType.SEND)
+                .balance(state.getBalance().subtract(amount))
+                .link(destination));
     }
     
     @Override
@@ -46,17 +46,17 @@ public class StateBlockProducer extends BlockProducer {
             throw new BlockCreationException("Receiving more funds than possible.");
         }
         return createBlock(privateKey, state, builder -> builder
-                .setSubtype(state.isOpened() ? StateBlockSubType.RECEIVE : StateBlockSubType.OPEN)
-                .setBalance(newBal)
-                .setLink(sourceHash));
+                .subtype(state.isOpened() ? StateBlockSubType.RECEIVE : StateBlockSubType.OPEN)
+                .balance(newBal)
+                .link(sourceHash));
     }
     
     @Override
     public BlockAndState _createChangeRepresentative(HexData privateKey, AccountState state,
                                                      NanoAccount representative) {
         return createBlock(privateKey, state, builder -> builder
-                .setSubtype(StateBlockSubType.CHANGE)
-                .setRepresentative(representative));
+                .subtype(StateBlockSubType.CHANGE)
+                .representative(representative));
     }
     
     
@@ -64,9 +64,9 @@ public class StateBlockProducer extends BlockProducer {
                                       Consumer<StateBlockBuilder> builderConsumer) {
         // Set params
         StateBlockBuilder builder = StateBlock.builder()
-                .setBalance(state.getBalance())
-                .setPreviousHash(state.getFrontierHash())
-                .setRepresentative(state.isOpened() ? state.getRepresentative() :
+                .balance(state.getBalance())
+                .previous(state.getFrontierHash())
+                .representative(state.isOpened() ? state.getRepresentative() :
                         getSpecification().getDefaultRepresentative())
                 .generateWork(getSpecification().getWorkGenerator())
                 .usingAddressPrefix(getSpecification().getAddressPrefix());

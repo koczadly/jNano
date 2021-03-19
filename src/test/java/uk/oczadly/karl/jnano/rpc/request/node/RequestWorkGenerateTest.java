@@ -23,7 +23,7 @@ public class RequestWorkGenerateTest {
     
         // Test with no previous hash
         StateBlock sb2 = TestConstants.randStateBlock()
-                .setPreviousHash(JNC.ZEROES_64).build();
+                .previous(JNC.ZEROES_64).build();
         RequestWorkGenerate req2 = new RequestWorkGenerate.Builder(sb2).build();
         assertEquals(sb2.getAccount().toPublicKey(), req2.getRootHash());
     }

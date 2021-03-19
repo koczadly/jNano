@@ -69,19 +69,19 @@ public class TestConstants {
     }
     
     public static StateBlock randStateBlock(StateBlockSubType subtype) {
-        return randStateBlock().setSubtype(subtype).build();
+        return randStateBlock().subtype(subtype).build();
     }
     
     public static StateBlockBuilder randStateBlock() {
         return new StateBlockBuilder()
-                .setSubtype(StateBlockSubType.SEND)
-                .setAccount(randAccount())
-                .setRepresentative(randAccount())
-                .setPreviousHash(randHash())
-                .setSignature(randHexData(128))
-                .setWork(new WorkSolution(RANDOM.nextLong()))
-                .setLink(randHash())
-                .setBalance(randBalance());
+                .subtype(StateBlockSubType.SEND)
+                .account(randAccount())
+                .representative(randAccount())
+                .previous(randHash())
+                .signature(randHexData(128))
+                .work(new WorkSolution(RANDOM.nextLong()))
+                .link(randHash())
+                .balance(randBalance());
                 
     }
     

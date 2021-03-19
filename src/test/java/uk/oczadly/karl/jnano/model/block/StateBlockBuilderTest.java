@@ -23,17 +23,17 @@ public class StateBlockBuilderTest {
     
     public static StateBlockBuilder newBuilder() {
         return new StateBlockBuilder()
-                .setSubtype(StateBlockSubType.SEND)
-                .setAccount(ACCOUNT)
-                .setPreviousHash("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97")
-                .setBalance("1337");
+                .subtype(StateBlockSubType.SEND)
+                .account(ACCOUNT)
+                .previous("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97")
+                .balance("1337");
     }
     
 
     @Test
     public void testBuildMultiple() {
         StateBlockBuilder builder = newBuilder()
-                .setLink(TestConstants.randHash());
+                .link(TestConstants.randHash());
         
         StateBlock b1 = builder.build();
         StateBlock b2 = builder.build();
@@ -46,10 +46,10 @@ public class StateBlockBuilderTest {
     @Test
     public void testAllValues() {
         StateBlock block = newBuilder()
-                .setLink(DATA)
-                .setSignature("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC9734F1B28DA06C9CA246615" +
+                .link(DATA)
+                .signature("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC9734F1B28DA06C9CA246615" +
                         "9428733B971068BF154DBA2AB10372510D52E86CC97")
-                .setWork(new WorkSolution("009d175747abbc9e"))
+                .work(new WorkSolution("009d175747abbc9e"))
                 .build();
     
         assertEquals(BlockType.STATE, block.getType());
@@ -73,18 +73,18 @@ public class StateBlockBuilderTest {
     @Test
     public void testLinkFormats() {
         // Data
-        StateBlock b1 = newBuilder().setLink(ACCOUNT).setLink(DATA).build();
+        StateBlock b1 = newBuilder().link(ACCOUNT).link(DATA).build();
         assertEquals(DATA, b1.getLink().asHex().toString());
         assertEquals(ACCOUNT, b1.getLink().asAccount());
     
         // Account
-        StateBlock b2 = newBuilder().setLink(DATA).setLink(ACCOUNT).build();
+        StateBlock b2 = newBuilder().link(DATA).link(ACCOUNT).build();
         assertEquals(DATA, b2.getLink().asHex().toString());
         assertEquals(ACCOUNT, b2.getLink().asAccount());
         
         // Null CHANGE subtype should be zeroes
         assertEquals(JNC.ZEROES_64_HD, newBuilder()
-                .setSubtype(StateBlockSubType.CHANGE).build()
+                .subtype(StateBlockSubType.CHANGE).build()
                 .getLink().asHex());
     }
     
@@ -96,7 +96,7 @@ public class StateBlockBuilderTest {
     
     @Test
     public void testBuildSign() {
-        StateBlock b = newBuilder().setLink(DATA)
+        StateBlock b = newBuilder().link(DATA)
                 .usingAddressPrefix("ban")
                 .buildAndSign(new HexData("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97"));
         assertEquals("A73A4178198943EDE5A14696A4F4B6E6F5AD051F9E49F1D10F8896A9148FA19557AD4A5A5F6250FDC69072CC43BCD" +
@@ -107,13 +107,13 @@ public class StateBlockBuilderTest {
     @Test
     public void testAddressPrefixes() {
         // Using custom prefix
-        StateBlock b1 = newBuilder().setLink(ACCOUNT).usingAddressPrefix("ban").build();
+        StateBlock b1 = newBuilder().link(ACCOUNT).usingAddressPrefix("ban").build();
         assertEquals("ban", b1.getAccount().getPrefix());
         assertEquals("ban", b1.getRepresentative().getPrefix());
         assertEquals("ban", b1.getLink().asAccount().getPrefix());
     
         // Using prefix in 'account'
-        StateBlock b2 = newBuilder().setAccount(ACCOUNT.withPrefix("ban")).setLink(DATA).build();
+        StateBlock b2 = newBuilder().account(ACCOUNT.withPrefix("ban")).link(DATA).build();
         assertEquals("ban", b2.getAccount().getPrefix());
         assertEquals("ban", b2.getRepresentative().getPrefix());
         assertEquals("ban", b2.getLink().asAccount().getPrefix());

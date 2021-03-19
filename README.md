@@ -96,17 +96,17 @@ ws.getTopics().topicConfirmedBlocks().subscribeBlocking(new TopicConfirmation.Su
 The following sample will create a new `state` block. The block will be signed using the provided private key, and
  work will be generated in the JVM using the CPU.
 ```java
-WorkGenerator workGenerator = new CPUWorkGenerator();
+WorkGenerator workGenerator = new CPUWorkGenerator(); // Note: construct once and re-use
 
 StateBlock block = StateBlock.builder()
-        .setSubtype(StateBlockSubType.OPEN)
-        .setLink("BF4A559FEF44D4A9C9CEF4972886A51FC83AD1A2BEE4CDD732F62F3C166D6D4F")
-        .setBalance("123000000000000000000000000")
+        .subtype(StateBlockSubType.OPEN)
+        .link("BF4A559FEF44D4A9C9CEF4972886A51FC83AD1A2BEE4CDD732F62F3C166D6D4F")
+        .balance("123000000000000000000000000")
         .generateWork(workGenerator)
         .buildAndSign("A3293644AC105DEE5A0202B7EF976A06E790908EE0E8CC43AEF845380BFF954E"); // Private key
 
 String hash = block.getHash().toHexString(); // Hashes the block
-String blockJson = block.toJsonString(); // Serializes the block to a JSON object
+String blockJson = block.toJsonString(); // Serializes the block to JSON
 ```
 
 ---
