@@ -264,7 +264,7 @@ public abstract class Block implements IBlock {
      */
     @Override
     public final String toString() {
-        return JNC.GSON_PRETTY.toJson(toJsonObject()); // Pretty print
+        return JNC.GSON_PRETTY.toJson(toJsonObject(false)); // Pretty print
     }
     
     /**
