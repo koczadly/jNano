@@ -26,13 +26,15 @@ import java.util.concurrent.ExecutionException;
  */
 public final class StateBlockBuilder {
     
+    // Block values:
     private StateBlockSubType subtype;
     private NanoAccount account, rep, linkAccount;
     private NanoAmount balance;
     private HexData prevHash, signature;
     private WorkSolution work;
-    
+    // Additional construction data:
     private String addressPrefix;
+    private boolean customAddressPrefix;
     private WorkGenerator workGenerator;
     
     
@@ -63,8 +65,8 @@ public final class StateBlockBuilder {
         this.balance = block.getBalance();
         this.signature = block.getSignature();
         this.work = block.getWorkSolution();
-        this.addressPrefix = block.getAccount().getPrefix();
         link(block.getLink());
+        usingAddressPrefix(block.getAccount().getPrefix());
     }
     
     /**
@@ -83,6 +85,7 @@ public final class StateBlockBuilder {
         this.work = builder.work;
         this.workGenerator = builder.workGenerator;
         this.addressPrefix = builder.addressPrefix;
+        this.customAddressPrefix = builder.customAddressPrefix;
     }
     
     
@@ -395,6 +398,7 @@ public final class StateBlockBuilder {
      */
     public synchronized StateBlockBuilder usingAddressPrefix(String prefix) {
         this.addressPrefix = prefix;
+        this.customAddressPrefix = true;
         return this;
     }
     
@@ -520,10 +524,14 @@ public final class StateBlockBuilder {
     }
     
     private synchronized String getAddressPrefix() {
-        if (addressPrefix != null) {
+        if (customAddressPrefix) {
             return addressPrefix;
         } else if (account != null) {
             return account.getPrefix();
+        } else if (rep != null) {
+            return rep.getPrefix();
+        } else if (linkAccount != null) {
+            return linkAccount.getPrefix();
         } else {
             return NanoAccount.DEFAULT_PREFIX;
         }
