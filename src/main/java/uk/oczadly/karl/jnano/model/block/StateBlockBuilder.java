@@ -198,6 +198,17 @@ public final class StateBlockBuilder {
     
     
     /**
+     * Sets the {@code previous} field to an empty value (all zeroes) if supported by the subtype. If the subtype
+     * requires a previous field, then an exception will be thrown when building the block.
+     *
+     * @return this builder instance
+     */
+    public synchronized StateBlockBuilder emptyPrevious() {
+        this.prevHash = null;
+        return this;
+    }
+    
+    /**
      * Sets the {@code previous} field to the hash of the given block.
      *
      * <p>This field doesn't need to be set for {@link StateBlockSubType#OPEN open} subtypes, as a zero-value
@@ -303,6 +314,17 @@ public final class StateBlockBuilder {
         return this;
     }
     
+    
+    /**
+     * Sets the {@code link} field to an empty value (all zeroes) if supported by the subtype. If the subtype
+     * requires a link field, then an exception will be thrown when building the block.
+     *
+     * @return this builder instance
+     */
+    public synchronized StateBlockBuilder emptyLink() {
+        this.linkAccount = null;
+        return this;
+    }
     
     /**
      * Sets the {@code link} field of the block, ignoring the intent value of the {@code LinkData} object.
@@ -423,8 +445,10 @@ public final class StateBlockBuilder {
     /**
      * Constructs a {@link StateBlock} from the configured parameters, and then signs the block.
      *
-     * <p>Calling this method and signing the block will override any configured {@code account} and {@code signature}
-     * value set in this builder object to match the private key. This will not update the state of this builder.</p>
+     * <p>If the {@code account} value is set in the builder, then it <em>must</em> match the account belonging to the
+     * given private key, otherwise an exception will be thrown. Calling this method and signing the block will override
+     * the {@code signature} value if configured in this builder object. This will not update the state of this builder
+     * object, and is only applied to the constructed block.</p>
      *
      * <p>If a {@link #generateWork(WorkGenerator) work generator} is specified, then this method will block until
      * the work has been generated. If the work could not be generated, then this method will throw a
@@ -440,9 +464,14 @@ public final class StateBlockBuilder {
      * @throws BlockCreationException if there is an error with block creation (eg. invalid argument, work generation)
      */
     public synchronized StateBlock buildAndSign(HexData privateKey) {
-        if (privateKey == null) throw new IllegalArgumentException("Private key cannot be null.");
+        if (privateKey == null)
+            throw new IllegalArgumentException("Private key cannot be null.");
+        
         String addressPrefix = getAddressPrefix();
         NanoAccount account = NanoAccount.fromPrivateKey(privateKey, addressPrefix);
+        if (this.account != null && !this.account.equalsIgnorePrefix(account))
+            throw new BlockCreationException("Private key doesn't match the set account value.");
+        
         StateBlock sb = build(subtype, null, work, workGenerator, account, prevHash, rep, balance, linkAccount,
                 addressPrefix);
         sb.sign(privateKey); // Sign the block
@@ -660,9 +689,9 @@ public final class StateBlockBuilder {
             throw new IllegalArgumentException("Previous block cannot be null.");
         
         return new StateBlockBuilder()
+                .account(previous.getAccount())
                 .previous(previous)
                 .representative(previous.getRepresentative())
-                .account(previous.getAccount())
                 .balance(previous.getBalance());
     }
     

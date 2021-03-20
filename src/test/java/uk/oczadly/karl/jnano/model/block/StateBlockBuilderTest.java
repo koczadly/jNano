@@ -96,7 +96,7 @@ public class StateBlockBuilderTest {
     
     @Test
     public void testBuildSign() {
-        StateBlock b = newBuilder().link(DATA)
+        StateBlock b = newBuilder().account((NanoAccount)null).link(DATA)
                 .usingAddressPrefix("ban")
                 .buildAndSign(new HexData("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97"));
         assertEquals("A73A4178198943EDE5A14696A4F4B6E6F5AD051F9E49F1D10F8896A9148FA19557AD4A5A5F6250FDC69072CC43BCD" +
