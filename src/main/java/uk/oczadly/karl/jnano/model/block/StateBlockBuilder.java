@@ -525,6 +525,8 @@ public final class StateBlockBuilder {
     public static StateBlockBuilder open(HexData srcHash, NanoAmount srcAmount) {
         if (srcHash == null) throw new IllegalArgumentException("Source hash cannot be null.");
         if (srcAmount == null) throw new IllegalArgumentException("Source amount cannot be null.");
+        if (srcAmount.compareTo(NanoAmount.ZERO) <= 0)
+            throw new IllegalArgumentException("Must receive at least 1 raw.");
         
         return new StateBlockBuilder(StateBlockSubType.OPEN)
                 .balance(srcAmount)
@@ -549,6 +551,8 @@ public final class StateBlockBuilder {
         if (previous == null) throw new IllegalArgumentException("Previous block cannot be null.");
         if (srcHash == null) throw new IllegalArgumentException("Source hash cannot be null.");
         if (srcAmount == null) throw new IllegalArgumentException("Source amount cannot be null.");
+        if (srcAmount.compareTo(NanoAmount.ZERO) <= 0)
+            throw new IllegalArgumentException("Must receive at least 1 raw.");
         try {
             return next(previous)
                     .subtype(StateBlockSubType.RECEIVE)
@@ -576,6 +580,8 @@ public final class StateBlockBuilder {
         if (previous == null) throw new IllegalArgumentException("Previous block cannot be null.");
         if (destination == null) throw new IllegalArgumentException("Destination account cannot be null.");
         if (amount == null) throw new IllegalArgumentException("Send amount cannot be null.");
+        if (amount.compareTo(NanoAmount.ZERO) <= 0)
+            throw new IllegalArgumentException("Must send a positive amount.");
         if (amount.compareTo(previous.getBalance()) > 0)
             throw new IllegalArgumentException("Attempting to send more funds than the account has.");
         
@@ -601,7 +607,7 @@ public final class StateBlockBuilder {
         if (previous == null) throw new IllegalArgumentException("Previous block cannot be null.");
         if (destination == null) throw new IllegalArgumentException("Destination account cannot be null.");
         if (previous.getBalance().compareTo(NanoAmount.ZERO) <= 0)
-            throw new IllegalArgumentException("Account has zero balance.");
+            throw new IllegalArgumentException("Account has no funds to send.");
         
         return next(previous)
                 .subtype(StateBlockSubType.SEND)
