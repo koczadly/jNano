@@ -49,25 +49,29 @@ public enum StateBlockSubType {
     
     
     /**
-     * @return whether the block (sub)type represents a transfer of funds
+     * @return whether the block subtype represents a transfer of funds
      */
     public boolean isTransaction() {
         return isTransaction;
     }
     
-    boolean requiresPrevious() {
+    /**
+     * @return true if this block type requires the account to already be opened and the {@code previous} field to be
+     *         set, false if the type may be an opening block for the account
+     */
+    public boolean requiresPrevious() {
         return requiresPrevious;
     }
     
     /**
-     * @return the official protocol name of this subtype
+     * @return the official protocol name of this subtype, used in the {@code subtype} field
      */
     public String getProtocolName() {
         return name().toLowerCase();
     }
     
     /**
-     * @return the legacy {@link BlockType} which represents the same activity, or null if there isn't one
+     * @return the legacy {@link BlockType} which represents the same action, or null if there is no corresponding type
      */
     public BlockType getLegacyType() {
         return legacyType;

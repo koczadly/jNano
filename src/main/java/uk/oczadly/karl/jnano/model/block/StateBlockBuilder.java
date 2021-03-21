@@ -489,15 +489,16 @@ public final class StateBlockBuilder {
         if (subtype == null) throw new BlockCreationException("Block subtype has not been set.");
         if (account == null) throw new BlockCreationException("Account field has not been set.");
         if (bal == null) throw new BlockCreationException("Balance field has not been set.");
-        if (prevHash == null && subtype.requiresPrevious())
+        if (subtype.requiresPrevious() && (prevHash == null || prevHash.isZero()))
             throw new BlockCreationException("Previous field has not been set.");
         if (linkAcc == null && subtype.getLinkIntent() != LinkData.Intent.UNUSED)
             throw new BlockCreationException("Link field has not been set.");
         
         // Preprocess objects
         account = account.withPrefix(addressPrefix);
-        if (prevHash == null || subtype == StateBlockSubType.OPEN)
+        if (prevHash == null || subtype == StateBlockSubType.OPEN) {
             prevHash = JNC.ZEROES_64_HD;
+        }
         if (subtype.getLinkIntent() == LinkData.Intent.UNUSED) {
             linkAcc = NanoAccount.ZERO_ACCOUNT.withPrefix(addressPrefix);
         } else {
