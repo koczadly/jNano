@@ -11,7 +11,6 @@ import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlock;
-import uk.oczadly.karl.jnano.model.epoch.UnrecognizedEpochException;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 import uk.oczadly.karl.jnano.util.NanoUnit;
 import uk.oczadly.karl.jnano.util.workgen.WorkGenerator;
@@ -532,12 +531,10 @@ public final class StateBlockBuilder {
         }
         
         // Validate signature
-        if (signature != null) {
-            try {
-                if (!block.verifySignature())
-                    throw new BlockCreationException("Signature is invalid and does not match the account or block " +
-                            "contents.");
-            } catch (UnrecognizedEpochException ignored) {} // Ignore if we can't verify
+        if (signature != null && subtype.isSelfSigned()) {
+            if (!block.verifySignature(account))
+                throw new BlockCreationException("Signature is invalid and does not match the account or block " +
+                        "contents.");
         }
         
         // Generate work
@@ -704,6 +701,26 @@ public final class StateBlockBuilder {
         return next(previous)
                 .subtype(StateBlockSubType.CHANGE)
                 .representative(representative);
+    }
+    
+    /**
+     * Constructs a new {@link StateBlockBuilder} which acts as an {@link StateBlockSubType#EPOCH epoch} block,
+     * upgrading the account's version.
+     *
+     * <p>This will <em>not</em> assign any values to the {@code work} or {@code signature} fields. You will need to
+     * manually assign these values yourself using the setter or {@code build} methods.</p>
+     *
+     * @param previous   the current frontier block of the account which this block is being created for
+     * @param identifier the epoch link, which identifies the upgrade version
+     * @return a new builder object for the next block in the account
+     */
+    public static StateBlockBuilder epoch(StateBlock previous, HexData identifier) {
+        if (previous == null) throw new IllegalArgumentException("Previous block cannot be null.");
+        if (identifier == null) throw new IllegalArgumentException("Epoch identifier cannot be null.");
+        
+        return next(previous)
+                .subtype(StateBlockSubType.EPOCH)
+                .link(identifier);
     }
     
     /**
