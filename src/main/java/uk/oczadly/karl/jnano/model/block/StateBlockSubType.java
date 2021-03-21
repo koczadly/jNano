@@ -18,11 +18,11 @@ import java.util.Map;
 @JsonAdapter(StateBlockSubType.JsonAdapter.class)
 public enum StateBlockSubType {
     
-    SEND    (true,  true,  BlockType.SEND,    LinkData.Intent.DESTINATION_ACCOUNT),
-    RECEIVE (true,  true,  BlockType.RECEIVE, LinkData.Intent.SOURCE_HASH),
-    OPEN    (true,  false, BlockType.OPEN,    LinkData.Intent.SOURCE_HASH),
-    CHANGE  (false, true,  BlockType.CHANGE,  LinkData.Intent.UNUSED),
-    EPOCH   (false, false, null,              LinkData.Intent.EPOCH_IDENTIFIER);
+    SEND    (true,  true,  true,  BlockType.SEND,    LinkData.Intent.DESTINATION_ACCOUNT),
+    RECEIVE (true,  true,  true,  BlockType.RECEIVE, LinkData.Intent.SOURCE_HASH),
+    OPEN    (true,  false, true,  BlockType.OPEN,    LinkData.Intent.SOURCE_HASH),
+    CHANGE  (false, true,  true,  BlockType.CHANGE,  LinkData.Intent.UNUSED),
+    EPOCH   (false, false, false, null,              LinkData.Intent.EPOCH_IDENTIFIER);
     
     
     static final Map<BlockType, StateBlockSubType> LEGACY_LOOKUP_MAP = new HashMap<>();
@@ -35,14 +35,15 @@ public enum StateBlockSubType {
     }
     
     
-    private final boolean isTransaction, requiresPrevious;
+    private final boolean isTransaction, requiresPrevious, isSelfSigned;
     private final BlockType legacyType;
     private final LinkData.Intent linkIntent;
     
-    StateBlockSubType(boolean isTransaction, boolean requiresPrevious, BlockType legacyType,
+    StateBlockSubType(boolean isTransaction, boolean requiresPrevious, boolean isSelfSigned, BlockType legacyType,
                       LinkData.Intent linkIntent) {
         this.isTransaction = isTransaction;
         this.requiresPrevious = requiresPrevious;
+        this.isSelfSigned = isSelfSigned;
         this.legacyType = legacyType;
         this.linkIntent = linkIntent;
     }
@@ -61,6 +62,14 @@ public enum StateBlockSubType {
      */
     public boolean requiresPrevious() {
         return requiresPrevious;
+    }
+    
+    /**
+     * @return true if this subtype must be signed by the account holder, false if it <em>may</em> be signed by a
+     *         different account under certain circumstances (eg. epoch blocks)
+     */
+    public boolean isSelfSigned() {
+        return isSelfSigned;
     }
     
     /**

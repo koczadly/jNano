@@ -6,8 +6,6 @@
 package uk.oczadly.karl.jnano.model.block;
 
 import org.junit.Test;
-import uk.oczadly.karl.jnano.TestConstants;
-import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
@@ -17,24 +15,37 @@ import static org.junit.Assert.*;
 
 public class StateBlockBuilderTest {
     
-    private static final String DATA = "8AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97";
-    private static final NanoAccount ACCOUNT =
-            NanoAccount.parseAddress("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz");
+    private static final HexData PRIVATE_KEY = new HexData(
+            "C84927664D2119B0FCCBF677F5B3E7EB3BF061A30C4354C8D8A868EB284553E3");
+    private static final NanoAccount ACCOUNT = NanoAccount.parse(
+            "nano_15ewqenb5det86mfhisncbf88uo4rcki6onzy1eetnzuzwandhyjjtrhdp69");
+    private static final HexData SIGNATURE = new HexData("1C9E26A84959AEC939136AF701BF2E57AE5016A632D5A86C3A1735C111" +
+            "A839F4C37A63D313FEBBAEEB724C90E52F80EEFC1D3544C646FE49E973AD041427DA02");
+    private static final HexData PREVIOUS = new HexData(
+            "1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97");
+    private static final WorkSolution WORK = new WorkSolution("009d175747abbc9e");
+    private static final NanoAmount BALANCE = NanoAmount.valueOfRaw(1337);
+    private static final HexData LINK_DATA = new HexData(
+            "8AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97");
+    private static final NanoAccount LINK_ACCOUNT = NanoAccount.parse(
+            "nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz");
+    
     
     public static StateBlockBuilder newBuilder() {
         return new StateBlockBuilder()
                 .subtype(StateBlockSubType.SEND)
                 .account(ACCOUNT)
-                .previous("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97")
-                .balance("1337");
+                .previous(PREVIOUS)
+                .link(LINK_DATA)
+                .signature(SIGNATURE)
+                .work(WORK)
+                .balance(BALANCE);
     }
     
 
     @Test
     public void testBuildMultiple() {
-        StateBlockBuilder builder = newBuilder()
-                .link(TestConstants.randHash());
-        
+        StateBlockBuilder builder = newBuilder();
         StateBlock b1 = builder.build();
         StateBlock b2 = builder.build();
         
@@ -45,48 +56,38 @@ public class StateBlockBuilderTest {
     
     @Test
     public void testAllValues() {
-        StateBlock block = newBuilder()
-                .link(DATA)
-                .signature("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC9734F1B28DA06C9CA246615" +
-                        "9428733B971068BF154DBA2AB10372510D52E86CC97")
-                .work(new WorkSolution("009d175747abbc9e"))
-                .build();
-    
+        StateBlock block = newBuilder().build();
+        
         assertEquals(BlockType.STATE, block.getType());
-    
-        assertEquals(NanoAmount.valueOfRaw("1337"), block.getBalance());
+        assertEquals(BALANCE, block.getBalance());
         assertEquals(StateBlockSubType.SEND, block.getSubType());
         assertEquals(ACCOUNT, block.getAccount());
-        assertEquals("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97",
-                block.getPreviousBlockHash().toHexString());
+        assertEquals(PREVIOUS, block.getPreviousBlockHash());
         assertEquals(ACCOUNT, block.getRepresentative());
-        assertEquals(DATA, block.getLink().asHex().toString());
-        assertEquals("34F1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC9734F1B28DA06C9CA24661594" +
-                "28733B971068BF154DBA2AB10372510D52E86CC97", block.getSignature().toHexString());
-        assertEquals(new WorkSolution("009d175747abbc9e"), block.getWorkSolution());
+        assertEquals(LINK_DATA, block.getLink().asHex());
+        assertEquals(LINK_ACCOUNT, block.getLink().asAccount());
+        assertEquals(SIGNATURE, block.getSignature());
+        assertEquals(WORK, block.getWorkSolution());
         
-        //TODO test JSON
+        // TODO: test JSON objects
         assertNotNull(block.toJsonObject());
         assertNotNull(block.toJsonString());
     }
     
     @Test
-    public void testLinkFormats() {
-        // Data
-        StateBlock b1 = newBuilder().link(ACCOUNT).link(DATA).build();
-        assertEquals(DATA, b1.getLink().asHex().toString());
-        assertEquals(ACCOUNT, b1.getLink().asAccount());
-    
-        // Account
-        StateBlock b2 = newBuilder().link(DATA).link(ACCOUNT).build();
-        assertEquals(DATA, b2.getLink().asHex().toString());
-        assertEquals(ACCOUNT, b2.getLink().asAccount());
+    public void testBuild() {
+        StateBlock send = newBuilder().subtype(StateBlockSubType.SEND).build();
+        assertEquals(StateBlockSubType.SEND, send.getSubType());
         
-        // Null CHANGE subtype should be zeroes
-        assertEquals(JNC.ZEROES_64_HD, newBuilder()
-                .subtype(StateBlockSubType.CHANGE).build()
-                .getLink().asHex());
+        StateBlock open = newBuilder().removeSignature().subtype(StateBlockSubType.OPEN).build();
+        assertEquals(StateBlockSubType.OPEN, open.getSubType());
+        assertTrue(open.getPreviousBlockHash().isZero());
+    
+        StateBlock change = newBuilder().removeSignature().subtype(StateBlockSubType.CHANGE).build();
+        assertEquals(StateBlockSubType.CHANGE, change.getSubType());
+        assertTrue(change.getLink().asHex().isZero());
     }
+    
     
     // TODO
 //    @Test
@@ -96,24 +97,20 @@ public class StateBlockBuilderTest {
     
     @Test
     public void testBuildSign() {
-        StateBlock b = newBuilder().account((NanoAccount)null).link(DATA)
-                .usingAddressPrefix("ban")
-                .buildAndSign(new HexData("1AF1B28DA06C9CA2466159428733B971068BF154DBA2AB10372510D52E86CC97"));
-        assertEquals("A73A4178198943EDE5A14696A4F4B6E6F5AD051F9E49F1D10F8896A9148FA19557AD4A5A5F6250FDC69072CC43BCD" +
-                "2B29787171F1BD30060AC4D3BD6C862D30E", b.getSignature().toHexString());
-        assertEquals("ban", b.getAccount().getPrefix());
+        StateBlock b = newBuilder().removeSignature().buildAndSign(PRIVATE_KEY);
+        assertEquals(SIGNATURE, b.getSignature());
     }
     
     @Test
     public void testAddressPrefixes() {
         // Using custom prefix
-        StateBlock b1 = newBuilder().link(ACCOUNT).usingAddressPrefix("ban").build();
+        StateBlock b1 = newBuilder().usingAddressPrefix("ban").build();
         assertEquals("ban", b1.getAccount().getPrefix());
         assertEquals("ban", b1.getRepresentative().getPrefix());
         assertEquals("ban", b1.getLink().asAccount().getPrefix());
     
         // Using prefix in 'account'
-        StateBlock b2 = newBuilder().account(ACCOUNT.withPrefix("ban")).link(DATA).build();
+        StateBlock b2 = newBuilder().account(ACCOUNT.withPrefix("ban")).build();
         assertEquals("ban", b2.getAccount().getPrefix());
         assertEquals("ban", b2.getRepresentative().getPrefix());
         assertEquals("ban", b2.getLink().asAccount().getPrefix());

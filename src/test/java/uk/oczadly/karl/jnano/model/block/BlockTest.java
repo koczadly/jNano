@@ -25,7 +25,7 @@ public class BlockTest {
     
     @Test
     public void testFields() {
-        final String SIG = TestConstants.randHex(128);
+        final String SIG = TestConstants.randHexString(128);
         final WorkSolution WORK = new WorkSolution(TestConstants.RANDOM.nextLong());
         Block block = new MockBlock(SIG, WORK);
         assertEquals(SIG, block.getSignature().toHexString());

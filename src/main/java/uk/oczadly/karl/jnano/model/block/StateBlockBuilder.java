@@ -10,6 +10,8 @@ import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlock;
+import uk.oczadly.karl.jnano.model.epoch.UnrecognizedEpochException;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 import uk.oczadly.karl.jnano.util.NanoUnit;
 import uk.oczadly.karl.jnano.util.workgen.WorkGenerator;
@@ -91,23 +93,33 @@ public final class StateBlockBuilder {
     
     /**
      * Sets the {@code signature} field of the block.
-     * @param signature the signature (64-character hexadecimal string)
-     * @return this builder instance
+     * @param signature the signature (64-character hexadecimal string, left-padded zeroes may be omitted)
+     * @return this builder object
      */
     public synchronized StateBlockBuilder signature(String signature) {
-        return signature(signature == null ? null : new HexData(signature));
+        if (signature != null && signature.length() > NanoConst.LEN_SIGNATURE_H)
+            throw new IllegalArgumentException("Invalid signature length.");
+        return signature(signature == null ? null : new HexData(signature, NanoConst.LEN_SIGNATURE_B));
     }
     
     /**
      * Sets the {@code signature} field of the block.
      * @param signature the signature (64-character hexadecimal value)
-     * @return this builder instance
+     * @return this builder object
      */
     public synchronized StateBlockBuilder signature(HexData signature) {
         if (signature != null && signature.length() != NanoConst.LEN_SIGNATURE_B)
             throw new IllegalArgumentException("Invalid signature length.");
-    
         this.signature = signature;
+        return this;
+    }
+    
+    /**
+     * Removes the value set in the {@code signature} field if already set.
+     * @return this builder object
+     */
+    public synchronized StateBlockBuilder removeSignature() {
+        this.signature = null;
         return this;
     }
     
@@ -115,7 +127,7 @@ public final class StateBlockBuilder {
     /**
      * Sets the {@code work} field of the block.
      * @param work the computed work value
-     * @return this builder instance
+     * @return this builder object
      *
      * @see #generateWork(WorkGenerator)
      */
@@ -127,7 +139,7 @@ public final class StateBlockBuilder {
     /**
      * Sets the {@code work} field of the block.
      * @param work the computed work value (16-character hexadecimal value)
-     * @return this builder instance
+     * @return this builder object
      *
      * @see #generateWork(WorkGenerator)
      */
@@ -136,13 +148,14 @@ public final class StateBlockBuilder {
     }
     
     /**
-     * Sets the {@link WorkGenerator} used to generate the {@code work} value of the block.
+     * Sets the {@link WorkGenerator} used to generate the {@code work} value of the block. This method also removes the
+     * {@code work} value if already set.
      *
      * <p>The work generation will be deferred until one of the {@code build} methods are called. The build method(s)
      * may also throw a {@link BlockCreationException} if the work could not be computed.</p>
      *
      * @param workGenerator the work generator object
-     * @return this builder instance
+     * @return this builder object
      *
      * @see #work(WorkSolution)
      */
@@ -152,11 +165,20 @@ public final class StateBlockBuilder {
         return this;
     }
     
+    /**
+     * Removes the value set in the {@code work} field if already set.
+     * @return this builder object
+     */
+    public synchronized StateBlockBuilder removeWork() {
+        this.work = null;
+        return this;
+    }
+    
     
     /**
      * Sets the {@code subtype} field of the block.
      * @param subtype the block subtype
-     * @return this builder instance
+     * @return this builder object
      */
     public synchronized StateBlockBuilder subtype(StateBlockSubType subtype) {
         if (subtype == null) throw new IllegalArgumentException("Subtype cannot be null.");
@@ -167,7 +189,7 @@ public final class StateBlockBuilder {
     /**
      * Sets the {@code subtype} field of the block.
      * @param subtype the block subtype (case insensitive)
-     * @return this builder instance
+     * @return this builder object
      * @throws IllegalArgumentException if the subtype string isn't a recognized subtype value
      * @see #subtype(StateBlockSubType)
      */
@@ -182,7 +204,7 @@ public final class StateBlockBuilder {
     /**
      * Sets the {@code account} field of the block.
      * @param account the account which owns this block
-     * @return this builder instance
+     * @return this builder object
      */
     public synchronized StateBlockBuilder account(NanoAccount account) {
         this.account = account;
@@ -192,7 +214,7 @@ public final class StateBlockBuilder {
     /**
      * Sets the {@code account} field of the block.
      * @param account the account which owns this block
-     * @return this builder instance
+     * @return this builder object
      */
     public synchronized StateBlockBuilder account(String account) {
         this.account = account == null ? null : NanoAccount.parse(account);
@@ -204,7 +226,7 @@ public final class StateBlockBuilder {
      * Sets the {@code previous} field to an empty value (all zeroes) if supported by the subtype. If the subtype
      * requires a previous field, then an exception will be thrown when building the block.
      *
-     * @return this builder instance
+     * @return this builder object
      */
     public synchronized StateBlockBuilder emptyPrevious() {
         this.prevHash = null;
@@ -212,42 +234,41 @@ public final class StateBlockBuilder {
     }
     
     /**
-     * Sets the {@code previous} field to the hash of the given block.
+     * Sets the {@code previous} field to the hash of the supplied block.
      *
-     * <p>This field doesn't need to be set for {@link StateBlockSubType#OPEN open} subtypes, as a zero-value
-     * placeholder will be used instead.</p>
+     * <p>This field doesn't need to be set for opening subtypes, as a zero-value hash will be used instead. There
+     * should be no pre-existing blocks for this account.</p>
      *
      * @param block the previous block in this account chain
-     * @return this builder instance
+     * @return this builder object
      */
-    public synchronized StateBlockBuilder previous(Block block) {
+    public synchronized StateBlockBuilder previous(IBlock block) {
         return previous(block != null ? block.getHash() : null);
     }
     
     /**
      * Sets the {@code previous} field of the block.
      *
-     * <p>This field doesn't need to be set for {@link StateBlockSubType#OPEN open} subtypes, as a zero-value hash
-     * will be used instead.</p>
+     * <p>This field doesn't need to be set for opening subtypes, as a zero-value hash will be used instead.</p>
      *
-     * @param hash the hash of the previous block in this account chain (64-character hexadecimal string)
-     * @return this builder instance
+     * @param hash the hash of the previous block in this account chain (64-character hex string, left-padded zeroes may
+     *             be omitted)
+     * @return this builder object
      */
     public synchronized StateBlockBuilder previous(String hash) {
-        if (hash != null && hash.length() != NanoConst.LEN_HASH_H)
+        if (hash != null && hash.length() > NanoConst.LEN_HASH_H)
             throw new IllegalArgumentException("Invalid previous hash length.");
-        this.prevHash = hash == null ? null : new HexData(hash);
+        this.prevHash = hash == null ? null : new HexData(hash, NanoConst.LEN_HASH_B);
         return this;
     }
     
     /**
      * Sets the {@code previous} field of the block.
      *
-     * <p>This field doesn't need to be set for {@link StateBlockSubType#OPEN open} subtypes, as a zero-value hash
-     * will be used instead.</p>
+     * <p>This field doesn't need to be set for opening subtypes, as a zero-value hash will be used instead.</p>
      *
      * @param hash the hash of the previous block in this account chain (64-character hexadecimal value)
-     * @return this builder instance
+     * @return this builder object
      */
     public synchronized StateBlockBuilder previous(HexData hash) {
         if (hash != null && hash.length() != NanoConst.LEN_HASH_B)
@@ -259,12 +280,12 @@ public final class StateBlockBuilder {
     
     /**
      * Sets the {@code representative} field of the block.
-     * 
+     *
      * <p>If this field isn't set, then the {@link #account(NanoAccount) account} field will be used as the
      * representative.</p>
-     * 
+     *
      * @param representative the representative of the account
-     * @return this builder instance
+     * @return this builder object
      */
     public synchronized StateBlockBuilder representative(NanoAccount representative) {
         this.rep = representative;
@@ -278,7 +299,7 @@ public final class StateBlockBuilder {
      * representative.</p>
      *
      * @param representative the representative of the account
-     * @return this builder instance
+     * @return this builder object
      */
     public synchronized StateBlockBuilder representative(String representative) {
         this.rep = representative == null ? null : NanoAccount.parse(representative);
@@ -288,8 +309,8 @@ public final class StateBlockBuilder {
     
     /**
      * Sets the {@code balance} field of the block to the given {@code raw} value.
-     * @param balance the balance of the account after this transaction, in {@link NanoUnit#RAW raw} units
-     * @return this builder instance
+     * @param balance the balance of the account after this transaction, in decimal {@link NanoUnit#RAW raw} units
+     * @return this builder object
      */
     public synchronized StateBlockBuilder balance(String balance) {
         if (balance == null) throw new IllegalArgumentException("Balance cannot be null.");
@@ -299,7 +320,7 @@ public final class StateBlockBuilder {
     /**
      * Sets the {@code balance} field of the block to the given {@code raw} value.
      * @param balance the balance of the account after this transaction, in {@link NanoUnit#RAW raw} units
-     * @return this builder instance
+     * @return this builder object
      */
     public synchronized StateBlockBuilder balance(BigInteger balance) {
         if (balance == null) throw new IllegalArgumentException("Balance cannot be null.");
@@ -309,7 +330,7 @@ public final class StateBlockBuilder {
     /**
      * Sets the {@code balance} field of the block.
      * @param balance the balance of the account after this transaction
-     * @return this builder instance
+     * @return this builder object
      */
     public synchronized StateBlockBuilder balance(NanoAmount balance) {
         if (balance == null) throw new IllegalArgumentException("Balance cannot be null.");
@@ -322,7 +343,7 @@ public final class StateBlockBuilder {
      * Sets the {@code link} field to an empty value (all zeroes) if supported by the subtype. If the subtype
      * requires a link field, then an exception will be thrown when building the block.
      *
-     * @return this builder instance
+     * @return this builder object
      */
     public synchronized StateBlockBuilder emptyLink() {
         this.linkAccount = null;
@@ -337,7 +358,7 @@ public final class StateBlockBuilder {
      * subtypes, as the value will be ignored.</p>
      *
      * @param link the {@link LinkData} object (intent is ignored)
-     * @return this builder instance
+     * @return this builder object
      *
      * @see #link(String)
      */
@@ -352,7 +373,7 @@ public final class StateBlockBuilder {
      * ignored.</p>
      *
      * @param link the link value, either in hexadecimal (64-character) or account format
-     * @return this builder instance
+     * @return this builder object
      */
     public synchronized StateBlockBuilder link(String link) {
         return link(link != null ? NanoAccount.parse(link) : null);
@@ -365,7 +386,7 @@ public final class StateBlockBuilder {
      * ignored.</p>
      *
      * @param link the link value, in hexadecimal format (64-character hex string)
-     * @return this builder instance
+     * @return this builder object
      */
     public synchronized StateBlockBuilder link(HexData link) {
         if (link != null && link.length() != NanoConst.LEN_HASH_B)
@@ -380,7 +401,7 @@ public final class StateBlockBuilder {
      * ignored.</p>
      *
      * @param link the link value, in an account format
-     * @return this builder instance
+     * @return this builder object
      */
     public synchronized StateBlockBuilder link(NanoAccount link) {
         this.linkAccount = link;
@@ -394,7 +415,7 @@ public final class StateBlockBuilder {
      * value, otherwise the default {@value NanoAccount#DEFAULT_PREFIX} prefix will be used.</p>
      *
      * @param prefix the address prefix, excluding the separator character (eg "{@code nano}")
-     * @return this builder instance
+     * @return this builder object
      */
     public synchronized StateBlockBuilder usingAddressPrefix(String prefix) {
         this.addressPrefix = prefix;
@@ -494,32 +515,38 @@ public final class StateBlockBuilder {
         if (linkAcc == null && subtype.getLinkIntent() != LinkData.Intent.UNUSED)
             throw new BlockCreationException("Link field has not been set.");
         
-        // Preprocess objects
-        account = account.withPrefix(addressPrefix);
-        if (prevHash == null || subtype == StateBlockSubType.OPEN) {
-            prevHash = JNC.ZEROES_64_HD;
-        }
-        if (subtype.getLinkIntent() == LinkData.Intent.UNUSED) {
-            linkAcc = NanoAccount.ZERO_ACCOUNT.withPrefix(addressPrefix);
-        } else {
-            linkAcc = linkAcc.withPrefix(addressPrefix);
-        }
-        rep = rep != null ? rep.withPrefix(addressPrefix) : account;
-        
         // Construct block
         StateBlock block;
         try {
-            block = new StateBlock(subtype, signature, work, account, prevHash, rep, bal, null, linkAcc);
-        } catch (RuntimeException e) {
-            throw new BlockCreationException(e);
+            block = new StateBlock(
+                    subtype, signature, work,
+                    account.withPrefix(addressPrefix),
+                    (prevHash == null || subtype == StateBlockSubType.OPEN) ? JNC.ZEROES_64_HD : prevHash,
+                    (rep != null ? rep : account).withPrefix(addressPrefix),
+                    bal, null,
+                    (subtype.getLinkIntent() == LinkData.Intent.UNUSED ? NanoAccount.ZERO_ACCOUNT : linkAcc)
+                            .withPrefix(addressPrefix)
+            );
+        } catch (Exception e) {
+            throw new BlockCreationException(e.getMessage(), e);
+        }
+        
+        // Validate signature
+        if (signature != null) {
+            try {
+                if (!block.verifySignature())
+                    throw new BlockCreationException("Signature is invalid and does not match the account or block " +
+                            "contents.");
+            } catch (UnrecognizedEpochException ignored) {} // Ignore if we can't verify
         }
         
         // Generate work
         if (work == null && workGen != null) {
             try {
-                block.setWorkSolution(workGen.generate(block).get().getWork());
+                work = workGen.generate(block).get().getWork();
+                block.setWorkSolution(work);
             } catch (ExecutionException e) {
-                throw new BlockCreationException("Couldn't generate work.", e.getCause());
+                throw new BlockCreationException("Couldn't generate work.", e);
             } catch (InterruptedException e) {
                 throw new BlockCreationException("Work generation was interrupted.", e);
             }

@@ -84,28 +84,23 @@ public class StateBlockTest {
     
     @Test
     public void testEquality() {
-        StateBlock block1 = builder()
-                .link(NanoAccount.parseAddress(
-                        "nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
-                .build();
-        
-        StateBlock block2 = builder()
-                .link(NanoAccount.parseAddress(
-                        "nano_3131bm8zphmu4qttnyfnuueggbna6t4m6efphep3fpsqcpgoh36ajd4c5w55"))
-                .build();
-        
-        StateBlock block3 = builder()
+        StateBlock block1 = builder().build();
+        StateBlock block2 = builder().build();
+        StateBlock block3 = builder().subtype(StateBlockSubType.RECEIVE).build();
+        StateBlock block4 = builder().removeSignature()
                 .link("62204CCDFB3E7B15F5AA79B4DED8E7268826853231B67B2C16DB37559D578488")
                 .build();
     
         // Equal
         assertEquals(block1, block2);
+        assertEquals(block1, block3);
         assertTrue(block1.contentEquals(block2));
         assertTrue(block2.contentEquals(block1));
         // Not equal
-        assertNotEquals(block1, block3);
+        assertNotEquals(block1, block4);
         assertFalse(block1.contentEquals(block3));
         assertFalse(block3.contentEquals(block1));
+        assertFalse(block4.contentEquals(block1));
         // Check hashcode
         assertEquals(block1.hashCode(), block2.hashCode());
     }
@@ -155,11 +150,15 @@ public class StateBlockTest {
     }
     
     @Test
-    public void testSelfSigVerification() {
+    public void testSelfSignedVerification() {
         // Standard block
         assertTrue(TEST_BLOCK.verifySignature());
+        
         // Standard block incorrect sig
-        assertFalse(builder().signature(JNC.ZEROES_128_HD).build().verifySignature());
+        StateBlock incorrectSig = builder().build();
+        incorrectSig.setSignature(JNC.ZEROES_128_HD);
+        assertFalse(incorrectSig.verifySignature());
+        
         // Epoch
         StateBlock epoch = StateBlock.parse("{\n" +
                 "    \"type\": \"state\",\n" +
@@ -174,6 +173,7 @@ public class StateBlockTest {
                 "    \"subtype\": \"epoch\"\n" +
                 "  }");
         assertTrue(epoch.verifySignature());
+        
         // Epoch with incorrect sig
         epoch.setSignature(JNC.ZEROES_128_HD);
         assertFalse(epoch.verifySignature());

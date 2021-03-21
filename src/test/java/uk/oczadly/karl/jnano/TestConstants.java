@@ -23,14 +23,14 @@ public class TestConstants {
     
     
     public static HexData randHash() {
-        return randHexData(NanoConst.LEN_HASH_H);
+        return randHex(NanoConst.LEN_HASH_H);
     }
     
-    public static HexData randHexData(int len) {
-        return new HexData(randHex(len));
+    public static HexData randHex(int len) {
+        return new HexData(randHexString(len));
     }
     
-    public static String randHex(int len) {
+    public static String randHexString(int len) {
         StringBuilder sb = new StringBuilder(len);
         for (int i=0; i<len; i++)
             sb.append(JNC.HEX_CHARS_UC[(i == 0) ? (RANDOM.nextInt(15) + 1) : RANDOM.nextInt(16)]);
@@ -51,21 +51,21 @@ public class TestConstants {
     
     
     public static OpenBlock randOpenBlock() {
-        return new OpenBlock(randHexData(128), new WorkSolution(RANDOM.nextLong()), randHash(), randAccount(),
+        return new OpenBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHash(), randAccount(),
                 randAccount());
     }
     
     public static ChangeBlock randChangeBlock() {
-        return new ChangeBlock(randHexData(128), new WorkSolution(RANDOM.nextLong()), randHash(), randAccount());
+        return new ChangeBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHash(), randAccount());
     }
     
     public static SendBlock randSendBlock() {
-        return new SendBlock(randHexData(128), new WorkSolution(RANDOM.nextLong()), randHash(), randAccount(),
+        return new SendBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHash(), randAccount(),
                 randBalance());
     }
     
     public static ReceiveBlock randReceiveBlock() {
-        return new ReceiveBlock(randHexData(128), new WorkSolution(RANDOM.nextLong()), randHash(), randHash());
+        return new ReceiveBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHash(), randHash());
     }
     
     public static StateBlock randStateBlock(StateBlockSubType subtype) {
@@ -78,7 +78,6 @@ public class TestConstants {
                 .account(randAccount())
                 .representative(randAccount())
                 .previous(randHash())
-                .signature(randHexData(128))
                 .work(new WorkSolution(RANDOM.nextLong()))
                 .link(randHash())
                 .balance(randBalance());
@@ -86,7 +85,7 @@ public class TestConstants {
     }
     
     public static TestBlock randTestBlock() {
-        return new TestBlock(randHexData(128), new WorkSolution(RANDOM.nextLong()), randHex(64));
+        return new TestBlock(randHex(128), new WorkSolution(RANDOM.nextLong()), randHexString(64));
     }
 
 }

@@ -37,7 +37,7 @@ public class BlockDeserializerTest {
     
     @Test
     public void testDeserialize() {
-        final String SIG = TestConstants.randHex(128);
+        final String SIG = TestConstants.randHexString(128);
         final WorkSolution WORK = new WorkSolution(TestConstants.RANDOM.nextLong());
         final String VAL = "12345";
         
