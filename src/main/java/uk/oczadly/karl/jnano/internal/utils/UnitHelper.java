@@ -52,6 +52,7 @@ public class UnitHelper {
     
     private static final DecimalFormat FRIENDLY_DF = new DecimalFormat("#,##0.######");
     private static final DecimalFormat FRIENDLY_DF_FORCE = new DecimalFormat("#,##0.000000");
+    private static final Object dfMutex = new Object(); // DecimalFormat aint thread safe
     
     public static String toFriendlyString(BigDecimal amount, NanoAmount.Denomination unit) {
         BigDecimal scaledAmount = amount.setScale(6, RoundingMode.DOWN);
@@ -61,11 +62,13 @@ public class UnitHelper {
         if (scaledAmount.compareTo(BigDecimal.ZERO) == 0) {
             sb.append(trimmed ? ">0" : "0");
         } else {
-            if (trimmed) {
-                sb.append(FRIENDLY_DF_FORCE.format(scaledAmount));
-                sb.appendCodePoint(8230); // Ellipsis character
-            } else {
-                sb.append(FRIENDLY_DF.format(scaledAmount));
+            synchronized (dfMutex) {
+                if (trimmed) {
+                    sb.append(FRIENDLY_DF_FORCE.format(scaledAmount));
+                    sb.appendCodePoint(8230); // Ellipsis character
+                } else {
+                    sb.append(FRIENDLY_DF.format(scaledAmount));
+                }
             }
         }
         return sb.append(" ").append(unit.getDisplayName()).toString();
