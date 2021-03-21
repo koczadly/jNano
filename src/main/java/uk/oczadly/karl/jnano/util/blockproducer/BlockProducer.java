@@ -164,7 +164,11 @@ public abstract class BlockProducer {
         public BlockCreationException(String message) {
             super(message);
         }
-    
+        
+        public BlockCreationException(Throwable cause) {
+            super(cause);
+        }
+        
         public BlockCreationException(String message, Throwable cause) {
             super(message, cause);
         }
