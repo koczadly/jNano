@@ -7,7 +7,6 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
-import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
@@ -388,14 +387,14 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     
     
     private static LinkData parseLinkData(LinkData.Intent intent, HexData hex, NanoAccount account, String prefix) {
-        if (intent == LinkData.Intent.UNUSED) {
-            return new LinkData(intent, JNC.ZEROES_64_HD, NanoAccount.ZERO_ACCOUNT.withPrefix(prefix));
+        if (account == null && hex == null) {
+            throw new IllegalArgumentException("Both link objects cannot be null.");
+        } else if (account != null && hex != null) {
+            return new LinkData(intent, hex, account.withPrefix(prefix));
         } else if (account != null) {
             return new LinkData(intent, new HexData(account.getPublicKeyBytes()), account.withPrefix(prefix));
-        } else if (hex != null) {
-            return new LinkData(intent, hex, new NanoAccount(hex.toByteArray(), prefix));
         } else {
-            throw new IllegalArgumentException("Both link objects cannot be null.");
+            return new LinkData(intent, hex, new NanoAccount(hex.toByteArray(), prefix));
         }
     }
     

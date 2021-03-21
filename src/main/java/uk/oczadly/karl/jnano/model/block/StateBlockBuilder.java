@@ -498,8 +498,11 @@ public final class StateBlockBuilder {
         account = account.withPrefix(addressPrefix);
         if (prevHash == null || subtype == StateBlockSubType.OPEN)
             prevHash = JNC.ZEROES_64_HD;
-        if (linkAcc != null)
+        if (subtype.getLinkIntent() == LinkData.Intent.UNUSED) {
+            linkAcc = NanoAccount.ZERO_ACCOUNT.withPrefix(addressPrefix);
+        } else {
             linkAcc = linkAcc.withPrefix(addressPrefix);
+        }
         rep = rep != null ? rep.withPrefix(addressPrefix) : account;
         
         // Construct block
