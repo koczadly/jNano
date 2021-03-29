@@ -230,6 +230,10 @@ public class JNH {
         return obj != null ? func.apply(obj) : null;
     }
     
+    public static <T> T nonNull(T obj, T defaultVal) {
+        return obj != null ? obj : defaultVal;
+    }
+    
     public static <T> T getJson(JsonObject json, String key, Function<String, T> func) {
         if (json == null) return null;
         JsonElement element = json.get(key);

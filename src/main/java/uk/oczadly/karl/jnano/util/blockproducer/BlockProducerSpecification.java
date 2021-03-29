@@ -5,13 +5,12 @@
 
 package uk.oczadly.karl.jnano.util.blockproducer;
 
+import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.util.NetworkConstants;
 import uk.oczadly.karl.jnano.util.workgen.CPUWorkGenerator;
 import uk.oczadly.karl.jnano.util.workgen.NodeWorkGenerator;
 import uk.oczadly.karl.jnano.util.workgen.WorkGenerator;
-
-import java.util.Objects;
 
 /**
  * Represents a specification of a block producer or local wallet. Use the provided {@link Builder builder} object to
@@ -135,7 +134,7 @@ public class BlockProducerSpecification {
          * @return the constructed specification object
          */
         public BlockProducerSpecification build() {
-            NetworkConstants network = Objects.requireNonNullElse(this.network, NetworkConstants.NANO);
+            NetworkConstants network = JNH.nonNull(this.network, NetworkConstants.NANO);
             return new BlockProducerSpecification(
                     defaultRepresentative != null ? defaultRepresentative : network.getBurnAddress(),
                     addressPrefix != null ? addressPrefix : network.getAddressPrefix(),
