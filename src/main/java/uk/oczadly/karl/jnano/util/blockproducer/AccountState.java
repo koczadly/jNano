@@ -29,6 +29,13 @@ public class AccountState {
         this.frontier = null;
     }
     
+    /**
+     * Creates an account state from the given data.
+     * @param frontier       the hash of the frontier block
+     * @param balance        the balance of the account
+     * @param representative the current representative
+     * @see #UNOPENED
+     */
     public AccountState(HexData frontier, NanoAmount balance, NanoAccount representative) {
         if (representative == null) throw new IllegalArgumentException("Representative cannot be null.");
         if (balance == null) throw new IllegalArgumentException("Balance cannot be null.");
@@ -40,7 +47,7 @@ public class AccountState {
     
     
     /**
-     * @return the balance of the account
+     * @return the balance of the account (zero if unopened)
      */
     public final NanoAmount getBalance() {
         return balance;
@@ -70,8 +77,8 @@ public class AccountState {
     
     /**
      * Constructs an {@link AccountState} from a {@link ResponseAccountInfo} response object.
-     * @param info the response data
-     * @return the account state
+     * @param info the response data, or null if unopened
+     * @return the account state represented by the response
      */
     public static AccountState fromAccountInfo(ResponseAccountInfo info) {
         if (info == null) return UNOPENED;
@@ -80,8 +87,8 @@ public class AccountState {
     
     /**
      * Constructs an {@link AccountState} from a {@link StateBlock}.
-     * @param block the block
-     * @return the account state
+     * @param block the block, or null if unopened
+     * @return the account state represented by the block
      */
     public static AccountState fromBlock(StateBlock block) {
         if (block == null) return AccountState.UNOPENED;
