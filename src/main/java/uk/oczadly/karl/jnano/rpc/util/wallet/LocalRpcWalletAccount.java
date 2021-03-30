@@ -188,7 +188,7 @@ public class LocalRpcWalletAccount {
      * Returns the hash of the current frontier block of this account, or an empty value if the account hasn't been
      * opened yet.
      *
-     * @return the current account frontier block hash
+     * @return the current account frontier block hash, or empty if unopened
      * @throws WalletActionException if an error occurs with the RPC query when retrieving the account state
      */
     public Optional<HexData> getFrontierHash() throws WalletActionException {
@@ -197,7 +197,7 @@ public class LocalRpcWalletAccount {
     
     
     /**
-     * Attempts to send an amount of funds to the specified account.
+     * Sends the specified amount of funds to an account.
      *
      * <p>Calling this method will construct and sign a new block, generate the appropriate work for it, and publish the
      * block to the network via RPC.</p>
@@ -213,8 +213,8 @@ public class LocalRpcWalletAccount {
     }
     
     /**
-     * Attempts to send <em>all</em> of the balance to the specified account, returning an empty value if there are
-     * no remaining funds to send.
+     * Attempts to send the entire balance to the specified account, returning an empty value if there are no remaining
+     * funds to send (account has zero balance).
      *
      * <p>This method will not receive/send any pending blocks; that can be done by calling {@link #receiveAll()}
      * prior to sending funds.</p>
@@ -231,7 +231,7 @@ public class LocalRpcWalletAccount {
     }
     
     /**
-     * Attempts to receive the specified pending block.
+     * Receives the specified pending {@code send} block.
      *
      * <p>Calling this method will construct and sign a new block, generate the appropriate work for it, and publish the
      * block to the network via RPC.</p>
@@ -242,6 +242,8 @@ public class LocalRpcWalletAccount {
      *                               specified block could not be found in the ledger
      */
     public Block receive(HexData sourceHash) throws WalletActionException {
+        if (sourceHash == null) throw new IllegalArgumentException("Source hash cannot be null.");
+        
         lock.lock();
         try {
             ResponseBlockInfo pendingBlockInfo;
@@ -252,7 +254,7 @@ public class LocalRpcWalletAccount {
             } catch (RpcException e) {
                 throw new WalletActionException("Couldn't retrieve pending block info.", e);
             }
-            if (pendingBlockInfo.getBalance() == null) {
+            if (pendingBlockInfo.getAmount() == null) {
                 throw new WalletActionException("Specified block is not a send block.");
             }
             return receive(sourceHash, pendingBlockInfo.getAmount());
@@ -288,6 +290,10 @@ public class LocalRpcWalletAccount {
      * @throws WalletActionException if an error occurs with the RPC queries, work generation or block processing
      */
     public Set<Block> receiveBatch(int count, NanoAmount threshold) throws WalletActionException {
+        if (count < 0) throw new IllegalArgumentException("Batch count must be zero or higher.");
+        if (count == 0) return Collections.emptySet();
+        if (threshold == null) threshold = NanoAmount.ZERO;
+    
         lock.lock();
         try {
             // Fetch pending blocks
@@ -301,7 +307,7 @@ public class LocalRpcWalletAccount {
                 throw new WalletActionException("Connection error with RPC client.", e);
             }
             // Receive blocks
-            Set<Block> published = new HashSet<>();
+            Set<Block> published = new HashSet<>(pending.getPendingBlocks().size());
             for (Map.Entry<HexData, ResponsePending.PendingBlock> block : pending.getPendingBlocks().entrySet()) {
                 published.add(receive(block.getKey(), block.getValue().getAmount()));
             }
@@ -384,7 +390,6 @@ public class LocalRpcWalletAccount {
                     // Create block
                     Block block = blockSupplier.get();
                     if (block == null) return null;
-                    
                     // Publish block to network
                     rpcClient.processRequest(new RequestProcess(block, false, false));
                     return block;
