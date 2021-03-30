@@ -20,14 +20,16 @@ import uk.oczadly.karl.jnano.util.workgen.WorkGenerator;
  */
 public class BlockProducerSpecification {
     
+    /**
+     * A pre-constructed specification using suitable default values for the Nano network. Using this value isn't
+     * recommended, but can be suitable for test or reference implementations.
+     */
+    public static final BlockProducerSpecification DEFAULT = builder().usingNetwork(NetworkConstants.NANO).build();
+    
     private final NanoAccount defaultRepresentative;
     private final String addressPrefix;
     private final WorkGenerator workGenerator;
     
-    
-    public BlockProducerSpecification() {
-        this(NanoAccount.ZERO_ACCOUNT, NanoAccount.DEFAULT_PREFIX, new CPUWorkGenerator());
-    }
     
     private BlockProducerSpecification(NanoAccount defaultRepresentative, String addressPrefix,
                                        WorkGenerator workGenerator) {

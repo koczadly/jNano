@@ -18,7 +18,16 @@ import uk.oczadly.karl.jnano.model.block.StateBlockSubType;
 public class StateBlockProducer extends BlockProducer {
     
     /**
-     * Constructs a {@link StateBlockProducer}.
+     * Constructs a {@link StateBlockProducer} using the {@link BlockProducerSpecification#DEFAULT} specification.
+     * This construction method isn't recommended, as you should always configure your own specification.
+     * @see #StateBlockProducer(BlockProducerSpecification)
+     */
+    public StateBlockProducer() {
+        super();
+    }
+    
+    /**
+     * Constructs a {@link StateBlockProducer} using the given specification.
      * @param spec the producer specification
      */
     public StateBlockProducer(BlockProducerSpecification spec) {

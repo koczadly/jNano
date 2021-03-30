@@ -20,7 +20,16 @@ import java.util.concurrent.ExecutionException;
 public class LegacyBlockProducer extends BlockProducer {
     
     /**
-     * Constructs a {@link LegacyBlockProducer}.
+     * Constructs a {@link LegacyBlockProducer} using the {@link BlockProducerSpecification#DEFAULT} specification.
+     * This construction method isn't recommended, as you should always configure your own specification.
+     * @see #LegacyBlockProducer(BlockProducerSpecification)
+     */
+    public LegacyBlockProducer() {
+        super();
+    }
+    
+    /**
+     * Constructs a {@link LegacyBlockProducer} using the given specification.
      * @param spec the producer specification
      */
     public LegacyBlockProducer(BlockProducerSpecification spec) {

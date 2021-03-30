@@ -45,31 +45,33 @@ import java.util.function.Supplier;
  *
  * <p>Example usage:</p>
  * <pre>{@code
+ * RpcQueryNode rpcClient = RpcServiceProviders.nanos(); // Use nanex.cc public RPC API
+ *
  * // Construct a block producer object with your configuration
  * BlockProducer blockProducer = new StateBlockProducer(
  *         BlockProducerSpecification.builder()
  *                 .defaultRepresentative("nano_3caprkc56ebsaakn4j4n7g9p8h358mycfjcyzkrfw1nai6prbyk8ihc5yjjk")
- *                 .workGenerator(new OpenCLWorkGenerator())
+ *                 .workGenerator(new NodeWorkGenerator(rpcClient)) // Generate work on the node
  *                 .build()
  * );
  *
- * // Create account using private key
+ * // Create account from private key
  * LocalRpcWalletAccount account = new LocalRpcWalletAccount(
  *         new HexData("183A1DEDCA9CD37029456C8A2ED31460A0E9A8D18032676010AC11B02A442417"), // Private key
- *         RpcServiceProviders.nanex(), // Use nanex.cc public RPC API
- *         blockProducer); // Using our BlockProducer defined above
+ *         rpcClient, blockProducer); // Using our RPC client and BlockProducer defined above
  *
  * // Print account info
  * System.out.printf("Using account address %s%n", account.getAccount());
- * System.out.printf("Balance: %s%n", account.getBalance());
+ * System.out.printf("Initial balance: %s%n", account.getBalance());
  *
  * // Receive all pending funds
  * System.out.printf("Received %,d blocks%n", account.receiveAll().size());
+ * System.out.printf("Balance: %s%n", account.getBalance());
  *
  * // Send funds to another account
  * System.out.printf("Send block hash: %s%n", account.send(
- *         NanoAccount.parseAddress("nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk"),
- *         NanoAmount.valueOfNano("0.0001"))
+ *         NanoAccount.parseAddress("nano_34qjpc8t1u6wnb584pc4iwsukwa8jhrobpx4oea5gbaitnqafm6qsgoacpiz"),
+ *         NanoAmount.valueOfNano("0.01"))
  *         .getHash());
  * }</pre>
  */

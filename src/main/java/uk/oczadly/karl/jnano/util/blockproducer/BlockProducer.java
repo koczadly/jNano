@@ -22,6 +22,13 @@ public abstract class BlockProducer {
     private final BlockProducerSpecification spec;
     
     /**
+     * Creates a block producer with the {@link BlockProducerSpecification#DEFAULT} specification.
+     */
+    public BlockProducer() {
+        this(BlockProducerSpecification.DEFAULT);
+    }
+    
+    /**
      * Creates a block producer with the given specification.
      * @param spec the specification
      */
