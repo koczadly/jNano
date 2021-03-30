@@ -323,9 +323,9 @@ public class LocalRpcWalletAccount {
      * <p>Calling this method will construct and sign a set of new blocks, generate the appropriate work for them, and
      * publish the blocks to the network via RPC.</p>
      *
-     * <p>Note: if a large amount of transactions are pending, or an attacker continues to send funds to this
-     * account, this method may block and continue indefinitely. Receive operations are performed in small batches to
-     * allow other operations to proceed between each batch.</p>
+     * <p><strong>Note:</strong> if a large amount of transactions are pending, or an attacker continues to send funds
+     * to this account, this method may block and continue indefinitely. Receive operations are performed in small
+     * batches to allow other operations to proceed between each batch.</p>
      *
      * @return a set containing the generated and published {@code receive} blocks
      * @throws WalletActionException if an error occurs with the RPC queries, work generation or block processing
@@ -340,9 +340,9 @@ public class LocalRpcWalletAccount {
      * <p>Calling this method will construct and sign a set of new blocks, generate the appropriate work for them, and
      * publish the blocks to the network via RPC.</p>
      *
-     * <p>Note: if a large amount of transactions are pending, or an attacker continues to send funds to this
-     * account, this method may block and continue indefinitely. Receive operations are performed in small batches to
-     * allow other operations to proceed between each batch.</p>
+     * <p><strong>Note:</strong> if a large amount of transactions are pending, or an attacker continues to send funds
+     * to this account, this method may block and continue indefinitely. Receive operations are performed in small
+     * batches to allow other operations to proceed between each batch.</p>
      *
      * @param threshold the minimum amount threshold
      * @return a set containing the generated and published {@code receive} blocks
@@ -353,7 +353,7 @@ public class LocalRpcWalletAccount {
         do {
             batch = receiveBatch(RECEIVE_BATCH_SIZE, threshold);
             published.addAll(batch);
-        } while (!batch.isEmpty());
+        } while (batch.size() >= RECEIVE_BATCH_SIZE);
         return published;
     }
     
