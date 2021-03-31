@@ -6,12 +6,11 @@
 package uk.oczadly.karl.jnano.util.workgen;
 
 import uk.oczadly.karl.jnano.internal.NanoConst;
+import uk.oczadly.karl.jnano.internal.utils.LRUCache;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -30,8 +29,7 @@ public final class WorkCache {
      */
     public static final WorkCache GLOBAL_INSTANCE = new WorkCache(100);
     
-    private final int maxSize;
-    private final Map<HexData, CachedWork> map;
+    private final LRUCache<HexData, CachedWork> map;
     
     /**
      * Constructs a work cache with the specified maximum cache size.
@@ -40,9 +38,7 @@ public final class WorkCache {
     public WorkCache(int maxSize) {
         if (maxSize < 1)
             throw new IllegalArgumentException("Must have a maximum cache size of at least 1.");
-        
-        this.maxSize = maxSize;
-        this.map = new CachingMap<>();
+        this.map = new LRUCache<>(maxSize);
     }
     
     
@@ -51,7 +47,7 @@ public final class WorkCache {
      * @return the maximum number of cached values
      */
     public int getMaxSize() {
-        return maxSize;
+        return map.maxSize();
     }
     
     /**
@@ -76,7 +72,7 @@ public final class WorkCache {
      * @return true if the work was written to the cache, false if the cache already has a higher difficulty value
      *         stored for this root
      */
-    public synchronized boolean store(GeneratedWork work) {
+    public boolean store(GeneratedWork work) {
         if (work == null) throw new IllegalArgumentException("Work cannot be null.");
         return store(work.getWork(), work.getDifficulty(), work.getRequestRoot());
     }
@@ -89,14 +85,15 @@ public final class WorkCache {
      * @return true if the work was written to the cache, false if the cache already has a higher difficulty value
      *         stored for this root
      */
-    public synchronized boolean store(WorkSolution work, HexData root) {
+    public boolean store(WorkSolution work, HexData root) {
         if (work == null) throw new IllegalArgumentException("Work cannot be null.");
         if (root == null) throw new IllegalArgumentException("Root cannot be null.");
         return store(work, work.calculateDifficulty(root), root);
     }
     
     private synchronized boolean store(WorkSolution work, WorkDifficulty difficulty, HexData root) {
-        if (root.length() != NanoConst.LEN_HASH_B) throw new IllegalArgumentException("Invalid root length.");
+        if (root.length() != NanoConst.LEN_HASH_B)
+            throw new IllegalArgumentException("Invalid root length.");
         
         CachedWork current = map.get(root);
         if (current != null && difficulty.compareTo(current.difficulty) < 0) {
@@ -117,8 +114,10 @@ public final class WorkCache {
      * @return true if a cached work value was removed
      */
     public synchronized boolean remove(HexData root) {
-        if (root == null) throw new IllegalArgumentException("Root cannot be null.");
-        if (root.length() != NanoConst.LEN_HASH_B) throw new IllegalArgumentException("Invalid root length.");
+        if (root == null)
+            throw new IllegalArgumentException("Root cannot be null.");
+        if (root.length() != NanoConst.LEN_HASH_B)
+            throw new IllegalArgumentException("Invalid root length.");
         return map.remove(root) != null;
     }
     
@@ -131,9 +130,12 @@ public final class WorkCache {
      * @return the cached work value, or empty if not cached or if the work doesn't meet the difficulty threshold
      */
     public synchronized Optional<WorkSolution> get(HexData root, WorkDifficulty threshold) {
-        if (root == null) throw new IllegalArgumentException("Root cannot be null.");
-        if (root.length() != NanoConst.LEN_HASH_B) throw new IllegalArgumentException("Invalid root length.");
-        if (threshold == null) throw new IllegalArgumentException("Threshold cannot be null.");
+        if (root == null)
+            throw new IllegalArgumentException("Root cannot be null.");
+        if (root.length() != NanoConst.LEN_HASH_B)
+            throw new IllegalArgumentException("Invalid root length.");
+        if (threshold == null)
+            throw new IllegalArgumentException("Threshold cannot be null.");
         
         CachedWork cache = map.get(root);
         if (cache != null && cache.difficulty.isValid(threshold))
@@ -157,22 +159,6 @@ public final class WorkCache {
         public CachedWork(WorkSolution work, WorkDifficulty difficulty) {
             this.work = work;
             this.difficulty = difficulty;
-        }
-    }
-    
-    /** Map limited to the maxSize */
-    private class CachingMap<K, V> extends LinkedHashMap<K, V> {
-        @Override
-        public V put(K key, V value) {
-            // Re-insert to head of list by removing and re-adding
-            V val = remove(key);
-            super.put(key, value);
-            return val;
-        }
-        
-        @Override
-        protected boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > maxSize;
         }
     }
     

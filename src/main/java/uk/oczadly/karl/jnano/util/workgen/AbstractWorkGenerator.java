@@ -215,11 +215,13 @@ public abstract class AbstractWorkGenerator implements WorkGenerator {
                 
                 // Generate work
                 WorkSolution work = generateWork(root, diff.getTarget(), context);
-                if (work == null) throw new NullPointerException("Generated work solution was null.");
+                if (work == null)
+                    throw new NullPointerException("Generated work solution was null.");
                 
                 // Handle computed value
                 GeneratedWork genWork = new GeneratedWork(work, root, diff.getBase(), diff.getTarget());
-                if (workCache != null) workCache.store(genWork); // Store in cache
+                if (workCache != null)
+                    workCache.store(genWork); // Store in cache
                 return genWork;
             } catch (InterruptedException e) {
                 if (isShutdown) {
