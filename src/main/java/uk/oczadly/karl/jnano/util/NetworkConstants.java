@@ -26,7 +26,7 @@ import java.util.Set;
 public final class NetworkConstants {
     
     /**
-     * Constants for the official live Nano network.
+     * Constants for the official live <em>Nano</em> network.
      * @see <a href="https://nano.org">Nano official website</a>
      */
     public static final NetworkConstants NANO = new NetworkConstants(
@@ -41,11 +41,16 @@ public final class NetworkConstants {
                             "E89208DD038FBB269987689621D52292AE9C35941A7484756ECCED92A65093BA")),
                     new EpochUpgrade(2, NanoAccount.parsePublicKey(
                             "DD24A9200D4BF8247981E4AC63DBDE38FD2319386970A26D02ECC98C79975DB1"))
-            ));
+            )
+    );
     
     /**
-     * Constants for the official Nano Beta network.
-     * @see <a href="https://beta.nano.org">Nano beta website</a>
+     * Constants for the official <em>Nano Beta</em> network.
+     *
+     * <p>Warning: this network is volatile, and may be subject to frequent resets which invalidate and change some of
+     * the constant values offered.</p>
+     *
+     * @see <a href="https://docs.nano.org/running-a-node/beta-network/">Website/documentation</a>
      */
     public static final NetworkConstants NANO_BETA = new NetworkConstants(
             "Nano (Beta)", NanoAccount.DEFAULT_PREFIX,
@@ -59,10 +64,28 @@ public final class NetworkConstants {
                             "A59A439B34662385D48F7FF9CA50030F889BAA9AC320EA5A85AAD777CF82B088")),
                     new EpochUpgrade(2, NanoAccount.parsePublicKey(
                             "A59A439B34662385D48F7FF9CA50030F889BAA9AC320EA5A85AAD777CF82B088"))
-            ));
+            )
+    );
     
     /**
-     * Constants for the official Banano network.
+     * Constants for the official <em>Nano Test</em> network, intended for testing service and wallet integrations.
+     *
+     * <p>Warning: this network is volatile, and may be subject to frequent resets which invalidate and change some of
+     * the constant values offered.</p>
+     *
+     * @see <a href="https://test.nano.org">Website</a>
+     */
+    public static final NetworkConstants NANO_TEST = new NetworkConstants(
+            "Nano (Test)", NanoAccount.DEFAULT_PREFIX,
+            "15049467CAEE3EC768639E8E35792399B6078DA763DA4EBA8ECAD33B0EDC4AF2E7403893A5A602EB89B978DABEF1D6606BB00F3" +
+                    "C0EE11449232B143B6E07170E", new WorkSolution("bc1ef279c1a34eb1"),
+            "45C6FF9D1706D61F0821327752671BDA9F9ED2DA40326B01935AB566FB9E08ED",
+            new ConstantDifficultyPolicy(new WorkDifficulty("ffffffc000000000")),
+            new EpochUpgradeRegistry()
+    );
+    
+    /**
+     * Constants for the official <em>Banano</em> 🍌 network.
      * @see <a href="https://banano.cc">Banano official website</a>
      */
     public static final NetworkConstants BANANO = new NetworkConstants(
@@ -71,12 +94,14 @@ public final class NetworkConstants {
                     "2C00D7B183560435D07AFA18900", new WorkSolution("fa055f79fa56abcf"),
             "2514452A978F08D1CF76BB40B6AD064183CF275D3CC5D3E0515DC96E2112AD4E",
             new ConstantDifficultyPolicy(new WorkDifficulty("fffffe0000000000")),
-            new EpochUpgradeRegistry());
+            new EpochUpgradeRegistry()
+    );
     
     
-    /** An immutable set of all available network constant instances provided by this library.
-     * <p>Currently contains: {@link #NANO}, {@link #NANO_BETA} and {@link #BANANO}.</p>*/
-    public static final Set<NetworkConstants> SUPPORTED_NETWORKS = JNH.ofSet(NANO, NANO_BETA, BANANO);
+    /**
+     * An immutable set of all available network constant instances provided by this library.
+     */
+    public static final Set<NetworkConstants> SUPPORTED_NETWORKS = JNH.ofSet(NANO, NANO_BETA, NANO_TEST, BANANO);
     
     
     /**
@@ -93,6 +118,17 @@ public final class NetworkConstants {
         return SUPPORTED_NETWORKS.stream()
                 .filter(net -> net.getNetworkIdentifier().equalsIgnoreCase(hash))
                 .findFirst().orElse(null);
+    }
+    
+    /**
+     * Returns a {@link NetworkConstants} instance for the specified network by matching the genesis block hash.
+     * @param hash the hash of the genesis block
+     * @return the associated {@link NetworkConstants} class, or null if not found
+     */
+    public static NetworkConstants fromIdentifier(HexData hash) {
+        if (hash == null)
+            throw new IllegalArgumentException("Block hash cannot be null.");
+        return fromIdentifier(hash.toHexString());
     }
     
     
