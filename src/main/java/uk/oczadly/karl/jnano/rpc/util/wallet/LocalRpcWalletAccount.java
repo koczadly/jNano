@@ -138,30 +138,53 @@ public class LocalRpcWalletAccount {
     public String toString() {
         return "LocalRpcWalletAccount{" +
                 "account=" + getAccount() +
-                ", producer=" + getBlockProducer().getClass().getSimpleName() + '}';
+                ", blockProducer=" + getBlockProducer().getClass().getName() + '}';
+    }
+    
+    
+    /**
+     * Forcefully updates the internally cached state of this account to the given state data.
+     *
+     * <p>Most implementations should never have to call this method, as the state will automatically be retrieved or
+     * updated when necessary through the other methods.</p>
+     *
+     * @param state the new state of the account
+     *
+     * @see #refreshState()
+     */
+    public void updateState(AccountState state) {
+        if (state == null)
+            throw new IllegalArgumentException("State cannot be null.");
+        lock.lock();
+        try {
+            account.updateState(state);
+            hasRetrievedState = true;
+        } finally {
+            lock.unlock();
+        }
     }
     
     /**
      * Forcefully refreshes the internal cached state of the account by calling the {@link RequestAccountInfo} RPC
      * query.
      *
-     * <p>Most implementations should never need to call this method, as the state will automatically be retrieved when
-     * necessary through the other action methods.</p>
+     * <p>Most implementations should never have to call this method, as the state will automatically be retrieved or
+     * updated when necessary through the other methods.</p>
      *
      * @throws WalletActionException if an error occurs with the RPC query
+     *
+     * @see #updateState(AccountState)
      */
     public void refreshState() throws WalletActionException {
         lock.lock();
         try {
             // Retrieve state from RPC
-            ResponseAccountInfo info = rpcClient.processRequest(
+            ResponseAccountInfo accountInfo = rpcClient.processRequest(
                     new RequestAccountInfo(getAccount().toAddress()));
-            account.updateState(AccountState.fromAccountInfo(info));
-            hasRetrievedState = true;
+            updateState(AccountState.fromAccountInfo(accountInfo));
         } catch (RpcEntityNotFoundException e) {
             // Account isn't open
-            account.updateState(AccountState.UNOPENED);
-            hasRetrievedState = true;
+            updateState(AccountState.UNOPENED);
         } catch (RpcException e) {
             throw new WalletActionException("Couldn't retrieve account state.", e);
         } catch (IOException e) {
@@ -427,8 +450,9 @@ public class LocalRpcWalletAccount {
         if (!hasRetrievedState) {
             lock.lock();
             try {
-                if (!hasRetrievedState)
+                if (!hasRetrievedState) {
                     refreshState();
+                }
             } finally {
                 lock.unlock();
             }
@@ -442,7 +466,8 @@ public class LocalRpcWalletAccount {
         if (this == o) return true;
         if (!(o instanceof LocalRpcWalletAccount)) return false;
         LocalRpcWalletAccount that = (LocalRpcWalletAccount)o;
-        return Objects.equals(rpcClient, that.rpcClient) && Objects.equals(getBlockProducer(), that.getBlockProducer())
+        return Objects.equals(rpcClient, that.rpcClient)
+                && Objects.equals(getBlockProducer(), that.getBlockProducer())
                 && Objects.equals(getPrivateKey(), that.getPrivateKey());
     }
     
