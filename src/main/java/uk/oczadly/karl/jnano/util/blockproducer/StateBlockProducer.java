@@ -83,7 +83,7 @@ public class StateBlockProducer extends BlockProducer {
         try {
             block = builder.buildAndSign(privateKey);
         } catch (StateBlockBuilder.BlockCreationException e) {
-            throw new BlockCreationException(e);
+            throw new BlockCreationException(e.getMessage(), e);
         }
         return new BlockAndState(block, AccountState.fromBlock(block));
     }

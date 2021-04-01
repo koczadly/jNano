@@ -243,7 +243,8 @@ public class LocalRpcWalletAccount {
      *                               specified block could not be found in the ledger
      */
     public Block receive(HexData sourceHash) throws WalletActionException {
-        if (sourceHash == null) throw new IllegalArgumentException("Source hash cannot be null.");
+        if (sourceHash == null)
+            throw new IllegalArgumentException("Source hash cannot be null.");
         
         lock.lock();
         try {
@@ -257,7 +258,9 @@ public class LocalRpcWalletAccount {
             } catch (IOException e) {
                 throw new WalletActionException("Connection error with RPC client.", e);
             }
-            if (pendingBlockInfo.getAmount() == null) {
+            if (!pendingBlockInfo.isConfirmed()) {
+                throw new WalletActionException("Source block is unconfirmed.");
+            } else if (pendingBlockInfo.getAmount() == null) {
                 throw new WalletActionException("Specified block is not a send block.");
             }
             return receive(sourceHash, pendingBlockInfo.getAmount());
@@ -306,7 +309,7 @@ public class LocalRpcWalletAccount {
                 pending = rpcClient.processRequest(new RequestPending(
                         getAccount().toAddress(), count, threshold.getAsRaw(), false, true, true));
             } catch (RpcException e) {
-                throw new WalletActionException("Couldn't retrieve pending blocks list.", e);
+                throw new WalletActionException("Failed to retrieve pending blocks.", e);
             } catch (IOException e) {
                 throw new WalletActionException("Connection error with RPC client.", e);
             }
@@ -414,7 +417,7 @@ public class LocalRpcWalletAccount {
         } catch (IOException e) {
             throw new WalletActionException("Connection error with RPC client.", e);
         } catch (RpcException e) {
-            throw new WalletActionException("Couldn't publish block.", e);
+            throw new WalletActionException("Couldn't publish block: " + e.getMessage(), e);
         } finally {
             lock.unlock();
         }
