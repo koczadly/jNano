@@ -45,7 +45,7 @@ import java.util.function.Supplier;
  *
  * <p>Example usage:</p>
  * <pre>{@code
- * RpcQueryNode rpcClient = RpcServiceProviders.nanos(); // Use nanex.cc public RPC API
+ * RpcQueryNode rpcClient = RpcServiceProviders.nanex(); // Use nanex.cc public RPC API
  *
  * // Construct a block producer object with your configuration
  * BlockProducer blockProducer = new StateBlockProducer(
@@ -136,9 +136,10 @@ public class LocalRpcWalletAccount {
     
     @Override
     public String toString() {
-        return "LocalRpcWalletAccount{" + getAccount() + '}';
+        return "LocalRpcWalletAccount{" +
+                "account=" + getAccount() +
+                ", producer=" + getBlockProducer().getClass().getSimpleName() + '}';
     }
-    
     
     /**
      * Forcefully refreshes the internal cached state of the account by calling the {@link RequestAccountInfo} RPC
@@ -153,16 +154,16 @@ public class LocalRpcWalletAccount {
         lock.lock();
         try {
             // Retrieve state from RPC
-            ResponseAccountInfo info = rpcClient.processRequest(new RequestAccountInfo(getAccount().toAddress()));
-            AccountState state = AccountState.fromAccountInfo(info);
-            account.updateState(state);
+            ResponseAccountInfo info = rpcClient.processRequest(
+                    new RequestAccountInfo(getAccount().toAddress()));
+            account.updateState(AccountState.fromAccountInfo(info));
             hasRetrievedState = true;
         } catch (RpcEntityNotFoundException e) {
             // Account isn't open
             account.updateState(AccountState.UNOPENED);
             hasRetrievedState = true;
         } catch (RpcException e) {
-            throw new WalletActionException("Couldn't retrieve account state information.", e);
+            throw new WalletActionException("Couldn't retrieve account state.", e);
         } catch (IOException e) {
             throw new WalletActionException("Connection error with RPC client.", e);
         } finally {
@@ -249,10 +250,12 @@ public class LocalRpcWalletAccount {
             ResponseBlockInfo pendingBlockInfo;
             try {
                 pendingBlockInfo = rpcClient.processRequest(new RequestBlockInfo(sourceHash.toHexString()));
+            } catch (RpcEntityNotFoundException e) {
+                throw new WalletActionException("Source block could not be found.", e);
+            } catch (RpcException e) {
+                throw new WalletActionException("Failed to retrieve pending block info.", e);
             } catch (IOException e) {
                 throw new WalletActionException("Connection error with RPC client.", e);
-            } catch (RpcException e) {
-                throw new WalletActionException("Couldn't retrieve pending block info.", e);
             }
             if (pendingBlockInfo.getAmount() == null) {
                 throw new WalletActionException("Specified block is not a send block.");
@@ -264,7 +267,8 @@ public class LocalRpcWalletAccount {
     }
     
     /**
-     * Attempts to receive a batch of pending blocks with at least {@code 0.000001 NANO} in value.
+     * Attempts to receive a batch of pending blocks of at least {@code 0.000001 NANO} in value, receiving no more than
+     * {@code count} blocks (highest valued blocks are processed first).
      *
      * <p>Calling this method will construct and sign a set of new blocks, generate the appropriate work for them, and
      * publish the blocks to the network via RPC.</p>
@@ -278,8 +282,8 @@ public class LocalRpcWalletAccount {
     }
     
     /**
-     * Attempts to receive a batch of pending blocks with a value greater than or equal to the specified threshold
-     * amount.
+     * Attempts to receive a batch of pending blocks of a value greater than or equal to the specified threshold
+     * amount, receiving no more than {@code count} blocks (highest valued blocks are processed first).
      *
      * <p>Calling this method will construct and sign a set of new blocks, generate the appropriate work for them, and
      * publish the blocks to the network via RPC.</p>
@@ -318,7 +322,7 @@ public class LocalRpcWalletAccount {
     }
     
     /**
-     * Attempts to receive all pending blocks with at least {@code 0.000001 NANO} in value.
+     * Attempts to receive all pending blocks of at least {@code 0.000001 NANO} in value.
      *
      * <p>Calling this method will construct and sign a set of new blocks, generate the appropriate work for them, and
      * publish the blocks to the network via RPC.</p>
@@ -335,7 +339,7 @@ public class LocalRpcWalletAccount {
     }
     
     /**
-     * Attempts to receive all pending blocks with a value greater than or equal to the specified threshold amount.
+     * Attempts to receive all pending blocks of a value greater than or equal to the specified threshold amount.
      *
      * <p>Calling this method will construct and sign a set of new blocks, generate the appropriate work for them, and
      * publish the blocks to the network via RPC.</p>

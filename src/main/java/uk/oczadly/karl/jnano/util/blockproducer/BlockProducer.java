@@ -99,7 +99,8 @@ public abstract class BlockProducer {
         if (amount.compareTo(NanoAmount.ZERO) <= 0)
             throw new IllegalArgumentException("Amount must be greater than zero.");
         if (state.getBalance().compareTo(amount) < 0)
-            throw new BlockCreationException(String.format("Not enough funds (%s < %s)", state.getBalance(), amount));
+            throw new BlockCreationException(String.format("Not enough funds (requested: %s, balance: %s)",
+                    amount, state.getBalance()));
         
         return _createSend(privateKey, state, destination, amount);
     }
