@@ -30,7 +30,7 @@ public final class NetworkConstants {
      * @see <a href="https://nano.org">Nano official website</a>
      */
     public static final NetworkConstants NANO = new NetworkConstants(
-            "Nano", NanoAccount.DEFAULT_PREFIX,
+            "Nano", "XNO", NanoAccount.DEFAULT_PREFIX,
             "9F0C933C8ADE004D808EA1985FA746A7E95BA2A38F867640F53EC8F180BDFE9E2C1268DEAD7C2664F356E37ABA362BC58E46D" +
                     "BA03E523A7B5A19E4B6EB12BB02", new WorkSolution("62f05417dd3fb691"),
             "E89208DD038FBB269987689621D52292AE9C35941A7484756ECCED92A65093BA",
@@ -53,7 +53,7 @@ public final class NetworkConstants {
      * @see <a href="https://docs.nano.org/running-a-node/beta-network/">Website/documentation</a>
      */
     public static final NetworkConstants NANO_BETA = new NetworkConstants(
-            "Nano (Beta)", NanoAccount.DEFAULT_PREFIX,
+            "Nano (Beta)", "XNO-Beta", NanoAccount.DEFAULT_PREFIX,
             "2F4D72B8E973C979E4D6815CB34C2F426AD997FB8BC6BD94C92541E7F35879594A392AA0B28D0A865EA4C73DB2DE56893E947FD" +
                     "0AD76AB847A2BB5AEDFBF0E00", new WorkSolution("a870b0e9331cf477"),
             "A59A439B34662385D48F7FF9CA50030F889BAA9AC320EA5A85AAD777CF82B088",
@@ -76,7 +76,7 @@ public final class NetworkConstants {
      * @see <a href="https://test.nano.org">Website</a>
      */
     public static final NetworkConstants NANO_TEST = new NetworkConstants(
-            "Nano (Test)", NanoAccount.DEFAULT_PREFIX,
+            "Nano (Test)", "XNO", NanoAccount.DEFAULT_PREFIX,
             "15049467CAEE3EC768639E8E35792399B6078DA763DA4EBA8ECAD33B0EDC4AF2E7403893A5A602EB89B978DABEF1D6606BB00F3" +
                     "C0EE11449232B143B6E07170E", new WorkSolution("bc1ef279c1a34eb1"),
             "45C6FF9D1706D61F0821327752671BDA9F9ED2DA40326B01935AB566FB9E08ED",
@@ -89,7 +89,7 @@ public final class NetworkConstants {
      * @see <a href="https://banano.cc">Banano official website</a>
      */
     public static final NetworkConstants BANANO = new NetworkConstants(
-            "Banano", "ban",
+            "Banano", "BAN", "ban",
             "533DCAB343547B93C4128E779848DEA5877D3278CB5EA948BB3A9AA1AE0DB293DE6D9DA4F69E8D1DDFA385F9B4C5E4F38DFA4" +
                     "2C00D7B183560435D07AFA18900", new WorkSolution("fa055f79fa56abcf"),
             "2514452A978F08D1CF76BB40B6AD064183CF275D3CC5D3E0515DC96E2112AD4E",
@@ -132,31 +132,34 @@ public final class NetworkConstants {
     }
     
     
-    private final String networkName, addressPrefix;
+    private final String networkName, ticker, addressPrefix;
     private final OpenBlock genesisBlock;
     private final ConstantWorkDifficultyPolicy workDifficulties;
     private final EpochUpgradeRegistry epochs;
     
     /**
      * @param networkName      the network name (eg. "{@code Nano}")
+     * @param ticker           the official currency ticker (eg. "{@code XRB}")
      * @param addressPrefix    the address prefix (eg. {@code nano} as seen in {@code nano_34qjpc8t1u...})
      * @param genesisBlock     the genesis block contents
      * @param workDifficulties the active work difficulty policy
      * @param epochs           a registry of account upgrade epochs
      */
-    public NetworkConstants(String networkName, String addressPrefix, OpenBlock genesisBlock,
+    public NetworkConstants(String networkName, String ticker, String addressPrefix, OpenBlock genesisBlock,
                              ConstantWorkDifficultyPolicy workDifficulties, EpochUpgradeRegistry epochs) {
         this.networkName = networkName;
+        this.ticker = ticker;
         this.addressPrefix = addressPrefix;
         this.genesisBlock = genesisBlock;
         this.workDifficulties = workDifficulties;
         this.epochs = epochs;
     }
     
-    private NetworkConstants(String networkName, String addressPrefix, String genBlockSig,
+    private NetworkConstants(String networkName, String ticker, String addressPrefix, String genBlockSig,
                              WorkSolution genBlockWork, String genAccountPk,
                              ConstantWorkDifficultyPolicy workDifficulties, EpochUpgradeRegistry epochs) {
         this.networkName = networkName;
+        this.ticker = ticker;
         this.addressPrefix = addressPrefix;
         NanoAccount genesisAccount = NanoAccount.parsePublicKey(genAccountPk, addressPrefix);
         this.genesisBlock = createGenesisBlock(genesisAccount, genBlockWork, new HexData(genBlockSig));
@@ -166,11 +169,19 @@ public final class NetworkConstants {
     
     
     /**
-     * Returns the name of this network.
+     * Returns a friendly name of this network.
      * @return the name of this network
      */
     public final String getNetworkName() {
         return networkName;
+    }
+    
+    /**
+     * Returns the official ticker/symbol of this currency.
+     * @return the official currency ticker
+     */
+    public String getTicker() {
+        return ticker;
     }
     
     /**
