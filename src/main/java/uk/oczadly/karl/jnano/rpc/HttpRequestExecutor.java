@@ -72,6 +72,7 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
     protected void setRequestHeaders(HttpURLConnection con) throws IOException {
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json");
+        con.setRequestProperty("Accepts",      "application/json");
     }
     
     
