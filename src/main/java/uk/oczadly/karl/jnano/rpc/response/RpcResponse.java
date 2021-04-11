@@ -6,8 +6,6 @@
 package uk.oczadly.karl.jnano.rpc.response;
 
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import uk.oczadly.karl.jnano.internal.JNC;
 
 import java.time.Instant;
@@ -17,9 +15,10 @@ import java.time.Instant;
  *
  * <p>This class represents an RPC response, containing all of the structured data returned by the node.</p>
  *
- * <p>Classes which extend this class need to specify parameters as private fields, and MUST be marked with Gson's
- * {@link Expose} annotation. The parameter name will be derived from the name of the field, unless specified otherwise
- * using the {@link SerializedName} annotation.</p>
+ * <p>Implementations of this class should specify properties as private fields, which will be automatically injected
+ * with the correct value (this behaviour can be ignored by adding the {@code transient} modifier to a field). The name
+ * of the property is based on the name of the field — for instance, field {@code int someValue;} will be read from the
+ * {@code some_value} JSON property.</p>
  *
  * <p>If implementing a custom deserializer, you should call the {@link #initJsonField(JsonObject)} on the response
  * object before passing it to the application.</p>
@@ -43,7 +42,7 @@ public abstract class RpcResponse {
      * values which aren't made accessible by the getter methods.
      * @return the raw JSON response data sent from the node
      */
-    public synchronized final JsonObject asJson() {
+    public final JsonObject asJson() {
         if (rawJson == null)
             throw new IllegalStateException("JSON field not initialized!");
         return rawJson;
@@ -54,8 +53,9 @@ public abstract class RpcResponse {
      * @return the response as a JSON string
      */
     @Override
-    public synchronized final String toString() {
-        return rawJson != null ? JNC.GSON_PRETTY.toJson(rawJson) : "{}";
+    public String toString() {
+        JsonObject json = rawJson;
+        return json != null ? JNC.GSON_PRETTY.toJson(json) : "{}";
     }
     
     
@@ -64,7 +64,7 @@ public abstract class RpcResponse {
      * deserializer instance, as this will throw an {@link IllegalStateException} on succeeding attempts.
      * @param json the raw JSON object
      */
-    public synchronized void initJsonField(JsonObject json) {
+    public final void initJsonField(JsonObject json) {
         if (this.rawJson != null)
             throw new IllegalStateException("JSON field is already initialized.");
         this.rawJson = json;

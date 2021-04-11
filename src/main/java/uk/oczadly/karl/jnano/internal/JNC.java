@@ -22,7 +22,6 @@ import java.time.Instant;
 public class JNC {
     
     public static final Gson GSON = new GsonBuilder()
-            .excludeFieldsWithoutExposeAnnotation()
             .registerTypeAdapterFactory(new EnumTypeAdapterFactory())          // Case-insensitive enums
             .registerTypeAdapterFactory(new ArrayTypeAdapterFactoryFix())      // Empty array hotfix
             .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer()) // Boolean deserializer
