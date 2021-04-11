@@ -198,7 +198,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     
     
     /**
-     * Returns a NanoAmount instance that represents the given amount and unit.
+     * Returns a NanoAmount that represents the given amount and unit.
      *
      * @param val  the numeric value (must be zero or positive)
      * @param unit the denomination of the {@code val} amount
@@ -211,7 +211,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns a NanoAmount instance that represents the given amount and unit.
+     * Returns a NanoAmount that represents the given amount and unit.
      *
      * @param val  the numeric value (must be zero or positive)
      * @param unit the denomination of the {@code val} amount
@@ -224,7 +224,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns a NanoAmount instance that represents the given amount and unit.
+     * Returns a NanoAmount that represents the given amount and unit.
      *
      * @param val  the numeric value (must be zero or positive)
      * @param unit the denomination of the {@code val} amount
@@ -237,7 +237,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns a NanoAmount instance that represents the given amount and unit.
+     * Returns a NanoAmount that represents the given amount and unit.
      *
      * @param val  the numeric (integer or decimal) value (must be zero or positive)
      * @param unit the denomination of the {@code val} amount
@@ -252,7 +252,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns a NanoAmount instance that represents the given {@link NanoUnit#RAW raw} amount.
+     * Returns a NanoAmount that represents the given {@link NanoUnit#RAW raw} amount.
      *
      * @param raw the numeric value, in raw (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
@@ -264,7 +264,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns a NanoAmount instance that represents the given {@link NanoUnit#RAW raw} amount.
+     * Returns a NanoAmount that represents the given {@link NanoUnit#RAW raw} amount.
      *
      * @param raw the numeric value, in raw (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
@@ -275,13 +275,24 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns a NanoAmount instance that represents the given {@link NanoUnit#RAW raw} amount.
+     * Returns a NanoAmount that represents the given {@link NanoUnit#RAW raw} amount.
      *
      * @param raw the numeric value, in raw (must be zero or positive)
      * @return a {@link NanoAmount} instance representing the given value
      */
     public static NanoAmount valueOfRaw(long raw) {
         return valueOfRaw(BigInteger.valueOf(raw));
+    }
+    
+    /**
+     * Returns a NanoAmount that represents <code>10<sup>exponent</sup></code> {@link NanoUnit#RAW raw}. An
+     * {@code exponent} value of {@code 5} means one followed by five zeroes ({@code 100000 raw}). Useful for
+     * constructing threshold values.
+     * @param exponent the exponent, with a base of {@code 10}
+     * @return a {@link NanoAmount} instance representing the given value
+     */
+    public static NanoAmount valueOfRawExponent(int exponent) {
+        return valueOfRaw(BigInteger.TEN.pow(exponent));
     }
     
     /**

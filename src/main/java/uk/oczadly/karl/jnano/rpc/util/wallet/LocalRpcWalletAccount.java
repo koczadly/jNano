@@ -77,7 +77,7 @@ import java.util.function.Supplier;
  */
 public class LocalRpcWalletAccount {
     
-    private static final NanoAmount DEFAULT_THRESHOLD = NanoAmount.valueOfRaw("1000000000000000000000000");
+    private static final NanoAmount DEFAULT_THRESHOLD = NanoAmount.valueOfRawExponent(24);
     private static final int RECEIVE_BATCH_SIZE = 15;
     private static final int MAX_RETRY_ATTEMPTS = 3;
     
