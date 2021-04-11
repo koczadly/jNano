@@ -60,5 +60,11 @@ public class JsonRequestSerializer implements RpcRequestSerializer {
     public JsonObject serializeJsonObject(RpcRequest<?> request) {
         return gson.toJsonTree(request).getAsJsonObject();
     }
-
+    
+    
+    @Override
+    public String toString() {
+        return "JsonRequestSerializer{}";
+    }
+    
 }

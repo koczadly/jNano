@@ -19,7 +19,7 @@ import java.net.URL;
  */
 public class HttpRequestExecutor implements RpcRequestExecutor {
     
-    private final URL address;
+    private final URL url;
     
     /**
      * Configures a request executor over the {@code http} or {@code https} protocols.
@@ -31,7 +31,7 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
         if (!address.getProtocol().equalsIgnoreCase("http") && !address.getProtocol().equalsIgnoreCase("https"))
             throw new IllegalArgumentException("HttpRequestExecutor only supports the HTTP and HTTPS protocols.");
         
-        this.address = address;
+        this.url = address;
     }
     
     
@@ -39,7 +39,7 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
      * @return the URL address of the endpoint
      */
     public final URL getAddress() {
-        return address;
+        return url;
     }
     
     
@@ -51,7 +51,7 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
             throw new IllegalArgumentException("Timeout period must be positive or zero.");
         
         // Open connection
-        HttpURLConnection con = (HttpURLConnection)address.openConnection();
+        HttpURLConnection con = (HttpURLConnection)url.openConnection();
         
         // Configure connection
         setRequestHeaders(con);
@@ -75,6 +75,13 @@ public class HttpRequestExecutor implements RpcRequestExecutor {
         con.setRequestProperty("Accepts",      "application/json");
     }
     
+    
+    @Override
+    public String toString() {
+        return "HttpRequestExecutor{" +
+                "url=" + url +
+                '}';
+    }
     
     /**
      * Makes an HTTP request.

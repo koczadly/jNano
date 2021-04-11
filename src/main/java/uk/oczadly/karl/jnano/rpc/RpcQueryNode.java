@@ -360,6 +360,17 @@ public class RpcQueryNode {
     }
     
     
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" +
+                "defaultTimeout=" + (defaultTimeout > 0 ? defaultTimeout : "none") +
+                ", serializer=" + requestSerializer.toString() +
+                ", deserializer=" + responseDeserializer.toString() +
+                ", executor=" + requestExecutor.toString() +
+                '}';
+    }
+    
+    
     /**
      * Returns a new builder object for constructing {@code RpcQueryNode} objects.
      * @return a new builder object

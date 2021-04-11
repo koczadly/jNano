@@ -109,6 +109,12 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
     }
     
     
+    @Override
+    public String toString() {
+        return "JsonResponseDeserializer{}";
+    }
+    
+    
     /**
      * Parses an {@link RpcExternalException} from a given response message.
      * @param rawMessage the received raw error message
