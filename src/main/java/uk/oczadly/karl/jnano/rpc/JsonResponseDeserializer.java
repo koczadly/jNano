@@ -129,6 +129,10 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
             case "wallet locked":
                 return new RpcWalletLockedException(rawMessage);     // Wallet locked
             case "insufficient balance":
+            case "unreceivable":
+            case "negative spend":
+            case "old block":
+            case "fork":
                 return new RpcInvalidArgumentException(rawMessage);  // Invalid/bad argument
             case "rpc control is disabled":
                 return new RpcControlDisabledException(rawMessage);  // RPC control disabled
