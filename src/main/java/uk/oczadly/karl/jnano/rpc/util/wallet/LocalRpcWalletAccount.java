@@ -9,7 +9,6 @@ import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.model.block.StateBlockBuilder;
 import uk.oczadly.karl.jnano.rpc.RpcQueryNode;
 import uk.oczadly.karl.jnano.rpc.exception.RpcEntityNotFoundException;
 import uk.oczadly.karl.jnano.rpc.exception.RpcException;
@@ -426,8 +425,8 @@ public class LocalRpcWalletAccount {
             }
             throw new WalletActionException("Previous block was incorrect, retried too many times. " +
                     "Is the account being concurrently used elsewhere?");
-        } catch (BlockProducer.BlockCreationException | StateBlockBuilder.BlockCreationException e) {
-            throw new WalletActionException("Couldn't construct block.", e);
+        } catch (BlockProducer.BlockCreationException e) {
+            throw new WalletActionException(e.getMessage(), e);
         } catch (IOException e) {
             throw new WalletActionException("Connection error with RPC client.", e);
         } catch (RpcException e) {
