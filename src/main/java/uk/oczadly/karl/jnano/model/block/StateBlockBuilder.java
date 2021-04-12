@@ -731,10 +731,10 @@ public final class StateBlockBuilder {
      * {@link #signature(HexData) signature}. The following fields are initialized by this method (and may be
      * manually overridden after):</p>
      * <ul>
-     *     <li>{@link #previous(HexData) previous} — the hash of {@code frontier}</li>
-     *     <li>{@link #account(NanoAccount) account} — the account of {@code frontier}</li>
-     *     <li>{@link #representative(NanoAccount) representative} — the representative of {@code frontier}</li>
-     *     <li>{@link #balance(NanoAmount) balance} — the same balance as {@code frontier}</li>
+     *     <li>{@link #previous(HexData) previous} — the hash of {@code previous}</li>
+     *     <li>{@link #account(NanoAccount) account} — the account of {@code previous}</li>
+     *     <li>{@link #representative(NanoAccount) representative} — the representative of {@code previous}</li>
+     *     <li>{@link #balance(NanoAmount) balance} — the same balance as {@code previous}</li>
      * </ul>
      *
      * @param previous the current frontier block of the account which this block is being created for
