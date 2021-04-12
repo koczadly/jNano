@@ -55,6 +55,7 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     
     
     private final BigInteger rawValue;
+    private volatile BigDecimal cachedBaseUnitValue; // performance optimization
     
     private NanoAmount(BigInteger rawValue) {
         if (rawValue == null)
@@ -62,6 +63,11 @@ public final class NanoAmount implements Comparable<NanoAmount> {
         if (rawValue.compareTo(BigInteger.ZERO) < 0 || rawValue.compareTo(MAX_VAL_RAW) > 0)
             throw new IllegalArgumentException("Raw value is outside the possible range.");
         this.rawValue = rawValue;
+    }
+    
+    private NanoAmount(BigInteger rawValue, BigDecimal cachedBaseUnitValue) {
+        this(rawValue);
+        this.cachedBaseUnitValue = cachedBaseUnitValue.stripTrailingZeros();
     }
     
     
@@ -94,7 +100,14 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      */
     public BigDecimal getAs(Denomination unit) {
         if (unit == null) throw new IllegalArgumentException("Unit cannot be null.");
-        return UnitHelper.convert(new BigDecimal(rawValue), 0, unit.getExponent());
+        if (unit == BASE_UNIT) {
+            if (cachedBaseUnitValue != null)
+                return cachedBaseUnitValue; // Return from cache
+        }
+        BigDecimal amount = UnitHelper.convert(new BigDecimal(rawValue), 0, unit.getExponent());
+        if (unit == BASE_UNIT)
+            cachedBaseUnitValue = amount; // Store in cache
+        return amount;
     }
     
     
@@ -233,7 +246,11 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      *                                  {@code unit}
      */
     public static NanoAmount valueOf(BigDecimal val, Denomination unit) {
-        return new NanoAmount(UnitHelper.convertToRaw(val, unit.getExponent()));
+        if (unit == BASE_UNIT) {
+            return new NanoAmount(UnitHelper.convertToRaw(val, unit.getExponent()), val);
+        } else {
+            return new NanoAmount(UnitHelper.convertToRaw(val, unit.getExponent()));
+        }
     }
     
     /**

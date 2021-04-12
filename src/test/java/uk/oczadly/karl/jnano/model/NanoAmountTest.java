@@ -37,6 +37,8 @@ public class NanoAmountTest {
                 NanoAmount.valueOf(27, NanoUnit.MEGA).getAsRaw());
         assertEquals(new BigInteger("27000000000000000000000000000000"),
                 NanoAmount.valueOf(new BigInteger("27"), NanoUnit.MEGA).getAsRaw());
+        assertEquals(new BigInteger("27000000000000000000000000000"),
+                NanoAmount.valueOf(new BigInteger("27"), NanoUnit.KILO).getAsRaw());
         assertEquals(new BigInteger("27100000000000000000000000000000"),
                 NanoAmount.valueOf(new BigDecimal("27.1"), NanoUnit.MEGA).getAsRaw());
         assertEquals(new BigInteger("100000"), NanoAmount.valueOfRawExponent(5).getAsRaw());
