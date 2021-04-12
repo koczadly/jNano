@@ -198,13 +198,20 @@ public class BlockIntent {
         FALSE,
         /** If a value is unknown or uncertain from the provided context. Treat this value as "it's a possibility". */
         UNKNOWN;
-        
+    
     
         /**
-         * @return true if this == {@link #TRUE}, or false if {@link #FALSE} or {@link #UNKNOWN}
+         * @return {@code true} if this == {@link #TRUE}, or {@code false} if {@link #FALSE} or {@link #UNKNOWN}
          */
         public boolean bool() {
             return this == TRUE;
+        }
+    
+        /**
+         * @return {@code true} if this == {@link #TRUE} or {@link #UNKNOWN}, or {@code false} if {@link #FALSE}
+         */
+        public boolean boolLenient() {
+            return this != FALSE;
         }
     
         @Override

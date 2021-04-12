@@ -23,4 +23,8 @@ public class WalletActionException extends Exception {
         super(message, cause);
     }
     
+    public WalletActionException(Throwable cause) {
+        super(cause);
+    }
+    
 }
