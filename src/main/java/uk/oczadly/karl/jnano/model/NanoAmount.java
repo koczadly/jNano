@@ -60,8 +60,10 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     private NanoAmount(BigInteger rawValue) {
         if (rawValue == null)
             throw new IllegalArgumentException("Raw value cannot be null.");
-        if (rawValue.compareTo(BigInteger.ZERO) < 0 || rawValue.compareTo(MAX_VAL_RAW) > 0)
-            throw new IllegalArgumentException("Raw value is outside the possible range.");
+        if (rawValue.compareTo(BigInteger.ZERO) < 0)
+            throw new IllegalArgumentException("NanoAmount cannot represent negative amounts.");
+        if (rawValue.compareTo(MAX_VAL_RAW) > 0)
+            throw new IllegalArgumentException("NanoAmount value is too large.");
         this.rawValue = rawValue;
     }
     
