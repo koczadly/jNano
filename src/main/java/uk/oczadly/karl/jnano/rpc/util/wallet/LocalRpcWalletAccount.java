@@ -40,7 +40,8 @@ import java.util.function.Supplier;
  *
  * <p>Due to the asynchronous nature of Nano, you should not use multiple instances representing the same account, nor
  * should you use the same account on another wallet, node or system at the same time — doing so can result in
- * unexpected transaction failures.</p>
+ * unexpected transaction failures. If a block is rejected by the node due to an outdated cached state, the state will
+ * be refreshed and a new block generated up to 2 times before failing and throwing an exception.</p>
  *
  * <p>Example usage:</p>
  * <pre>{@code
@@ -73,6 +74,9 @@ import java.util.function.Supplier;
  *         NanoAmount.valueOfNano("0.01"))
  *         .getHash());
  * }</pre>
+ *
+ * <p>This class relies on the following RPC queries: {@link RequestProcess process}, {@link RequestAccountInfo
+ * account_info}, {@link RequestBlockInfo block_info}, {@link RequestPending pending}.</p>
  */
 public class LocalRpcWalletAccount {
     
@@ -152,17 +156,20 @@ public class LocalRpcWalletAccount {
      * <p>Most implementations should never have to call this method, as the state will automatically be retrieved or
      * updated when necessary through the other methods.</p>
      *
+     * @return true if the internally cached state has changed, false if it remained the same
      * @throws WalletActionException if an error occurs with the RPC query
      */
-    public void refreshState() throws WalletActionException {
+    public boolean refreshState() throws WalletActionException {
         lock.lock();
+        AccountState initialState = cachedState;
+        AccountState newState;
         try {
             // Retrieve state from RPC
             ResponseAccountInfo accountInfo = rpcClient.processRequest(
                     new RequestAccountInfo(getAccount().toAddress()));
-            cachedState = AccountState.fromAccountInfo(accountInfo);
+            cachedState = newState = AccountState.fromAccountInfo(accountInfo);
         } catch (RpcEntityNotFoundException e) {
-            cachedState = AccountState.UNOPENED; // Account hasn't been opened
+            cachedState = newState = AccountState.UNOPENED; // Account hasn't been opened
         } catch (RpcException e) {
             throw new WalletActionException("Couldn't retrieve account state.", e);
         } catch (IOException e) {
@@ -170,6 +177,7 @@ public class LocalRpcWalletAccount {
         } finally {
             lock.unlock();
         }
+        return initialState == null || !Objects.equals(initialState.getFrontierHash(), newState.getFrontierHash());
     }
     
     /**
@@ -416,29 +424,28 @@ public class LocalRpcWalletAccount {
             for (int attempt = 0; attempt < MAX_RETRY_ATTEMPTS; attempt++) {
                 try {
                     // Create block
-                    BlockAndState block = blockSupplier.get();
-                    if (block == null)
+                    BlockAndState producedBlock = blockSupplier.get();
+                    if (producedBlock == null)
                         return null;
                     // Publish block to network
-                    rpcClient.processRequest(new RequestProcess(block.getBlock(), false, false));
-                    cachedState = block.getState();
-                    return block.getBlock();
+                    rpcClient.processRequest(new RequestProcess(producedBlock.getBlock(), false, false));
+                    cachedState = producedBlock.getState();
+                    return producedBlock.getBlock();
                 } catch (RpcExternalException e) {
-                    if (e.getRawMessage().equals("Fork") || e.getRawMessage().equals("Gap previous block")) {
-                        refreshState(); // Refresh state if invalid 'previous' and retry
-                    } else {
-                        throw e;
+                    // Refresh cached state and retry
+                    if (!refreshState()) {
+                        throw e; // State was already up to date
                     }
                 }
             }
-            throw new WalletActionException("Previous block was incorrect, retried too many times. " +
+            throw new WalletActionException("Account state outdated, retried too many times. " +
                     "Is the account being concurrently used elsewhere?");
         } catch (BlockProducer.BlockCreationException e) {
             throw new WalletActionException(e.getMessage(), e);
         } catch (IOException e) {
             throw new WalletActionException("Connection error with RPC client.", e);
         } catch (RpcException e) {
-            throw new WalletActionException("Couldn't publish block: " + e.getMessage(), e);
+            throw new WalletActionException("Block rejected by node: " + e.getMessage(), e);
         } finally {
             lock.unlock();
         }
