@@ -156,28 +156,30 @@ public class LocalRpcWalletAccount {
      * <p>Most implementations should never have to call this method, as the state will automatically be retrieved or
      * updated when necessary through the other methods.</p>
      *
-     * @return true if the internally cached state has changed, false if it remained the same
+     * @return true if the internally cached state was externally updated and has changed, false if it remains the same
+     *         or is the first time retrieving the state
      * @throws WalletActionException if an error occurs with the RPC query
      */
     public boolean refreshState() throws WalletActionException {
         lock.lock();
-        AccountState initialState = cachedState;
-        AccountState newState;
         try {
-            // Retrieve state from RPC
-            ResponseAccountInfo accountInfo = rpcClient.processRequest(
-                    new RequestAccountInfo(getAccount().toAddress()));
-            cachedState = newState = AccountState.fromAccountInfo(accountInfo);
-        } catch (RpcEntityNotFoundException e) {
-            cachedState = newState = AccountState.UNOPENED; // Account hasn't been opened
-        } catch (RpcException e) {
-            throw new WalletActionException("Couldn't retrieve account state.", e);
-        } catch (IOException e) {
-            throw new WalletActionException("Connection error with RPC client.", e);
+            AccountState initialState = cachedState;
+            try {
+                // Retrieve state from RPC
+                ResponseAccountInfo accountInfo = rpcClient.processRequest(
+                        new RequestAccountInfo(getAccount().toAddress()));
+                cachedState = AccountState.fromAccountInfo(accountInfo);
+            } catch (RpcEntityNotFoundException e) {
+                cachedState = AccountState.UNOPENED; // Account hasn't been opened
+            } catch (RpcException e) {
+                throw new WalletActionException("Couldn't retrieve account state.", e);
+            } catch (IOException e) {
+                throw new WalletActionException("Connection error with RPC client.", e);
+            }
+            return initialState != null && !cachedState.equals(initialState);
         } finally {
             lock.unlock();
         }
-        return initialState == null || !Objects.equals(initialState.getFrontierHash(), newState.getFrontierHash());
     }
     
     /**

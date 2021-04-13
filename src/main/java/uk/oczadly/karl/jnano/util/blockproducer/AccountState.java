@@ -11,6 +11,8 @@ import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.StateBlock;
 import uk.oczadly.karl.jnano.rpc.response.ResponseAccountInfo;
 
+import java.util.Objects;
+
 /**
  * Represents an immutable account state.
  */
@@ -74,6 +76,21 @@ public class AccountState {
         return frontier != null;
     }
     
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AccountState)) return false;
+        AccountState that = (AccountState)o;
+        return Objects.equals(representative, that.representative)
+                && Objects.equals(balance, that.balance)
+                && Objects.equals(frontier, that.frontier);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(frontier);
+    }
     
     /**
      * Constructs an {@link AccountState} from a {@link ResponseAccountInfo} response object.
