@@ -84,9 +84,8 @@ public class LocalRpcWalletAccount {
     private final NanoAccount account;
     private final HexData privateKey;
     private final BlockProducer blockProducer;
-    private final Lock lock = new ReentrantLock(true);
     private volatile AccountState cachedState;
-    private volatile boolean hasRetrievedState = false;
+    private final Lock lock = new ReentrantLock(true);
     
     
     /**
@@ -154,8 +153,6 @@ public class LocalRpcWalletAccount {
      * updated when necessary through the other methods.</p>
      *
      * @throws WalletActionException if an error occurs with the RPC query
-     *
-     * @see #updateState(AccountState)
      */
     public void refreshState() throws WalletActionException {
         lock.lock();
@@ -163,9 +160,9 @@ public class LocalRpcWalletAccount {
             // Retrieve state from RPC
             ResponseAccountInfo accountInfo = rpcClient.processRequest(
                     new RequestAccountInfo(getAccount().toAddress()));
-            updateState(AccountState.fromAccountInfo(accountInfo));
+            cachedState = AccountState.fromAccountInfo(accountInfo);
         } catch (RpcEntityNotFoundException e) {
-            updateState(AccountState.UNOPENED); // Account hasn't been opened
+            cachedState = AccountState.UNOPENED; // Account hasn't been opened
         } catch (RpcException e) {
             throw new WalletActionException("Couldn't retrieve account state.", e);
         } catch (IOException e) {
@@ -210,8 +207,8 @@ public class LocalRpcWalletAccount {
      * <p>Calling this method will construct and sign a new block, generate the appropriate work for it, and publish the
      * block to the network via RPC.</p>
      *
-     * @param destination the destination account
-     * @param amount      the amount of funds to send to the account
+     * @param destination the account where the funds should be sent
+     * @param amount      the amount of funds to send
      * @return the generated and published {@code send} block
      * @throws WalletActionException if an error occurs with the RPC query, work generation, block processing, or if
      *                               there are not enough funds available in the account
@@ -231,7 +228,7 @@ public class LocalRpcWalletAccount {
      * <p>Calling this method will construct and sign a new block, generate the appropriate work for it, and publish the
      * block to the network via RPC.</p>
      *
-     * @param destination the destination account
+     * @param destination the account where the funds should be sent
      * @return the generated and published {@code send} block, or empty if the account has no funds to send
      * @throws WalletActionException if an error occurs with the RPC query, work generation or block processing
      */
@@ -250,6 +247,9 @@ public class LocalRpcWalletAccount {
      * @return the generated and published {@code receive} block
      * @throws WalletActionException if an error occurs with the RPC queries, work generation, block processing, or the
      *                               specified block could not be found in the ledger
+     *                               
+     * @see #receiveAll()
+     * @see #receiveBatch(int)
      */
     public Block receive(HexData sourceHash) throws WalletActionException {
         if (sourceHash == null)
@@ -289,6 +289,8 @@ public class LocalRpcWalletAccount {
      * @param count the maximum number of blocks to receive in this batch
      * @return a set containing the generated and published {@code receive} blocks
      * @throws WalletActionException if an error occurs with the RPC queries, work generation or block processing
+     *
+     * @see #receiveAll()
      */
     public Set<Block> receiveBatch(int count) throws WalletActionException {
         return receiveBatch(count, DEFAULT_THRESHOLD);
@@ -305,6 +307,8 @@ public class LocalRpcWalletAccount {
      * @param threshold the minimum amount threshold
      * @return a set containing the generated and published {@code receive} blocks
      * @throws WalletActionException if an error occurs with the RPC queries, work generation or block processing
+     *
+     * @see #receiveAll(NanoAmount)
      */
     public Set<Block> receiveBatch(int count, NanoAmount threshold) throws WalletActionException {
         if (count < 0) throw new IllegalArgumentException("Batch count must be zero or higher.");
@@ -346,6 +350,8 @@ public class LocalRpcWalletAccount {
      *
      * @return a set containing the generated and published {@code receive} blocks
      * @throws WalletActionException if an error occurs with the RPC queries, work generation or block processing
+     * 
+     * @see #receiveBatch(int)
      */
     public Set<Block> receiveAll() throws WalletActionException {
         return receiveAll(DEFAULT_THRESHOLD);
@@ -364,6 +370,8 @@ public class LocalRpcWalletAccount {
      * @param threshold the minimum amount threshold
      * @return a set containing the generated and published {@code receive} blocks
      * @throws WalletActionException if an error occurs with the RPC queries, work generation or block processing
+     * 
+     * @see #receiveBatch(int, NanoAmount) 
      */
     public Set<Block> receiveAll(NanoAmount threshold) throws WalletActionException {
         Set<Block> batch, published = new HashSet<>();
@@ -437,10 +445,10 @@ public class LocalRpcWalletAccount {
     }
     
     private AccountState initState() throws WalletActionException {
-        if (!hasRetrievedState) {
+        if (cachedState == null) {
             lock.lock();
             try {
-                if (!hasRetrievedState) {
+                if (cachedState == null) {
                     refreshState();
                 }
             } finally {
@@ -448,16 +456,6 @@ public class LocalRpcWalletAccount {
             }
         }
         return cachedState;
-    }
-    
-    private void updateState(AccountState state) {
-        lock.lock();
-        try {
-            cachedState = state;
-            hasRetrievedState = true;
-        } finally {
-            lock.unlock();
-        }
     }
     
     
