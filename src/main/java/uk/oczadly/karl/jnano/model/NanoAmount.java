@@ -137,12 +137,24 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     }
     
     /**
-     * Returns this amount as an integer, in raw units. Example string: "{@code 420000000000000973}".
+     * Returns this amount as an integer, in raw units. Example string: "{@code 4239000000000000000000000000000}".
      *
      * @return this value in raw, as a string
      */
     public String toRawString() {
         return rawValue.toString();
+    }
+    
+    /**
+     * Returns this amount as a decimal number, in the standard base unit. Example string: "{@code 4.239}".
+     *
+     * <p><b>Warning:</b> This method uses the current {@link NanoUnit#BASE_UNIT} constant, which may be prone to
+     * change in the future if the official Nano denomination system changes.</p>
+     *
+     * @return this value in the base unit, as a string
+     */
+    public String toNanoString() {
+        return getAsNano().toPlainString();
     }
     
     
