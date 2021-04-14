@@ -8,7 +8,10 @@ package uk.oczadly.karl.jnano.util.blockproducer;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
-import uk.oczadly.karl.jnano.model.block.StateBlock;
+import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlockBalance;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlockPrevious;
+import uk.oczadly.karl.jnano.model.block.interfaces.IBlockRepresentative;
 import uk.oczadly.karl.jnano.rpc.response.ResponseAccountInfo;
 
 import java.util.Objects;
@@ -103,11 +106,14 @@ public class AccountState {
     }
     
     /**
-     * Constructs an {@link AccountState} from a {@link StateBlock}.
+     * Constructs an {@link AccountState} from the given {@link Block}. The given block must implement the
+     * {@link IBlockPrevious}, {@link IBlockBalance} and {@link IBlockRepresentative} interfaces.
+     *
      * @param block the block, or null if unopened
      * @return the account state represented by the block
+     * @param <B> the required block interfaces
      */
-    public static AccountState fromBlock(StateBlock block) {
+    public static <B extends IBlockPrevious & IBlockBalance & IBlockRepresentative> AccountState fromBlock(B block) {
         if (block == null) return AccountState.UNOPENED;
         return new AccountState(block.getHash(), block.getBalance(), block.getRepresentative());
     }

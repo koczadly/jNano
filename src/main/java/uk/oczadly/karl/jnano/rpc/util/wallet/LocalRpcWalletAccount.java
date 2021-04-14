@@ -17,7 +17,6 @@ import uk.oczadly.karl.jnano.rpc.request.node.RequestAccountInfo;
 import uk.oczadly.karl.jnano.rpc.request.node.RequestBlockInfo;
 import uk.oczadly.karl.jnano.rpc.request.node.RequestPending;
 import uk.oczadly.karl.jnano.rpc.request.node.RequestProcess;
-import uk.oczadly.karl.jnano.rpc.response.ResponseAccountInfo;
 import uk.oczadly.karl.jnano.rpc.response.ResponseBlockInfo;
 import uk.oczadly.karl.jnano.rpc.response.ResponsePending;
 import uk.oczadly.karl.jnano.util.blockproducer.AccountState;
@@ -166,9 +165,8 @@ public class LocalRpcWalletAccount {
             AccountState initialState = cachedState;
             try {
                 // Retrieve state from RPC
-                ResponseAccountInfo accountInfo = rpcClient.processRequest(
-                        new RequestAccountInfo(getAccount().toAddress()));
-                cachedState = AccountState.fromAccountInfo(accountInfo);
+                cachedState = AccountState.fromAccountInfo(
+                        rpcClient.processRequest(new RequestAccountInfo(getAccount().toAddress())));
             } catch (RpcEntityNotFoundException e) {
                 cachedState = AccountState.UNOPENED; // Account hasn't been opened
             } catch (RpcException e) {
