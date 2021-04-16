@@ -144,7 +144,8 @@ public class LocalRpcWalletAccount {
     public String toString() {
         return "LocalRpcWalletAccount{" +
                 "account=" + getAccount() +
-                ", blockProducer=" + getBlockProducer().getClass().getName() + '}';
+                ", blockProducer=" + getBlockProducer().getClass().getSimpleName() +
+                ", rpcClient=" + rpcClient + '}';
     }
     
     
