@@ -31,6 +31,8 @@ import java.net.URL;
 public final class RpcServiceProviders {
     private RpcServiceProviders() {}
     
+    private static final String URL_NATRIUM   = "https://app.natrium.io/api";
+    private static final String URL_WENANO    = "https://rpc.wenano.net/api/node-api";
     private static final String URL_NANEX_CC  = "https://api.nanex.cc";
     private static final String URL_NINJA     = "https://mynano.ninja/api/node";
     private static final String URL_NANOS_CC  = "https://proxy.nanos.cc/proxy";
@@ -39,11 +41,39 @@ public final class RpcServiceProviders {
     
     
     /**
+     * Creates an {@code RpcQueryNode} object which connects to the <a href="https://natrium.io">Natrium</a> API
+     * endpoint securely via {@code https}.
+     *
+     * <p>This endpoint is not officially public, and may be lacking in documentation or compatibility. Some commands
+     * may be unavailable or restricted, and no guarantees on the reliability or security are provided.
+     * <strong>You should never send any private keys, seeds or passwords to third-party services.</strong></p>
+     *
+     * @return the configured RPC node object
+     */
+    public static RpcQueryNode natrium() {
+        return new RpcQueryNode(JNH.parseURL(URL_NATRIUM));
+    }
+    
+    /**
+     * Creates an {@code RpcQueryNode} object which connects to the <a href="https://wenano.net">WeNano</a> API endpoint
+     * securely via {@code https}.
+     *
+     * <p>This endpoint is not officially public, and may be lacking in documentation or compatibility. Some commands
+     * may be unavailable or restricted, and no guarantees on the reliability or security are provided.
+     * <strong>You should never send any private keys, seeds or passwords to third-party services.</strong></p>
+     *
+     * @return the configured RPC node object
+     */
+    public static RpcQueryNode wenano() {
+        return new RpcQueryNode(JNH.parseURL(URL_WENANO));
+    }
+    
+    /**
      * Creates an {@code RpcQueryNode} object which connects to the <a href="https://nanex.cc">nanex.cc</a> API
      * endpoint securely via {@code https}.
      *
      * <p>Some commands may be unavailable or restricted, and no guarantees on the reliability or security are provided.
-     * You should never send any private keys, seeds or passwords to remote endpoints.</p>
+     * <strong>You should never send any private keys, seeds or passwords to third-party services.</strong></p>
      *
      * @return the configured RPC node object
      *
@@ -60,7 +90,7 @@ public final class RpcServiceProviders {
      * <p><strong>Note:</strong> this service only permits {@code 500} free requests each hour.</p>
      *
      * <p>Some commands may be unavailable or restricted, and no guarantees on the reliability or security are provided.
-     * You should never send any private keys, seeds or passwords to remote endpoints.</p>
+     * <strong>You should never send any private keys, seeds or passwords to third-party services.</strong></p>
      *
      * @return the configured RPC node object
      *
@@ -78,7 +108,7 @@ public final class RpcServiceProviders {
      * <p><strong>Note:</strong> this service requires an API key to use, and charges for each query.</p>
      *
      * <p>Some commands may be unavailable or restricted, and no guarantees on the reliability or security are provided.
-     * You should never send any private keys, seeds or passwords to remote endpoints.</p>
+     * <strong>You should never send any private keys, seeds or passwords to third-party services.</strong></p>
      *
      * @param apiKey your API key for authentication
      * @return the configured RPC node object
@@ -120,7 +150,7 @@ public final class RpcServiceProviders {
      * <p><strong>Note:</strong> this service only permits {@code 5000} free requests each day.</p>
      *
      * <p>Some commands may be unavailable or restricted, and no guarantees on the reliability or security are provided.
-     * You should never send any private keys, seeds or passwords to remote endpoints.</p>
+     * <strong>You should never send any private keys, seeds or passwords to third-party services.</strong></p>
      *
      * @return the configured RPC node object
      *
@@ -138,7 +168,7 @@ public final class RpcServiceProviders {
      * <p><strong>Note:</strong> this service requires an API key to use, and charges for each query.</p>
      *
      * <p>Some commands may be unavailable or restricted, and no guarantees on the reliability or security are provided.
-     * You should never send any private keys, seeds or passwords to remote endpoints.</p>
+     * <strong>You should never send any private keys, seeds or passwords to third-party services.</strong></p>
      *
      * @param apiKey your API key for authentication
      * @return the configured RPC node object
@@ -157,7 +187,7 @@ public final class RpcServiceProviders {
      * <p><strong>Note:</strong> this service only permits {@code 5000} free requests each day.</p>
      *
      * <p>Some commands may be unavailable or restricted, and no guarantees on the reliability or security are provided.
-     * You should never send any private keys, seeds or passwords to remote endpoints.</p>
+     * <strong>You should never send any private keys, seeds or passwords to third-party services.</strong></p>
      *
      * @return the configured RPC node object
      *
@@ -175,7 +205,7 @@ public final class RpcServiceProviders {
      * <p><strong>Note:</strong> this service requires an API key to use, and charges for each query.</p>
      *
      * <p>Some commands may be unavailable or restricted, and no guarantees on the reliability or security are provided.
-     * You should never send any private keys, seeds or passwords to remote endpoints.</p>
+     * <strong>You should never send any private keys, seeds or passwords to third-party services.</strong></p>
      *
      * @param apiKey your API key for authentication
      * @return the configured RPC node object
@@ -194,7 +224,7 @@ public final class RpcServiceProviders {
      * <p><strong>Note:</strong> this service only permits {@code 5000} free requests each day.</p>
      *
      * <p>Some commands may be unavailable or restricted, and no guarantees on the reliability or security are provided.
-     * You should never send any private keys, seeds or passwords to remote endpoints.</p>
+     * <strong>You should never send any private keys, seeds or passwords to third-party services.</strong></p>
      *
      * @return the configured RPC node object
      *
