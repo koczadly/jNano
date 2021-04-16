@@ -22,8 +22,19 @@ import java.util.Objects;
  * <p>This class can be used as a transactional amount or account balance. Only unsigned values are supported, so this
  * class cannot be used to represent a negative amount.</p>
  *
- * <p>To obtain an instance of this class, use one of the provided static {@code valueOf} methods, or one of the
+ * <p>To create an instance of this class, use one of the provided static {@code valueOf} methods, or one of the
  * constant field values. This class also supports built-in Gson serialization and deserialization as a raw value.</p>
+ *
+ * <p>Custom units can be specified by implementing the {@link Denomination} interface, or using the constructor of
+ * {@link DenominationImpl}. For instance, to create the unit for Banano you could define the following constant:</p>
+ * <pre>{@code // Static constant representing the standard Banano unit
+ * public static final NanoAmount.Denomination UNIT_BAN = new NanoAmount.DenominationImpl("BAN", 29);
+ *
+ * // Elsewhere in your application's method...
+ * NanoAmount amount = NanoAmount.valueOf("2.79", UNIT_BAN);
+ * System.out.println("Raw: " + amount.getAsRaw());      // "Raw: 279000000000000000000000000000"
+ * System.out.println("Ban: " + amount.getAs(UNIT_BAN)); // "Ban: 2.79"
+ * }</pre>
  *
  * @author Karl Oczadly
  */
@@ -370,7 +381,6 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     public static NanoAmount valueOfNano(long val) {
         return valueOf(val, BASE_UNIT);
     }
-    
     
     
     /**
