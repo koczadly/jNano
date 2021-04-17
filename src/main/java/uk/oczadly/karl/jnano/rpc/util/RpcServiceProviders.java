@@ -23,10 +23,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * This class contains a set of static initializers for publicly available third-party RPC endpoints.
+ * This class contains a set of static initializer methods for publicly available third-party RPC endpoints.
  *
  * <p>Consider using the {@link LocalRpcWalletAccount} utility class when managing accounts and using a third-party
- * RPC provider, as this class will not expose your private keys.</p>
+ * RPC provider to refrain from exposing your seeds and private keys.</p>
  */
 public final class RpcServiceProviders {
     private RpcServiceProviders() {}
