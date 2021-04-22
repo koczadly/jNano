@@ -128,48 +128,49 @@ public class JsonResponseDeserializer implements RpcResponseDeserializer {
             case "wallet is locked":
             case "wallet locked":
                 return new RpcWalletLockedException(rawMessage);     // Wallet locked
-            case "insufficient balance":
             case "unreceivable":
             case "negative spend":
+                return new RpcInvalidArgumentException(rawMessage);  // Invalid/bad argument
             case "old block":
             case "fork":
-                return new RpcInvalidArgumentException(rawMessage);  // Invalid/bad argument
+                return new RpcInvalidStateException(rawMessage);     // Invalid/bad state
             case "rpc control is disabled":
                 return new RpcControlDisabledException(rawMessage);  // RPC control disabled
             case "cancelled":
                 return new RpcRequestCancelledException(rawMessage); // Request cancelled
             case "unable to parse json":
-                return new RpcInvalidRequestJsonException(    // Invalid request body
+                return new RpcInvalidRequestJsonException(           // Invalid request body
                         "The RPC server was unable to parse the JSON request.", rawMessage);
             case "unknown command":
                 return new RpcUnknownCommandException(rawMessage);   // Unknown command
             case "invalid header: body limit exceeded":
-                return new RpcInvalidRequestJsonException(    // JSON too long
+                return new RpcInvalidRequestJsonException(           // JSON too long
                         "The request JSON exceeded the configured maximum length.", rawMessage);
             case "unsafe rpc not allowed":
-                return new RpcCommandNotAllowedException(     // RPC unsafe
+                return new RpcCommandNotAllowedException(            // RPC unsafe
                         "The specified command is unsafe and disallowed by the node.", rawMessage);
             case "empty response":
-                return new RpcNodeInternalErrorException(              // Empty response internal error
+                return new RpcNodeInternalErrorException(            // Empty response internal error
                         "The server returned an \"empty response\" error.", rawMessage);
         }
         // Try parse from prefix/suffix
-        if (msgLc.startsWith("bad ") || msgLc.startsWith("invalid ") || msgLc.startsWith("gap ")
-                || msgLc.endsWith(" invalid") || msgLc.endsWith(" required") || msgLc.endsWith(" do not match")
-                || msgLc.contains("insufficient")) {
-            return new RpcInvalidArgumentException(rawMessage);      // Invalid/bad argument
+        if (msgLc.startsWith("gap ") || msgLc.contains("insufficient")) {
+            return new RpcInvalidStateException(rawMessage);       // Invalid/bad argument
+        } else if (msgLc.startsWith("bad ") || msgLc.startsWith("invalid ") || msgLc.endsWith(" invalid")
+                || msgLc.endsWith(" required") || msgLc.endsWith(" do not match")) {
+            return new RpcInvalidArgumentException(rawMessage);    // Invalid/bad argument
         } else if (msgLc.contains("not found")) {
-            return new RpcEntityNotFoundException(rawMessage);       // Unknown referenced entity
+            return new RpcEntityNotFoundException(rawMessage);     // Unknown referenced entity
         } else if (msgLc.endsWith("is disabled")) {
-            return new RpcFeatureDisabledException(rawMessage);      // Feature is disabled
+            return new RpcFeatureDisabledException(rawMessage);    // Feature is disabled
         } else if (msgLc.endsWith("not allowed")) {
-            return new RpcCommandNotAllowedException(rawMessage);    // Command not allowed
+            return new RpcCommandNotAllowedException(rawMessage);  // Command not allowed
         } else if (msgLc.contains("config")) {
-            return new RpcConfigForbiddenException(rawMessage);      // Config forbids request
+            return new RpcConfigForbiddenException(rawMessage);    // Config forbids request
         } else if (msgLc.contains("json") || msgLc.contains("malformed")) {
-            return new RpcInvalidRequestJsonException(rawMessage);   // Disallowed/invalid JSON request
+            return new RpcInvalidRequestJsonException(rawMessage); // Disallowed/invalid JSON request
         } else if (msgLc.startsWith("internal")) {
-            return new RpcNodeInternalErrorException(rawMessage);             // Internal server error
+            return new RpcNodeInternalErrorException(rawMessage);  // Internal server error
         }
         // Couldn't parse, unknown exception type
         return new RpcUnrecognizedException(rawMessage);
