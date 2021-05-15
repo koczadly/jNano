@@ -149,17 +149,7 @@ public abstract class Block implements IBlock {
         return sig;
     }
     
-    /**
-     * Tests whether the signature is valid and was signed by the specified account.
-     *
-     * <p>Be aware that some special blocks (such as epoch upgrades) may be signed by an account other than the
-     * block's owner. These blocks have their own specific signers and behaviour, and should provide their own
-     * method in addition to this for checking the validity of the signature.</p>
-     *
-     * @param account the signer account (public key) to test
-     * @return true if the specified account is the signer of this block's signature, or false if not <em>or</em> if
-     *         the {@code signature} field is null
-     */
+    @Override
     public final synchronized boolean verifySignature(NanoAccount account) {
         if (account == null)
             throw new IllegalArgumentException("Account cannot be null.");

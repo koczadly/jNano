@@ -134,15 +134,6 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
         return representative;
     }
     
-    /**
-     * Tests whether the signature is valid and was signed by the correct account.
-     *
-     * @return true if the signature is correct, false if not <em>or</em> if the {@code signature} is currently null
-     */
-    public boolean verifySignature() {
-        return verifySignature(getAccount());
-    }
-    
     @Override
     public BlockIntent getIntent() {
         if (getSourceBlockHash().toHexString().equals(getAccount().toPublicKey())

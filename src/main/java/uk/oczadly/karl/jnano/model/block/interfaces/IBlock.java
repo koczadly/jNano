@@ -6,6 +6,7 @@
 package uk.oczadly.karl.jnano.model.block.interfaces;
 
 import uk.oczadly.karl.jnano.model.HexData;
+import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.block.BlockIntent;
 import uk.oczadly.karl.jnano.model.block.BlockType;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
@@ -66,5 +67,18 @@ public interface IBlock {
      * @return true if this block contains all mandatory fields
      */
     boolean isComplete();
+    
+    /**
+     * Tests whether the signature is valid and was signed by the specified account.
+     *
+     * <p>Be aware that some special blocks (such as epoch upgrades) may be signed by an account other than the
+     * block's owner. These blocks have their own specific signers and behaviour, and should provide their own
+     * method in addition to this for checking the validity of the signature.</p>
+     *
+     * @param account the signer account (public key) to test
+     * @return true if the specified account is the signer of this block's signature, or false if not <em>or</em> if
+     *         the {@code signature} field is null
+     */
+    boolean verifySignature(NanoAccount account);
     
 }

@@ -135,7 +135,7 @@ import java.util.function.Function;
  * </table>
  */
 public final class StateBlock extends Block implements IBlockLink, IBlockBalance, IBlockPrevious, IBlockRepresentative,
-        IBlockAccount {
+        IBlockAccount, IBlockSelfVerifiable {
     
     /** A function which converts a {@link JsonObject} into a {@link StateBlock} instance. */
     public static final Function<JsonObject, StateBlock> DESERIALIZER = json -> new StateBlock(
@@ -257,14 +257,18 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      * recognized. For non-epoch subtypes, this method will function as expected with all networks.</p>
      *
      * @return true if the signature is correct, false if not <em>or</em> if the {@code signature} is currently null
-     * @throws UnrecognizedEpochException if the block is an epoch block, and the epoch version was not recognized
+     * @throws SignatureVerificationException if the block is an epoch block, and the epoch version was not recognized
      *
      * @see #verifySignature(EpochUpgradeRegistry)
      */
+    @Override
     public boolean verifySignature() {
-        return verifySignature(NetworkConstants.NANO.getEpochUpgrades());
+        try {
+            return verifySignature(NetworkConstants.NANO.getEpochUpgrades());
+        } catch (UnrecognizedEpochException e) {
+            throw new SignatureVerificationException("Couldn't identify epoch signer.", e);
+        }
     }
-    
     
     /**
      * Tests whether the signature is valid and was signed by the correct account, also validating epoch blocks.
@@ -284,12 +288,11 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
         if (epochRegistry == null) throw new IllegalArgumentException("Epoch registry cannot be null.");
         if (getSignature() == null) return false;
         
+        NanoAccount signer = getAccount();
         if (getSubType() == StateBlockSubType.EPOCH) {
-            EpochUpgrade epoch = epochRegistry.ofIdentifier(getLink().asHex());
-            return verifySignature(epoch.getSigner().orElse(getAccount()));
-        } else {
-            return verifySignature(getAccount());
+            signer = epochRegistry.ofIdentifier(getLink().asHex()).getSigner().orElse(getAccount());
         }
+        return verifySignature(signer);
     }
     
     @Override
