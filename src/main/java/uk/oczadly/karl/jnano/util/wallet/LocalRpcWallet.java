@@ -3,27 +3,31 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.rpc.util.wallet;
+package uk.oczadly.karl.jnano.util.wallet;
 
 import uk.oczadly.karl.jnano.model.HexData;
+import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.block.factory.BlockFactory;
 import uk.oczadly.karl.jnano.rpc.RpcQueryNode;
 import uk.oczadly.karl.jnano.util.WalletUtil;
-import uk.oczadly.karl.jnano.util.blockproducer.BlockProducer;
 
 import java.util.*;
 
 /**
  * This class can be used to generate multiple instances of {@link LocalRpcWalletAccount} objects based on a provided
  * seed value.
+ *
+ * @param <B> the base block type
  */
-public class LocalRpcWallet {
+//todo rework api?
+public class LocalRpcWallet<B extends Block> {
     
     private final RpcQueryNode rpcClient;
-    private final BlockProducer signer;
+    private final BlockFactory<B> signer;
     private final HexData seed;
     private volatile int index;
-    private final Set<LocalRpcWalletAccount> accounts = new HashSet<>();
-    private final LinkedHashSet<LocalRpcWalletAccount> unusedAccounts = new LinkedHashSet<>();
+    private final Set<LocalRpcWalletAccount<B>> accounts = new HashSet<>();
+    private final LinkedHashSet<LocalRpcWalletAccount<B>> unusedAccounts = new LinkedHashSet<>();
     
     
     /**
@@ -32,7 +36,7 @@ public class LocalRpcWallet {
      * @param rpcClient  the RPC client to be used by the {@link LocalRpcWalletAccount} objects
      * @param signer     the block signer to be used by the {@link LocalRpcWalletAccount} objects
      */
-    public LocalRpcWallet(HexData seed, RpcQueryNode rpcClient, BlockProducer signer) {
+    public LocalRpcWallet(HexData seed, RpcQueryNode rpcClient, BlockFactory<B> signer) {
         this(seed, 0, rpcClient, signer);
     }
     
@@ -43,7 +47,7 @@ public class LocalRpcWallet {
      * @param rpcClient    the RPC client where requests will be sent to
      * @param signer       the block signer
      */
-    public LocalRpcWallet(HexData seed, int initialIndex, RpcQueryNode rpcClient, BlockProducer signer) {
+    public LocalRpcWallet(HexData seed, int initialIndex, RpcQueryNode rpcClient, BlockFactory<B> signer) {
         if (seed == null) throw new IllegalArgumentException("Seed cannot be null.");
         if (rpcClient == null) throw new IllegalArgumentException("RPC client cannot be null.");
         if (signer == null) throw new IllegalArgumentException("Block signer cannot be null.");
@@ -71,10 +75,10 @@ public class LocalRpcWallet {
     }
     
     /**
-     * Returns the block signer used for created {@link LocalRpcWalletAccount} instances.
-     * @return the block signer
+     * Returns the block factory used for created {@link LocalRpcWalletAccount} instances.
+     * @return the block factory
      */
-    public final BlockProducer getBlockSigner() {
+    public final BlockFactory<B> getBlockFactory() {
         return signer;
     }
     
@@ -91,7 +95,7 @@ public class LocalRpcWallet {
      * is invoked.
      * @return a set of generated accounts
      */
-    public final synchronized Set<LocalRpcWalletAccount> getAccounts() {
+    public final synchronized Set<LocalRpcWalletAccount<B>> getAccounts() {
         return Collections.unmodifiableSet(new HashSet<>(accounts));
     }
     
@@ -105,16 +109,16 @@ public class LocalRpcWallet {
      *
      * @return an unused local wallet account
      */
-    public final synchronized LocalRpcWalletAccount createAccount() {
-        LocalRpcWalletAccount account;
-        Iterator<LocalRpcWalletAccount> unusedIterator = unusedAccounts.iterator();
+    public final synchronized LocalRpcWalletAccount<B> createAccount() {
+        LocalRpcWalletAccount<B> account;
+        Iterator<LocalRpcWalletAccount<B>> unusedIterator = unusedAccounts.iterator();
         if (unusedIterator.hasNext()) {
             // From unused accounts pool
             account = unusedIterator.next();
             unusedIterator.remove();
         } else {
             // From seed
-            account = new LocalRpcWalletAccount(WalletUtil.deriveKeyFromSeed(seed, index++), rpcClient, signer);
+            account = new LocalRpcWalletAccount<>(WalletUtil.deriveKeyFromSeed(seed, index++), rpcClient, signer);
         }
         if (!accounts.add(account))
             throw new IllegalStateException("No free accounts available.");
@@ -126,7 +130,7 @@ public class LocalRpcWallet {
      * may return the same account object in the future.
      * @param account the account to free
      */
-    public final synchronized void freeAccount(LocalRpcWalletAccount account) {
+    public final synchronized void freeAccount(LocalRpcWalletAccount<B> account) {
         if (accounts.remove(account))
             unusedAccounts.add(account);
     }

@@ -3,20 +3,16 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.rpc.util;
+package uk.oczadly.karl.jnano.rpc;
 
 import com.google.gson.JsonObject;
 import uk.oczadly.karl.jnano.internal.JNH;
-import uk.oczadly.karl.jnano.rpc.HttpRequestExecutor;
-import uk.oczadly.karl.jnano.rpc.JsonRequestSerializer;
-import uk.oczadly.karl.jnano.rpc.JsonResponseDeserializer;
-import uk.oczadly.karl.jnano.rpc.RpcQueryNode;
 import uk.oczadly.karl.jnano.rpc.exception.RpcCommandNotAllowedException;
 import uk.oczadly.karl.jnano.rpc.exception.RpcException;
 import uk.oczadly.karl.jnano.rpc.exception.RpcThirdPartyException;
 import uk.oczadly.karl.jnano.rpc.request.RpcRequest;
 import uk.oczadly.karl.jnano.rpc.response.RpcResponse;
-import uk.oczadly.karl.jnano.rpc.util.wallet.LocalRpcWalletAccount;
+import uk.oczadly.karl.jnano.util.wallet.LocalRpcWalletAccount;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

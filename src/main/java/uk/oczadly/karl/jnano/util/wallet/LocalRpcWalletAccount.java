@@ -3,12 +3,14 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.rpc.util.wallet;
+package uk.oczadly.karl.jnano.util.wallet;
 
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
+import uk.oczadly.karl.jnano.model.block.factory.AccountState;
+import uk.oczadly.karl.jnano.model.block.factory.BlockFactory;
 import uk.oczadly.karl.jnano.rpc.RpcQueryNode;
 import uk.oczadly.karl.jnano.rpc.exception.RpcEntityNotFoundException;
 import uk.oczadly.karl.jnano.rpc.exception.RpcException;
@@ -17,11 +19,9 @@ import uk.oczadly.karl.jnano.rpc.request.node.RequestAccountInfo;
 import uk.oczadly.karl.jnano.rpc.request.node.RequestBlockInfo;
 import uk.oczadly.karl.jnano.rpc.request.node.RequestPending;
 import uk.oczadly.karl.jnano.rpc.request.node.RequestProcess;
+import uk.oczadly.karl.jnano.rpc.response.ResponseAccountInfo;
 import uk.oczadly.karl.jnano.rpc.response.ResponseBlockInfo;
 import uk.oczadly.karl.jnano.rpc.response.ResponsePending;
-import uk.oczadly.karl.jnano.util.blockproducer.AccountState;
-import uk.oczadly.karl.jnano.util.blockproducer.BlockProducer;
-import uk.oczadly.karl.jnano.util.blockproducer.LocalWalletAccount;
 
 import java.io.IOException;
 import java.util.*;
@@ -34,20 +34,20 @@ import java.util.function.Supplier;
  * to an external RPC node.
  *
  * <p>All of the methods in this class are secure, and will never send or expose any private keys to the RPC server.
- * This should be used when connecting via a third-party RPC provider. The class is also thread safe, though use as a
- * single-threaded execution should be preferred.</p>
+ * This should be used when connecting via a third-party RPC provider. The class is also completely thread safe, though
+ * use in a single-threaded execution flow should be preferred.</p>
  *
- * <p>Due to the asynchronous nature of Nano, you should not use multiple instances representing the same account, nor
- * should you use the same account on another wallet, node or system at the same time — doing so can result in
+ * <p>Due to the asynchronous nature of Nano, you should not create multiple instances representing the same account,
+ * nor should you use the same account on another client/wallet/node at the same time — doing so can result in
  * unexpected transaction failures. If a block is rejected by the node due to an outdated cached state, the state will
  * be refreshed and a new block generated up to 2 times before failing and throwing an exception.</p>
  *
  * <p>Example usage:</p>
  * <pre>{@code
- * RpcQueryNode rpcClient = RpcServiceProviders.nanex(); // Use nanex.cc public RPC API
+ * RpcQueryNode rpcClient = RpcServiceProviders.myNanoNinja(); // Use mynano.ninja public RPC
  *
- * // Construct a block producer object with your configuration
- * BlockProducer blockProducer = new StateBlockProducer(
+ * // Construct a block factory with your configuration
+ * BlockFactory<StateBlock> blockFactory = new StateBlockFactory(
  *         BlockProducerSpecification.builder()
  *                 .defaultRepresentative("nano_3caprkc56ebsaakn4j4n7g9p8h358mycfjcyzkrfw1nai6prbyk8ihc5yjjk")
  *                 .workGenerator(new NodeWorkGenerator(rpcClient)) // Generate work on the node
@@ -55,9 +55,9 @@ import java.util.function.Supplier;
  * );
  *
  * // Create account from private key
- * LocalRpcWalletAccount account = new LocalRpcWalletAccount(
+ * LocalRpcWalletAccount<StateBlock> account = new LocalRpcWalletAccount<>(
  *         new HexData("183A1DEDCA9CD37029456C8A2ED31460A0E9A8D18032676010AC11B02A442417"), // Private key
- *         rpcClient, blockProducer); // Using our RPC client and BlockProducer defined above
+ *         rpcClient, blockFactory); // Using the RPC client and BlockFactory defined above
  *
  * // Print account info
  * System.out.printf("Using account address %s%n", account.getAccount());
@@ -76,15 +76,18 @@ import java.util.function.Supplier;
  *
  * <p>This class relies on the following RPC queries: {@link RequestProcess process}, {@link RequestAccountInfo
  * account_info}, {@link RequestBlockInfo block_info}, {@link RequestPending pending}.</p>
+ *
+ * @param <B> the base block type created by this account (specified by the {@link BlockFactory})
  */
-public class LocalRpcWalletAccount {
+//todo test fork resolution/reattempt
+public class LocalRpcWalletAccount<B extends Block> {
     
     private static final NanoAmount DEFAULT_THRESHOLD = NanoAmount.valueOfRawExponent(24);
     private static final int RECEIVE_BATCH_SIZE = 25;
     private static final int MAX_RETRY_ATTEMPTS = 3;
     
     private final RpcQueryNode rpcClient;
-    private final LocalWalletAccount walletAccount;
+    private final LocalWalletAccount<B> walletAccount;
     private volatile boolean hasRetrievedState = false;
     private final Lock lock = new ReentrantLock(true);
     
@@ -93,13 +96,13 @@ public class LocalRpcWalletAccount {
      * Constructs a new local RPC wallet account.
      * @param privateKey    the private key of the account
      * @param rpcClient     the RPC client where requests will be sent to
-     * @param blockProducer the block producer
+     * @param blockFactory the block producer
      */
-    public LocalRpcWalletAccount(HexData privateKey, RpcQueryNode rpcClient, BlockProducer blockProducer) {
+    public LocalRpcWalletAccount(HexData privateKey, RpcQueryNode rpcClient, BlockFactory<B> blockFactory) {
         if (privateKey == null) throw new IllegalArgumentException("Private key cannot be null.");
         if (rpcClient == null) throw new IllegalArgumentException("RPC client cannot be null.");
-        if (blockProducer == null) throw new IllegalArgumentException("BlockProducer cannot be null.");
-        this.walletAccount = new LocalWalletAccount(privateKey, blockProducer);
+        if (blockFactory == null) throw new IllegalArgumentException("BlockProducer cannot be null.");
+        this.walletAccount = new LocalWalletAccount<>(privateKey, blockFactory);
         this.rpcClient = rpcClient;
     }
     
@@ -121,10 +124,10 @@ public class LocalRpcWalletAccount {
     }
     
     /**
-     * Returns the block producer which constructs blocks for this account.
-     * @return the block producer object
+     * Returns the block factory which constructs new blocks for this account.
+     * @return the block factory object
      */
-    public final BlockProducer getBlockProducer() {
+    public final BlockFactory<B> getBlockFactory() {
         return walletAccount.getBlockProducer();
     }
     
@@ -140,7 +143,7 @@ public class LocalRpcWalletAccount {
     public String toString() {
         return "LocalRpcWalletAccount{" +
                 "account=" + getAccount() +
-                ", blockProducer=" + getBlockProducer().getClass().getSimpleName() +
+                ", blockFactory=" + getBlockFactory().getClass().getSimpleName() +
                 ", rpcClient=" + rpcClient + '}';
     }
     
@@ -162,14 +165,15 @@ public class LocalRpcWalletAccount {
             AccountState newState;
             try {
                 // Retrieve state via RPC
-                newState = AccountState.fromAccountInfo(
-                        rpcClient.processRequest(new RequestAccountInfo(getAccount().toAddress())));
+                ResponseAccountInfo accInfo = rpcClient.processRequest(
+                        new RequestAccountInfo(getAccount().toAddress()));
+                newState = AccountState.fromAccountInfo(accInfo);
             } catch (RpcEntityNotFoundException e) {
                 newState = AccountState.UNOPENED; // Account hasn't been opened
             } catch (RpcException | IOException e) {
                 throw wrapRpcException("Couldn't retrieve account state.", e);
             }
-            boolean hasChanged = !hasRetrievedState && walletAccount.updateState(newState);
+            boolean hasChanged = walletAccount.updateState(newState) && !hasRetrievedState;
             hasRetrievedState = true;
             return hasChanged;
         } finally {
@@ -178,8 +182,8 @@ public class LocalRpcWalletAccount {
     }
     
     /**
-     * Returns the current balance of this account, not include any pending amounts. Will return a value of zero if the
-     * account hasn't been opened yet.
+     * Returns the current balance of this account, not include any pending amounts. A value of zero if the account
+     * hasn't yet been opened.
      *
      * <p>Note that this balance may include unconfirmed amounts. This shouldn't be an issue, as only people with
      * access to this account's private key may reverse these transactions with a fork block.</p>
@@ -218,7 +222,7 @@ public class LocalRpcWalletAccount {
      * @throws WalletActionException if an error occurs with the RPC query, work generation, block processing, or if
      *                               there are not enough funds available in the account
      */
-    public Block send(NanoAccount destination, NanoAmount amount) throws WalletActionException {
+    public B send(NanoAccount destination, NanoAmount amount) throws WalletActionException {
         return processBlock(() -> walletAccount.createSend(destination, amount));
     }
     
@@ -236,7 +240,7 @@ public class LocalRpcWalletAccount {
      * @return the generated and published {@code send} block, or empty if the account has no funds to send
      * @throws WalletActionException if an error occurs with the RPC query, work generation or block processing
      */
-    public Optional<Block> sendAll(NanoAccount destination) throws WalletActionException {
+    public Optional<B> sendAll(NanoAccount destination) throws WalletActionException {
         return processBlockOptional(() -> walletAccount.createSendAll(destination));
     }
     
@@ -254,7 +258,7 @@ public class LocalRpcWalletAccount {
      * @see #receiveAll()
      * @see #receiveBatch(int)
      */
-    public Block receive(HexData sourceHash) throws WalletActionException {
+    public B receive(HexData sourceHash) throws WalletActionException {
         if (sourceHash == null)
             throw new IllegalArgumentException("Source hash cannot be null.");
         
@@ -293,7 +297,7 @@ public class LocalRpcWalletAccount {
      *
      * @see #receiveAll()
      */
-    public Set<Block> receiveBatch(int count) throws WalletActionException {
+    public Set<B> receiveBatch(int count) throws WalletActionException {
         return receiveBatch(count, DEFAULT_THRESHOLD);
     }
     
@@ -311,7 +315,7 @@ public class LocalRpcWalletAccount {
      *
      * @see #receiveAll(NanoAmount)
      */
-    public Set<Block> receiveBatch(int count, NanoAmount threshold) throws WalletActionException {
+    public Set<B> receiveBatch(int count, NanoAmount threshold) throws WalletActionException {
         if (count < 0) throw new IllegalArgumentException("Batch count must be zero or higher.");
         if (count == 0) return Collections.emptySet();
         if (threshold == null) threshold = NanoAmount.ZERO;
@@ -327,7 +331,7 @@ public class LocalRpcWalletAccount {
                 throw wrapRpcException("Failed to retrieve pending blocks.", e);
             }
             // Receive blocks
-            Set<Block> published = new HashSet<>(pending.getPendingBlocks().size());
+            Set<B> published = new HashSet<>(pending.getPendingBlocks().size());
             for (Map.Entry<HexData, ResponsePending.PendingBlock> block : pending.getPendingBlocks().entrySet()) {
                 published.add(receive(block.getKey(), block.getValue().getAmount()));
             }
@@ -352,7 +356,7 @@ public class LocalRpcWalletAccount {
      *
      * @see #receiveBatch(int)
      */
-    public Set<Block> receiveAll() throws WalletActionException {
+    public Set<B> receiveAll() throws WalletActionException {
         return receiveAll(DEFAULT_THRESHOLD);
     }
     
@@ -372,8 +376,8 @@ public class LocalRpcWalletAccount {
      *
      * @see #receiveBatch(int, NanoAmount)
      */
-    public Set<Block> receiveAll(NanoAmount threshold) throws WalletActionException {
-        Set<Block> batch, published = new HashSet<>();
+    public Set<B> receiveAll(NanoAmount threshold) throws WalletActionException {
+        Set<B> batch, published = new HashSet<>();
         do {
             batch = receiveBatch(RECEIVE_BATCH_SIZE, threshold);
             published.addAll(batch);
@@ -381,7 +385,7 @@ public class LocalRpcWalletAccount {
         return published;
     }
     
-    private Block receive(HexData sourceHash, NanoAmount amount) throws WalletActionException {
+    private B receive(HexData sourceHash, NanoAmount amount) throws WalletActionException {
         return processBlock(() -> walletAccount.createReceive(sourceHash, amount));
     }
     
@@ -396,39 +400,40 @@ public class LocalRpcWalletAccount {
      *         to the specified account
      * @throws WalletActionException if an error occurs with the RPC query, work generation or block processing
      */
-    public Optional<Block> changeRepresentative(NanoAccount representative) throws WalletActionException {
-        return processBlockOptional(() -> walletAccount.createChangeRepresentative(representative));
+    public Optional<B> changeRepresentative(NanoAccount representative) throws WalletActionException {
+        return processBlockOptional(() -> walletAccount.createChange(representative));
     }
     
     
-    private Optional<Block> processBlockOptional(Supplier<Optional<Block>> blockSupplier)
+    private Optional<B> processBlockOptional(Supplier<Optional<B>> blockSupplier)
             throws WalletActionException {
         return Optional.ofNullable(processBlock(() -> blockSupplier.get().orElse(null)));
     }
     
-    private Block processBlock(Supplier<Block> blockSupplier) throws WalletActionException {
+    private B processBlock(Supplier<B> blockSupplier) throws WalletActionException {
         lock.lock();
         try {
             initState();
             for (int attempt = 0; attempt < MAX_RETRY_ATTEMPTS; attempt++) {
                 // Create block
-                Block producedBlock = blockSupplier.get();
-                if (producedBlock == null) return null;
+                B block = blockSupplier.get();
+                if (block == null)
+                    return null;
                 try {
                     // Publish block to network
-                    rpcClient.processRequest(new RequestProcess(producedBlock, false, false));
+                    rpcClient.processRequest(new RequestProcess(block, false, false));
                     walletAccount.commitState();
-                    return producedBlock;
+                    return block;
                 } catch (RpcExternalException e) {
                     // Refresh cached state and retry
                     if (!refreshState()) {
-                        throw e; // State was already up to date
+                        throw e; // State was already up to date, non-state error occurred
                     }
                 }
             }
             throw new WalletActionException("Account state outdated, retried too many times. " +
-                    "Is the account being concurrently used elsewhere?");
-        } catch (BlockProducer.BlockCreationException e) {
+                    "Is the account being concurrently accessed?");
+        } catch (BlockFactory.CreationException e) {
             throw new WalletActionException(e.getMessage(), e);
         } catch (RpcException | IOException e) {
             throw wrapRpcException("Block rejected by node: " + e.getMessage(), e);
@@ -466,7 +471,7 @@ public class LocalRpcWalletAccount {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof LocalRpcWalletAccount)) return false;
-        LocalRpcWalletAccount that = (LocalRpcWalletAccount)o;
+        LocalRpcWalletAccount<?> that = (LocalRpcWalletAccount<?>)o;
         return Objects.equals(rpcClient, that.rpcClient)
                 && Objects.equals(walletAccount, that.walletAccount);
     }

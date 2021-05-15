@@ -4,6 +4,7 @@ module uk.oczadly.karl.jnano {
     exports uk.oczadly.karl.jnano.model;
     exports uk.oczadly.karl.jnano.model.block;
     exports uk.oczadly.karl.jnano.model.block.interfaces;
+    exports uk.oczadly.karl.jnano.model.block.factory;
     exports uk.oczadly.karl.jnano.model.work;
     exports uk.oczadly.karl.jnano.model.epoch;
     // Callback
@@ -16,11 +17,9 @@ module uk.oczadly.karl.jnano {
     exports uk.oczadly.karl.jnano.rpc.request.node;
     exports uk.oczadly.karl.jnano.rpc.request.wallet;
     exports uk.oczadly.karl.jnano.rpc.response;
-    exports uk.oczadly.karl.jnano.rpc.util;
-    exports uk.oczadly.karl.jnano.rpc.util.wallet;
     // Utils
     exports uk.oczadly.karl.jnano.util;
-    exports uk.oczadly.karl.jnano.util.blockproducer;
+    exports uk.oczadly.karl.jnano.util.wallet;
     exports uk.oczadly.karl.jnano.util.workgen;
     exports uk.oczadly.karl.jnano.util.workgen.policy;
     // WebSocket

@@ -3,14 +3,16 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.util.blockproducer;
+package uk.oczadly.karl.jnano.util.wallet;
 
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
-import uk.oczadly.karl.jnano.rpc.util.wallet.LocalRpcWalletAccount;
+import uk.oczadly.karl.jnano.model.block.factory.AccountState;
+import uk.oczadly.karl.jnano.model.block.factory.BlockAndState;
+import uk.oczadly.karl.jnano.model.block.factory.BlockFactory;
 
 import java.util.Optional;
 
@@ -53,36 +55,36 @@ import java.util.Optional;
  *
  * @see LocalRpcWalletAccount
  */
-public class LocalWalletAccount {
+public class LocalWalletAccount<B extends Block> {
 
     private final HexData privateKey;
     private final NanoAccount account;
-    private final BlockProducer blockProducer;
+    private final BlockFactory<B> blockFactory;
     private volatile AccountState state, transactionState;
     
     /**
      * Constructs a new LocalWalletAccount with an unopened initial state.
      *
      * @param privateKey    the private key of the account
-     * @param blockProducer the block producer
+     * @param blockFactory the block producer
      */
-    public LocalWalletAccount(HexData privateKey, BlockProducer blockProducer) {
-        this(privateKey, blockProducer, AccountState.UNOPENED);
+    public LocalWalletAccount(HexData privateKey, BlockFactory<B> blockFactory) {
+        this(privateKey, blockFactory, AccountState.UNOPENED);
     }
     
     /**
      * Constructs a new LocalWalletAccount with the provided initial state.
      *
      * @param privateKey    the private key of the account
-     * @param blockProducer the block producer
+     * @param blockFactory the block producer
      * @param state         the initial account state, or null if not opened
      */
-    public LocalWalletAccount(HexData privateKey, BlockProducer blockProducer, AccountState state) {
+    public LocalWalletAccount(HexData privateKey, BlockFactory<B> blockFactory, AccountState state) {
         if (privateKey == null) throw new IllegalArgumentException("Account private key cannot be null.");
-        if (blockProducer == null) throw new IllegalArgumentException("BlockProducer cannot be null.");
+        if (blockFactory == null) throw new IllegalArgumentException("BlockProducer cannot be null.");
         this.privateKey = privateKey;
-        this.account = NanoAccount.fromPrivateKey(privateKey, blockProducer.getSpecification().getAddressPrefix());
-        this.blockProducer = blockProducer;
+        this.account = NanoAccount.fromPrivateKey(privateKey, blockFactory.getAddressPrefix());
+        this.blockFactory = blockFactory;
         this.state = JNH.nonNull(state, AccountState.UNOPENED);
     }
     
@@ -104,11 +106,11 @@ public class LocalWalletAccount {
     }
     
     /**
-     * Returns the block producer which constructs blocks for this account.
+     * Returns the block producer which constructs new blocks for this account.
      * @return the block producer object
      */
-    public final BlockProducer getBlockProducer() {
-        return blockProducer;
+    public final BlockFactory<B> getBlockProducer() {
+        return blockFactory;
     }
     
     /**
@@ -121,7 +123,8 @@ public class LocalWalletAccount {
     
     /**
      * Updates the internal state of this account to the given state data. Calling this method will also erase the
-     * transactional state if not already committed.
+     * transactional state (if not already committed), and you will not need to invoke {@link #commitState()} after
+     * this method.
      *
      * @param state the new state object
      * @return true if the new state is different from the previous, false if it's the same
@@ -160,11 +163,11 @@ public class LocalWalletAccount {
      * @param destination the destination account where the funds will be sent
      * @param amount      the amount to send
      * @return the constructed block
-     * @throws BlockProducer.BlockCreationException if the block couldn't be constructed, work couldn't be generated,
+     * @throws BlockFactory.CreationException if the block couldn't be constructed, work couldn't be generated,
      *         or the account state doesn't match the arguments (eg. not enough funds)
      */
-    public synchronized Block createSend(NanoAccount destination, NanoAmount amount) {
-        return updateState(blockProducer.createSend(privateKey, state, destination, amount));
+    public synchronized B createSend(NanoAccount destination, NanoAmount amount) {
+        return updateState(blockFactory.createSend(privateKey, state, destination, amount));
     }
     
     /**
@@ -178,10 +181,15 @@ public class LocalWalletAccount {
      *
      * @param destination the destination account where the funds will be sent
      * @return the constructed block, or empty if the account has no funds
-     * @throws BlockProducer.BlockCreationException if the block couldn't be constructed, or work couldn't be generated
+     * @throws BlockFactory.CreationException if the block couldn't be constructed, or work couldn't be generated
      */
-    public synchronized Optional<Block> createSendAll(NanoAccount destination) {
-        return updateState(blockProducer.createSendAll(privateKey, state, destination));
+    public synchronized Optional<B> createSendAll(NanoAccount destination) {
+        if (state.getBalance().compareTo(NanoAmount.ZERO) > 0) {
+            return Optional.of(updateState(blockFactory.createSend(
+                    privateKey, state, destination, state.getBalance())));
+        } else {
+            return Optional.empty();
+        }
     }
     
     /**
@@ -194,11 +202,11 @@ public class LocalWalletAccount {
      * @param sourceHash the hash of the pending {@code send} block
      * @param amount     the amount of the pending send block
      * @return the constructed block
-     * @throws BlockProducer.BlockCreationException if the block couldn't be constructed, work couldn't be generated,
+     * @throws BlockFactory.CreationException if the block couldn't be constructed, work couldn't be generated,
      *         or the account state doesn't match the arguments (eg. receiving too many funds)
      */
-    public synchronized Block createReceive(HexData sourceHash, NanoAmount amount) {
-        return updateState(blockProducer.createReceive(privateKey, state, sourceHash, amount));
+    public synchronized B createReceive(HexData sourceHash, NanoAmount amount) {
+        return updateState(blockFactory.createReceive(privateKey, state, sourceHash, amount));
     }
     
     /**
@@ -212,19 +220,20 @@ public class LocalWalletAccount {
      *
      * @param representative the representative account
      * @return the constructed block, or empty if the representative is already set
-     * @throws BlockProducer.BlockCreationException if the block couldn't be constructed, or work couldn't be generated
+     * @throws BlockFactory.CreationException if the block couldn't be constructed, or work couldn't be generated
      */
-    public synchronized Optional<Block> createChangeRepresentative(NanoAccount representative) {
-        return updateState(blockProducer.createChangeRepresentative(privateKey, state, representative));
+    public synchronized Optional<B> createChange(NanoAccount representative) {
+        return updateState(blockFactory.createChange(privateKey, state, representative));
     }
     
     
-    private synchronized Block updateState(BlockAndState block) {
+    private synchronized B updateState(BlockAndState<? extends B> block) {
         transactionState = block.getState();
         return block.getBlock();
     }
     
-    private synchronized Optional<Block> updateState(Optional<BlockAndState> block) {
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private synchronized Optional<B> updateState(Optional<BlockAndState<? extends B>> block) {
         transactionState = block.map(BlockAndState::getState).orElse(state);
         return block.map(BlockAndState::getBlock);
     }
@@ -234,7 +243,7 @@ public class LocalWalletAccount {
     public String toString() {
         return "LocalWalletAccount{" +
                 "account=" + getAccount() +
-                ", blockProducer=" + getBlockProducer().getClass().getSimpleName() + '}';
+                ", blockFactory=" + getBlockProducer().getClass().getSimpleName() + '}';
     }
     
 }

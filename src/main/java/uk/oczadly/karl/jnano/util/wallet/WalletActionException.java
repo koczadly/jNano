@@ -3,12 +3,12 @@
  * Licensed under the MIT License
  */
 
-package uk.oczadly.karl.jnano.rpc.util.wallet;
+package uk.oczadly.karl.jnano.util.wallet;
 
 import uk.oczadly.karl.jnano.rpc.exception.RpcException;
 
 /**
- * Thrown when an error occurs with a wallet action.
+ * Thrown when an error occurs with an RPC-related wallet activity.
  *
  * <p>This exception may wrap the {@link RpcException} and {@link java.io.IOException} exceptions thrown by the RPC
  * client.</p>
