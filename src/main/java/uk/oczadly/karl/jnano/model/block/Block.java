@@ -336,5 +336,23 @@ public abstract class Block implements IBlock {
     public static Block parse(JsonObject json) {
         return JNC.BLOCK_DESERIALIZER.deserialize(json);
     }
+
+    protected static <T extends Block> T parse(String json, Class<? extends T> typeClass) {
+        Block block = Block.parse(json);
+        if (typeClass.isInstance(block)) {
+            return typeClass.cast(block);
+        } else {
+            throw new BlockDeserializer.BlockParseException("Block is not a " + typeClass.getSimpleName() + ".");
+        }
+    }
+
+    protected static <T extends Block> T parse(JsonObject json, Class<? extends T> typeClass) {
+        Block block = Block.parse(json);
+        if (typeClass.isInstance(block)) {
+            return typeClass.cast(block);
+        } else {
+            throw new BlockDeserializer.BlockParseException("Block is not a " + typeClass.getSimpleName() + ".");
+        }
+    }
     
 }

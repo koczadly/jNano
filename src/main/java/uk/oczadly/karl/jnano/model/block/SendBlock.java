@@ -173,8 +173,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
      * @see Block#parse(String)
      */
     public static SendBlock parse(String json) {
-        return JNH.tryRethrow(Block.parse(json), b -> (SendBlock)b,
-                e -> new BlockDeserializer.BlockParseException("Block is not a send block.", e));
+        return parse(json, SendBlock.class);
     }
     
     /**
@@ -186,8 +185,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
      * @see Block#parse(JsonObject)
      */
     public static SendBlock parse(JsonObject json) {
-        return JNH.tryRethrow(Block.parse(json), b -> (SendBlock)b,
-                e -> new BlockDeserializer.BlockParseException("Block is not a send block.", e));
+        return parse(json, SendBlock.class);
     }
     
 }
