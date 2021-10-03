@@ -103,7 +103,7 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     public OpenBlock(HexData signature, WorkSolution work, HexData source, NanoAccount account,
                      NanoAccount representative) {
         super(BlockType.OPEN, signature, work);
-    
+
         if (source == null)
             throw new IllegalArgumentException("Source block hash cannot be null.");
         if (source.length() != NanoConst.LEN_HASH_B)

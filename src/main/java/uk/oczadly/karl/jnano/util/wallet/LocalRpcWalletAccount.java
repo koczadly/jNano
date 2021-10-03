@@ -79,7 +79,6 @@ import java.util.function.Supplier;
  *
  * @param <B> the base block type created by this account (specified by the {@link BlockFactory})
  */
-//todo test fork resolution/reattempt
 public class LocalRpcWalletAccount<B extends Block> {
     
     private static final NanoAmount DEFAULT_THRESHOLD = NanoAmount.valueOfRawExponent(24);
@@ -167,7 +166,7 @@ public class LocalRpcWalletAccount<B extends Block> {
                 // Retrieve state via RPC
                 ResponseAccountInfo accInfo = rpcClient.processRequest(
                         new RequestAccountInfo(getAccount().toAddress()));
-                newState = AccountState.fromAccountInfo(accInfo);
+                newState = AccountState.ofAccountInfo(accInfo);
             } catch (RpcEntityNotFoundException e) {
                 newState = AccountState.UNOPENED; // Account hasn't been opened
             } catch (RpcException | IOException e) {

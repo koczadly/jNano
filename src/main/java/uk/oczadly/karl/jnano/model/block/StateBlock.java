@@ -12,6 +12,7 @@ import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
+import uk.oczadly.karl.jnano.model.block.factory.AccountState;
 import uk.oczadly.karl.jnano.model.block.interfaces.*;
 import uk.oczadly.karl.jnano.model.epoch.EpochUpgrade;
 import uk.oczadly.karl.jnano.model.epoch.EpochUpgradeRegistry;
@@ -134,8 +135,8 @@ import java.util.function.Function;
  *     </tr>
  * </table>
  */
-public final class StateBlock extends Block implements IBlockLink, IBlockBalance, IBlockPrevious, IBlockRepresentative,
-        IBlockAccount, IBlockSelfVerifiable {
+public final class StateBlock extends Block implements IBlockState, IBlockLink, IBlockBalance, IBlockPrevious,
+        IBlockRepresentative, IBlockAccount, IBlockSelfVerifiable {
     
     /** A function which converts a {@link JsonObject} into a {@link StateBlock} instance. */
     public static final Function<JsonObject, StateBlock> DESERIALIZER = json -> new StateBlock(
@@ -214,32 +215,32 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
      * Returns the block's sub-type.
      * @return the subtype of the block
      */
-    public final StateBlockSubType getSubType() {
+    public StateBlockSubType getSubType() {
         return subtype;
     }
     
     @Override
-    public final NanoAccount getAccount() {
+    public NanoAccount getAccount() {
         return account;
     }
     
     @Override
-    public final HexData getPreviousBlockHash() {
+    public HexData getPreviousBlockHash() {
         return previous;
     }
     
     @Override
-    public final NanoAccount getRepresentative() {
+    public NanoAccount getRepresentative() {
         return representative;
     }
     
     @Override
-    public final NanoAmount getBalance() {
+    public NanoAmount getBalance() {
         return balance;
     }
     
     @Override
-    public final LinkData getLink() {
+    public LinkData getLink() {
         return link;
     }
     
@@ -293,6 +294,11 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
             signer = epochRegistry.ofIdentifier(getLink().asHex()).getSigner().orElse(getAccount());
         }
         return verifySignature(signer);
+    }
+
+    @Override
+    public AccountState getAccountState() {
+        return new AccountState(getHash(), getBalance(), getRepresentative());
     }
     
     @Override
@@ -349,8 +355,8 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
     
     @Override
     public StateBlock clone() {
-        return new StateBlock(subtype, getSignature(), getWorkSolution(), account, previous, representative, balance,
-                link);
+        return new StateBlock(subtype, getSignature(), getWorkSolution(),
+                account, previous, representative, balance, link);
     }
     
     
@@ -400,5 +406,5 @@ public final class StateBlock extends Block implements IBlockLink, IBlockBalance
             return new LinkData(intent, hex, new NanoAccount(hex.toByteArray(), prefix));
         }
     }
-    
+
 }

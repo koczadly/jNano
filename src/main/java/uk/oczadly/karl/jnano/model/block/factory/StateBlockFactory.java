@@ -88,7 +88,7 @@ public final class StateBlockFactory extends BlockFactory<StateBlock> {
         } catch (StateBlockBuilder.BlockCreationException e) {
             throw new CreationException(e.getMessage(), e);
         }
-        return new BlockAndState<>(block, AccountState.fromBlock(block));
+        return new BlockAndState<>(block, block.getAccountState());
     }
     
     

@@ -16,7 +16,11 @@ public class BlockAndState<B extends Block> {
     
     private final B block;
     private final AccountState state;
-    
+
+    /**
+     * @param block the block
+     * @param state the state of the account at the point in time of the provided block
+     */
     public BlockAndState(B block, AccountState state) {
         if (block == null) throw new IllegalArgumentException("Block cannot be null.");
         if (state == null) throw new IllegalArgumentException("State cannot be null.");
@@ -33,7 +37,7 @@ public class BlockAndState<B extends Block> {
     }
     
     /**
-     * @return the account state <em>after</em> the block has been processed
+     * @return the account state at the time of the block
      */
     public final AccountState getState() {
         return state;
