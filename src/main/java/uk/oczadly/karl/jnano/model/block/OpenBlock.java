@@ -133,6 +133,15 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     public final NanoAccount getRepresentative() {
         return representative;
     }
+
+    /**
+     * Tests whether the signature is valid and was signed by the {@link #getAccount() holding account}.
+     *
+     * @return true if the signature is correct, false if not <em>or</em> if the {@code signature} is currently null
+     */
+    public boolean verifySignature() {
+        return verifySignature(getAccount());
+    }
     
     @Override
     public BlockIntent getIntent() {

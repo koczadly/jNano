@@ -53,7 +53,7 @@ public final class NetworkConstants {
      * @see <a href="https://docs.nano.org/running-a-node/beta-network/">Website/documentation</a>
      */
     public static final NetworkConstants NANO_BETA = new NetworkConstants(
-            "Nano (Beta)", "XNO-Beta", NanoAccount.DEFAULT_PREFIX,
+            "Nano (Beta)", "XNOb", NanoAccount.DEFAULT_PREFIX,
             "2F4D72B8E973C979E4D6815CB34C2F426AD997FB8BC6BD94C92541E7F35879594A392AA0B28D0A865EA4C73DB2DE56893E947FD" +
                     "0AD76AB847A2BB5AEDFBF0E00", new WorkSolution("a870b0e9331cf477"),
             "A59A439B34662385D48F7FF9CA50030F889BAA9AC320EA5A85AAD777CF82B088",
@@ -76,7 +76,7 @@ public final class NetworkConstants {
      * @see <a href="https://test.nano.org">Website</a>
      */
     public static final NetworkConstants NANO_TEST = new NetworkConstants(
-            "Nano (Test)", "XNO", NanoAccount.DEFAULT_PREFIX,
+            "Nano (Test)", "XNOt", NanoAccount.DEFAULT_PREFIX,
             "15049467CAEE3EC768639E8E35792399B6078DA763DA4EBA8ECAD33B0EDC4AF2E7403893A5A602EB89B978DABEF1D6606BB00F3" +
                     "C0EE11449232B143B6E07170E", new WorkSolution("bc1ef279c1a34eb1"),
             "45C6FF9D1706D61F0821327752671BDA9F9ED2DA40326B01935AB566FB9E08ED",
@@ -172,7 +172,7 @@ public final class NetworkConstants {
      * Returns a friendly name of this network.
      * @return the name of this network
      */
-    public final String getNetworkName() {
+    public String getNetworkName() {
         return networkName;
     }
     
@@ -189,7 +189,7 @@ public final class NetworkConstants {
      *
      * @return the genesis block
      */
-    public final OpenBlock getGenesisBlock() {
+    public OpenBlock getGenesisBlock() {
         return genesisBlock.clone();
     }
     
@@ -197,7 +197,7 @@ public final class NetworkConstants {
      * Returns the account which holds the genesis block.
      * @return the genesis account
      */
-    public final NanoAccount getGenesisAccount() {
+    public NanoAccount getGenesisAccount() {
         return getGenesisBlock().getAccount().withPrefix(getAddressPrefix());
     }
     
@@ -205,7 +205,7 @@ public final class NetworkConstants {
      * Returns the network identifier string. This is also the genesis block hash.
      * @return the network identifier
      */
-    public final String getNetworkIdentifier() {
+    public String getNetworkIdentifier() {
         return getGenesisBlock().getHash().toHexString();
     }
     
@@ -221,7 +221,7 @@ public final class NetworkConstants {
      * Returns the default address prefix used for accounts, which comes before the underscore symbol.
      * @return the prefix of account addresses
      */
-    public final String getAddressPrefix() {
+    public String getAddressPrefix() {
         return addressPrefix;
     }
     
@@ -229,7 +229,7 @@ public final class NetworkConstants {
      * Returns the current minimum work difficulty thresholds for this network.
      * @return the minimum work difficulty thresholds
      */
-    public final ConstantWorkDifficultyPolicy getWorkDifficulties() {
+    public ConstantWorkDifficultyPolicy getWorkDifficulties() {
         return workDifficulties;
     }
     
@@ -237,7 +237,7 @@ public final class NetworkConstants {
      * Returns a registry of supported and recognized account epoch upgrades.
      * @return a registry of epoch upgrades
      */
-    public final EpochUpgradeRegistry getEpochUpgrades() {
+    public EpochUpgradeRegistry getEpochUpgrades() {
         return epochs;
     }
     
@@ -250,7 +250,8 @@ public final class NetworkConstants {
     
     private static OpenBlock createGenesisBlock(NanoAccount account, WorkSolution work, HexData signature) {
         OpenBlock block = new OpenBlock(signature, work, new HexData(account.toPublicKey()), account, account);
-        if (!block.verifySignature()) throw new IllegalArgumentException("Signature is invalid.");
+        if (!block.verifySignature())
+            throw new IllegalArgumentException("Signature is invalid.");
         return block;
     }
     
