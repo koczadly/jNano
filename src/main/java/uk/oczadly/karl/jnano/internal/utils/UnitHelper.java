@@ -59,8 +59,13 @@ public class UnitHelper {
         boolean trimmed = amount.compareTo(scaledAmount) != 0;
         
         StringBuilder sb = new StringBuilder();
+        if (unit.getSymbol() != null)
+            sb.append(unit.getSymbol());
+        // Format amount
         if (scaledAmount.compareTo(BigDecimal.ZERO) == 0) {
-            sb.append(trimmed ? ">0" : "0");
+            sb.append('0');
+            if (trimmed)
+                sb.appendCodePoint(8230);
         } else {
             synchronized (dfMutex) {
                 if (trimmed) {
@@ -71,7 +76,10 @@ public class UnitHelper {
                 }
             }
         }
-        return sb.append(" ").append(unit.getDisplayName()).toString();
+        // Add unit name (if not symbol)
+        if (unit.getSymbol() == null)
+            sb.append(" ").append(unit.getDisplayName());
+        return sb.toString();
     }
 
 }

@@ -39,44 +39,60 @@ public enum NanoUnit implements NanoAmount.Denomination {
     
     /**
      * The largest divisor, equivalent to 10<sup>33</sup> raw.
+     *
+     * @deprecated This currency unit is seldom used, and use of it is discouraged to prevent confusion.
      */
-    GIGA  (33, "Gnano"),
+    @Deprecated
+    GIGA  (33, "Gnano", null),
     
     /**
      * The 2nd largest divisor, equivalent to 10<sup>30</sup> raw.
      */
-    MEGA  (30, "NANO"),
+    MEGA  (30, "Nano",  "Ӿ"),
     
     /**
      * The 3rd largest divisor, equivalent to 10<sup>27</sup> raw.
+     *
+     * @deprecated This currency unit is seldom used, and use of it is discouraged to prevent confusion.
      */
-    KILO  (27, "knano"),
+    @Deprecated
+    KILO  (27, "knano", null),
     
     /**
      * The 4th largest divisor, equivalent to 10<sup>24</sup> raw.
+     *
+     * @deprecated This currency unit is seldom used, and use of it is discouraged to prevent confusion.
      */
-    XRB   (24, "nano"),
+    @Deprecated
+    XRB   (24, "nano",  null),
     
     /**
      * The 5th largest divisor, equivalent to 10<sup>21</sup> raw.
+     *
+     * @deprecated This currency unit is seldom used, and use of it is discouraged to prevent confusion.
      */
-    MILLI (21, "mnano"),
+    @Deprecated
+    MILLI (21, "mnano", null),
     
     /**
      * The 6th largest divisor, equivalent to 10<sup>18</sup> raw.
+     *
+     * @deprecated This currency unit is seldom used, and use of it is discouraged to prevent confusion.
      */
-    MICRO (18, "μnano"),
+    @Deprecated
+    MICRO (18, "μnano", null),
     
     /**
      * The smallest possible representable unit.
      */
-    RAW   (0,  "raw");
+    RAW   (0,  "raw",   null);
     
     /**
      * The standard base unit currently used by most services, block explorers and exchanges.
      *
-     * <p>End-users are likely to be most familiar with this unit, and it is recommended that this constant is used so
-     * your application can be automatically updated should the units system ever change.</p>
+     * <p>End-users are likely to be most familiar with this unit. Be aware that this constant may change at any time,
+     * following any future adjustments made to the official units system. Any amount values should be stored in
+     * the {@link #RAW raw} unit.</p>
      *
      * <p>As of now, this is equal to the {@link #MEGA} unit.</p>
      */
@@ -85,12 +101,13 @@ public enum NanoUnit implements NanoAmount.Denomination {
     
     final int exponent;
     final BigInteger rawValue;
-    final String displayName;
+    final String displayName, symbol;
     
-    NanoUnit(int exponent, String displayName) {
+    NanoUnit(int exponent, String displayName, String symbol) {
         this.exponent = exponent;
         this.rawValue = BigInteger.TEN.pow(exponent);
         this.displayName = displayName;
+        this.symbol = symbol;
     }
     
     
@@ -108,7 +125,12 @@ public enum NanoUnit implements NanoAmount.Denomination {
     public String getDisplayName() {
         return displayName;
     }
-    
+
+    @Override
+    public String getSymbol() {
+        return symbol;
+    }
+
     @Override
     public String toString() {
         return getDisplayName();

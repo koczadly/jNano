@@ -17,18 +17,19 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 /**
- * An immutable class which represents a quantity of Nano.
+ * An immutable class which represents a quantity of Nano, backed by a {@link BigInteger} raw value.
  *
  * <p>This class can be used as a transactional amount or account balance. Only unsigned values are supported, so this
- * class cannot be used to represent a negative amount.</p>
+ * cannot be used to represent a negative quantity.</p>
  *
  * <p>To create an instance of this class, use one of the provided static {@code valueOf} methods, or one of the
  * constant field values. This class also supports built-in Gson serialization and deserialization as a raw value.</p>
  *
- * <p>Custom units can be specified by implementing the {@link Denomination} interface, or using the constructor of
- * {@link DenominationImpl}. For instance, to create the unit for Banano you could define the following constant:</p>
+ * <p>Custom units can be specified by implementing the {@link Denomination} interface, or using one of the static
+ * creation methods provided by the class. For instance, to create the unit for Banano you could define the following
+ * constant:</p>
  * <pre>{@code // Static constant representing the standard Banano unit
- * public static final NanoAmount.Denomination UNIT_BAN = new NanoAmount.DenominationImpl("BAN", 29);
+ * public static final NanoAmount.Denomination UNIT_BAN = NanoAmount.Denomination.create(29, "BAN");
  *
  * // Elsewhere in your application's method...
  * NanoAmount amount = NanoAmount.valueOf("2.79", UNIT_BAN);
@@ -45,20 +46,28 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     private static final Denomination BASE_UNIT = NanoUnit.BASE_UNIT;
     private static final BigInteger TOSTRING_THRESH = BigInteger.TEN.pow(BASE_UNIT.getExponent() - 6);
     
-    /** A zero-value amount. */
+    /**
+     * A zero-value amount.
+     */
     public static final NanoAmount ZERO = new NanoAmount(BigInteger.ZERO);
     
-    /** The maximum possible balance value, equal to the amount created in the genesis block. */
+    /**
+     * The maximum possible balance value, equal to <code>2<sup>128</sup>-1</code>.
+     *
+     * <p>This is also the balance value of the genesis block.</p>
+     */
     public static final NanoAmount MAX_VALUE = new NanoAmount(MAX_VAL_RAW);
     
     /**
      * A constant value representing a single {@link NanoUnit#RAW raw} unit ({@code 1 raw}).
+     *
      * <p>This is the smallest representable quantity of Nano possible.</p>
      */
     public static final NanoAmount ONE_RAW = new NanoAmount(BigInteger.ONE);
     
     /**
      * A constant value representing a single {@link NanoUnit#BASE_UNIT Nano} unit ({@code 1 Nano}).
+     *
      * <p><b>Warning:</b> This is based on the current {@link NanoUnit#BASE_UNIT} constant, which may be prone to
      * change in the future if the official Nano denomination system changes.</p>
      */
@@ -132,15 +141,15 @@ public final class NanoAmount implements Comparable<NanoAmount> {
      */
     @Override
     public String toString() {
-        boolean useBase = rawValue.equals(BigInteger.ZERO) || rawValue.compareTo(TOSTRING_THRESH) >= 0;
+        boolean useBase = equals(ZERO) || rawValue.compareTo(TOSTRING_THRESH) >= 0;
         return toString(useBase ? BASE_UNIT : NanoUnit.RAW);
     }
     
     /**
-     * Returns this amount as a friendly string, complete with the unit name.
+     * Returns this amount as a friendly string, including the symbol or unit name if no symbol is provided.
      *
      * @param unit the unit to display the amount in
-     * @return a friendly string of this amount
+     * @return a friendly string representing this amount
      */
     public String toString(Denomination unit) {
         BigDecimal amount = getAs(unit);
@@ -381,16 +390,32 @@ public final class NanoAmount implements Comparable<NanoAmount> {
     public static NanoAmount valueOfNano(long val) {
         return valueOf(val, BASE_UNIT);
     }
-    
-    
+
+
+    static class JsonAdapter implements JsonSerializer<NanoAmount>, JsonDeserializer<NanoAmount> {
+        @Override
+        public NanoAmount deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            return valueOfRaw(json.getAsString());
+        }
+
+        @Override
+        public JsonElement serialize(NanoAmount src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(src.toRawString());
+        }
+    }
+
+
     /**
      * This interface is to be implemented by custom units or value denominations.
      *
+     * <p>This interface only supports the use of denominations of a power of 10, as represented by the exponent.</p>
+     *
      * <p>For a concrete implementation, use the constant values offered by the {@link NanoUnit} enum. You could
-     * also declare your own units by constructing {@link DenominationImpl} objects.</p>
+     * also declare your own units by calling one of the static {@code create(…)} methods.</p>
      *
      * @see NanoUnit
-     * @see DenominationImpl
+     * @see #create(int, String, String)
      */
     public interface Denomination {
         /**
@@ -402,35 +427,71 @@ public final class NanoAmount implements Comparable<NanoAmount> {
         int getExponent();
     
         /**
-         * Returns the equivalent value of a single unit in {@code raw} (the smallest possible unit).
-         * @return the equivalent raw value of 1 unit
-         */
-        BigInteger getRawValue();
-    
-        /**
          * Returns the friendly display name of this unit, eg: {@code Nano}.
+         *
          * @return the display name of this denomination
          */
         String getDisplayName();
+
+        /**
+         * Returns the equivalent value of a single unit in {@code raw} (the smallest possible unit).
+         *
+         * @return the equivalent raw value of 1 unit
+         */
+        default BigInteger getRawValue() {
+            return BigInteger.TEN.pow(getExponent());
+        }
+
+        /**
+         * Returns the prefix symbol of this currency. In most cases, this should be a single symbolic character,
+         * perhaps also including a multiplier prefix (eg. <em>k</em> for {@code x1000}).
+         * @return the prefix symbol, or null if no prefix is
+         */
+        default String getSymbol() {
+            return null;
+        }
+
+
+        /**
+         * Creates a custom unit {@link Denomination} object from the given parameters.
+         *
+         * @param exponent the value of this unit in raw, as a power of 10 (<code>10<sup>x</sup></code>, where {@code x}
+         *                 is the value being passed
+         * @param name     the display name of the unit (eg. "{@code Nano}")
+         * @return the custom denomination object
+         */
+        static Denomination create(int exponent, String name) {
+            return create(exponent, name, null);
+        }
+
+        /**
+         * Creates a custom unit {@link Denomination} object from the given parameters.
+         *
+         * @param exponent the value of this unit in raw, as a power of 10 (<code>10<sup>x</sup></code>, where {@code x}
+         *                 is the value being passed
+         * @param name     the display name of the unit (eg. "{@code Nano}")
+         * @param symbol   the symbolic character(s) which prefixes the decimal amount (eg. "{@code $}")
+         * @return the custom denomination object
+         */
+        static Denomination create(int exponent, String name, String symbol) {
+            if (exponent < 0 || exponent >= 39)
+                throw new IllegalArgumentException("Unit exponent out of range.");
+            if (name == null || name.isEmpty())
+                throw new IllegalArgumentException("Name cannot be null or empty.");
+            return new DenominationImpl(exponent, name, symbol);
+        }
     }
-    
-    /**
-     * A simple {@link Denomination} implementation.
-     */
-    public static final class DenominationImpl implements Denomination {
-        private final String name;
+
+    private static class DenominationImpl implements Denomination {
         private final int exponent;
         private final BigInteger rawVal;
-    
-        /**
-         * Constructs a new unit Denomination constant.
-         * @param name     the name of the unit
-         * @param exponent the exponent of the unit's value (eg. 10<sup>x</sup>)
-         */
-        public DenominationImpl(String name, int exponent) {
-            this.name = name;
+        private final String name, symbol;
+
+        DenominationImpl(int exponent, String name, String symbol) {
             this.exponent = exponent;
             this.rawVal = BigInteger.TEN.pow(exponent);
+            this.name = name;
+            this.symbol = symbol;
         }
         
         @Override
@@ -447,19 +508,10 @@ public final class NanoAmount implements Comparable<NanoAmount> {
         public String getDisplayName() {
             return name;
         }
-    }
-    
-    
-    static class JsonAdapter implements JsonSerializer<NanoAmount>, JsonDeserializer<NanoAmount> {
+
         @Override
-        public NanoAmount deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-                throws JsonParseException {
-            return valueOfRaw(json.getAsString());
-        }
-        
-        @Override
-        public JsonElement serialize(NanoAmount src, Type typeOfSrc, JsonSerializationContext context) {
-            return new JsonPrimitive(src.toRawString());
+        public String getSymbol() {
+            return symbol;
         }
     }
     

@@ -114,13 +114,13 @@ public class NanoUnitTest {
     public void testFriendlyName() {
         final char ELLIPSIS = (char)8230;
         
-        assertEquals("1,234.567000" + ELLIPSIS + " NANO",
+        assertEquals("Ӿ1,234.567000" + ELLIPSIS,
                 NanoUnit.toFriendlyString(new BigInteger("1234567000000000000000000000000001")));
-        assertEquals("1,234.567 NANO",
+        assertEquals("Ӿ1,234.567",
                 NanoUnit.toFriendlyString(new BigInteger("1234567000000000000000000000000000")));
-        assertEquals(">0 NANO", NanoUnit.toFriendlyString(new BigInteger("1")));
-        assertEquals("0 NANO", NanoUnit.toFriendlyString(new BigInteger("0")));
-        assertEquals("6,089,739.037639" + ELLIPSIS + " NANO",
+        assertEquals("Ӿ0" + ELLIPSIS, NanoUnit.toFriendlyString(new BigInteger("1")));
+        assertEquals("Ӿ0", NanoUnit.toFriendlyString(new BigInteger("0")));
+        assertEquals("Ӿ6,089,739.037639" + ELLIPSIS,
                 NanoUnit.toFriendlyString(new BigInteger("6089739037639579996362607167603982621")));
     }
     
