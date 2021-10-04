@@ -43,12 +43,12 @@ public enum NanoUnit implements NanoAmount.Denomination {
      * @deprecated This currency unit is seldom used, and use of it is discouraged to prevent confusion.
      */
     @Deprecated
-    GIGA  (33, "Gnano", null),
+    GIGA  (33, "Gnano (legacy)", null),
     
     /**
      * The 2nd largest divisor, equivalent to 10<sup>30</sup> raw.
      */
-    MEGA  (30, "Nano",  "Ӿ"),
+    MEGA  (30, "nano",  "Ӿ"),
     
     /**
      * The 3rd largest divisor, equivalent to 10<sup>27</sup> raw.
@@ -56,7 +56,7 @@ public enum NanoUnit implements NanoAmount.Denomination {
      * @deprecated This currency unit is seldom used, and use of it is discouraged to prevent confusion.
      */
     @Deprecated
-    KILO  (27, "knano", null),
+    KILO  (27, "knano (legacy)", null),
     
     /**
      * The 4th largest divisor, equivalent to 10<sup>24</sup> raw.
@@ -64,7 +64,7 @@ public enum NanoUnit implements NanoAmount.Denomination {
      * @deprecated This currency unit is seldom used, and use of it is discouraged to prevent confusion.
      */
     @Deprecated
-    XRB   (24, "nano",  null),
+    XRB   (24, "nano (legacy)",  null),
     
     /**
      * The 5th largest divisor, equivalent to 10<sup>21</sup> raw.
@@ -72,7 +72,7 @@ public enum NanoUnit implements NanoAmount.Denomination {
      * @deprecated This currency unit is seldom used, and use of it is discouraged to prevent confusion.
      */
     @Deprecated
-    MILLI (21, "mnano", null),
+    MILLI (21, "mnano (legacy)", null),
     
     /**
      * The 6th largest divisor, equivalent to 10<sup>18</sup> raw.
@@ -80,7 +80,7 @@ public enum NanoUnit implements NanoAmount.Denomination {
      * @deprecated This currency unit is seldom used, and use of it is discouraged to prevent confusion.
      */
     @Deprecated
-    MICRO (18, "μnano", null),
+    MICRO (18, "μnano (legacy)", null),
     
     /**
      * The smallest possible representable unit.
