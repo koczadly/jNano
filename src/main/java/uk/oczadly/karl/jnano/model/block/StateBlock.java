@@ -136,7 +136,7 @@ import java.util.function.Function;
  * </table>
  */
 public final class StateBlock extends Block implements IBlockState, IBlockLink, IBlockBalance, IBlockPrevious,
-        IBlockRepresentative, IBlockAccount, IBlockSelfVerifiable {
+        IBlockRepresentative, IBlockAccount {
     
     /** A function which converts a {@link JsonObject} into a {@link StateBlock} instance. */
     public static final Function<JsonObject, StateBlock> DESERIALIZER = json -> new StateBlock(
@@ -245,10 +245,10 @@ public final class StateBlock extends Block implements IBlockState, IBlockLink, 
     }
     
     /**
-     * Tests whether the signature is valid and was signed by the correct account, also validating epoch blocks for
-     * the live Nano network.
+     * Tests whether the signature is valid and was signed by the correct account, also validating epoch blocks
+     * (<em>for the live Nano network only</em>).
      *
-     * <p>For standard transactions, this uses the {@link #getAccount() block's account}. For externally-created
+     * <p>For standard transactions, this uses the block's {@link #getAccount() account}. For externally-issued
      * epoch blocks, the signature is checked using the {@link EpochUpgrade#getSigner() expected signer account}
      * rather than the block's holding account.</p>
      *
@@ -258,17 +258,12 @@ public final class StateBlock extends Block implements IBlockState, IBlockLink, 
      * recognized. For non-epoch subtypes, this method will function as expected with all networks.</p>
      *
      * @return true if the signature is correct, false if not <em>or</em> if the {@code signature} is currently null
-     * @throws SignatureVerificationException if the block is an epoch block, and the epoch version was not recognized
+     * @throws UnrecognizedEpochException if the block is an epoch block, and the epoch version was not recognized
      *
      * @see #verifySignature(EpochUpgradeRegistry)
      */
-    @Override
     public boolean verifySignature() {
-        try {
-            return verifySignature(NetworkConstants.NANO.getEpochUpgrades());
-        } catch (UnrecognizedEpochException e) {
-            throw new SignatureVerificationException("Couldn't identify epoch signer.", e);
-        }
+        return verifySignature(NetworkConstants.NANO.getEpochUpgrades());
     }
     
     /**
