@@ -43,12 +43,12 @@ public enum NanoUnit implements NanoAmount.Denomination {
      * @deprecated This currency unit is seldom used, and use of it is discouraged to prevent confusion.
      */
     @Deprecated
-    GIGA  (33, "Gnano (legacy)", null),
+    GIGA  (33, 6, "Gnano*", null),
     
     /**
      * The 2nd largest divisor, equivalent to 10<sup>30</sup> raw.
      */
-    MEGA  (30, "nano",  "Ӿ"),
+    MEGA  (30, 6, "nano",  "Ӿ"),
     
     /**
      * The 3rd largest divisor, equivalent to 10<sup>27</sup> raw.
@@ -56,7 +56,7 @@ public enum NanoUnit implements NanoAmount.Denomination {
      * @deprecated This currency unit is seldom used, and use of it is discouraged to prevent confusion.
      */
     @Deprecated
-    KILO  (27, "knano (legacy)", null),
+    KILO  (27, 3, "knano*", null),
     
     /**
      * The 4th largest divisor, equivalent to 10<sup>24</sup> raw.
@@ -64,7 +64,7 @@ public enum NanoUnit implements NanoAmount.Denomination {
      * @deprecated This currency unit is seldom used, and use of it is discouraged to prevent confusion.
      */
     @Deprecated
-    XRB   (24, "nano (legacy)",  null),
+    XRB   (24, 3, "nano*",  null),
     
     /**
      * The 5th largest divisor, equivalent to 10<sup>21</sup> raw.
@@ -72,7 +72,7 @@ public enum NanoUnit implements NanoAmount.Denomination {
      * @deprecated This currency unit is seldom used, and use of it is discouraged to prevent confusion.
      */
     @Deprecated
-    MILLI (21, "mnano (legacy)", null),
+    MILLI (21, 3, "mnano*", null),
     
     /**
      * The 6th largest divisor, equivalent to 10<sup>18</sup> raw.
@@ -80,12 +80,12 @@ public enum NanoUnit implements NanoAmount.Denomination {
      * @deprecated This currency unit is seldom used, and use of it is discouraged to prevent confusion.
      */
     @Deprecated
-    MICRO (18, "μnano (legacy)", null),
+    MICRO (18, 3, "μnano*", null),
     
     /**
      * The smallest possible representable unit.
      */
-    RAW   (0,  "raw",   null);
+    RAW   (0,  0,  "raw",   null);
     
     /**
      * The standard base unit currently used by most services, block explorers and exchanges.
@@ -99,20 +99,21 @@ public enum NanoUnit implements NanoAmount.Denomination {
     public static final NanoUnit BASE_UNIT = NanoUnit.MEGA;
     
     
-    final int exponent;
+    final int exponent, formatDecimals;
     final BigInteger rawValue;
     final String displayName, symbol;
     
-    NanoUnit(int exponent, String displayName, String symbol) {
+    NanoUnit(int exponent, int formatDecimals, String displayName, String symbol) {
         this.exponent = exponent;
         this.rawValue = BigInteger.TEN.pow(exponent);
+        this.formatDecimals = formatDecimals;
         this.displayName = displayName;
         this.symbol = symbol;
     }
     
     
     @Override
-    public int getExponent() {
+    public int getValueExponent() {
         return exponent;
     }
     
@@ -129,6 +130,11 @@ public enum NanoUnit implements NanoAmount.Denomination {
     @Override
     public String getSymbol() {
         return symbol;
+    }
+
+    @Override
+    public int getDisplayFractionDigits() {
+        return formatDecimals;
     }
 
     @Override
@@ -258,8 +264,7 @@ public enum NanoUnit implements NanoAmount.Denomination {
      * @return a friendly string of a given currency amount
      */
     public static String toFriendlyString(BigDecimal amount, NanoUnit sourceUnit) {
-        BigDecimal converted = BASE_UNIT.convertFrom(sourceUnit, amount);
-        return UnitHelper.toFriendlyString(converted, BASE_UNIT);
+        return UnitHelper.format(RAW.convertFromInt(sourceUnit, amount), BASE_UNIT, false);
     }
     
 }

@@ -6,11 +6,14 @@
 package uk.oczadly.karl.jnano.internal.utils;
 
 import uk.oczadly.karl.jnano.model.NanoAmount;
+import uk.oczadly.karl.jnano.util.NanoUnit;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 /**
  * @author Karl Oczadly
@@ -26,20 +29,8 @@ public class UnitHelper {
             throw new IllegalArgumentException("Invalid source or destination exponent.");
         if (sourceAmount.stripTrailingZeros().scale() > sourceExp)
             throw new IllegalArgumentException("Source amount has too many decimal places.");
-        
-        BigDecimal result;
-        if (sourceExp == destExp) {
-            // Same unit
-            return sourceAmount;
-        } else if (sourceExp > destExp) {
-            // Source is higher, multiply (shift decimal right)
-            result = sourceAmount.movePointRight(sourceExp - destExp);
-        } else {
-            // Source is lower, divide (shift decimal left)
-            result = sourceAmount.movePointLeft(destExp - sourceExp);
-        }
-        
-        result = result.stripTrailingZeros();
+
+        BigDecimal result = sourceAmount.movePointRight(sourceExp - destExp).stripTrailingZeros();
         if (result.scale() > destExp)
             throw new ArithmeticException("Value could not be converted exactly.");
         return result;
@@ -48,33 +39,32 @@ public class UnitHelper {
     public static BigInteger convertToRaw(BigDecimal sourceAmount, int sourceExp) {
         return convert(sourceAmount, sourceExp, 0).toBigIntegerExact();
     }
-    
-    
-    private static final DecimalFormat FRIENDLY_DF = new DecimalFormat("#,##0.######");
-    private static final DecimalFormat FRIENDLY_DF_FORCE = new DecimalFormat("#,##0.000000");
-    private static final Object dfMutex = new Object(); // DecimalFormat aint thread safe
-    
-    public static String toFriendlyString(BigDecimal amount, NanoAmount.Denomination unit) {
-        BigDecimal scaledAmount = amount.setScale(6, RoundingMode.DOWN);
-        boolean trimmed = amount.compareTo(scaledAmount) != 0;
-        
+
+    public static String format(BigInteger rawAmount, NanoAmount.Denomination unit, boolean useRawIfSmall) {
+        BigDecimal amount = convert(new BigDecimal(rawAmount), 0, unit.getValueExponent());
+        BigDecimal scaledAmount = amount.setScale(unit.getDisplayFractionDigits(), RoundingMode.DOWN);
+        boolean truncated = amount.compareTo(scaledAmount) != 0;
+
+        // Format as raw if number is too small for precision
+        if (useRawIfSmall && truncated && unit.getValueExponent() != 0
+                && scaledAmount.compareTo(BigDecimal.ZERO) == 0) {
+            return format(rawAmount, NanoUnit.RAW, false);
+        }
+
         StringBuilder sb = new StringBuilder();
+        // Add symbol (if applicable)
         if (unit.getSymbol() != null)
             sb.append(unit.getSymbol());
-        // Format amount
-        if (scaledAmount.compareTo(BigDecimal.ZERO) == 0) {
-            sb.append('0');
-            if (trimmed)
-                sb.appendCodePoint(8230);
+        // Format number
+        DecimalFormat df = new DecimalFormat();
+        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
+        df.setMaximumFractionDigits(unit.getValueExponent());
+        df.setGroupingUsed(true);
+        if (truncated) {
+            df.setMinimumFractionDigits(unit.getDisplayFractionDigits());
+            sb.append(df.format(scaledAmount)).append('…');
         } else {
-            synchronized (dfMutex) {
-                if (trimmed) {
-                    sb.append(FRIENDLY_DF_FORCE.format(scaledAmount));
-                    sb.appendCodePoint(8230); // Ellipsis character
-                } else {
-                    sb.append(FRIENDLY_DF.format(scaledAmount));
-                }
-            }
+            sb.append(df.format(scaledAmount));
         }
         // Add unit name (if not symbol)
         if (unit.getSymbol() == null)
