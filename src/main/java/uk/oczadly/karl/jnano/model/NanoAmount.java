@@ -437,12 +437,9 @@ public final class NanoAmount implements Comparable<NanoAmount> {
         }
 
         /**
-         * Returns the prefix symbol of this currency. In most cases, this should be a single symbolic character,
-         * perhaps also including a multiplier prefix (eg. <em>k</em> for {@code x1000}).
+         * Returns the prefix symbol of this currency. In most cases, this should be a single symbolic character.
          *
-         * <p>Defaults to null (no symbol) if not overridden.</p>
-         *
-         * @return the prefix symbol, or null if no prefix is
+         * @return the prefix symbol, or null if this unit has no symbol
          */
         default String getSymbol() {
             return null;
