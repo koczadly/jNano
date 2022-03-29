@@ -147,8 +147,14 @@ public class ResponseAccountHistory extends RpcResponse {
         public ResponseAccountHistory deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
             JsonObject jsonObj = json.getAsJsonObject();
-            JsonArray historyJson = jsonObj.getAsJsonArray("history");
-    
+            JsonArray historyJson;
+			//use try-catch to allow for history being empty
+			try {
+				historyJson = jsonObj.getAsJsonArray("history");
+			} catch (ClassCastException e) {
+				historyJson = new JsonArray();
+			}
+
             // Deserialize response
             ResponseAccountHistory response = new ResponseAccountHistory(
                     context.deserialize(jsonObj.get("account"), NanoAccount.class),
