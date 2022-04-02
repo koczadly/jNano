@@ -1,4 +1,4 @@
-module uk.oczadly.karl.jnano {
+open module uk.oczadly.karl.jnano {
     
     // Models
     exports uk.oczadly.karl.jnano.model;
@@ -17,8 +17,6 @@ module uk.oczadly.karl.jnano {
     exports uk.oczadly.karl.jnano.rpc.request.node;
     exports uk.oczadly.karl.jnano.rpc.request.wallet;
     exports uk.oczadly.karl.jnano.rpc.response;
-    // Utils
-    exports uk.oczadly.karl.jnano.util;
     exports uk.oczadly.karl.jnano.util.wallet;
     exports uk.oczadly.karl.jnano.util.workgen;
     exports uk.oczadly.karl.jnano.util.workgen.policy;
