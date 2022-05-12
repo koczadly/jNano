@@ -147,25 +147,28 @@ public class ResponseAccountHistory extends RpcResponse {
         public ResponseAccountHistory deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
             JsonObject jsonObj = json.getAsJsonObject();
-            JsonArray historyJson = jsonObj.getAsJsonArray("history");
     
             // Deserialize response
             ResponseAccountHistory response = new ResponseAccountHistory(
                     context.deserialize(jsonObj.get("account"), NanoAccount.class),
                     context.deserialize(jsonObj.get("previous"), HexData.class),
                     context.deserialize(jsonObj.get("next"), HexData.class),
-                    new ArrayList<>(historyJson.size()));
-            
-            // Deserialize block infos
-            for (JsonElement blockJsonEl : historyJson) {
-                JsonObject blockInfoJson = blockJsonEl.getAsJsonObject();
-                BlockInfo blockInfo = context.deserialize(blockInfoJson, BlockInfo.class); // Deserialize normally
-                if (blockInfoJson.has("signature")) {
-                    // Raw == true, inject block contents
-                    blockInfoJson.addProperty("account", response.account.toAddress()); // Use actual account
-                    blockInfo.contents = context.deserialize(blockInfoJson, Block.class);
+                    new ArrayList<>());
+
+            // Will return empty string if empty
+            if (jsonObj.get("history").isJsonArray()) {
+                JsonArray history = jsonObj.getAsJsonArray("history");
+                // Deserialize block infos
+                for (JsonElement blockJsonEl : history) {
+                    JsonObject blockInfoJson = blockJsonEl.getAsJsonObject();
+                    BlockInfo blockInfo = context.deserialize(blockInfoJson, BlockInfo.class); // Deserialize normally
+                    if (blockInfoJson.has("signature")) {
+                        // Raw == true, inject block contents
+                        blockInfoJson.addProperty("account", response.account.toAddress()); // Use account being polled
+                        blockInfo.contents = context.deserialize(blockInfoJson, Block.class);
+                    }
+                    response.history.add(blockInfo);
                 }
-                response.history.add(blockInfo);
             }
             return response;
         }
