@@ -25,7 +25,7 @@ import java.time.Instant;
  */
 public abstract class RpcResponse {
     
-    private final Instant timestamp = Instant.now();
+    private transient final Instant timestamp = Instant.now();
     private volatile JsonObject rawJson;
     
     
