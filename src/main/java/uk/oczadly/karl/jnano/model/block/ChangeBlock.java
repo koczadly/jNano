@@ -117,7 +117,12 @@ public class ChangeBlock extends Block implements IBlockPrevious, IBlockRepresen
     public BlockIntent getIntent() {
         return INTENT;
     }
-    
+
+    @Override
+    public HexData getWorkRoot() {
+        return getPreviousBlockHash();
+    }
+
     @Override
     public boolean contentEquals(Block block) {
         if (!(block instanceof ChangeBlock)) return false;

@@ -48,12 +48,18 @@ public interface IBlock {
      * @return the signature of this block (may be null)
      */
     HexData getSignature();
-    
+
     /**
      * Returns the work solution of this block.
-     * @return the work solution (may be null)
+     * @return the work solution, or null if not set
      */
     WorkSolution getWork();
+
+    /**
+     * Returns the root hash of the work for this block, used to compute the difficulty.
+     * @return the work root hash
+     */
+    HexData getWorkRoot();
     
     /**
      * Returns an object containing details on the context and intent of this block.

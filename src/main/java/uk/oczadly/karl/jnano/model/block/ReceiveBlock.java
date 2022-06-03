@@ -120,6 +120,11 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     public BlockIntent getIntent() {
         return INTENT;
     }
+
+    @Override
+    public HexData getWorkRoot() {
+        return getPreviousBlockHash();
+    }
     
     @Override
     public boolean contentEquals(Block block) {

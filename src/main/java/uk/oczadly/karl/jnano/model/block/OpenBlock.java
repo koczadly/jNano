@@ -151,6 +151,11 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
         }
         return INTENT;
     }
+
+    @Override
+    public HexData getWorkRoot() {
+        return new HexData(getAccount().getPublicKeyBytes(), 32);
+    }
     
     @Override
     public boolean contentEquals(Block block) {

@@ -5,7 +5,6 @@
 
 package uk.oczadly.karl.jnano.util.workgen;
 
-import uk.oczadly.karl.jnano.internal.utils.NanoUtil;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.work.WorkDifficulty;
@@ -33,7 +32,7 @@ class WorkRequestSpec {
     
     public WorkRequestSpec(WorkDifficultyPolicy policy, Block block, double reqMultiplier,
                     WorkDifficulty reqDifficulty) {
-        this(policy, NanoUtil.getWorkRoot(block), reqMultiplier, reqDifficulty, block);
+        this(policy, block.getWorkRoot(), reqMultiplier, reqDifficulty, block);
     }
     
     private WorkRequestSpec(WorkDifficultyPolicy policy, HexData root, double reqMultiplier,

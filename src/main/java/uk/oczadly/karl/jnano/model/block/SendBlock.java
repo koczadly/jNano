@@ -138,6 +138,11 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     public BlockIntent getIntent() {
         return INTENT;
     }
+
+    @Override
+    public HexData getWorkRoot() {
+        return getPreviousBlockHash();
+    }
     
     @Override
     public boolean contentEquals(Block block) {

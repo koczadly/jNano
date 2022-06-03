@@ -313,6 +313,11 @@ public final class StateBlock extends Block implements IBlockState, IBlockLink, 
                 BlockIntent.UncertainBool.valueOf(isEpoch),
                 BlockIntent.UncertainBool.FALSE);
     }
+
+    @Override
+    public HexData getWorkRoot() {
+        return getPreviousBlockHash();
+    }
     
     @Override
     public boolean contentEquals(Block block) {

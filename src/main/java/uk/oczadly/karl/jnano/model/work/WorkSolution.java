@@ -9,7 +9,6 @@ import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.internal.NanoConst;
-import uk.oczadly.karl.jnano.internal.utils.NanoUtil;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlockAccount;
@@ -72,7 +71,7 @@ public final class WorkSolution {
      * @throws IllegalArgumentException if the block does not contain a {@code previous} or {@code account} field
      */
     public WorkDifficulty calculateDifficulty(Block block) {
-        return calculateDifficulty(getRoot(block));
+        return calculateDifficulty(block.getWorkRoot());
     }
     
     /**
@@ -80,7 +79,6 @@ public final class WorkSolution {
      * existing accounts, or the account's public key for the first block.
      * @param root the root hash (64 character hex string)
      * @return the difficulty of this work solution for the given root hash
-     * @see #getRoot(Block)
      * @see #calculateDifficulty(Block)
      */
     public WorkDifficulty calculateDifficulty(HexData root) {
@@ -124,21 +122,7 @@ public final class WorkSolution {
         return Objects.hash(longVal);
     }
     
-    
-    /**
-     * Returns the root data for the given block, for use in work calculations. The block type must implement either the
-     * {@link IBlockAccount} or {@link IBlockPrevious} interface, otherwise an {@link IllegalArgumentException} will
-     * be thrown.
-     *
-     * @param block the block to calculate the root of
-     * @return the root hash of the given block
-     * @throws IllegalArgumentException if the block does not contain a {@code previous} or {@code account} field
-     */
-    public static HexData getRoot(Block block) {
-        return NanoUtil.getWorkRoot(block);
-    }
-    
-    
+
     private static byte[] longToBytes(long val) {
         return JNH.reverseArray(JNH.longToBytes(val));
     }
@@ -149,8 +133,7 @@ public final class WorkSolution {
     
     
     
-    static class WorkSolutionJsonAdapter implements JsonSerializer<WorkSolution>,
-            JsonDeserializer<WorkSolution> {
+    static class WorkSolutionJsonAdapter implements JsonSerializer<WorkSolution>, JsonDeserializer<WorkSolution> {
         @Override
         public WorkSolution deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
