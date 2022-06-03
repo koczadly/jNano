@@ -54,7 +54,7 @@ public class TestBlock extends Block {
     }
     
     @Override
-    protected byte[][] hashables() {
+    protected byte[][] constructHashables() {
         return new byte[][] {
                 getVal() != null ? getVal().getBytes() : new byte[0]
         };
@@ -75,6 +75,6 @@ public class TestBlock extends Block {
     
     @Override
     public Block clone() {
-        return new TestBlock(getSignature(), getWorkSolution(), val);
+        return new TestBlock(getSignature(), getWork(), val);
     }
 }

@@ -82,7 +82,7 @@ public final class LegacyBlockFactory extends BlockFactory<Block> {
     private BlockAndState<Block> construct(HexData privateKey, NanoAmount stateBal, NanoAccount stateRep, Block block) {
         try {
             GeneratedWork work = getWorkGenerator().generate(block).get();
-            block.setWorkSolution(work.getWork());
+            block.setWork(work.getWork());
         } catch (InterruptedException | ExecutionException e) {
             throw new CreationException("Couldn't generate work.", e);
         }

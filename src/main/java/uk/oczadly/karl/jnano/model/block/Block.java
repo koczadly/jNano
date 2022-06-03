@@ -88,7 +88,7 @@ public abstract class Block implements IBlock {
         if (hash == null) {
             synchronized (this) {
                 if (hash == null)
-                    hash = CryptoUtil.hash(hashables());
+                    hash = CryptoUtil.hash(constructHashables());
             }
         }
         return hash;
@@ -169,10 +169,10 @@ public abstract class Block implements IBlock {
      * Returns an array of byte arrays to be hashed in the given order.
      * @return the hashables
      */
-    protected abstract byte[][] hashables();
+    protected abstract byte[][] constructHashables();
     
     @Override
-    public final WorkSolution getWorkSolution() {
+    public final WorkSolution getWork() {
         return work;
     }
     
@@ -180,13 +180,13 @@ public abstract class Block implements IBlock {
      * Sets or updates the work solution for this block.
      * @param work the new work value, or null (will render the block incomplete)
      */
-    public void setWorkSolution(WorkSolution work) {
+    public void setWork(WorkSolution work) {
         this.work = work;
     }
     
     @Override
     public boolean isComplete() {
-        return getWorkSolution() != null && getSignature() != null;
+        return getWork() != null && getSignature() != null;
     }
     
     /**
@@ -290,7 +290,7 @@ public abstract class Block implements IBlock {
     public boolean contentEquals(Block block) {
         return equals(block)
                 && Objects.equals(getSignature(), block.getSignature())
-                && Objects.equals(getWorkSolution(), block.getWorkSolution());
+                && Objects.equals(getWork(), block.getWork());
     }
     
     @Override

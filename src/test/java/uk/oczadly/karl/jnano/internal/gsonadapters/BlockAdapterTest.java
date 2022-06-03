@@ -52,7 +52,7 @@ public class BlockAdapterTest {
         SendBlock block = (SendBlock)rawBlock;
         assertEquals("7DFEE7769F8BC0A72428E7898FDFDF0660A6E234559B3B284A63B14611783AEC0706FE79368C2816B26363F" +
                 "D65CF900F55DB90E086EA741D718E2758B64F3406", block.getSignature().toHexString());
-        assertEquals(new WorkSolution("6440a18c6061b71d"), block.getWorkSolution());
+        assertEquals(new WorkSolution("6440a18c6061b71d"), block.getWork());
         assertNotNull(block.toJsonString());
         
         assertEquals("700DC6DF005DF78706A2C721D3EAA3755CC5209151D4BBD7EEB1D6FF77A068F8",
@@ -83,7 +83,7 @@ public class BlockAdapterTest {
         ReceiveBlock block = (ReceiveBlock)rawBlock;
         assertEquals("406F6A1C5818E0A3625A24AF0A7FDD194B5425C0836E0BE085C18044C19F1A3BBD4D98F5A4B112A38E6208" +
                 "211F3646CD398E437CA974BE1C43656F512693D102", block.getSignature().toHexString());
-        assertEquals(new WorkSolution("5e05b7f26d1e6563"), block.getWorkSolution());
+        assertEquals(new WorkSolution("5e05b7f26d1e6563"), block.getWork());
         assertNotNull(block.toJsonString());
         
         assertEquals("CC3A488D508F816D12D20E72F04BD097C58049C6CF88E972793BDFB5AFB5FE98",
@@ -113,7 +113,7 @@ public class BlockAdapterTest {
         OpenBlock block = (OpenBlock)rawBlock;
         assertEquals("0F323D7FEF67152289B288AFD9EE9CD3CD224A3874FA8833E5E2FE60ACC500DADDADE8F37D452088B584C" +
                 "7DB358CA7C79B79A77A3C764ADA964B33DBF34DAB09", block.getSignature().toHexString());
-        assertEquals(new WorkSolution("a7cf03e595499531"), block.getWorkSolution());
+        assertEquals(new WorkSolution("a7cf03e595499531"), block.getWork());
         assertNotNull(block.toJsonString());
         
         assertEquals("78B334ADAD96EE142061121A6C40CE7FC2271257BF11463E18ABE5989E219748",
@@ -145,7 +145,7 @@ public class BlockAdapterTest {
         ChangeBlock block = (ChangeBlock)rawBlock;
         assertEquals("F9490F5C09A2B5B99EBD4D5F50C8095229ACFF7CD823155F14FAA6D17BC87C3EBD8B427A8F2882189D34886" +
                 "40BDA5221A91ED00FB7B72D089037ACA80D30E001", block.getSignature().toHexString());
-        assertEquals(new WorkSolution("727335966a97f67d"), block.getWorkSolution());
+        assertEquals(new WorkSolution("727335966a97f67d"), block.getWork());
         assertNotNull(block.toJsonString());
         
         assertEquals("D8D494F97BB0519B45B5386157DA7E736381E912A64727522695463040371C25",
@@ -176,7 +176,7 @@ public class BlockAdapterTest {
         StateBlock block = (StateBlock)rawBlock;
         assertEquals("A41A889F0FF684A9A167F1EEDD2D389DBFA30B254A263EA1A79B438CBEFEDE2CBEDD1655AB7A2B10CC7B2ACAC" +
                 "94DE2AD670A64A8D314C756B3A8241437C48702", block.getSignature().toHexString());
-        assertEquals(new WorkSolution("b7b524ffbff9f517"), block.getWorkSolution());
+        assertEquals(new WorkSolution("b7b524ffbff9f517"), block.getWork());
         assertNotNull(block.toJsonString());
         
         assertEquals("707CAA0DBEB16C486EE37C03409D663ACE501D2985CC72ACD6903CECACF3189C",

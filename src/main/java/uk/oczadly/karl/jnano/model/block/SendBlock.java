@@ -50,8 +50,8 @@ import java.util.function.Function;
  *         <td>The signature, verifying the account holder created this block.</td>
  *     </tr>
  *     <tr>
- *         <td>{@link #getWorkSolution() work}</td>
- *         <td>{@link #setWorkSolution(WorkSolution) Yes}</td>
+ *         <td>{@link #getWork() work}</td>
+ *         <td>{@link #setWork(WorkSolution) Yes}</td>
  *         <td>The proof-of-work solution.</td>
  *     </tr>
  *     <tr>
@@ -150,7 +150,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     }
     
     @Override
-    protected byte[][] hashables() {
+    protected byte[][] constructHashables() {
         return new byte[][] {
                 getPreviousBlockHash().toByteArray(),
                 getDestinationAccount().getPublicKeyBytes(),
@@ -160,7 +160,7 @@ public class SendBlock extends Block implements IBlockPrevious, IBlockBalance {
     
     @Override
     public SendBlock clone() {
-        return new SendBlock(getSignature(), getWorkSolution(), previous, destination, balance);
+        return new SendBlock(getSignature(), getWork(), previous, destination, balance);
     }
     
     

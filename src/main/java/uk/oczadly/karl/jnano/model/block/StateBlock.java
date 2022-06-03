@@ -98,8 +98,8 @@ import java.util.function.Function;
  *         <td>The signature, verifying the account holder created this block.</td>
  *     </tr>
  *     <tr>
- *         <td>{@link #getWorkSolution() work}</td>
- *         <td>{@link #setWorkSolution(WorkSolution) Yes}</td>
+ *         <td>{@link #getWork() work}</td>
+ *         <td>{@link #setWork(WorkSolution) Yes}</td>
  *         <td>The proof-of-work solution.</td>
  *     </tr>
  *     <tr>
@@ -328,7 +328,7 @@ public final class StateBlock extends Block implements IBlockState, IBlockLink, 
     }
     
     @Override
-    protected byte[][] hashables() {
+    protected byte[][] constructHashables() {
         return new byte[][] {
                 HASH_PREAMBLE,
                 getAccount().getPublicKeyBytes(),
@@ -350,7 +350,7 @@ public final class StateBlock extends Block implements IBlockState, IBlockLink, 
     
     @Override
     public StateBlock clone() {
-        return new StateBlock(subtype, getSignature(), getWorkSolution(),
+        return new StateBlock(subtype, getSignature(), getWork(),
                 account, previous, representative, balance, link);
     }
     

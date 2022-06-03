@@ -42,7 +42,7 @@ public class ChangeBlockTest {
         ChangeBlock block = ChangeBlock.parse(TEST_BLOCK_JSON);
         assertEquals(block, TEST_BLOCK);
         assertEquals(TB_SIGNATURE, block.getSignature());
-        assertEquals(TB_WORK, block.getWorkSolution());
+        assertEquals(TB_WORK, block.getWork());
         assertEquals(TB_PREVIOUS, block.getPreviousBlockHash());
         assertEquals(TB_REP, block.getRepresentative());
     }

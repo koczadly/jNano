@@ -44,7 +44,7 @@ public class OpenBlockTest {
         OpenBlock block = OpenBlock.parse(TEST_BLOCK_JSON);
         assertEquals(block, TEST_BLOCK);
         assertEquals(TB_SIGNATURE, block.getSignature());
-        assertEquals(TB_WORK, block.getWorkSolution());
+        assertEquals(TB_WORK, block.getWork());
         assertEquals(TB_SOURCE, block.getSourceBlockHash());
         assertEquals(TB_ACCOUNT, block.getAccount());
         assertEquals(TB_REP, block.getRepresentative());

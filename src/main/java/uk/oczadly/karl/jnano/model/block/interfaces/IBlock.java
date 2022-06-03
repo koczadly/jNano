@@ -53,7 +53,7 @@ public interface IBlock {
      * Returns the work solution of this block.
      * @return the work solution (may be null)
      */
-    WorkSolution getWorkSolution();
+    WorkSolution getWork();
     
     /**
      * Returns an object containing details on the context and intent of this block.

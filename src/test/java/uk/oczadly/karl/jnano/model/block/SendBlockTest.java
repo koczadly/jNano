@@ -44,7 +44,7 @@ public class SendBlockTest {
         SendBlock block = SendBlock.parse(TEST_BLOCK_JSON);
         assertEquals(block, TEST_BLOCK);
         assertEquals(TB_SIGNATURE, block.getSignature());
-        assertEquals(TB_WORK, block.getWorkSolution());
+        assertEquals(TB_WORK, block.getWork());
         assertEquals(TB_PREVIOUS, block.getPreviousBlockHash());
         assertEquals(TB_BALANCE, block.getBalance());
         assertEquals(TB_DESTINATION, block.getDestinationAccount());

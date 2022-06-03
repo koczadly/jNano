@@ -49,8 +49,8 @@ import java.util.function.Function;
  *         <td>The signature, verifying the account holder created this block.</td>
  *     </tr>
  *     <tr>
- *         <td>{@link #getWorkSolution() work}</td>
- *         <td>{@link #setWorkSolution(WorkSolution) Yes}</td>
+ *         <td>{@link #getWork() work}</td>
+ *         <td>{@link #setWork(WorkSolution) Yes}</td>
  *         <td>The proof-of-work solution.</td>
  *     </tr>
  *     <tr>
@@ -131,7 +131,7 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     }
     
     @Override
-    protected byte[][] hashables() {
+    protected byte[][] constructHashables() {
         return new byte[][] {
                 getPreviousBlockHash().toByteArray(),
                 getSourceBlockHash().toByteArray()
@@ -140,7 +140,7 @@ public class ReceiveBlock extends Block implements IBlockPrevious, IBlockSource 
     
     @Override
     public ReceiveBlock clone() {
-        return new ReceiveBlock(getSignature(), getWorkSolution(), previous, source);
+        return new ReceiveBlock(getSignature(), getWork(), previous, source);
     }
     
     

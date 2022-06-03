@@ -194,7 +194,7 @@ public class RequestBlockCreate extends RpcRequest<ResponseBlockCreate> {
             } else {
                 this.link = block.getLinkData().toHexString();
             }
-            this.work = block.getWorkSolution().getAsHexadecimal();
+            this.work = block.getWork().getAsHexadecimal();
         }
     
         public Builder() {}

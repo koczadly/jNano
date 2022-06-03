@@ -39,7 +39,7 @@ public class ReceiveBlockTest {
         ReceiveBlock block = ReceiveBlock.parse(TEST_BLOCK_JSON);
         assertEquals(block, TEST_BLOCK);
         assertEquals(TB_SIGNATURE, block.getSignature());
-        assertEquals(TB_WORK, block.getWorkSolution());
+        assertEquals(TB_WORK, block.getWork());
         assertEquals(TB_SOURCE, block.getSourceBlockHash());
         assertEquals(TB_PREVIOUS, block.getPreviousBlockHash());
     }

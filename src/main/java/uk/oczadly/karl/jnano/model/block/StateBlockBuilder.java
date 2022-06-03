@@ -65,7 +65,7 @@ public final class StateBlockBuilder {
         this.rep = block.getRepresentative();
         this.balance = block.getBalance();
         this.signature = block.getSignature();
-        this.work = block.getWorkSolution();
+        this.work = block.getWork();
         link(block.getLink());
         usingAddressPrefix(block.getAccount().getPrefix());
     }
@@ -541,7 +541,7 @@ public final class StateBlockBuilder {
         if (work == null && workGen != null) {
             try {
                 work = workGen.generate(block).get().getWork();
-                block.setWorkSolution(work);
+                block.setWork(work);
             } catch (ExecutionException e) {
                 throw new BlockCreationException("Couldn't generate work.", e);
             } catch (InterruptedException e) {

@@ -67,7 +67,7 @@ public class StateBlockBuilderTest {
         assertEquals(LINK_DATA, block.getLink().asHex());
         assertEquals(LINK_ACCOUNT, block.getLink().asAccount());
         assertEquals(SIGNATURE, block.getSignature());
-        assertEquals(WORK, block.getWorkSolution());
+        assertEquals(WORK, block.getWork());
         
         // TODO: test JSON objects
         assertNotNull(block.toJsonObject());

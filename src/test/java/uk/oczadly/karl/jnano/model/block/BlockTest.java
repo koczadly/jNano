@@ -29,7 +29,7 @@ public class BlockTest {
         final WorkSolution WORK = new WorkSolution(TestConstants.RANDOM.nextLong());
         Block block = new MockBlock(SIG, WORK);
         assertEquals(SIG, block.getSignature().toHexString());
-        assertEquals(WORK, block.getWorkSolution());
+        assertEquals(WORK, block.getWork());
         assertEquals("test", block.getTypeString());
         assertNull(block.getType());
         assertTrue(block.isComplete());
@@ -67,7 +67,7 @@ public class BlockTest {
         }
     
         @Override
-        protected byte[][] hashables() {
+        protected byte[][] constructHashables() {
             return new byte[][] {
                     new byte[] {1}, new byte[] {2}, new byte[] {3}
             };

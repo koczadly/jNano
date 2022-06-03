@@ -54,7 +54,7 @@ public class BlockDeserializerTest {
         assertTrue(block1 instanceof TestBlock);
         TestBlock tb = (TestBlock)block1;
         assertEquals(SIG, tb.getSignature().toHexString());
-        assertEquals(WORK, tb.getWorkSolution());
+        assertEquals(WORK, tb.getWork());
         assertEquals(VAL, tb.getVal());
         // Invalid block type
         JsonObject json2 = new JsonObject();

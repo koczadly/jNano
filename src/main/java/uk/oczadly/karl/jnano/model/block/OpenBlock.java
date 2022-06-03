@@ -51,8 +51,8 @@ import java.util.function.Function;
  *         <td>The signature, verifying the account holder created this block.</td>
  *     </tr>
  *     <tr>
- *         <td>{@link #getWorkSolution() work}</td>
- *         <td>{@link #setWorkSolution(WorkSolution) Yes}</td>
+ *         <td>{@link #getWork() work}</td>
+ *         <td>{@link #setWork(WorkSolution) Yes}</td>
  *         <td>The proof-of-work solution.</td>
  *     </tr>
  *     <tr>
@@ -163,7 +163,7 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     }
     
     @Override
-    protected byte[][] hashables() {
+    protected byte[][] constructHashables() {
         return new byte[][] {
                 getSourceBlockHash().toByteArray(),
                 getRepresentative().getPublicKeyBytes(),
@@ -173,7 +173,7 @@ public class OpenBlock extends Block implements IBlockSource, IBlockAccount, IBl
     
     @Override
     public OpenBlock clone() {
-        return new OpenBlock(getSignature(), getWorkSolution(), source, account, representative);
+        return new OpenBlock(getSignature(), getWork(), source, account, representative);
     }
     
     /**
