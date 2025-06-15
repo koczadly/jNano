@@ -28,23 +28,23 @@ public class WorkSolutionTest {
     public void testRootHash() {
         // Previous
         ChangeBlock changeBlock = TestConstants.randChangeBlock();
-        assertEquals(changeBlock.getPreviousBlockHash(), WorkSolution.getRoot(changeBlock));
+        assertEquals(changeBlock.getPreviousBlockHash(), changeBlock.getWorkRoot());
     
         // Previous
         StateBlock stateBlock = TestConstants.randStateBlock().build();
-        assertEquals(stateBlock.getPreviousBlockHash(), WorkSolution.getRoot(stateBlock));
+        assertEquals(stateBlock.getPreviousBlockHash(), stateBlock.getWorkRoot());
     
         // Account
         stateBlock = TestConstants.randStateBlock().subtype(StateBlockSubType.OPEN).build();
-        assertEquals(new HexData(stateBlock.getAccount().toPublicKey()), WorkSolution.getRoot(stateBlock));
+        assertEquals(new HexData(stateBlock.getAccount().toPublicKey()), stateBlock.getWorkRoot());
     
         // Account
         OpenBlock openBlock = TestConstants.randOpenBlock();
-        assertEquals(new HexData(openBlock.getAccount().toPublicKey()), WorkSolution.getRoot(openBlock));
+        assertEquals(new HexData(openBlock.getAccount().toPublicKey()), openBlock.getWorkRoot());
         
         // Error
         Block invalidBlock = new TestBlock();
-        assertThrows(IllegalArgumentException.class, () -> WorkSolution.getRoot(invalidBlock));
+        assertThrows(IllegalArgumentException.class, invalidBlock::getWorkRoot);
     }
     
 }

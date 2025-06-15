@@ -82,6 +82,11 @@ public class BlockTest {
         public Block clone() {
             return this;
         }
+
+        @Override
+        public HexData getWorkRoot() {
+            return getHash();
+        }
     }
     
 }

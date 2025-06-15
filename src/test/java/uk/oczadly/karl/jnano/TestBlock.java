@@ -59,7 +59,12 @@ public class TestBlock extends Block {
                 getVal() != null ? getVal().getBytes() : new byte[0]
         };
     }
-    
+
+    @Override
+    public HexData getWorkRoot() {
+        return getHash();
+    }
+
     @Override
     public BlockIntent getIntent() {
         return BlockIntent.ALL_UNKNOWN;
