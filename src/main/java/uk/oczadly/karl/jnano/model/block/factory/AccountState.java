@@ -8,9 +8,11 @@ package uk.oczadly.karl.jnano.model.block.factory;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.model.NanoAmount;
+import uk.oczadly.karl.jnano.model.block.StateBlock;
 import uk.oczadly.karl.jnano.rpc.response.ResponseAccountInfo;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Represents an immutable account state.
@@ -38,9 +40,12 @@ public class AccountState {
      * @see #UNOPENED
      */
     public AccountState(HexData frontier, NanoAmount balance, NanoAccount representative) {
-        if (representative == null) throw new IllegalArgumentException("Representative cannot be null.");
-        if (balance == null) throw new IllegalArgumentException("Balance cannot be null.");
-        if (frontier == null) throw new IllegalArgumentException("Frontier hash cannot be null.");
+        if (representative == null)
+            throw new IllegalArgumentException("Representative cannot be null.");
+        if (balance == null)
+            throw new IllegalArgumentException("Balance cannot be null.");
+        if (frontier == null)
+            throw new IllegalArgumentException("Frontier hash cannot be null.");
         this.representative = representative;
         this.balance = balance;
         this.frontier = frontier;
@@ -55,17 +60,17 @@ public class AccountState {
     }
     
     /**
-     * @return the current representative, or null if not opened
+     * @return the current representative, or <i>empty</i> if not opened
      */
-    public final NanoAccount getRepresentative() {
-        return representative;
+    public final Optional<NanoAccount> getRepresentative() {
+        return Optional.ofNullable(representative);
     }
     
     /**
-     * @return the current frontier block hash, or null if not opened
+     * @return the hash of the current frontier block, or <i>empty</i> if not opened
      */
-    public final HexData getFrontierHash() {
-        return frontier;
+    public final Optional<HexData> getFrontierHash() {
+        return Optional.ofNullable(frontier);
     }
     
     /**
@@ -90,17 +95,20 @@ public class AccountState {
     public int hashCode() {
         return Objects.hash(frontier);
     }
+
     
     /**
      * Constructs an {@link AccountState} from a {@link ResponseAccountInfo} response object. This uses the
      * <em>unconfirmed</em> frontier and balance values.
      *
-     * @param info the response data, or null if unopened
+     * @param info the response data
      * @return the account state represented by the response
      */
     public static AccountState ofAccountInfo(ResponseAccountInfo info) {
-        if (info == null) return UNOPENED;
-        return new AccountState(info.getFrontierBlockHash(), info.getBalance(), info.getRepresentativeAccount());
+        return new AccountState(
+                info.getFrontierBlockHash(),
+                info.getBalance(),
+                info.getRepresentativeAccount());
     }
     
 }
