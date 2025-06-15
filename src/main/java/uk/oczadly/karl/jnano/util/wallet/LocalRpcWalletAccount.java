@@ -79,9 +79,8 @@ import java.util.function.Supplier;
  *
  * @param <B> the base block type created by this account (specified by the {@link BlockFactory})
  */
-public class LocalRpcWalletAccount<B extends Block> {
+public class LocalRpcWalletAccount<B extends Block> implements ControllableWalletAccountProvider<B> {
     
-    private static final NanoAmount DEFAULT_THRESHOLD = NanoAmount.valueOfRawExponent(24);
     private static final int RECEIVE_BATCH_SIZE = 25;
     private static final int MAX_RETRY_ATTEMPTS = 3;
     
@@ -101,15 +100,13 @@ public class LocalRpcWalletAccount<B extends Block> {
         if (privateKey == null) throw new IllegalArgumentException("Private key cannot be null.");
         if (rpcClient == null) throw new IllegalArgumentException("RPC client cannot be null.");
         if (blockFactory == null) throw new IllegalArgumentException("BlockProducer cannot be null.");
+
         this.walletAccount = new LocalWalletAccount<>(privateKey, blockFactory);
         this.rpcClient = rpcClient;
     }
     
     
-    /**
-     * Returns the account which this wallet represents.
-     * @return the account of this wallet
-     */
+    @Override
     public final NanoAccount getAccount() {
         return walletAccount.getAccount();
     }
@@ -147,25 +144,14 @@ public class LocalRpcWalletAccount<B extends Block> {
     }
     
     
-    /**
-     * Forcefully refreshes the internal cached state of the account by calling the {@link RequestAccountInfo} RPC
-     * query.
-     *
-     * <p>Most implementations should never have to call this method, as the state will automatically be retrieved or
-     * updated when necessary through the other methods.</p>
-     *
-     * @return true if the internally cached state was externally updated and has changed, false if it remains the same
-     *         or is the first time retrieving the state
-     * @throws WalletActionException if an error occurs with the RPC query
-     */
+    @Override
     public boolean refreshState() throws WalletActionException {
         lock.lock();
         try {
             AccountState newState;
             try {
                 // Retrieve state via RPC
-                ResponseAccountInfo accInfo = rpcClient.processRequest(
-                        new RequestAccountInfo(getAccount().toAddress()));
+                ResponseAccountInfo accInfo = rpcClient.processRequest(new RequestAccountInfo(getAccount().toAddress()));
                 newState = AccountState.ofAccountInfo(accInfo);
             } catch (RpcEntityNotFoundException e) {
                 newState = AccountState.UNOPENED; // Account hasn't been opened
@@ -180,83 +166,28 @@ public class LocalRpcWalletAccount<B extends Block> {
         }
     }
     
-    /**
-     * Returns the current balance of this account, not include any pending amounts. A value of zero if the account
-     * hasn't yet been opened.
-     *
-     * <p>Note that this balance may include unconfirmed amounts. This shouldn't be an issue, as only people with
-     * access to this account's private key may reverse these transactions with a fork block.</p>
-     *
-     * @return the current balance of the account
-     * @throws WalletActionException if an error occurs with the RPC query when retrieving the account state
-     */
+    @Override
     public NanoAmount getBalance() throws WalletActionException {
         return initState().getBalance();
     }
     
-    /**
-     * Returns the hash of the current frontier block of this account, or an empty value if the account hasn't been
-     * opened yet.
-     *
-     * <p>Note that this may be an unconfirmed block. This shouldn't be an issue, as only people with access to this
-     * account's private key may reverse this block with another fork block.</p>
-     *
-     * @return the current account frontier block hash, or empty if unopened
-     * @throws WalletActionException if an error occurs with the RPC query when retrieving the account state
-     */
+    @Override
     public Optional<HexData> getFrontierHash() throws WalletActionException {
-        return Optional.ofNullable(initState().getFrontierHash());
+        return initState().getFrontierHash();
     }
     
     
-    /**
-     * Sends the specified amount of funds to an account.
-     *
-     * <p>Calling this method will construct and sign a new block, generate the appropriate work for it, and publish the
-     * block to the network via RPC.</p>
-     *
-     * @param destination the account where the funds should be sent
-     * @param amount      the amount of funds to send
-     * @return the generated and published {@code send} block
-     * @throws WalletActionException if an error occurs with the RPC query, work generation, block processing, or if
-     *                               there are not enough funds available in the account
-     */
+    @Override
     public B send(NanoAccount destination, NanoAmount amount) throws WalletActionException {
         return processBlock(() -> walletAccount.createSend(destination, amount));
     }
     
-    /**
-     * Attempts to send the entire balance to the specified account, returning an empty value if there are no remaining
-     * funds to send (account has zero balance).
-     *
-     * <p>This method will not receive/send any pending blocks; that can be done by calling {@link #receiveAll()}
-     * prior to sending funds.</p>
-     *
-     * <p>Calling this method will construct and sign a new block, generate the appropriate work for it, and publish the
-     * block to the network via RPC.</p>
-     *
-     * @param destination the account where the funds should be sent
-     * @return the generated and published {@code send} block, or empty if the account has no funds to send
-     * @throws WalletActionException if an error occurs with the RPC query, work generation or block processing
-     */
+    @Override
     public Optional<B> sendAll(NanoAccount destination) throws WalletActionException {
         return processBlockOptional(() -> walletAccount.createSendAll(destination));
     }
     
-    /**
-     * Receives the specified pending {@code send} block.
-     *
-     * <p>Calling this method will construct and sign a new block, generate the appropriate work for it, and publish the
-     * block to the network via RPC.</p>
-     *
-     * @param sourceHash the hash of the pending {@code send} block
-     * @return the generated and published {@code receive} block
-     * @throws WalletActionException if an error occurs with the RPC queries, work generation, block processing, or the
-     *                               specified block could not be found in the ledger
-     *
-     * @see #receiveAll()
-     * @see #receiveBatch(int)
-     */
+    @Override
     public B receive(HexData sourceHash) throws WalletActionException {
         if (sourceHash == null)
             throw new IllegalArgumentException("Source hash cannot be null.");
@@ -283,37 +214,7 @@ public class LocalRpcWalletAccount<B extends Block> {
         }
     }
     
-    /**
-     * Attempts to receive a batch of pending blocks of at least {@code 0.000001 NANO} in value, receiving no more than
-     * {@code count} blocks (highest valued blocks are processed first).
-     *
-     * <p>Calling this method will construct and sign a set of new blocks, generate the appropriate work for them, and
-     * publish the blocks to the network via RPC.</p>
-     *
-     * @param count the maximum number of blocks to receive in this batch
-     * @return a set containing the generated and published {@code receive} blocks
-     * @throws WalletActionException if an error occurs with the RPC queries, work generation or block processing
-     *
-     * @see #receiveAll()
-     */
-    public Set<B> receiveBatch(int count) throws WalletActionException {
-        return receiveBatch(count, DEFAULT_THRESHOLD);
-    }
-    
-    /**
-     * Attempts to receive a batch of pending blocks of a value greater than or equal to the specified threshold
-     * amount, receiving no more than {@code count} blocks (highest valued blocks are processed first).
-     *
-     * <p>Calling this method will construct and sign a set of new blocks, generate the appropriate work for them, and
-     * publish the blocks to the network via RPC.</p>
-     *
-     * @param count     the maximum number of blocks to receive in this batch
-     * @param threshold the minimum amount threshold
-     * @return a set containing the generated and published {@code receive} blocks
-     * @throws WalletActionException if an error occurs with the RPC queries, work generation or block processing
-     *
-     * @see #receiveAll(NanoAmount)
-     */
+    @Override
     public Set<B> receiveBatch(int count, NanoAmount threshold) throws WalletActionException {
         if (count < 0) throw new IllegalArgumentException("Batch count must be zero or higher.");
         if (count == 0) return Collections.emptySet();
@@ -340,41 +241,7 @@ public class LocalRpcWalletAccount<B extends Block> {
         }
     }
     
-    /**
-     * Attempts to receive all pending blocks of at least {@code 0.000001 NANO} in value.
-     *
-     * <p>Calling this method will construct and sign a set of new blocks, generate the appropriate work for them, and
-     * publish the blocks to the network via RPC.</p>
-     *
-     * <p><strong>Note:</strong> if a large amount of transactions are pending, or an attacker continues to send funds
-     * to this account, this method may block and continue indefinitely. Receive operations are performed in small
-     * batches to allow other operations to proceed between each batch.</p>
-     *
-     * @return a set containing the generated and published {@code receive} blocks
-     * @throws WalletActionException if an error occurs with the RPC queries, work generation or block processing
-     *
-     * @see #receiveBatch(int)
-     */
-    public Set<B> receiveAll() throws WalletActionException {
-        return receiveAll(DEFAULT_THRESHOLD);
-    }
-    
-    /**
-     * Attempts to receive all pending blocks of a value greater than or equal to the specified threshold amount.
-     *
-     * <p>Calling this method will construct and sign a set of new blocks, generate the appropriate work for them, and
-     * publish the blocks to the network via RPC.</p>
-     *
-     * <p><strong>Note:</strong> if a large amount of transactions are pending, or an attacker continues to send funds
-     * to this account, this method may block and continue indefinitely. Receive operations are performed in small
-     * batches to allow other operations to proceed between each batch.</p>
-     *
-     * @param threshold the minimum amount threshold
-     * @return a set containing the generated and published {@code receive} blocks
-     * @throws WalletActionException if an error occurs with the RPC queries, work generation or block processing
-     *
-     * @see #receiveBatch(int, NanoAmount)
-     */
+    @Override
     public Set<B> receiveAll(NanoAmount threshold) throws WalletActionException {
         Set<B> batch, published = new HashSet<>();
         do {
@@ -388,17 +255,7 @@ public class LocalRpcWalletAccount<B extends Block> {
         return processBlock(() -> walletAccount.createReceive(sourceHash, amount));
     }
     
-    /**
-     * Changes the representative of the account to the specified representative address.
-     *
-     * <p>Calling this method will construct and sign a new block, generate the appropriate work for it, and publish the
-     * block to the network via RPC.</p>
-     *
-     * @param representative the new representative
-     * @return the generated and published representative change block, or empty if the representative is already set
-     *         to the specified account
-     * @throws WalletActionException if an error occurs with the RPC query, work generation or block processing
-     */
+    @Override
     public Optional<B> changeRepresentative(NanoAccount representative) throws WalletActionException {
         return processBlockOptional(() -> walletAccount.createChange(representative));
     }
@@ -432,7 +289,7 @@ public class LocalRpcWalletAccount<B extends Block> {
             }
             throw new WalletActionException("Account state outdated, retried too many times. " +
                     "Is the account being concurrently accessed?");
-        } catch (BlockFactory.CreationException e) {
+        } catch (BlockFactory.BlockCreationException e) {
             throw new WalletActionException(e.getMessage(), e);
         } catch (RpcException | IOException e) {
             throw wrapRpcException("Block rejected by node: " + e.getMessage(), e);

@@ -80,10 +80,12 @@ public class LocalWalletAccount<B extends Block> {
      * @param state         the initial account state, or null if not opened
      */
     public LocalWalletAccount(HexData privateKey, BlockFactory<B> blockFactory, AccountState state) {
-        if (privateKey == null) throw new IllegalArgumentException("Account private key cannot be null.");
-        if (blockFactory == null) throw new IllegalArgumentException("BlockProducer cannot be null.");
+        if (privateKey == null)
+            throw new IllegalArgumentException("Account private key cannot be null.");
+        if (blockFactory == null)
+            throw new IllegalArgumentException("BlockProducer cannot be null.");
         this.privateKey = privateKey;
-        this.account = NanoAccount.fromPrivateKey(privateKey, blockFactory.getAddressPrefix());
+        this.account = NanoAccount.fromPrivateKey(privateKey, blockFactory.getConfig().getAddressPrefix());
         this.blockFactory = blockFactory;
         this.state = JNH.nonNull(state, AccountState.UNOPENED);
     }
@@ -163,11 +165,11 @@ public class LocalWalletAccount<B extends Block> {
      * @param destination the destination account where the funds will be sent
      * @param amount      the amount to send
      * @return the constructed block
-     * @throws BlockFactory.CreationException if the block couldn't be constructed, work couldn't be generated,
+     * @throws BlockFactory.BlockCreationException if the block couldn't be constructed, work couldn't be generated,
      *         or the account state doesn't match the arguments (eg. not enough funds)
      */
     public synchronized B createSend(NanoAccount destination, NanoAmount amount) {
-        return updateState(blockFactory.createSend(privateKey, state, destination, amount));
+        return updateState(blockFactory.createSendBlock(privateKey, state, destination, amount));
     }
     
     /**
@@ -181,11 +183,11 @@ public class LocalWalletAccount<B extends Block> {
      *
      * @param destination the destination account where the funds will be sent
      * @return the constructed block, or empty if the account has no funds
-     * @throws BlockFactory.CreationException if the block couldn't be constructed, or work couldn't be generated
+     * @throws BlockFactory.BlockCreationException if the block couldn't be constructed, or work couldn't be generated
      */
     public synchronized Optional<B> createSendAll(NanoAccount destination) {
         if (state.getBalance().compareTo(NanoAmount.ZERO) > 0) {
-            return Optional.of(updateState(blockFactory.createSend(
+            return Optional.of(updateState(blockFactory.createSendBlock(
                     privateKey, state, destination, state.getBalance())));
         } else {
             return Optional.empty();
@@ -202,11 +204,11 @@ public class LocalWalletAccount<B extends Block> {
      * @param sourceHash the hash of the pending {@code send} block
      * @param amount     the amount of the pending send block
      * @return the constructed block
-     * @throws BlockFactory.CreationException if the block couldn't be constructed, work couldn't be generated,
+     * @throws BlockFactory.BlockCreationException if the block couldn't be constructed, work couldn't be generated,
      *         or the account state doesn't match the arguments (eg. receiving too many funds)
      */
     public synchronized B createReceive(HexData sourceHash, NanoAmount amount) {
-        return updateState(blockFactory.createReceive(privateKey, state, sourceHash, amount));
+        return updateState(blockFactory.createReceiveBlock(privateKey, state, sourceHash, amount));
     }
     
     /**
@@ -220,10 +222,10 @@ public class LocalWalletAccount<B extends Block> {
      *
      * @param representative the representative account
      * @return the constructed block, or empty if the representative is already set
-     * @throws BlockFactory.CreationException if the block couldn't be constructed, or work couldn't be generated
+     * @throws BlockFactory.BlockCreationException if the block couldn't be constructed, or work couldn't be generated
      */
     public synchronized Optional<B> createChange(NanoAccount representative) {
-        return updateState(blockFactory.createChange(privateKey, state, representative));
+        return updateState(blockFactory.createChangeBlock(privateKey, state, representative));
     }
     
     
