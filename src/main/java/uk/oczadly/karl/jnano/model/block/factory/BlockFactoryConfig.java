@@ -2,7 +2,6 @@ package uk.oczadly.karl.jnano.model.block.factory;
 
 import uk.oczadly.karl.jnano.model.NanoAccount;
 import uk.oczadly.karl.jnano.util.workgen.WorkGenerator;
-import uk.oczadly.karl.jnano.util.workgen.provider.NodeWorkGeneratorProvider;
 
 import java.util.Objects;
 
@@ -78,9 +77,6 @@ public class BlockFactoryConfig {
 
         /**
          * Sets the work generator to be used when constructing new blocks.
-         *
-         * <p>Defaults to a {@link NodeWorkGeneratorProvider} using the specified RPC client (work will be generated on the
-         * node).</p>
          *
          * @param generator the work generator
          * @return this builder
