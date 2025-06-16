@@ -21,17 +21,8 @@ import java.time.Instant;
  */
 public class JNC {
     
-    public static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapterFactory(new EnumTypeAdapterFactory())          // Case-insensitive enums
-            .registerTypeAdapterFactory(new ArrayTypeAdapterFactoryFix())      // Empty array hotfix
-            .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer()) // Boolean deserializer
-            .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer()) // Boolean deserializer
-            .registerTypeAdapter(BigInteger.class, new BigIntSerializer())     // BigInt serializer (string)
-            .registerTypeAdapter(Instant.class, new InstantAdapter.Millis())   // Instant adapter (epoch millis)
-            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            .create();
-    
-    public static final Gson GSON_PRETTY = GSON.newBuilder().setPrettyPrinting().create();
+    public static final Gson GSON = gson().create();
+    public static final Gson GSON_PRETTY = gson().setPrettyPrinting().create();
     
     public static final BlockDeserializer BLOCK_DESERIALIZER = BlockDeserializer.withDefaults();
     
@@ -42,13 +33,27 @@ public class JNC {
     
     public static final String ZEROES_16 = JNH.repeatChar('0', 16);
     public static final HexData ZEROES_16_HD = new HexData(ZEROES_16);
+
     public static final String ZEROES_64 = JNH.repeatChar('0', 64);
     public static final HexData ZEROES_64_HD = new HexData(ZEROES_64);
+
     public static final String ZEROES_128 = JNH.repeatChar('0', 128);
     public static final HexData ZEROES_128_HD = new HexData(ZEROES_128);
     
     public static final BigInteger BIGINT_MAX_128 = new BigInteger(1, JNH.filledByteArray(16, (byte)0xFF));
     
     public static final BigInteger BIGINT_MAX_256 = new BigInteger(1, JNH.filledByteArray(32, (byte)0xFF));
+
+
+    public static GsonBuilder gson() {
+        return new GsonBuilder()
+                .registerTypeAdapterFactory(new EnumTypeAdapterFactory())          // Case-insensitive enums
+                .registerTypeAdapterFactory(new ArrayTypeAdapterFactoryFix())      // Empty array hotfix
+                .registerTypeAdapter(boolean.class, new BooleanTypeDeserializer()) // Boolean deserializer
+                .registerTypeAdapter(Boolean.class, new BooleanTypeDeserializer()) // Boolean deserializer
+                .registerTypeAdapter(BigInteger.class, new BigIntSerializer())     // BigInt serializer (string)
+                .registerTypeAdapter(Instant.class, new InstantAdapter.Millis())   // Instant adapter (epoch millis)
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
+    }
     
 }
