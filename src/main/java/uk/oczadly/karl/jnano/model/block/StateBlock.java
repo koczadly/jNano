@@ -316,7 +316,9 @@ public final class StateBlock extends Block implements IBlockState, IBlockLink, 
 
     @Override
     public HexData getWorkRoot() {
-        return getPreviousBlockHash();
+        return (getSubType() == StateBlockSubType.OPEN || getPreviousBlockHash().isZero())
+                ? new HexData(getAccount().getPublicKeyBytes(), 32)
+                : getPreviousBlockHash();
     }
     
     @Override

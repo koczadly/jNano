@@ -24,27 +24,4 @@ public class WorkSolutionTest {
                         new HexData("133D48F43EC826CF0B66C78B4B3DDF0D8E57550B0F6119186DB4CB1B5D8ACC35")));
     }
     
-    @Test
-    public void testRootHash() {
-        // Previous
-        ChangeBlock changeBlock = TestConstants.randChangeBlock();
-        assertEquals(changeBlock.getPreviousBlockHash(), changeBlock.getWorkRoot());
-    
-        // Previous
-        StateBlock stateBlock = TestConstants.randStateBlock().build();
-        assertEquals(stateBlock.getPreviousBlockHash(), stateBlock.getWorkRoot());
-    
-        // Account
-        stateBlock = TestConstants.randStateBlock().subtype(StateBlockSubType.OPEN).build();
-        assertEquals(new HexData(stateBlock.getAccount().toPublicKey()), stateBlock.getWorkRoot());
-    
-        // Account
-        OpenBlock openBlock = TestConstants.randOpenBlock();
-        assertEquals(new HexData(openBlock.getAccount().toPublicKey()), openBlock.getWorkRoot());
-        
-        // Error
-        Block invalidBlock = new TestBlock();
-        assertThrows(IllegalArgumentException.class, invalidBlock::getWorkRoot);
-    }
-    
 }

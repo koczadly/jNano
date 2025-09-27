@@ -294,5 +294,14 @@ public class StateBlockTest {
         assertEquals(expected, TEST_BLOCK.toJsonObject());
         assertEquals(expected, JNH.parseJson(TEST_BLOCK.toJsonString()));
     }
+
+    @Test
+    public void testWorkRoot() {
+        StateBlock open = TestConstants.randStateBlock(StateBlockSubType.OPEN);
+        assertEquals(new HexData(open.getAccount().toPublicKey()), open.getWorkRoot());
+
+        StateBlock send = TestConstants.randStateBlock(StateBlockSubType.SEND);
+        assertEquals(send.getPreviousBlockHash(), send.getWorkRoot());
+    }
     
 }

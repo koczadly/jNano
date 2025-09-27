@@ -7,6 +7,7 @@ package uk.oczadly.karl.jnano.model.block;
 
 import com.google.gson.JsonObject;
 import org.junit.Test;
+import uk.oczadly.karl.jnano.TestConstants;
 import uk.oczadly.karl.jnano.internal.JNH;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
@@ -77,6 +78,12 @@ public class ReceiveBlockTest {
         JsonObject expected = JNH.parseJson(TEST_BLOCK_JSON);
         assertEquals(expected, TEST_BLOCK.toJsonObject());
         assertEquals(expected, JNH.parseJson(TEST_BLOCK.toJsonString()));
+    }
+
+    @Test
+    public void testWorkRoot() {
+        ReceiveBlock block = TestConstants.randReceiveBlock();
+        assertEquals(block.getPreviousBlockHash(), block.getWorkRoot());
     }
     
 }
