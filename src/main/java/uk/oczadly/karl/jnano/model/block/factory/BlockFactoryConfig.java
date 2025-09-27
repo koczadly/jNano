@@ -95,7 +95,7 @@ public class BlockFactoryConfig {
             if (workGenerator == null)
                 throw new IllegalStateException("No work generator has been specified.");
 
-            String prefix = Objects.requireNonNullElse(addressPrefix, NanoAccount.DEFAULT_PREFIX);
+            String prefix = addressPrefix != null ? addressPrefix : NanoAccount.DEFAULT_PREFIX;
             return new BlockFactoryConfig(
                     defaultRepresentative != null
                             ? defaultRepresentative.withPrefix(prefix)
