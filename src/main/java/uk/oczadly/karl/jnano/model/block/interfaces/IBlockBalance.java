@@ -5,7 +5,7 @@
 
 package uk.oczadly.karl.jnano.model.block.interfaces;
 
-import uk.oczadly.karl.jnano.model.NanoAmount;
+import uk.oczadly.karl.jnano.model.currency.NanoAmount;
 
 /**
  * This interface is to be implemented by blocks which contain the account's balance.

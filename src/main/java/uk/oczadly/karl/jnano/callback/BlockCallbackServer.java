@@ -15,7 +15,7 @@ import uk.oczadly.karl.jnano.internal.httpserver.HttpRequest;
 import uk.oczadly.karl.jnano.internal.httpserver.HttpServerThread;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
-import uk.oczadly.karl.jnano.model.NanoAmount;
+import uk.oczadly.karl.jnano.model.currency.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.Block;
 import uk.oczadly.karl.jnano.model.block.BlockType;
 import uk.oczadly.karl.jnano.model.block.StateBlockSubType;

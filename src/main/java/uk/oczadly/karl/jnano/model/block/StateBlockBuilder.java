@@ -9,10 +9,9 @@ import uk.oczadly.karl.jnano.internal.JNC;
 import uk.oczadly.karl.jnano.internal.NanoConst;
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
-import uk.oczadly.karl.jnano.model.NanoAmount;
+import uk.oczadly.karl.jnano.model.currency.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.interfaces.IBlock;
 import uk.oczadly.karl.jnano.model.work.WorkSolution;
-import uk.oczadly.karl.jnano.util.NanoUnit;
 import uk.oczadly.karl.jnano.util.workgen.WorkGenerator;
 
 import java.math.BigInteger;

@@ -7,7 +7,7 @@ package uk.oczadly.karl.jnano.model.block.factory;
 
 import uk.oczadly.karl.jnano.model.HexData;
 import uk.oczadly.karl.jnano.model.NanoAccount;
-import uk.oczadly.karl.jnano.model.NanoAmount;
+import uk.oczadly.karl.jnano.model.currency.NanoAmount;
 import uk.oczadly.karl.jnano.model.block.StateBlock;
 import uk.oczadly.karl.jnano.model.block.StateBlockBuilder;
 import uk.oczadly.karl.jnano.model.block.StateBlockSubType;

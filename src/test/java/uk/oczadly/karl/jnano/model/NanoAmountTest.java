@@ -7,12 +7,13 @@ package uk.oczadly.karl.jnano.model;
 
 import com.google.gson.Gson;
 import org.junit.Test;
-import uk.oczadly.karl.jnano.util.NanoUnit;
+import uk.oczadly.karl.jnano.model.currency.NanoAmount;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static org.junit.Assert.*;
+import static uk.oczadly.karl.jnano.model.currency.Denomination.NANO;
 
 /**
  * @author Karl Oczadly
@@ -21,8 +22,7 @@ public class NanoAmountTest {
     
     NanoAmount VAL_A = NanoAmount.valueOfRaw("1230000000000000000000000000000");
     NanoAmount VAL_B = NanoAmount.valueOfRaw("1230000000000000000000000000001");
-    NanoAmount VAL_C = NanoAmount.valueOfRaw("1230000000000000000000000000000");
-    
+
     
     @Test(expected = IllegalArgumentException.class)
     public void testOverflowValueOf() {
@@ -34,13 +34,11 @@ public class NanoAmountTest {
         assertEquals(new BigInteger("27"), NanoAmount.valueOfRaw("27").getAsRaw());
         assertEquals(new BigInteger("27"), NanoAmount.valueOfRaw(new BigInteger("27")).getAsRaw());
         assertEquals(new BigInteger("27000000000000000000000000000000"),
-                NanoAmount.valueOf(27, NanoUnit.MEGA).getAsRaw());
+                NanoAmount.valueOf(27, NANO).getAsRaw());
         assertEquals(new BigInteger("27000000000000000000000000000000"),
-                NanoAmount.valueOf(new BigInteger("27"), NanoUnit.MEGA).getAsRaw());
-        assertEquals(new BigInteger("27000000000000000000000000000"),
-                NanoAmount.valueOf(new BigInteger("27"), NanoUnit.KILO).getAsRaw());
+                NanoAmount.valueOf(new BigInteger("27"), NANO).getAsRaw());
         assertEquals(new BigInteger("27100000000000000000000000000000"),
-                NanoAmount.valueOf(new BigDecimal("27.1"), NanoUnit.MEGA).getAsRaw());
+                NanoAmount.valueOf(new BigDecimal("27.1"), NANO).getAsRaw());
         assertEquals(new BigInteger("100000"), NanoAmount.valueOfRawExponent(5).getAsRaw());
     }
     
@@ -55,17 +53,28 @@ public class NanoAmountTest {
         assertEquals(0, new BigDecimal("1.23").compareTo(VAL_A.getAsNano()));
         assertEquals(0, new BigDecimal("1.230000000000000000000000000001").compareTo(VAL_B.getAsNano()));
     }
-    
+
     @Test
     public void testGetAs() {
-        assertEquals(0, new BigDecimal("1230").compareTo(VAL_A.getAs(NanoUnit.KILO)));
+        assertEquals(0, new BigDecimal("1.23").compareTo(VAL_A.getAs(NANO)));
+        assertEquals(0, new BigDecimal("1.230000000000000000000000000001").compareTo(VAL_B.getAs(NANO)));
     }
     
     @Test
     public void testCompareTo() {
-        assertEquals(0, VAL_A.compareTo(VAL_C));
+        assertEquals(0, VAL_A.compareTo(NanoAmount.valueOfRaw(VAL_A.getAsRaw())));
         assertTrue(VAL_A.compareTo(VAL_B) < 0);
         assertTrue(VAL_B.compareTo(VAL_A) > 0);
+    }
+
+    @Test
+    public void testToString() {
+        assertEquals("Ӿ0", NanoAmount.valueOfRaw(0).toString());
+        assertEquals("Ӿ1,234.56", NanoAmount.valueOfNano("1234.5600").toString());
+        assertEquals("Ӿ1.123456…", NanoAmount.valueOfNano("1.123456789").toString());
+        assertEquals("Ӿ0.000001", NanoAmount.valueOfNano("0.000001").toString());
+        assertEquals("900000000000000000000000 raw", NanoAmount.valueOfNano("0.0000009").toString());
+        assertEquals("1 raw", NanoAmount.valueOfRaw(1).toString());
     }
     
     @Test

@@ -12,6 +12,7 @@ open module uk.oczadly.karl.jnano {
     exports uk.oczadly.karl.jnano.model.block;
     exports uk.oczadly.karl.jnano.model.block.interfaces;
     exports uk.oczadly.karl.jnano.model.block.factory;
+    exports uk.oczadly.karl.jnano.model.currency;
     exports uk.oczadly.karl.jnano.model.work;
     exports uk.oczadly.karl.jnano.model.epoch;
 
